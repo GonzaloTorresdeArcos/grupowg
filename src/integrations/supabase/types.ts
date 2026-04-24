@@ -274,6 +274,89 @@ export type Database = {
         }
         Relationships: []
       }
+      wg_incidences: {
+        Row: {
+          address: string | null
+          appointment_id: string | null
+          assigned_application_id: string | null
+          assigned_at: string | null
+          assigned_user_id: string | null
+          brand: string | null
+          city: string | null
+          created_at: string
+          created_by: string | null
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          description: string | null
+          id: string
+          match_snapshot: Json | null
+          postal_code: string | null
+          product_family: string
+          province_code: string
+          ref: string
+          status: string
+          updated_at: string
+          urgency: string
+        }
+        Insert: {
+          address?: string | null
+          appointment_id?: string | null
+          assigned_application_id?: string | null
+          assigned_at?: string | null
+          assigned_user_id?: string | null
+          brand?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          description?: string | null
+          id?: string
+          match_snapshot?: Json | null
+          postal_code?: string | null
+          product_family: string
+          province_code: string
+          ref: string
+          status?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Update: {
+          address?: string | null
+          appointment_id?: string | null
+          assigned_application_id?: string | null
+          assigned_at?: string | null
+          assigned_user_id?: string | null
+          brand?: string | null
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          description?: string | null
+          id?: string
+          match_snapshot?: Json | null
+          postal_code?: string | null
+          product_family?: string
+          province_code?: string
+          ref?: string
+          status?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wg_incidences_assigned_application_id_fkey"
+            columns: ["assigned_application_id"]
+            isOneToOne: false
+            referencedRelation: "wg_network_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wg_invoices: {
         Row: {
           amount_net: number
@@ -336,21 +419,28 @@ export type Database = {
       }
       wg_network_applications: {
         Row: {
+          approved_at: string | null
           capacidad_mensual: string | null
           cif_nif: string
           coberturas: string[] | null
           created_at: string
+          current_score: number | null
+          current_tier: string | null
           datos_seguros: Json | null
           direccion_fiscal: string | null
           email: string
           familias_producto: string[] | null
           horarios: string | null
           id: string
+          lat: number | null
+          lng: number | null
+          marcas_codes: string[] | null
           marcas_trabajadas: string | null
           nombre_comercial: string | null
           numero_tecnicos: number | null
           persona_contacto: string
           provincias: string | null
+          provincias_codes: string[] | null
           razon_social: string
           servicios_ofrecidos: string[] | null
           status: string
@@ -359,21 +449,28 @@ export type Database = {
           zona_cobertura: string | null
         }
         Insert: {
+          approved_at?: string | null
           capacidad_mensual?: string | null
           cif_nif: string
           coberturas?: string[] | null
           created_at?: string
+          current_score?: number | null
+          current_tier?: string | null
           datos_seguros?: Json | null
           direccion_fiscal?: string | null
           email: string
           familias_producto?: string[] | null
           horarios?: string | null
           id?: string
+          lat?: number | null
+          lng?: number | null
+          marcas_codes?: string[] | null
           marcas_trabajadas?: string | null
           nombre_comercial?: string | null
           numero_tecnicos?: number | null
           persona_contacto: string
           provincias?: string | null
+          provincias_codes?: string[] | null
           razon_social: string
           servicios_ofrecidos?: string[] | null
           status?: string
@@ -382,21 +479,28 @@ export type Database = {
           zona_cobertura?: string | null
         }
         Update: {
+          approved_at?: string | null
           capacidad_mensual?: string | null
           cif_nif?: string
           coberturas?: string[] | null
           created_at?: string
+          current_score?: number | null
+          current_tier?: string | null
           datos_seguros?: Json | null
           direccion_fiscal?: string | null
           email?: string
           familias_producto?: string[] | null
           horarios?: string | null
           id?: string
+          lat?: number | null
+          lng?: number | null
+          marcas_codes?: string[] | null
           marcas_trabajadas?: string | null
           nombre_comercial?: string | null
           numero_tecnicos?: number | null
           persona_contacto?: string
           provincias?: string | null
+          provincias_codes?: string[] | null
           razon_social?: string
           servicios_ofrecidos?: string[] | null
           status?: string
@@ -542,12 +646,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      grant_admin_by_email: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      match_candidates_for_incidence: {
+        Args: {
+          _brand?: string
+          _limit?: number
+          _product_family: string
+          _province_code: string
+        }
+        Returns: {
+          application_id: string
+          capacidad_mensual: string
+          cobertura_match: boolean
+          current_score: number
+          current_tier: string
+          familia_match: boolean
+          marca_match: boolean
+          match_score: number
+          nombre_comercial: string
+          numero_tecnicos: number
+          razon_social: string
+        }[]
       }
     }
     Enums: {
