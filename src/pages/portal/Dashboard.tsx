@@ -1,16 +1,30 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   mockKpis, mockIncidences, mockMonthlyTrend, mockAppointments, formatEUR, formatDate,
 } from "@/lib/portal-mocks";
 import {
   Wrench, Star, Timer, CheckCircle2, Euro, TrendingUp, ArrowRight,
-  Calendar, MapPin, AlertTriangle,
+  Calendar, MapPin, AlertTriangle, Inbox,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { STATUS_LABELS, familiaLabel } from "@/lib/catalogos";
+
+type AssignedIncidence = {
+  id: string;
+  ref: string;
+  customer_name: string;
+  city: string | null;
+  product_family: string;
+  status: string;
+  urgency: string;
+  created_at: string;
+};
 
 const statusColor: Record<string, string> = {
   abierta: "bg-blue-500/10 text-blue-700 border-blue-500/20",
@@ -27,10 +41,24 @@ const statusLabel: Record<string, string> = {
 };
 
 const PortalDashboard = () => {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const todayAppts = mockAppointments
     .filter((a) => new Date(a.scheduledAt).toDateString() === new Date().toDateString())
     .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
+
+  const [assigned, setAssigned] = useState<AssignedIncidence[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("wg_incidences")
+      .select("id, ref, customer_name, city, product_family, status, urgency, created_at")
+      .eq("assigned_user_id", user.id)
+      .neq("status", "closed")
+      .order("created_at", { ascending: false })
+      .limit(5)
+      .then(({ data }) => setAssigned((data ?? []) as AssignedIncidence[]));
+  }, [user]);
 
   return (
     <div className="space-y-10">
@@ -44,6 +72,46 @@ const PortalDashboard = () => {
           Tu actividad en WG Network · Últimos 30 días
         </p>
       </div>
+
+      {/* Incidencias asignadas reales */}
+      {assigned.length > 0 && (
+        <Card className="p-6 md:p-8 border-teal/30 bg-teal/5">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-teal/15 text-teal flex items-center justify-center">
+                <Inbox className="h-5 w-5" strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="eyebrow mb-0.5">Asignadas a ti</p>
+                <h2 className="font-display text-xl text-ink">Incidencias en curso</h2>
+              </div>
+            </div>
+            <Badge variant="outline">{assigned.length}</Badge>
+          </div>
+          <ul className="space-y-2">
+            {assigned.map((i) => (
+              <li key={i.id}>
+                <Link
+                  to={`/portal/incidencias/${i.id}`}
+                  className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-mono text-muted-foreground">{i.ref}</p>
+                    <p className="text-sm text-ink truncate">
+                      {i.customer_name} · {familiaLabel(i.product_family)}
+                      {i.city ? ` · ${i.city}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Badge variant="outline">{STATUS_LABELS[i.status] ?? i.status}</Badge>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       {/* KPI Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

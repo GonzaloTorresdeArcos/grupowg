@@ -274,6 +274,44 @@ export type Database = {
         }
         Relationships: []
       }
+      wg_incidence_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          incidence_id: string
+          sender_name: string | null
+          sender_role: string
+          sender_user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          incidence_id: string
+          sender_name?: string | null
+          sender_role: string
+          sender_user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          incidence_id?: string
+          sender_name?: string | null
+          sender_role?: string
+          sender_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wg_incidence_messages_incidence_id_fkey"
+            columns: ["incidence_id"]
+            isOneToOne: false
+            referencedRelation: "wg_incidences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wg_incidences: {
         Row: {
           address: string | null
@@ -640,6 +678,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wg_sms_log: {
+        Row: {
+          body: string
+          context: string | null
+          created_at: string
+          destination: string
+          id: string
+          provider: string
+          related_appointment_id: string | null
+          related_incidence_id: string | null
+          sent_by: string | null
+          status: string
+        }
+        Insert: {
+          body: string
+          context?: string | null
+          created_at?: string
+          destination: string
+          id?: string
+          provider?: string
+          related_appointment_id?: string | null
+          related_incidence_id?: string | null
+          sent_by?: string | null
+          status?: string
+        }
+        Update: {
+          body?: string
+          context?: string | null
+          created_at?: string
+          destination?: string
+          id?: string
+          provider?: string
+          related_appointment_id?: string | null
+          related_incidence_id?: string | null
+          sent_by?: string | null
+          status?: string
+        }
+        Relationships: []
       }
     }
     Views: {
