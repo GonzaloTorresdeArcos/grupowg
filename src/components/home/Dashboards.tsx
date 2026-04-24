@@ -286,6 +286,109 @@ export const Dashboards = () => {
         </div>
       </Reveal>
 
+      {/* CTA: Solicitar demo */}
+      <Reveal>
+        <div className="mt-16 md:mt-20 rounded-2xl border border-teal/20 bg-gradient-to-br from-teal/10 via-ink to-ink p-8 md:p-12">
+          <div className="grid lg:grid-cols-[1.4fr_auto] gap-8 items-center">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <LineChart className="h-4 w-4 text-teal" strokeWidth={1.5} />
+                <p className="text-xs font-mono uppercase tracking-widest text-teal">
+                  Demo personalizada
+                </p>
+              </div>
+              <h3 className="font-display text-2xl md:text-3xl text-bone leading-snug mb-3 text-balance">
+                ¿Quieres ver el cuadro de mando aplicado a tu operación?
+              </h3>
+              <p className="text-sm md:text-base text-bone/70 max-w-xl leading-relaxed">
+                Te mostramos un caso real con tus categorías, tus SLAs y tu modelo de servicio.
+                Sesión de 30 minutos con nuestro equipo de operaciones.
+              </p>
+            </div>
+
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  className="bg-teal text-ink hover:bg-teal/90 font-medium gap-2 h-12 px-6 w-full lg:w-auto"
+                >
+                  Solicitar demo
+                  <ArrowUpRight className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-2xl">
+                    Solicita tu demo del cuadro de mando
+                  </DialogTitle>
+                  <DialogDescription>
+                    Cuéntanos brevemente sobre tu operación y te contactamos en menos de 24h.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="demo-nombre">Nombre y apellidos *</Label>
+                      <Input id="demo-nombre" name="nombre" required placeholder="Tu nombre" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="demo-empresa">Empresa *</Label>
+                      <Input id="demo-empresa" name="empresa" required placeholder="Tu empresa" />
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="demo-email">Email corporativo *</Label>
+                      <Input id="demo-email" name="email" type="email" required placeholder="nombre@empresa.com" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="demo-telefono">Teléfono</Label>
+                      <Input id="demo-telefono" name="telefono" type="tel" placeholder="+34 ..." />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="demo-cargo">Cargo</Label>
+                    <Input id="demo-cargo" name="cargo" placeholder="Director de operaciones, postventa, etc." />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="demo-mensaje">¿Qué te gustaría ver en la demo?</Label>
+                    <Textarea
+                      id="demo-mensaje"
+                      name="mensaje"
+                      rows={3}
+                      placeholder="Volumen de incidencias, categorías, geografía, retos actuales..."
+                    />
+                  </div>
+
+                  <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+                    <Button type="button" variant="ghost" onClick={() => setOpen(false)} disabled={submitting}>
+                      Cancelar
+                    </Button>
+                    <Button type="submit" disabled={submitting} className="gap-2">
+                      {submitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4" />
+                          Solicitar demo
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Al enviar aceptas nuestra política de privacidad. No compartiremos tus datos con terceros.
+                  </p>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </Reveal>
+
       {/* Footer note */}
       <Reveal>
         <div className="mt-12 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm">
@@ -306,4 +409,6 @@ export const Dashboards = () => {
       </Reveal>
     </div>
   </section>
-);
+  );
+};
+
