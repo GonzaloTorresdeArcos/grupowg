@@ -1,12 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle, FileText, Image as ImageIcon, RefreshCw, Eye } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle, FileText, RefreshCw, Eye, Save, Mail } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useDraft } from "@/hooks/useDraft";
+import { CifInput } from "@/components/inscripcion/CifInput";
+import { OtpVerification } from "@/components/inscripcion/OtpVerification";
+import { CoverageMap } from "@/components/inscripcion/CoverageMap";
+import { SignaturePad } from "@/components/inscripcion/SignaturePad";
+import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
+import { computeScoring } from "@/lib/scoring";
+import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
+import { validateSpanishDoc } from "@/lib/cif-validation";
+import { provinciaByCode } from "@/lib/spain-provinces";
 
-type Step = 1 | 2 | 3 | 4 | 5 | 6;
+type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 const familias = ["Gama blanca", "Gama marrón", "PAE", "Confort", "Movilidad", "Electrónica", "Repuestos", "Otros"];
 const servicios = ["Reparación en domicilio", "Reparación en taller", "Instalación", "Recogida / entrega", "Diagnóstico técnico"];
@@ -34,8 +44,7 @@ const docTypes = [
 ];
 
 const ACCEPTED_MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
-const ACCEPTED_EXT = ".pdf,.jpg,.jpeg,.png,.webp";
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
 const formatBytes = (b: number) => {
   if (b < 1024) return `${b} B`;
@@ -52,11 +61,11 @@ const step1Schema = z.object({
   email: z.string().trim().email("Email no válido").max(255),
   telefono: z.string().trim().min(6, "Teléfono no válido").max(20),
   direccion_fiscal: z.string().trim().max(300).optional(),
-  zona_cobertura: z.string().trim().max(300).optional(),
-  provincias: z.string().trim().max(500).optional(),
 });
 
 const Inscripcion = () => {
+  const { draft, loading: draftLoading, saving: draftSaving, save: saveDraft, clear: clearDraft } = useDraft();
+
   const [step, setStep] = useState<Step>(1);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -65,11 +74,14 @@ const Inscripcion = () => {
   const [s1, setS1] = useState({
     razon_social: "", nombre_comercial: "", cif_nif: "", tipo_colaborador: "",
     persona_contacto: "", email: "", telefono: "",
-    direccion_fiscal: "", zona_cobertura: "", provincias: "",
+    direccion_fiscal: "",
   });
   const [errs1, setErrs1] = useState<Record<string, string>>({});
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
 
   // Step 2
+  const [provinciaCodes, setProvinciaCodes] = useState<string[]>([]);
   const [familiasSel, setFamiliasSel] = useState<string[]>([]);
   const [marcas, setMarcas] = useState("");
   const [tecnicos, setTecnicos] = useState<string>("");
@@ -79,7 +91,6 @@ const Inscripcion = () => {
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
-  // Per-document upload progress: 0–100, or 'done', or 'error'
   const [uploadProgress, setUploadProgress] = useState<Record<string, number | "done" | "error">>({});
 
   // Step 4
@@ -87,6 +98,52 @@ const Inscripcion = () => {
 
   // Step 5 — datos por seguro
   const [datosSeguros, setDatosSeguros] = useState<Record<string, Record<string, string>>>({});
+
+  // Step 6 (firma)
+  const [signerName, setSignerName] = useState("");
+  const [signerDni, setSignerDni] = useState("");
+  const [signatureData, setSignatureData] = useState<string | null>(null);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+
+  // Hidratar desde draft
+  const hydrated = useRef(false);
+  useEffect(() => {
+    if (draftLoading || hydrated.current || !draft) return;
+    const d = draft.form_data || {};
+    if (d.s1) setS1(d.s1);
+    if (d.provinciaCodes) setProvinciaCodes(d.provinciaCodes);
+    if (d.familiasSel) setFamiliasSel(d.familiasSel);
+    if (d.marcas) setMarcas(d.marcas);
+    if (d.tecnicos) setTecnicos(d.tecnicos);
+    if (d.serviciosSel) setServiciosSel(d.serviciosSel);
+    if (d.horarios) setHorarios(d.horarios);
+    if (d.capacidad) setCapacidad(d.capacidad);
+    if (d.coberturas) setCoberturas(d.coberturas);
+    if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
+    if (d.signerName) setSignerName(d.signerName);
+    if (d.signerDni) setSignerDni(d.signerDni);
+    setEmailVerified(draft.email_verified);
+    setPhoneVerified(draft.phone_verified);
+    setStep(Math.max(1, Math.min(7, draft.current_step)) as Step);
+    hydrated.current = true;
+    toast.success("Hemos recuperado tu progreso anterior");
+  }, [draft, draftLoading]);
+
+  // Auto-save (al cambiar datos clave o paso)
+  useEffect(() => {
+    if (!s1.email) return;
+    saveDraft({
+      email: s1.email,
+      current_step: step,
+      form_data: {
+        s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad,
+        coberturas, datosSeguros, signerName, signerDni,
+      },
+      email_verified: emailVerified,
+      phone_verified: phoneVerified,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, coberturas, datosSeguros, signerName, signerDni, emailVerified, phoneVerified, step]);
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -97,40 +154,88 @@ const Inscripcion = () => {
 
   const validateStep1 = () => {
     const r = step1Schema.safeParse(s1);
-    if (!r.success) {
-      const e: Record<string, string> = {};
-      r.error.issues.forEach((i) => { e[i.path[0] as string] = i.message; });
-      setErrs1(e);
-      return false;
+    const e: Record<string, string> = {};
+    if (!r.success) r.error.issues.forEach((i) => { e[i.path[0] as string] = i.message; });
+
+    // CIF también validado por algoritmo
+    if (s1.cif_nif && !validateSpanishDoc(s1.cif_nif).valid) {
+      e.cif_nif = "CIF/NIF/NIE no válido";
     }
-    setErrs1({});
-    return true;
+    if (!emailVerified) e.email = "Verifica tu email para continuar";
+
+    setErrs1(e);
+    return Object.keys(e).length === 0;
   };
 
   const showStep5 = coberturas.some((c) =>
     ["seguros_colectivos","salud","vida","proteccion_ingresos","proteccion_juridica","ahorro","prl","documentacion","producto_nuevo","repuestos_coste","activaciones"].includes(c)
   );
 
+  // Steps visible flow:
+  // 1 datos → 2 cobertura+capacidad → 3 docs → 4 coberturas → 5 (cond) → 6 firma+scoring
+  const totalSteps = showStep5 ? 6 : 5;
+  const visibleStep = (() => {
+    if (step <= 4) return step;
+    if (step === 5 && showStep5) return 5;
+    if (step === 6) return showStep5 ? 6 : 5;
+    return totalSteps;
+  })();
+
   const next = () => {
     if (step === 1 && !validateStep1()) {
       toast.error("Revisa los campos obligatorios");
       return;
     }
-    const target = step === 4 && !showStep5 ? 6 : (step + 1) as Step;
+    let target = (step + 1) as Step;
+    if (step === 4 && !showStep5) target = 6;
     setStep(Math.min(target, 6) as Step);
   };
   const prev = () => {
-    const target = step === 6 && !showStep5 ? 4 : (step - 1) as Step;
+    let target = (step - 1) as Step;
+    if (step === 6 && !showStep5) target = 4;
     setStep(Math.max(target, 1) as Step);
   };
 
+  // Scoring en vivo (paso 6)
+  const scoring = useMemo(() => computeScoring({
+    familias: familiasSel,
+    servicios: serviciosSel,
+    tecnicos: tecnicos ? parseInt(tecnicos) : 0,
+    capacidadMensualText: capacidad,
+    coberturas,
+    documentosSubidos: Object.values(files).filter(Boolean).length,
+    zonaCobertura: provinciaCodes.length,
+    emailVerified,
+    phoneVerified,
+  }), [familiasSel, serviciosSel, tecnicos, capacidad, coberturas, files, provinciaCodes, emailVerified, phoneVerified]);
+
   const submit = async () => {
+    if (!signatureData) {
+      toast.error("Necesitas firmar el acuerdo");
+      return;
+    }
+    if (!signerName.trim()) {
+      toast.error("Indica el nombre del firmante");
+      return;
+    }
+    if (!acceptTerms) {
+      toast.error("Debes aceptar las condiciones");
+      return;
+    }
+
     setSubmitting(true);
     try {
+      const provinciasText = provinciaCodes
+        .map((c) => provinciaByCode(c)?.name)
+        .filter(Boolean)
+        .join(", ");
+
       const { data: app, error } = await supabase
         .from("wg_network_applications")
         .insert({
           ...s1,
+          provincias: provinciasText,
+          zona_cobertura: provinciasText,
           familias_producto: familiasSel,
           marcas_trabajadas: marcas,
           numero_tecnicos: tecnicos ? parseInt(tecnicos) : null,
@@ -144,14 +249,14 @@ const Inscripcion = () => {
         .single();
       if (error) throw error;
 
-      // upload files
       const appId = app.id;
+
+      // Upload de documentos
       const uploads = Object.entries(files).filter(([, f]) => f);
       for (const [docType, file] of uploads) {
         if (!file) continue;
         setUploadProgress((p) => ({ ...p, [docType]: 10 }));
         const path = `${appId}/${Date.now()}-${file.name}`;
-        // Simulated progress (Supabase JS doesn't expose granular upload progress)
         const tick = setInterval(() => {
           setUploadProgress((p) => {
             const cur = p[docType];
@@ -162,7 +267,6 @@ const Inscripcion = () => {
         const { error: upErr } = await supabase.storage.from("wg-documents").upload(path, file);
         clearInterval(tick);
         if (upErr) {
-          console.error("Upload error", docType, upErr);
           setUploadProgress((p) => ({ ...p, [docType]: "error" }));
           continue;
         }
@@ -176,6 +280,48 @@ const Inscripcion = () => {
         setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 
+      // Generar PDF firmado y subirlo
+      try {
+        const { path: pdfPath } = await generateAndUploadAgreement({
+          signerName,
+          signerDni,
+          signerEmail: s1.email,
+          companyName: s1.razon_social,
+          cif: s1.cif_nif,
+          signatureDataUrl: signatureData,
+          signedAt: new Date(),
+          applicationId: appId,
+          draftId: draft?.id,
+        });
+
+        await supabase.from("wg_signed_agreements").insert({
+          application_id: appId,
+          draft_id: draft?.id,
+          signer_name: signerName,
+          signer_dni: signerDni || null,
+          signer_email: s1.email,
+          signature_data_url: signatureData,
+          pdf_path: pdfPath,
+          user_agent: navigator.userAgent.slice(0, 500),
+        });
+      } catch (e) {
+        console.error("Agreement PDF error", e);
+      }
+
+      // Guardar scoring
+      try {
+        await supabase.from("wg_application_scoring").insert({
+          application_id: appId,
+          draft_id: draft?.id,
+          total_score: scoring.total,
+          tier: scoring.tier,
+          breakdown: scoring.breakdown,
+        });
+      } catch (e) {
+        console.error("Scoring error", e);
+      }
+
+      clearDraft();
       setDone(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: any) {
@@ -184,6 +330,13 @@ const Inscripcion = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const copyResumeLink = () => {
+    if (!draft) return;
+    const url = `${window.location.origin}/wg-network/inscripcion?resume=${draft.resume_token}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Enlace copiado. Te servirá para retomar desde cualquier dispositivo.");
   };
 
   if (done) {
@@ -198,37 +351,40 @@ const Inscripcion = () => {
             Gracias por completar tu inscripción a WG Professional Network.
           </h1>
           <div className="mt-10 space-y-4 text-ink-soft text-lg leading-relaxed max-w-2xl">
-            <p>Nuestro equipo revisará la información y contactará contigo para confirmar:</p>
-            <ul className="space-y-2 pl-6 list-disc text-base text-muted-foreground">
-              <li>Documentación pendiente</li>
-              <li>Nivel de participación</li>
-              <li>Acceso a repuestos y producto</li>
-              <li>Coberturas seleccionadas</li>
-              <li>Próximos pasos</li>
-            </ul>
+            <p>Tu solicitud ha quedado registrada con nivel <span className="font-medium text-ink">{scoring.tier === "premium" ? "Premium" : scoring.tier === "advanced" ? "Avanzado" : "Básico"}</span>. Hemos generado y guardado el acuerdo firmado.</p>
+            <p>Nuestro equipo lo revisará en las próximas 48h y contactará contigo.</p>
           </div>
-          <p className="mt-12 font-display italic text-2xl text-teal">
-            El futuro no se construye solo. Se construye juntos.
-          </p>
           <Link to="/" className="btn-primary mt-12">Volver al inicio</Link>
         </div>
       </section>
     );
   }
 
-  const totalSteps = showStep5 ? 6 : 5;
-  const visibleStep = step === 6 && !showStep5 ? 5 : step;
+  if (draftLoading) {
+    return (
+      <section className="min-h-[60svh] pt-40 pb-32 flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </section>
+    );
+  }
 
   return (
     <section className="pt-32 md:pt-40 pb-24 bg-bone min-h-screen">
       <div className="container-tight max-w-4xl">
-        <p className="eyebrow mb-4">WG Professional Network</p>
-        <h1 className="heading-display text-ink text-4xl md:text-6xl text-balance mb-4">
-          Únete a la red.
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">
-          Un único proceso para activar trabajo, protección y crecimiento.
-        </p>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <p className="eyebrow mb-4">WG Professional Network</p>
+            <h1 className="heading-display text-ink text-4xl md:text-6xl text-balance mb-4">Únete a la red.</h1>
+            <p className="text-muted-foreground text-lg max-w-2xl">Un único proceso para activar trabajo, protección y crecimiento.</p>
+          </div>
+          {draft && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-card border border-border rounded-full px-3 py-1.5 shrink-0 mt-2">
+              <Save className={cn("h-3 w-3", draftSaving && "animate-pulse text-teal-deep")} />
+              {draftSaving ? "Guardando…" : "Borrador guardado"}
+              <button type="button" onClick={copyResumeLink} className="ml-2 text-teal-deep hover:underline">Copiar enlace</button>
+            </div>
+          )}
+        </div>
 
         {/* Progress */}
         <div className="mt-12 mb-12">
@@ -237,26 +393,28 @@ const Inscripcion = () => {
             <span>{Math.round((visibleStep / totalSteps) * 100)}%</span>
           </div>
           <div className="h-1 bg-border rounded-full overflow-hidden">
-            <div
-              className="h-full bg-teal transition-all duration-500 ease-smooth"
-              style={{ width: `${(visibleStep / totalSteps) * 100}%` }}
-            />
+            <div className="h-full bg-teal transition-all duration-500 ease-smooth" style={{ width: `${(visibleStep / totalSteps) * 100}%` }} />
           </div>
         </div>
 
-        {/* STEP 1 */}
+        {/* STEP 1 — Datos generales + verificación */}
         {step === 1 && (
           <div className="space-y-6 animate-fade-up">
             <h2 className="font-display text-3xl text-ink">Datos generales</h2>
             <div className="grid md:grid-cols-2 gap-5">
+              <Field label="CIF / NIF / DNI *" error={errs1.cif_nif}>
+                <CifInput
+                  value={s1.cif_nif}
+                  onChange={(v) => setS1({ ...s1, cif_nif: v })}
+                  onCompanyDetected={(name) => setS1((p) => ({ ...p, razon_social: p.razon_social || name }))}
+                  error={errs1.cif_nif}
+                />
+              </Field>
               <Field label="Razón social *" error={errs1.razon_social}>
                 <input className="input-base" value={s1.razon_social} onChange={(e) => setS1({ ...s1, razon_social: e.target.value })} />
               </Field>
               <Field label="Nombre comercial">
                 <input className="input-base" value={s1.nombre_comercial} onChange={(e) => setS1({ ...s1, nombre_comercial: e.target.value })} />
-              </Field>
-              <Field label="CIF / NIF / DNI *" error={errs1.cif_nif}>
-                <input className="input-base" value={s1.cif_nif} onChange={(e) => setS1({ ...s1, cif_nif: e.target.value })} />
               </Field>
               <Field label="Tipo de colaborador *" error={errs1.tipo_colaborador}>
                 <select className="input-base" value={s1.tipo_colaborador} onChange={(e) => setS1({ ...s1, tipo_colaborador: e.target.value })}>
@@ -267,29 +425,43 @@ const Inscripcion = () => {
               <Field label="Persona de contacto *" error={errs1.persona_contacto}>
                 <input className="input-base" value={s1.persona_contacto} onChange={(e) => setS1({ ...s1, persona_contacto: e.target.value })} />
               </Field>
-              <Field label="Email *" error={errs1.email}>
-                <input type="email" className="input-base" value={s1.email} onChange={(e) => setS1({ ...s1, email: e.target.value })} />
-              </Field>
-              <Field label="Teléfono *" error={errs1.telefono}>
-                <input className="input-base" value={s1.telefono} onChange={(e) => setS1({ ...s1, telefono: e.target.value })} />
-              </Field>
               <Field label="Dirección fiscal">
                 <input className="input-base" value={s1.direccion_fiscal} onChange={(e) => setS1({ ...s1, direccion_fiscal: e.target.value })} />
               </Field>
-              <Field label="Zona de cobertura" hint="Provincias o áreas geográficas">
-                <input className="input-base" value={s1.zona_cobertura} onChange={(e) => setS1({ ...s1, zona_cobertura: e.target.value })} />
+              <Field label="Email *" error={errs1.email}>
+                <input
+                  type="email"
+                  className="input-base"
+                  value={s1.email}
+                  onChange={(e) => { setS1({ ...s1, email: e.target.value }); if (emailVerified) setEmailVerified(false); }}
+                />
               </Field>
-              <Field label="Provincias / códigos postales">
-                <input className="input-base" value={s1.provincias} onChange={(e) => setS1({ ...s1, provincias: e.target.value })} />
+              <Field label="Teléfono *" error={errs1.telefono}>
+                <input
+                  className="input-base"
+                  value={s1.telefono}
+                  onChange={(e) => { setS1({ ...s1, telefono: e.target.value }); if (phoneVerified) setPhoneVerified(false); }}
+                />
               </Field>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4 pt-2">
+              <OtpVerification channel="email" destination={s1.email} verified={emailVerified} onVerified={() => setEmailVerified(true)} />
+              <OtpVerification channel="sms" destination={s1.telefono} verified={phoneVerified} onVerified={() => setPhoneVerified(true)} />
             </div>
           </div>
         )}
 
-        {/* STEP 2 */}
+        {/* STEP 2 — Capacidad + mapa */}
         {step === 2 && (
           <div className="space-y-8 animate-fade-up">
-            <h2 className="font-display text-3xl text-ink">Capacidad operativa</h2>
+            <h2 className="font-display text-3xl text-ink">Capacidad operativa y zona</h2>
+
+            <div>
+              <p className="block text-sm font-medium text-ink mb-3">Zona de cobertura</p>
+              <CoverageMap selected={provinciaCodes} onChange={setProvinciaCodes} />
+            </div>
+
             <Field label="Familias de producto atendidas">
               <ChipsMulti opts={familias} value={familiasSel} onChange={(v) => toggle(familiasSel, v, setFamiliasSel)} />
             </Field>
@@ -320,13 +492,8 @@ const Inscripcion = () => {
             <div className="rounded-xl border border-border bg-secondary p-4 flex gap-3 items-start">
               <AlertCircle className="h-5 w-5 text-teal-deep shrink-0 mt-0.5" />
               <div className="text-sm text-ink-soft space-y-1">
-                <p>
-                  Sin la documentación obligatoria no podrá completarse la activación operativa.
-                  Puedes subir lo que tengas ahora; el resto se completará en el alta.
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Formatos admitidos: <span className="font-medium text-ink-soft">PDF, JPG, PNG, WEBP</span> · Tamaño máximo por archivo: <span className="font-medium text-ink-soft">10 MB</span>.
-                </p>
+                <p>Sin la documentación obligatoria no podrá completarse la activación operativa. Puedes subir lo que tengas ahora; el resto se completará en el alta.</p>
+                <p className="text-xs text-muted-foreground">Formatos: PDF, JPG, PNG, WEBP · Máx 10 MB.</p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
@@ -338,10 +505,7 @@ const Inscripcion = () => {
                   progress={uploadProgress[doc]}
                   onChange={(f) => {
                     setFiles({ ...files, [doc]: f });
-                    setUploadProgress((p) => {
-                      const { [doc]: _, ...rest } = p;
-                      return rest;
-                    });
+                    setUploadProgress((p) => { const { [doc]: _, ...rest } = p; return rest; });
                   }}
                 />
               ))}
@@ -364,16 +528,11 @@ const Inscripcion = () => {
                     onClick={() => toggle(coberturas, c.id, setCoberturas)}
                     className={cn(
                       "flex items-center justify-between gap-3 rounded-xl border p-4 text-left transition-all",
-                      checked
-                        ? "border-ink bg-ink text-bone"
-                        : "border-border bg-card hover:border-ink/40"
+                      checked ? "border-ink bg-ink text-bone" : "border-border bg-card hover:border-ink/40",
                     )}
                   >
                     <span className="text-sm font-medium">{c.label}</span>
-                    <span className={cn(
-                      "h-5 w-5 rounded-full border flex items-center justify-center",
-                      checked ? "bg-teal border-teal" : "border-border"
-                    )}>
+                    <span className={cn("h-5 w-5 rounded-full border flex items-center justify-center", checked ? "bg-teal border-teal" : "border-border")}>
                       {checked && <Check className="h-3 w-3 text-ink" />}
                     </span>
                   </button>
@@ -383,7 +542,7 @@ const Inscripcion = () => {
           </div>
         )}
 
-        {/* STEP 5 — Conditional */}
+        {/* STEP 5 — Conditional (datos por cobertura) */}
         {step === 5 && showStep5 && (
           <div className="space-y-10 animate-fade-up">
             <h2 className="font-display text-3xl text-ink">Datos para tus coberturas</h2>
@@ -392,61 +551,23 @@ const Inscripcion = () => {
             {coberturas.includes("seguros_colectivos") && (
               <SeguroBlock title="Seguros colectivos">
                 <Grid2>
-                  <FieldS label="Número de empleados"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","empleados",e.target.value)} /></FieldS>
-                  <FieldS label="Tipo de actividad"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","actividad",e.target.value)} /></FieldS>
-                  <FieldS label="CNAE"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","cnae",e.target.value)} /></FieldS>
-                  <FieldS label="Número de asegurados"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","asegurados",e.target.value)} /></FieldS>
-                  <FieldS label="Edad media"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","edad_media",e.target.value)} /></FieldS>
-                  <FieldS label="Rango de edades"><input className="input-base" placeholder="Ej. 25-55" onChange={(e) => updateSeguro("seguros_colectivos","rango_edades",e.target.value)} /></FieldS>
-                  <FieldS label="Titular / cónyuge / hijos">
-                    <select className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","perfil_familiar",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Solo titular</option>
-                      <option>Titular + cónyuge</option>
-                      <option>Titular + hijos</option>
-                      <option>Familia completa</option>
-                    </select>
-                  </FieldS>
-                  <FieldS label="Cobertura geográfica"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","cobertura_geo",e.target.value)} /></FieldS>
+                  <FieldS label="Número de empleados"><input className="input-base" value={datosSeguros.seguros_colectivos?.empleados || ""} onChange={(e) => updateSeguro("seguros_colectivos","empleados",e.target.value)} /></FieldS>
+                  <FieldS label="CNAE"><input className="input-base" value={datosSeguros.seguros_colectivos?.cnae || ""} onChange={(e) => updateSeguro("seguros_colectivos","cnae",e.target.value)} /></FieldS>
+                  <FieldS label="Asegurados"><input className="input-base" value={datosSeguros.seguros_colectivos?.asegurados || ""} onChange={(e) => updateSeguro("seguros_colectivos","asegurados",e.target.value)} /></FieldS>
+                  <FieldS label="Cobertura geográfica"><input className="input-base" value={datosSeguros.seguros_colectivos?.cobertura_geo || ""} onChange={(e) => updateSeguro("seguros_colectivos","cobertura_geo",e.target.value)} /></FieldS>
                 </Grid2>
-                <FieldS label="Cobertura deseada"><textarea className="input-base min-h-20" placeholder="Describe el alcance de cobertura que buscas" onChange={(e) => updateSeguro("seguros_colectivos","cobertura_deseada",e.target.value)} /></FieldS>
               </SeguroBlock>
             )}
 
             {coberturas.includes("salud") && (
               <SeguroBlock title="Salud">
                 <Grid2>
-                  <FieldS label="Nombre y apellidos"><input className="input-base" onChange={(e) => updateSeguro("salud","nombre",e.target.value)} /></FieldS>
-                  <FieldS label="DNI"><input className="input-base" onChange={(e) => updateSeguro("salud","dni",e.target.value)} /></FieldS>
-                  <FieldS label="Fecha de nacimiento"><input type="date" className="input-base" onChange={(e) => updateSeguro("salud","fnac",e.target.value)} /></FieldS>
-                  <FieldS label="Sexo">
-                    <select className="input-base" onChange={(e) => updateSeguro("salud","sexo",e.target.value)}>
-                      <option value="">—</option><option>Femenino</option><option>Masculino</option><option>Otro</option>
-                    </select>
-                  </FieldS>
+                  <FieldS label="Asegurados"><input className="input-base" value={datosSeguros.salud?.asegurados || ""} onChange={(e) => updateSeguro("salud","asegurados",e.target.value)} /></FieldS>
                   <FieldS label="Modalidad">
-                    <select className="input-base" onChange={(e) => updateSeguro("salud","modalidad",e.target.value)}>
+                    <select className="input-base" value={datosSeguros.salud?.modalidad || ""} onChange={(e) => updateSeguro("salud","modalidad",e.target.value)}>
                       <option value="">—</option><option>Con copago</option><option>Sin copago</option>
                     </select>
                   </FieldS>
-                  <FieldS label="Asegurados"><input type="number" className="input-base" onChange={(e) => updateSeguro("salud","asegurados",e.target.value)} /></FieldS>
-                  <FieldS label="Dental">
-                    <select className="input-base" onChange={(e) => updateSeguro("salud","dental",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Hospitalización">
-                    <select className="input-base" onChange={(e) => updateSeguro("salud","hosp",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                </Grid2>
-                <Grid2>
-                  <FieldS label="Declaración básica de salud">
-                    <select className="input-base" onChange={(e) => updateSeguro("salud","declaracion",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Sin patologías relevantes</option>
-                      <option>Patologías leves controladas</option>
-                      <option>Patologías relevantes (detallar)</option>
-                    </select>
-                  </FieldS>
-                  <FieldS label="Preexistencias (si aplica)"><input className="input-base" onChange={(e) => updateSeguro("salud","preexistencias",e.target.value)} /></FieldS>
                 </Grid2>
               </SeguroBlock>
             )}
@@ -454,23 +575,8 @@ const Inscripcion = () => {
             {coberturas.includes("vida") && (
               <SeguroBlock title="Vida">
                 <Grid2>
-                  <FieldS label="Edad"><input type="number" className="input-base" onChange={(e) => updateSeguro("vida","edad",e.target.value)} /></FieldS>
-                  <FieldS label="Profesión"><input className="input-base" onChange={(e) => updateSeguro("vida","profesion",e.target.value)} /></FieldS>
-                  <FieldS label="Estado civil"><input className="input-base" onChange={(e) => updateSeguro("vida","civil",e.target.value)} /></FieldS>
-                  <FieldS label="¿Hijos?">
-                    <select className="input-base" onChange={(e) => updateSeguro("vida","hijos",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Capital asegurado"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("vida","capital",e.target.value)} /></FieldS>
-                  <FieldS label="Beneficiarios"><input className="input-base" onChange={(e) => updateSeguro("vida","beneficiarios",e.target.value)} /></FieldS>
-                  <FieldS label="Actividades de riesgo"><input className="input-base" placeholder="Ej. trabajo en altura, motor" onChange={(e) => updateSeguro("vida","riesgo",e.target.value)} /></FieldS>
-                  <FieldS label="Declaración básica de salud">
-                    <select className="input-base" onChange={(e) => updateSeguro("vida","declaracion",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Sin patologías relevantes</option>
-                      <option>Patologías leves controladas</option>
-                      <option>Patologías relevantes (detallar)</option>
-                    </select>
-                  </FieldS>
+                  <FieldS label="Capital asegurado"><input className="input-base" placeholder="€" value={datosSeguros.vida?.capital || ""} onChange={(e) => updateSeguro("vida","capital",e.target.value)} /></FieldS>
+                  <FieldS label="Beneficiarios"><input className="input-base" value={datosSeguros.vida?.beneficiarios || ""} onChange={(e) => updateSeguro("vida","beneficiarios",e.target.value)} /></FieldS>
                 </Grid2>
               </SeguroBlock>
             )}
@@ -478,65 +584,8 @@ const Inscripcion = () => {
             {coberturas.includes("proteccion_ingresos") && (
               <SeguroBlock title="Protección de ingresos">
                 <Grid2>
-                  <FieldS label="Autónomo / Empresa">
-                    <select className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","tipo",e.target.value)}><option value="">—</option><option>Autónomo</option><option>Empresa</option></select>
-                  </FieldS>
-                  <FieldS label="Ingresos mensuales medios"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("proteccion_ingresos","ingresos",e.target.value)} /></FieldS>
-                  <FieldS label="Antigüedad en actividad"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","antiguedad",e.target.value)} /></FieldS>
-                  <FieldS label="Base asegurada deseada"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","base",e.target.value)} /></FieldS>
-                  <FieldS label="Periodo de carencia"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","carencia",e.target.value)} /></FieldS>
-                  <FieldS label="Duración de cobertura"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","duracion",e.target.value)} /></FieldS>
-                  <FieldS label="Profesión concreta"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","profesion",e.target.value)} /></FieldS>
-                  <FieldS label="Nivel de exposición física">
-                    <select className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","exposicion",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Bajo (oficina)</option>
-                      <option>Medio (campo / desplazamientos)</option>
-                      <option>Alto (manual / altura / riesgo)</option>
-                    </select>
-                  </FieldS>
-                </Grid2>
-              </SeguroBlock>
-            )}
-
-            {coberturas.includes("proteccion_juridica") && (
-              <SeguroBlock title="Protección jurídica">
-                <Grid2>
-                  <FieldS label="Tipo de servicios prestados"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","servicios",e.target.value)} /></FieldS>
-                  <FieldS label="Volumen anual aproximado"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","volumen",e.target.value)} /></FieldS>
-                  <FieldS label="Intervenciones/año"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","intervenciones",e.target.value)} /></FieldS>
-                  <FieldS label="Reclamaciones últimos 3 años"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","reclamaciones",e.target.value)} /></FieldS>
-                </Grid2>
-                <FieldS label="Tipología de conflictos habituales"><textarea className="input-base min-h-20" placeholder="Ej. impagos, garantía, daños, laborales…" onChange={(e) => updateSeguro("proteccion_juridica","tipologia_conflictos",e.target.value)} /></FieldS>
-                <FieldS label="Ámbito deseado"><input className="input-base" placeholder="Civil, laboral, administrativo" onChange={(e) => updateSeguro("proteccion_juridica","ambito",e.target.value)} /></FieldS>
-              </SeguroBlock>
-            )}
-
-            {coberturas.includes("ahorro") && (
-              <SeguroBlock title="Planes de ahorro">
-                <Grid2>
-                  <FieldS label="Objetivo">
-                    <select className="input-base" onChange={(e) => updateSeguro("ahorro","objetivo",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Jubilación</option>
-                      <option>Ahorro</option>
-                      <option>Protección familiar</option>
-                    </select>
-                  </FieldS>
-                  <FieldS label="Horizonte temporal"><input className="input-base" placeholder="Ej. 10 años" onChange={(e) => updateSeguro("ahorro","horizonte",e.target.value)} /></FieldS>
-                  <FieldS label="Aportación inicial"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("ahorro","inicial",e.target.value)} /></FieldS>
-                  <FieldS label="Aportación mensual"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("ahorro","mensual",e.target.value)} /></FieldS>
-                  <FieldS label="Perfil de riesgo">
-                    <select className="input-base" onChange={(e) => updateSeguro("ahorro","perfil",e.target.value)}><option value="">—</option><option>Conservador</option><option>Moderado</option><option>Dinámico</option></select>
-                  </FieldS>
-                  <FieldS label="Preferencia de liquidez">
-                    <select className="input-base" onChange={(e) => updateSeguro("ahorro","liquidez",e.target.value)}>
-                      <option value="">—</option>
-                      <option>Alta (acceso inmediato)</option>
-                      <option>Media (penalización corta)</option>
-                      <option>Baja (largo plazo)</option>
-                    </select>
-                  </FieldS>
+                  <FieldS label="Ingresos mensuales"><input className="input-base" placeholder="€" value={datosSeguros.proteccion_ingresos?.ingresos || ""} onChange={(e) => updateSeguro("proteccion_ingresos","ingresos",e.target.value)} /></FieldS>
+                  <FieldS label="Base asegurada deseada"><input className="input-base" value={datosSeguros.proteccion_ingresos?.base || ""} onChange={(e) => updateSeguro("proteccion_ingresos","base",e.target.value)} /></FieldS>
                 </Grid2>
               </SeguroBlock>
             )}
@@ -544,79 +593,21 @@ const Inscripcion = () => {
             {coberturas.includes("prl") && (
               <SeguroBlock title="PRL">
                 <Grid2>
-                  <FieldS label="Nº trabajadores"><input className="input-base" onChange={(e) => updateSeguro("prl","trabajadores",e.target.value)} /></FieldS>
-                  <FieldS label="Actividad"><input className="input-base" onChange={(e) => updateSeguro("prl","actividad",e.target.value)} /></FieldS>
-                  <FieldS label="Centros de trabajo"><input className="input-base" onChange={(e) => updateSeguro("prl","centros",e.target.value)} /></FieldS>
-                  <FieldS label="Tipo de intervenciones"><input className="input-base" placeholder="Reparación, instalación…" onChange={(e) => updateSeguro("prl","intervenciones",e.target.value)} /></FieldS>
-                  <FieldS label="¿PRL existente?">
-                    <select className="input-base" onChange={(e) => updateSeguro("prl","existente",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Formación vigente">
-                    <select className="input-base" onChange={(e) => updateSeguro("prl","formacion",e.target.value)}><option value="">—</option><option>Sí</option><option>Parcial</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Fecha de vencimiento formación"><input type="date" className="input-base" onChange={(e) => updateSeguro("prl","vencimiento",e.target.value)} /></FieldS>
+                  <FieldS label="Nº trabajadores"><input className="input-base" value={datosSeguros.prl?.trabajadores || ""} onChange={(e) => updateSeguro("prl","trabajadores",e.target.value)} /></FieldS>
+                  <FieldS label="Centros de trabajo"><input className="input-base" value={datosSeguros.prl?.centros || ""} onChange={(e) => updateSeguro("prl","centros",e.target.value)} /></FieldS>
                 </Grid2>
-                <FieldS label="Riesgos asociados">
-                  <ChipsMulti
-                    opts={["Eléctrico", "Trabajo en altura", "Manipulación de cargas", "Desplazamiento", "Químico", "Mecánico"]}
-                    value={(datosSeguros.prl?.riesgos || "").split("|").filter(Boolean)}
-                    onChange={(v) => {
-                      const cur = (datosSeguros.prl?.riesgos || "").split("|").filter(Boolean);
-                      const next = cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v];
-                      updateSeguro("prl", "riesgos", next.join("|"));
-                    }}
-                  />
-                </FieldS>
-              </SeguroBlock>
-            )}
-
-            {coberturas.includes("documentacion") && (
-              <SeguroBlock title="Documentación">
-                <Grid2>
-                  <FieldS label="Tipo de documento"><input className="input-base" placeholder="Ej. Certificado AEAT" onChange={(e) => updateSeguro("documentacion","tipo",e.target.value)} /></FieldS>
-                  <FieldS label="Fecha de vencimiento"><input type="date" className="input-base" onChange={(e) => updateSeguro("documentacion","vencimiento",e.target.value)} /></FieldS>
-                  <FieldS label="Responsable de actualización"><input className="input-base" onChange={(e) => updateSeguro("documentacion","responsable",e.target.value)} /></FieldS>
-                  <FieldS label="Alertas de renovación">
-                    <select className="input-base" onChange={(e) => updateSeguro("documentacion","alertas",e.target.value)}>
-                      <option value="">—</option>
-                      <option>30 días antes</option>
-                      <option>60 días antes</option>
-                      <option>90 días antes</option>
-                    </select>
-                  </FieldS>
-                </Grid2>
-                <FieldS label="Subida de archivo (opcional)">
-                  <input type="file" className="input-base" onChange={(e) => updateSeguro("documentacion","archivo", e.target.files?.[0]?.name || "")} />
-                  <span className="block text-xs text-muted-foreground mt-1.5">Si subes documentos en el paso 3, no es necesario repetirlos aquí.</span>
-                </FieldS>
               </SeguroBlock>
             )}
 
             {(coberturas.includes("producto_nuevo") || coberturas.includes("repuestos_coste") || coberturas.includes("activaciones")) && (
               <SeguroBlock title="Producto, repuestos y negocio">
                 <Grid2>
-                  <FieldS label="Interés en acceso a producto">
-                    <select className="input-base" onChange={(e) => updateSeguro("negocio","interes_producto",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Tipología de producto">
-                    <select className="input-base" onChange={(e) => updateSeguro("negocio","tipologia",e.target.value)}>
+                  <FieldS label="Volumen mensual estimado"><input className="input-base" value={datosSeguros.negocio?.volumen || ""} onChange={(e) => updateSeguro("negocio","volumen",e.target.value)} /></FieldS>
+                  <FieldS label="Tipología">
+                    <select className="input-base" value={datosSeguros.negocio?.tipologia || ""} onChange={(e) => updateSeguro("negocio","tipologia",e.target.value)}>
                       <option value="">—</option>
-                      <option>Gama blanca</option>
-                      <option>Electrónica</option>
-                      <option>Movilidad</option>
-                      <option>PAE</option>
-                      <option>Confort</option>
+                      <option>Gama blanca</option><option>Electrónica</option><option>Movilidad</option><option>PAE</option><option>Confort</option>
                     </select>
-                  </FieldS>
-                  <FieldS label="Volumen mensual estimado"><input className="input-base" onChange={(e) => updateSeguro("negocio","volumen",e.target.value)} /></FieldS>
-                  <FieldS label="Uso">
-                    <select className="input-base" onChange={(e) => updateSeguro("negocio","uso",e.target.value)}><option value="">—</option><option>Propio</option><option>Reparación</option><option>Reventa</option></select>
-                  </FieldS>
-                  <FieldS label="Interés en activaciones comerciales">
-                    <select className="input-base" onChange={(e) => updateSeguro("negocio","activaciones",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
-                  </FieldS>
-                  <FieldS label="Interés en garantía extendida">
-                    <select className="input-base" onChange={(e) => updateSeguro("negocio","ge",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
                   </FieldS>
                 </Grid2>
               </SeguroBlock>
@@ -624,22 +615,46 @@ const Inscripcion = () => {
           </div>
         )}
 
-        {/* STEP 6 / final review */}
-        {step === 6 || (step === 5 && !showStep5) ? (
-          <div className="space-y-6 animate-fade-up">
-            <h2 className="font-display text-3xl text-ink">Revisar y enviar</h2>
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-3 text-sm">
-              <p><span className="text-muted-foreground">Razón social:</span> <span className="text-ink font-medium">{s1.razon_social || "—"}</span></p>
-              <p><span className="text-muted-foreground">Tipo:</span> <span className="text-ink">{s1.tipo_colaborador || "—"}</span></p>
-              <p><span className="text-muted-foreground">Contacto:</span> <span className="text-ink">{s1.persona_contacto} · {s1.email} · {s1.telefono}</span></p>
-              <p><span className="text-muted-foreground">Familias:</span> <span className="text-ink">{familiasSel.join(", ") || "—"}</span></p>
-              <p><span className="text-muted-foreground">Servicios:</span> <span className="text-ink">{serviciosSel.join(", ") || "—"}</span></p>
-              <p><span className="text-muted-foreground">Documentos:</span> <span className="text-ink">{Object.values(files).filter(Boolean).length} adjuntos</span></p>
-              <p><span className="text-muted-foreground">Coberturas:</span> <span className="text-ink">{coberturas.length ? coberturas.join(", ") : "—"}</span></p>
+        {/* STEP 6 — Scoring + Firma + Envío */}
+        {step === 6 && (
+          <div className="space-y-8 animate-fade-up">
+            <div>
+              <h2 className="font-display text-3xl text-ink">Tu valoración</h2>
+              <p className="text-muted-foreground mt-2">Calculamos tu nivel de idoneidad en función de los datos aportados.</p>
             </div>
-            <p className="text-xs text-muted-foreground">Al enviar aceptas la política de privacidad y el tratamiento de datos para gestionar tu inscripción.</p>
+
+            <ScoringBadge scoring={scoring} />
+
+            <div>
+              <h2 className="font-display text-3xl text-ink mt-8">Acuerdo de colaboración</h2>
+              <p className="text-muted-foreground mt-2 text-sm max-w-2xl">
+                Firma manuscrita del compromiso inicial de incorporación a WG Professional Network. Generaremos un PDF firmado que quedará registrado.
+              </p>
+            </div>
+
+            <SignaturePad
+              signerName={signerName}
+              onSignerNameChange={setSignerName}
+              signerDni={signerDni}
+              onSignerDniChange={setSignerDni}
+              onChange={setSignatureData}
+            />
+
+            <label className="flex items-start gap-3 text-sm text-ink-soft cursor-pointer">
+              <input
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-border accent-teal"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+              />
+              <span>
+                Acepto las{" "}
+                <Link to="/legal/privacidad" className="text-teal-deep hover:underline" target="_blank">condiciones de privacidad</Link>{" "}
+                y declaro que los datos aportados son veraces.
+              </span>
+            </label>
           </div>
-        ) : null}
+        )}
 
         {/* Nav */}
         <div className="mt-12 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -647,10 +662,10 @@ const Inscripcion = () => {
             <ArrowLeft className="h-4 w-4" /> Atrás
           </button>
 
-          {((step === 6) || (step === 5 && !showStep5)) ? (
-            <button onClick={submit} disabled={submitting} className="btn-primary disabled:opacity-50">
+          {step === 6 ? (
+            <button onClick={submit} disabled={submitting || !signatureData || !acceptTerms} className="btn-primary disabled:opacity-50">
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              Enviar inscripción
+              Firmar y enviar
               {!submitting && <ArrowRight className="h-4 w-4" />}
             </button>
           ) : (
@@ -659,6 +674,16 @@ const Inscripcion = () => {
             </button>
           )}
         </div>
+
+        {/* Recordatorio email */}
+        {!draft && step >= 2 && (
+          <div className="mt-8 rounded-xl border border-dashed border-border bg-card/60 p-4 flex gap-3 items-start">
+            <Mail className="h-4 w-4 text-teal-deep mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground">
+              Introduce tu email en el primer paso para guardar automáticamente tu progreso y poder retomarlo más tarde.
+            </p>
+          </div>
+        )}
       </div>
 
       <style>{`
@@ -717,7 +742,7 @@ const ChipsMulti = ({ opts, value, onChange }: { opts: string[]; value: string[]
         <button key={o} type="button" onClick={() => onChange(o)}
           className={cn(
             "rounded-full px-4 py-2 text-sm border transition-all",
-            on ? "bg-ink text-bone border-ink" : "bg-card border-border text-ink hover:border-ink/40"
+            on ? "bg-ink text-bone border-ink" : "bg-card border-border text-ink hover:border-ink/40",
           )}>{o}</button>
       );
     })}
@@ -725,26 +750,19 @@ const ChipsMulti = ({ opts, value, onChange }: { opts: string[]; value: string[]
 );
 
 const FileSlot = ({
-  label,
-  file,
-  progress,
-  onChange,
+  label, file, progress, onChange,
 }: {
   label: string;
   file: File | null | undefined;
   progress?: number | "done" | "error";
   onChange: (f: File | null) => void;
 }) => {
-  const id = `file-${label.replace(/\s+/g, "-")}`;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!file) {
-      setPreviewUrl(null);
-      return;
-    }
+    if (!file) { setPreviewUrl(null); return; }
     if (file.type.startsWith("image/")) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
@@ -755,19 +773,10 @@ const FileSlot = ({
 
   const handleFiles = (f: File | null) => {
     setError(null);
-    if (!f) {
-      onChange(null);
-      return;
-    }
+    if (!f) { onChange(null); return; }
     const okType = ACCEPTED_MIME.includes(f.type) || /\.(pdf|jpe?g|png|webp)$/i.test(f.name);
-    if (!okType) {
-      setError("Formato no permitido. Usa PDF, JPG, PNG o WEBP.");
-      return;
-    }
-    if (f.size > MAX_FILE_BYTES) {
-      setError(`Archivo demasiado grande (${formatBytes(f.size)}). Máximo 10 MB.`);
-      return;
-    }
+    if (!okType) { setError("Formato no permitido."); return; }
+    if (f.size > MAX_FILE_BYTES) { setError(`Demasiado grande (${formatBytes(f.size)}).`); return; }
     onChange(f);
   };
 
@@ -777,121 +786,68 @@ const FileSlot = ({
   const uploadErr = progress === "error";
 
   return (
-    <div className={cn(
-      "rounded-xl border bg-card p-4 transition-colors",
-      uploadErr || error ? "border-destructive/60" : "border-border"
-    )}>
+    <div className={cn("rounded-xl border bg-card p-4 transition-colors", uploadErr || error ? "border-destructive/60" : "border-border")}>
       <div className="flex items-start justify-between gap-3">
-        {/* Preview / icon */}
         <div className="flex items-start gap-3 min-w-0 flex-1">
           <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
-            {isImage && previewUrl ? (
-              <img src={previewUrl} alt={file!.name} className="h-full w-full object-cover" />
-            ) : file ? (
-              <FileText className="h-5 w-5 text-ink-soft" />
-            ) : (
-              <Upload className="h-5 w-5 text-muted-foreground" />
-            )}
+            {isImage && previewUrl ? <img src={previewUrl} alt={file!.name} className="h-full w-full object-cover" />
+              : file ? <FileText className="h-5 w-5 text-ink-soft" />
+              : <Upload className="h-5 w-5 text-muted-foreground" />}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-ink truncate">{label}</p>
             {file ? (
-              <p className="text-xs text-muted-foreground truncate" title={file.name}>
-                {file.name} · {formatBytes(file.size)}
-              </p>
+              <p className="text-xs text-muted-foreground truncate" title={file.name}>{file.name} · {formatBytes(file.size)}</p>
             ) : (
               <p className="text-xs text-muted-foreground">PDF, JPG, PNG, WEBP · máx 10 MB</p>
             )}
             {error && <p className="text-xs text-destructive mt-1">{error}</p>}
-            {uploadErr && <p className="text-xs text-destructive mt-1">Error al subir. Reemplaza el archivo.</p>}
+            {uploadErr && <p className="text-xs text-destructive mt-1">Error al subir.</p>}
           </div>
         </div>
 
-        {/* Actions */}
         <div className="shrink-0 flex items-center gap-1">
           {file && isImage && previewUrl && (
-            <a
-              href={previewUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
-              aria-label="Ver previsualización"
-              title="Ver"
-            >
+            <a href={previewUrl} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary" aria-label="Ver" title="Ver">
               <Eye className="h-4 w-4" />
             </a>
           )}
           {file && !uploading && !uploaded && (
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
-              aria-label="Reemplazar documento"
-              title="Reemplazar"
-            >
+            <button type="button" onClick={() => inputRef.current?.click()} className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary" aria-label="Reemplazar" title="Reemplazar">
               <RefreshCw className="h-4 w-4" />
             </button>
           )}
           {file && !uploading && (
-            <button
-              type="button"
-              onClick={() => { setError(null); onChange(null); }}
-              className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-secondary"
-              aria-label="Eliminar documento"
-              title="Eliminar"
-            >
+            <button type="button" onClick={() => onChange(null)} className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-secondary" aria-label="Eliminar" title="Eliminar">
               <X className="h-4 w-4" />
             </button>
           )}
           {!file && (
-            <label
-              htmlFor={id}
-              className="cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs text-ink hover:border-ink flex items-center gap-1.5"
-            >
-              <Upload className="h-3 w-3" /> Subir
-            </label>
-          )}
-          {uploaded && (
-            <span className="flex items-center gap-1 rounded-full bg-teal/15 text-teal-deep px-2 py-1 text-xs">
-              <Check className="h-3 w-3" /> Subido
-            </span>
+            <button type="button" onClick={() => inputRef.current?.click()} className="text-xs font-medium text-teal-deep hover:underline px-2 py-1.5">
+              Subir
+            </button>
           )}
         </div>
       </div>
 
-      {/* Hidden inputs (one for initial pick, one ref'd for replace) */}
-      <input
-        id={id}
-        type="file"
-        accept={ACCEPTED_EXT}
-        className="hidden"
-        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
-      />
+      {uploading && (
+        <div className="mt-3 h-1 bg-border rounded-full overflow-hidden">
+          <div className="h-full bg-teal transition-all duration-300" style={{ width: `${progress}%` }} />
+        </div>
+      )}
+      {uploaded && (
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-teal-deep">
+          <Check className="h-3 w-3" /> Subido
+        </div>
+      )}
+
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPTED_EXT}
+        accept=".pdf,.jpg,.jpeg,.png,.webp"
         className="hidden"
-        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
+        onChange={(e) => handleFiles(e.target.files?.[0] || null)}
       />
-
-      {/* Progress bar */}
-      {(uploading || uploaded) && (
-        <div className="mt-3">
-          <div className="h-1.5 bg-border rounded-full overflow-hidden">
-            <div
-              className={cn(
-                "h-full transition-all duration-300 ease-smooth",
-                uploaded ? "bg-teal" : "bg-teal/70"
-              )}
-              style={{ width: `${uploaded ? 100 : (progress as number)}%` }}
-            />
-          </div>
-          <p className="text-[11px] text-muted-foreground mt-1">
-            {uploaded ? "Subida completada" : `Subiendo… ${progress}%`}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

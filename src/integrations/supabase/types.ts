@@ -82,6 +82,93 @@ export type Database = {
         }
         Relationships: []
       }
+      wg_application_drafts: {
+        Row: {
+          created_at: string
+          current_step: number
+          email: string
+          email_verified: boolean
+          expires_at: string
+          form_data: Json
+          id: string
+          last_sent_at: string | null
+          phone_verified: boolean
+          resume_token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_step?: number
+          email: string
+          email_verified?: boolean
+          expires_at?: string
+          form_data?: Json
+          id?: string
+          last_sent_at?: string | null
+          phone_verified?: boolean
+          resume_token: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_step?: number
+          email?: string
+          email_verified?: boolean
+          expires_at?: string
+          form_data?: Json
+          id?: string
+          last_sent_at?: string | null
+          phone_verified?: boolean
+          resume_token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      wg_application_scoring: {
+        Row: {
+          application_id: string | null
+          breakdown: Json
+          created_at: string
+          draft_id: string | null
+          id: string
+          tier: string
+          total_score: number
+        }
+        Insert: {
+          application_id?: string | null
+          breakdown?: Json
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          tier: string
+          total_score?: number
+        }
+        Update: {
+          application_id?: string | null
+          breakdown?: Json
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          tier?: string
+          total_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wg_application_scoring_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "wg_network_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wg_application_scoring_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "wg_application_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wg_appointments: {
         Row: {
           address: string | null
@@ -353,6 +440,99 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "wg_network_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wg_otp_codes: {
+        Row: {
+          attempts: number
+          channel: string
+          code_hash: string
+          consumed_at: string | null
+          created_at: string
+          destination: string
+          expires_at: string
+          id: string
+        }
+        Insert: {
+          attempts?: number
+          channel: string
+          code_hash: string
+          consumed_at?: string | null
+          created_at?: string
+          destination: string
+          expires_at?: string
+          id?: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          code_hash?: string
+          consumed_at?: string | null
+          created_at?: string
+          destination?: string
+          expires_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      wg_signed_agreements: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          draft_id: string | null
+          id: string
+          ip_address: string | null
+          pdf_path: string | null
+          signature_data_url: string | null
+          signed_at: string
+          signer_dni: string | null
+          signer_email: string
+          signer_name: string
+          user_agent: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          ip_address?: string | null
+          pdf_path?: string | null
+          signature_data_url?: string | null
+          signed_at?: string
+          signer_dni?: string | null
+          signer_email: string
+          signer_name: string
+          user_agent?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          draft_id?: string | null
+          id?: string
+          ip_address?: string | null
+          pdf_path?: string | null
+          signature_data_url?: string | null
+          signed_at?: string
+          signer_dni?: string | null
+          signer_email?: string
+          signer_name?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wg_signed_agreements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "wg_network_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wg_signed_agreements_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "wg_application_drafts"
             referencedColumns: ["id"]
           },
         ]
