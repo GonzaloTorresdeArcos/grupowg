@@ -1,8 +1,17 @@
+import { useState } from "react";
 import { Reveal } from "@/components/site/Reveal";
 import {
   Activity, Clock, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown,
-  Package, Wrench, Euro, Timer, ArrowUpRight, ArrowDownRight,
+  Package, Wrench, Euro, Timer, ArrowUpRight, ArrowDownRight, LineChart, Send, Loader2,
 } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // KPIs principales
 const kpiCards = [
