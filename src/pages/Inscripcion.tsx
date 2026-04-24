@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle, FileText, Image as ImageIcon, RefreshCw, Eye } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
