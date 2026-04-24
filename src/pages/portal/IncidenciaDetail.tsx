@@ -140,7 +140,7 @@ const IncidenciaDetail = () => {
         assigned_at: new Date().toISOString(),
         appointment_id: appointmentId,
         status: "assigned",
-        match_snapshot: { candidates, selected: applicationId, ranked_at: new Date().toISOString() },
+        match_snapshot: { candidates, selected: applicationId, ranked_at: new Date().toISOString() } as never,
       })
       .eq("id", incidence.id);
     setAssigning(null);
