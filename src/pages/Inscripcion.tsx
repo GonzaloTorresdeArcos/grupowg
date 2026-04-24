@@ -724,25 +724,173 @@ const ChipsMulti = ({ opts, value, onChange }: { opts: string[]; value: string[]
   </div>
 );
 
-const FileSlot = ({ label, file, onChange }: { label: string; file: File | null | undefined; onChange: (f: File | null) => void }) => {
+const FileSlot = ({
+  label,
+  file,
+  progress,
+  onChange,
+}: {
+  label: string;
+  file: File | null | undefined;
+  progress?: number | "done" | "error";
+  onChange: (f: File | null) => void;
+}) => {
   const id = `file-${label.replace(/\s+/g, "-")}`;
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    if (file.type.startsWith("image/")) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+  }, [file]);
+
+  const handleFiles = (f: File | null) => {
+    setError(null);
+    if (!f) {
+      onChange(null);
+      return;
+    }
+    const okType = ACCEPTED_MIME.includes(f.type) || /\.(pdf|jpe?g|png|webp)$/i.test(f.name);
+    if (!okType) {
+      setError("Formato no permitido. Usa PDF, JPG, PNG o WEBP.");
+      return;
+    }
+    if (f.size > MAX_FILE_BYTES) {
+      setError(`Archivo demasiado grande (${formatBytes(f.size)}). Máximo 10 MB.`);
+      return;
+    }
+    onChange(f);
+  };
+
+  const isImage = file?.type.startsWith("image/");
+  const uploading = typeof progress === "number";
+  const uploaded = progress === "done";
+  const uploadErr = progress === "error";
+
   return (
-    <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-3">
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-ink truncate">{label}</p>
-        {file && <p className="text-xs text-muted-foreground truncate">{file.name}</p>}
+    <div className={cn(
+      "rounded-xl border bg-card p-4 transition-colors",
+      uploadErr || error ? "border-destructive/60" : "border-border"
+    )}>
+      <div className="flex items-start justify-between gap-3">
+        {/* Preview / icon */}
+        <div className="flex items-start gap-3 min-w-0 flex-1">
+          <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
+            {isImage && previewUrl ? (
+              <img src={previewUrl} alt={file!.name} className="h-full w-full object-cover" />
+            ) : file ? (
+              <FileText className="h-5 w-5 text-ink-soft" />
+            ) : (
+              <Upload className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-ink truncate">{label}</p>
+            {file ? (
+              <p className="text-xs text-muted-foreground truncate" title={file.name}>
+                {file.name} · {formatBytes(file.size)}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">PDF, JPG, PNG, WEBP · máx 10 MB</p>
+            )}
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+            {uploadErr && <p className="text-xs text-destructive mt-1">Error al subir. Reemplaza el archivo.</p>}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="shrink-0 flex items-center gap-1">
+          {file && isImage && previewUrl && (
+            <a
+              href={previewUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Ver previsualización"
+              title="Ver"
+            >
+              <Eye className="h-4 w-4" />
+            </a>
+          )}
+          {file && !uploading && !uploaded && (
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Reemplazar documento"
+              title="Reemplazar"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          )}
+          {file && !uploading && (
+            <button
+              type="button"
+              onClick={() => { setError(null); onChange(null); }}
+              className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Eliminar documento"
+              title="Eliminar"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+          {!file && (
+            <label
+              htmlFor={id}
+              className="cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs text-ink hover:border-ink flex items-center gap-1.5"
+            >
+              <Upload className="h-3 w-3" /> Subir
+            </label>
+          )}
+          {uploaded && (
+            <span className="flex items-center gap-1 rounded-full bg-teal/15 text-teal-deep px-2 py-1 text-xs">
+              <Check className="h-3 w-3" /> Subido
+            </span>
+          )}
+        </div>
       </div>
-      {file ? (
-        <button onClick={() => onChange(null)} className="text-muted-foreground hover:text-destructive shrink-0">
-          <X className="h-4 w-4" />
-        </button>
-      ) : (
-        <>
-          <input id={id} type="file" className="hidden" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
-          <label htmlFor={id} className="shrink-0 cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs text-ink hover:border-ink flex items-center gap-1.5">
-            <Upload className="h-3 w-3" /> Subir
-          </label>
-        </>
+
+      {/* Hidden inputs (one for initial pick, one ref'd for replace) */}
+      <input
+        id={id}
+        type="file"
+        accept={ACCEPTED_EXT}
+        className="hidden"
+        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
+      />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED_EXT}
+        className="hidden"
+        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
+      />
+
+      {/* Progress bar */}
+      {(uploading || uploaded) && (
+        <div className="mt-3">
+          <div className="h-1.5 bg-border rounded-full overflow-hidden">
+            <div
+              className={cn(
+                "h-full transition-all duration-300 ease-smooth",
+                uploaded ? "bg-teal" : "bg-teal/70"
+              )}
+              style={{ width: `${uploaded ? 100 : (progress as number)}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {uploaded ? "Subida completada" : `Subiendo… ${progress}%`}
+          </p>
+        </div>
       )}
     </div>
   );
