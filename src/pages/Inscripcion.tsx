@@ -355,10 +355,21 @@ const Inscripcion = () => {
                   <FieldS label="Número de empleados"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","empleados",e.target.value)} /></FieldS>
                   <FieldS label="Tipo de actividad"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","actividad",e.target.value)} /></FieldS>
                   <FieldS label="CNAE"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","cnae",e.target.value)} /></FieldS>
-                  <FieldS label="Asegurados"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","asegurados",e.target.value)} /></FieldS>
+                  <FieldS label="Número de asegurados"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","asegurados",e.target.value)} /></FieldS>
                   <FieldS label="Edad media"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","edad_media",e.target.value)} /></FieldS>
+                  <FieldS label="Rango de edades"><input className="input-base" placeholder="Ej. 25-55" onChange={(e) => updateSeguro("seguros_colectivos","rango_edades",e.target.value)} /></FieldS>
+                  <FieldS label="Titular / cónyuge / hijos">
+                    <select className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","perfil_familiar",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Solo titular</option>
+                      <option>Titular + cónyuge</option>
+                      <option>Titular + hijos</option>
+                      <option>Familia completa</option>
+                    </select>
+                  </FieldS>
                   <FieldS label="Cobertura geográfica"><input className="input-base" onChange={(e) => updateSeguro("seguros_colectivos","cobertura_geo",e.target.value)} /></FieldS>
                 </Grid2>
+                <FieldS label="Cobertura deseada"><textarea className="input-base min-h-20" placeholder="Describe el alcance de cobertura que buscas" onChange={(e) => updateSeguro("seguros_colectivos","cobertura_deseada",e.target.value)} /></FieldS>
               </SeguroBlock>
             )}
 
@@ -386,7 +397,17 @@ const Inscripcion = () => {
                     <select className="input-base" onChange={(e) => updateSeguro("salud","hosp",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
                   </FieldS>
                 </Grid2>
-                <FieldS label="Preexistencias (si aplica)"><textarea className="input-base min-h-20" onChange={(e) => updateSeguro("salud","preexistencias",e.target.value)} /></FieldS>
+                <Grid2>
+                  <FieldS label="Declaración básica de salud">
+                    <select className="input-base" onChange={(e) => updateSeguro("salud","declaracion",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Sin patologías relevantes</option>
+                      <option>Patologías leves controladas</option>
+                      <option>Patologías relevantes (detallar)</option>
+                    </select>
+                  </FieldS>
+                  <FieldS label="Preexistencias (si aplica)"><input className="input-base" onChange={(e) => updateSeguro("salud","preexistencias",e.target.value)} /></FieldS>
+                </Grid2>
               </SeguroBlock>
             )}
 
@@ -401,8 +422,16 @@ const Inscripcion = () => {
                   </FieldS>
                   <FieldS label="Capital asegurado"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("vida","capital",e.target.value)} /></FieldS>
                   <FieldS label="Beneficiarios"><input className="input-base" onChange={(e) => updateSeguro("vida","beneficiarios",e.target.value)} /></FieldS>
+                  <FieldS label="Actividades de riesgo"><input className="input-base" placeholder="Ej. trabajo en altura, motor" onChange={(e) => updateSeguro("vida","riesgo",e.target.value)} /></FieldS>
+                  <FieldS label="Declaración básica de salud">
+                    <select className="input-base" onChange={(e) => updateSeguro("vida","declaracion",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Sin patologías relevantes</option>
+                      <option>Patologías leves controladas</option>
+                      <option>Patologías relevantes (detallar)</option>
+                    </select>
+                  </FieldS>
                 </Grid2>
-                <FieldS label="Actividades de riesgo"><input className="input-base" onChange={(e) => updateSeguro("vida","riesgo",e.target.value)} /></FieldS>
               </SeguroBlock>
             )}
 
@@ -417,6 +446,15 @@ const Inscripcion = () => {
                   <FieldS label="Base asegurada deseada"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","base",e.target.value)} /></FieldS>
                   <FieldS label="Periodo de carencia"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","carencia",e.target.value)} /></FieldS>
                   <FieldS label="Duración de cobertura"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","duracion",e.target.value)} /></FieldS>
+                  <FieldS label="Profesión concreta"><input className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","profesion",e.target.value)} /></FieldS>
+                  <FieldS label="Nivel de exposición física">
+                    <select className="input-base" onChange={(e) => updateSeguro("proteccion_ingresos","exposicion",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Bajo (oficina)</option>
+                      <option>Medio (campo / desplazamientos)</option>
+                      <option>Alto (manual / altura / riesgo)</option>
+                    </select>
+                  </FieldS>
                 </Grid2>
               </SeguroBlock>
             )}
@@ -429,6 +467,7 @@ const Inscripcion = () => {
                   <FieldS label="Intervenciones/año"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","intervenciones",e.target.value)} /></FieldS>
                   <FieldS label="Reclamaciones últimos 3 años"><input className="input-base" onChange={(e) => updateSeguro("proteccion_juridica","reclamaciones",e.target.value)} /></FieldS>
                 </Grid2>
+                <FieldS label="Tipología de conflictos habituales"><textarea className="input-base min-h-20" placeholder="Ej. impagos, garantía, daños, laborales…" onChange={(e) => updateSeguro("proteccion_juridica","tipologia_conflictos",e.target.value)} /></FieldS>
                 <FieldS label="Ámbito deseado"><input className="input-base" placeholder="Civil, laboral, administrativo" onChange={(e) => updateSeguro("proteccion_juridica","ambito",e.target.value)} /></FieldS>
               </SeguroBlock>
             )}
@@ -436,12 +475,27 @@ const Inscripcion = () => {
             {coberturas.includes("ahorro") && (
               <SeguroBlock title="Planes de ahorro">
                 <Grid2>
-                  <FieldS label="Objetivo"><input className="input-base" placeholder="Jubilación, ahorro…" onChange={(e) => updateSeguro("ahorro","objetivo",e.target.value)} /></FieldS>
-                  <FieldS label="Horizonte temporal"><input className="input-base" onChange={(e) => updateSeguro("ahorro","horizonte",e.target.value)} /></FieldS>
+                  <FieldS label="Objetivo">
+                    <select className="input-base" onChange={(e) => updateSeguro("ahorro","objetivo",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Jubilación</option>
+                      <option>Ahorro</option>
+                      <option>Protección familiar</option>
+                    </select>
+                  </FieldS>
+                  <FieldS label="Horizonte temporal"><input className="input-base" placeholder="Ej. 10 años" onChange={(e) => updateSeguro("ahorro","horizonte",e.target.value)} /></FieldS>
                   <FieldS label="Aportación inicial"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("ahorro","inicial",e.target.value)} /></FieldS>
                   <FieldS label="Aportación mensual"><input className="input-base" placeholder="€" onChange={(e) => updateSeguro("ahorro","mensual",e.target.value)} /></FieldS>
                   <FieldS label="Perfil de riesgo">
                     <select className="input-base" onChange={(e) => updateSeguro("ahorro","perfil",e.target.value)}><option value="">—</option><option>Conservador</option><option>Moderado</option><option>Dinámico</option></select>
+                  </FieldS>
+                  <FieldS label="Preferencia de liquidez">
+                    <select className="input-base" onChange={(e) => updateSeguro("ahorro","liquidez",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Alta (acceso inmediato)</option>
+                      <option>Media (penalización corta)</option>
+                      <option>Baja (largo plazo)</option>
+                    </select>
                   </FieldS>
                 </Grid2>
               </SeguroBlock>
@@ -453,20 +507,73 @@ const Inscripcion = () => {
                   <FieldS label="Nº trabajadores"><input className="input-base" onChange={(e) => updateSeguro("prl","trabajadores",e.target.value)} /></FieldS>
                   <FieldS label="Actividad"><input className="input-base" onChange={(e) => updateSeguro("prl","actividad",e.target.value)} /></FieldS>
                   <FieldS label="Centros de trabajo"><input className="input-base" onChange={(e) => updateSeguro("prl","centros",e.target.value)} /></FieldS>
+                  <FieldS label="Tipo de intervenciones"><input className="input-base" placeholder="Reparación, instalación…" onChange={(e) => updateSeguro("prl","intervenciones",e.target.value)} /></FieldS>
                   <FieldS label="¿PRL existente?">
                     <select className="input-base" onChange={(e) => updateSeguro("prl","existente",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
                   </FieldS>
+                  <FieldS label="Formación vigente">
+                    <select className="input-base" onChange={(e) => updateSeguro("prl","formacion",e.target.value)}><option value="">—</option><option>Sí</option><option>Parcial</option><option>No</option></select>
+                  </FieldS>
+                  <FieldS label="Fecha de vencimiento formación"><input type="date" className="input-base" onChange={(e) => updateSeguro("prl","vencimiento",e.target.value)} /></FieldS>
                 </Grid2>
+                <FieldS label="Riesgos asociados">
+                  <ChipsMulti
+                    opts={["Eléctrico", "Trabajo en altura", "Manipulación de cargas", "Desplazamiento", "Químico", "Mecánico"]}
+                    value={(datosSeguros.prl?.riesgos || "").split("|").filter(Boolean)}
+                    onChange={(v) => {
+                      const cur = (datosSeguros.prl?.riesgos || "").split("|").filter(Boolean);
+                      const next = cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v];
+                      updateSeguro("prl", "riesgos", next.join("|"));
+                    }}
+                  />
+                </FieldS>
+              </SeguroBlock>
+            )}
+
+            {coberturas.includes("documentacion") && (
+              <SeguroBlock title="Documentación">
+                <Grid2>
+                  <FieldS label="Tipo de documento"><input className="input-base" placeholder="Ej. Certificado AEAT" onChange={(e) => updateSeguro("documentacion","tipo",e.target.value)} /></FieldS>
+                  <FieldS label="Fecha de vencimiento"><input type="date" className="input-base" onChange={(e) => updateSeguro("documentacion","vencimiento",e.target.value)} /></FieldS>
+                  <FieldS label="Responsable de actualización"><input className="input-base" onChange={(e) => updateSeguro("documentacion","responsable",e.target.value)} /></FieldS>
+                  <FieldS label="Alertas de renovación">
+                    <select className="input-base" onChange={(e) => updateSeguro("documentacion","alertas",e.target.value)}>
+                      <option value="">—</option>
+                      <option>30 días antes</option>
+                      <option>60 días antes</option>
+                      <option>90 días antes</option>
+                    </select>
+                  </FieldS>
+                </Grid2>
+                <FieldS label="Subida de archivo (opcional)">
+                  <input type="file" className="input-base" onChange={(e) => updateSeguro("documentacion","archivo", e.target.files?.[0]?.name || "")} />
+                  <span className="block text-xs text-muted-foreground mt-1.5">Si subes documentos en el paso 3, no es necesario repetirlos aquí.</span>
+                </FieldS>
               </SeguroBlock>
             )}
 
             {(coberturas.includes("producto_nuevo") || coberturas.includes("repuestos_coste") || coberturas.includes("activaciones")) && (
               <SeguroBlock title="Producto, repuestos y negocio">
                 <Grid2>
-                  <FieldS label="Tipología de producto"><input className="input-base" placeholder="Gama blanca, electrónica…" onChange={(e) => updateSeguro("negocio","tipologia",e.target.value)} /></FieldS>
+                  <FieldS label="Interés en acceso a producto">
+                    <select className="input-base" onChange={(e) => updateSeguro("negocio","interes_producto",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
+                  </FieldS>
+                  <FieldS label="Tipología de producto">
+                    <select className="input-base" onChange={(e) => updateSeguro("negocio","tipologia",e.target.value)}>
+                      <option value="">—</option>
+                      <option>Gama blanca</option>
+                      <option>Electrónica</option>
+                      <option>Movilidad</option>
+                      <option>PAE</option>
+                      <option>Confort</option>
+                    </select>
+                  </FieldS>
                   <FieldS label="Volumen mensual estimado"><input className="input-base" onChange={(e) => updateSeguro("negocio","volumen",e.target.value)} /></FieldS>
                   <FieldS label="Uso">
                     <select className="input-base" onChange={(e) => updateSeguro("negocio","uso",e.target.value)}><option value="">—</option><option>Propio</option><option>Reparación</option><option>Reventa</option></select>
+                  </FieldS>
+                  <FieldS label="Interés en activaciones comerciales">
+                    <select className="input-base" onChange={(e) => updateSeguro("negocio","activaciones",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
                   </FieldS>
                   <FieldS label="Interés en garantía extendida">
                     <select className="input-base" onChange={(e) => updateSeguro("negocio","ge",e.target.value)}><option value="">—</option><option>Sí</option><option>No</option></select>
