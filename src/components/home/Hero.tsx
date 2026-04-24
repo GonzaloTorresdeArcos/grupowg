@@ -1,0 +1,56 @@
+import { Link } from "react-router-dom";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import heroBg from "@/assets/hero-bg.jpg";
+
+export const Hero = () => (
+  <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-ink text-bone">
+    <img
+      src={heroBg}
+      alt=""
+      width={1920}
+      height={1080}
+      className="absolute inset-0 h-full w-full object-cover opacity-35"
+    />
+    <div className="absolute inset-0 bg-gradient-to-b from-ink/80 via-ink/60 to-ink" />
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--teal)/0.18),transparent_60%)]" />
+
+    {/* Top label */}
+    <div className="absolute top-28 left-0 right-0">
+      <div className="container-tight flex items-center justify-between">
+        <p className="eyebrow text-teal-soft animate-fade-in">Grupo Warranty Global · 1975 — 2025</p>
+        <p className="hidden md:block text-xs text-bone/40 uppercase tracking-[0.2em] animate-fade-in">
+          Postventa · Garantías · Red técnica
+        </p>
+      </div>
+    </div>
+
+    <div className="container-tight relative z-10 pb-20 pt-40 md:pb-28">
+      <div className="max-w-5xl">
+        <h1 className="heading-display text-bone text-[clamp(2.75rem,9vw,8.5rem)] animate-fade-up">
+          Donde otros terminan,
+          <br />
+          <span className="text-teal italic font-normal">nosotros empezamos</span>.
+        </h1>
+
+        <div className="mt-12 grid md:grid-cols-12 gap-8 items-end">
+          <p className="md:col-span-7 text-lg md:text-xl text-bone/70 leading-relaxed text-balance">
+            <span className="text-bone">50 años resolviendo lo que otros dejan atrás.</span>{" "}
+            Acompañamos a fabricantes, distribuidores, ecommerce, operadores de movilidad y
+            compañías aseguradoras en la gestión integral de garantías, reparaciones, repuestos
+            y servicio postventa.
+          </p>
+          <div className="md:col-span-5 flex flex-wrap gap-3 md:justify-end">
+            <Link to="/grupo" className="btn-on-dark">
+              Conócenos
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/soluciones" className="inline-flex items-center justify-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-medium text-ink transition-all duration-300 ease-smooth hover:bg-teal-soft hover:gap-3">
+              Nuestras soluciones
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
