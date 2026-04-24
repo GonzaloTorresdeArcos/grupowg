@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Upload, X, Loader2, AlertCircle, FileText, Image as ImageIcon, RefreshCw, Eye } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -32,6 +32,16 @@ const docTypes = [
   "Acuerdo de confidencialidad", "RGPD / LOPD", "Seguro RC", "PRL",
   "Formación técnica", "Licencias", "Certificaciones / habilitaciones",
 ];
+
+const ACCEPTED_MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+const ACCEPTED_EXT = ".pdf,.jpg,.jpeg,.png,.webp";
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+const formatBytes = (b: number) => {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 const step1Schema = z.object({
   razon_social: z.string().trim().min(1, "Requerido").max(200),
@@ -69,6 +79,8 @@ const Inscripcion = () => {
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
+  // Per-document upload progress: 0–100, or 'done', or 'error'
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number | "done" | "error">>({});
 
   // Step 4
   const [coberturas, setCoberturas] = useState<string[]>([]);
@@ -137,10 +149,21 @@ const Inscripcion = () => {
       const uploads = Object.entries(files).filter(([, f]) => f);
       for (const [docType, file] of uploads) {
         if (!file) continue;
+        setUploadProgress((p) => ({ ...p, [docType]: 10 }));
         const path = `${appId}/${Date.now()}-${file.name}`;
+        // Simulated progress (Supabase JS doesn't expose granular upload progress)
+        const tick = setInterval(() => {
+          setUploadProgress((p) => {
+            const cur = p[docType];
+            if (typeof cur === "number" && cur < 85) return { ...p, [docType]: cur + 15 };
+            return p;
+          });
+        }, 200);
         const { error: upErr } = await supabase.storage.from("wg-documents").upload(path, file);
+        clearInterval(tick);
         if (upErr) {
           console.error("Upload error", docType, upErr);
+          setUploadProgress((p) => ({ ...p, [docType]: "error" }));
           continue;
         }
         await supabase.from("wg_network_documents").insert({
@@ -150,6 +173,7 @@ const Inscripcion = () => {
           file_name: file.name,
           file_size: file.size,
         });
+        setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 
       setDone(true);
@@ -295,14 +319,31 @@ const Inscripcion = () => {
             <h2 className="font-display text-3xl text-ink">Compliance documental</h2>
             <div className="rounded-xl border border-border bg-secondary p-4 flex gap-3 items-start">
               <AlertCircle className="h-5 w-5 text-teal-deep shrink-0 mt-0.5" />
-              <p className="text-sm text-ink-soft">
-                Sin la documentación obligatoria no podrá completarse la activación operativa.
-                Puedes subir lo que tengas ahora; el resto se completará en el alta.
-              </p>
+              <div className="text-sm text-ink-soft space-y-1">
+                <p>
+                  Sin la documentación obligatoria no podrá completarse la activación operativa.
+                  Puedes subir lo que tengas ahora; el resto se completará en el alta.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Formatos admitidos: <span className="font-medium text-ink-soft">PDF, JPG, PNG, WEBP</span> · Tamaño máximo por archivo: <span className="font-medium text-ink-soft">10 MB</span>.
+                </p>
+              </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
               {docTypes.map((doc) => (
-                <FileSlot key={doc} label={doc} file={files[doc]} onChange={(f) => setFiles({ ...files, [doc]: f })} />
+                <FileSlot
+                  key={doc}
+                  label={doc}
+                  file={files[doc]}
+                  progress={uploadProgress[doc]}
+                  onChange={(f) => {
+                    setFiles({ ...files, [doc]: f });
+                    setUploadProgress((p) => {
+                      const { [doc]: _, ...rest } = p;
+                      return rest;
+                    });
+                  }}
+                />
               ))}
             </div>
           </div>
@@ -683,25 +724,173 @@ const ChipsMulti = ({ opts, value, onChange }: { opts: string[]; value: string[]
   </div>
 );
 
-const FileSlot = ({ label, file, onChange }: { label: string; file: File | null | undefined; onChange: (f: File | null) => void }) => {
+const FileSlot = ({
+  label,
+  file,
+  progress,
+  onChange,
+}: {
+  label: string;
+  file: File | null | undefined;
+  progress?: number | "done" | "error";
+  onChange: (f: File | null) => void;
+}) => {
   const id = `file-${label.replace(/\s+/g, "-")}`;
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    if (file.type.startsWith("image/")) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+  }, [file]);
+
+  const handleFiles = (f: File | null) => {
+    setError(null);
+    if (!f) {
+      onChange(null);
+      return;
+    }
+    const okType = ACCEPTED_MIME.includes(f.type) || /\.(pdf|jpe?g|png|webp)$/i.test(f.name);
+    if (!okType) {
+      setError("Formato no permitido. Usa PDF, JPG, PNG o WEBP.");
+      return;
+    }
+    if (f.size > MAX_FILE_BYTES) {
+      setError(`Archivo demasiado grande (${formatBytes(f.size)}). Máximo 10 MB.`);
+      return;
+    }
+    onChange(f);
+  };
+
+  const isImage = file?.type.startsWith("image/");
+  const uploading = typeof progress === "number";
+  const uploaded = progress === "done";
+  const uploadErr = progress === "error";
+
   return (
-    <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-3">
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-ink truncate">{label}</p>
-        {file && <p className="text-xs text-muted-foreground truncate">{file.name}</p>}
+    <div className={cn(
+      "rounded-xl border bg-card p-4 transition-colors",
+      uploadErr || error ? "border-destructive/60" : "border-border"
+    )}>
+      <div className="flex items-start justify-between gap-3">
+        {/* Preview / icon */}
+        <div className="flex items-start gap-3 min-w-0 flex-1">
+          <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
+            {isImage && previewUrl ? (
+              <img src={previewUrl} alt={file!.name} className="h-full w-full object-cover" />
+            ) : file ? (
+              <FileText className="h-5 w-5 text-ink-soft" />
+            ) : (
+              <Upload className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-ink truncate">{label}</p>
+            {file ? (
+              <p className="text-xs text-muted-foreground truncate" title={file.name}>
+                {file.name} · {formatBytes(file.size)}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">PDF, JPG, PNG, WEBP · máx 10 MB</p>
+            )}
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+            {uploadErr && <p className="text-xs text-destructive mt-1">Error al subir. Reemplaza el archivo.</p>}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="shrink-0 flex items-center gap-1">
+          {file && isImage && previewUrl && (
+            <a
+              href={previewUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Ver previsualización"
+              title="Ver"
+            >
+              <Eye className="h-4 w-4" />
+            </a>
+          )}
+          {file && !uploading && !uploaded && (
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="text-muted-foreground hover:text-ink p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Reemplazar documento"
+              title="Reemplazar"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          )}
+          {file && !uploading && (
+            <button
+              type="button"
+              onClick={() => { setError(null); onChange(null); }}
+              className="text-muted-foreground hover:text-destructive p-1.5 rounded-md hover:bg-secondary"
+              aria-label="Eliminar documento"
+              title="Eliminar"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+          {!file && (
+            <label
+              htmlFor={id}
+              className="cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs text-ink hover:border-ink flex items-center gap-1.5"
+            >
+              <Upload className="h-3 w-3" /> Subir
+            </label>
+          )}
+          {uploaded && (
+            <span className="flex items-center gap-1 rounded-full bg-teal/15 text-teal-deep px-2 py-1 text-xs">
+              <Check className="h-3 w-3" /> Subido
+            </span>
+          )}
+        </div>
       </div>
-      {file ? (
-        <button onClick={() => onChange(null)} className="text-muted-foreground hover:text-destructive shrink-0">
-          <X className="h-4 w-4" />
-        </button>
-      ) : (
-        <>
-          <input id={id} type="file" className="hidden" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
-          <label htmlFor={id} className="shrink-0 cursor-pointer rounded-full border border-border px-3 py-1.5 text-xs text-ink hover:border-ink flex items-center gap-1.5">
-            <Upload className="h-3 w-3" /> Subir
-          </label>
-        </>
+
+      {/* Hidden inputs (one for initial pick, one ref'd for replace) */}
+      <input
+        id={id}
+        type="file"
+        accept={ACCEPTED_EXT}
+        className="hidden"
+        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
+      />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED_EXT}
+        className="hidden"
+        onChange={(e) => handleFiles(e.target.files?.[0] ?? null)}
+      />
+
+      {/* Progress bar */}
+      {(uploading || uploaded) && (
+        <div className="mt-3">
+          <div className="h-1.5 bg-border rounded-full overflow-hidden">
+            <div
+              className={cn(
+                "h-full transition-all duration-300 ease-smooth",
+                uploaded ? "bg-teal" : "bg-teal/70"
+              )}
+              style={{ width: `${uploaded ? 100 : (progress as number)}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {uploaded ? "Subida completada" : `Subiendo… ${progress}%`}
+          </p>
+        </div>
       )}
     </div>
   );
