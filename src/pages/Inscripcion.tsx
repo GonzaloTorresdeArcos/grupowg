@@ -33,6 +33,16 @@ const docTypes = [
   "Formación técnica", "Licencias", "Certificaciones / habilitaciones",
 ];
 
+const ACCEPTED_MIME = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+const ACCEPTED_EXT = ".pdf,.jpg,.jpeg,.png,.webp";
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+const formatBytes = (b: number) => {
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+  return `${(b / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 const step1Schema = z.object({
   razon_social: z.string().trim().min(1, "Requerido").max(200),
   nombre_comercial: z.string().trim().max(200).optional(),
