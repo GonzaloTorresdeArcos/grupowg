@@ -6,12 +6,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, AlertCircle, Loader2, Building2 } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, Building2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const PortalProfile = () => {
   const { profile, user, refreshProfile } = useAuth();
+  const { isAdmin } = useUserRole();
   const [saving, setSaving] = useState(false);
+  const [bootstrapping, setBootstrapping] = useState(false);
+
+  const handleBootstrapAdmin = async () => {
+    setBootstrapping(true);
+    const { data, error } = await supabase.functions.invoke("bootstrap-admin");
+    setBootstrapping(false);
+    if (error || data?.error) {
+      toast.error(data?.error || error?.message || "Error");
+      return;
+    }
+    toast.success("Ahora eres administrador. Recarga la página.");
+    setTimeout(() => window.location.reload(), 1200);
+  };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,6 +129,32 @@ const PortalProfile = () => {
             </Button>
           </div>
         </form>
+      </Card>
+
+      {/* Acceso administrador */}
+      <Card className="p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0 bg-ink/5 text-ink">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-ink mb-1">Acceso administrador</p>
+            {isAdmin ? (
+              <p className="text-sm text-muted-foreground">
+                Tienes rol de administrador. Verás la sección <strong>Operaciones</strong> en el menú.
+              </p>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Si eres el primer usuario del sistema, puedes promocionarte a administrador para gestionar incidencias y asignaciones.
+                </p>
+                <Button size="sm" variant="outline" onClick={handleBootstrapAdmin} disabled={bootstrapping}>
+                  {bootstrapping ? "Activando…" : "Convertirme en administrador"}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       </Card>
     </div>
   );

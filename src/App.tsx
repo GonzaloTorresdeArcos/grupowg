@@ -25,6 +25,8 @@ import PortalCalendar from "./pages/portal/Calendar.tsx";
 import PortalDocuments from "./pages/portal/Documents.tsx";
 import PortalInvoices from "./pages/portal/Invoices.tsx";
 import PortalProfile from "./pages/portal/Profile.tsx";
+import PortalIncidencias from "./pages/portal/Incidencias.tsx";
+import PortalIncidenciaDetail from "./pages/portal/IncidenciaDetail.tsx";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,8 @@ const App = () => (
               <Route path="/portal/documentos" element={<PortalDocuments />} />
               <Route path="/portal/facturacion" element={<PortalInvoices />} />
               <Route path="/portal/perfil" element={<PortalProfile />} />
+              <Route path="/portal/incidencias" element={<PortalIncidencias />} />
+              <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
             </Route>
 
             <Route element={<Layout />}>
