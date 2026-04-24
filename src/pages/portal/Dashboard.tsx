@@ -1,16 +1,30 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   mockKpis, mockIncidences, mockMonthlyTrend, mockAppointments, formatEUR, formatDate,
 } from "@/lib/portal-mocks";
 import {
   Wrench, Star, Timer, CheckCircle2, Euro, TrendingUp, ArrowRight,
-  Calendar, MapPin, AlertTriangle,
+  Calendar, MapPin, AlertTriangle, Inbox,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { STATUS_LABELS, familiaLabel } from "@/lib/catalogos";
+
+type AssignedIncidence = {
+  id: string;
+  ref: string;
+  customer_name: string;
+  city: string | null;
+  product_family: string;
+  status: string;
+  urgency: string;
+  created_at: string;
+};
 
 const statusColor: Record<string, string> = {
   abierta: "bg-blue-500/10 text-blue-700 border-blue-500/20",
