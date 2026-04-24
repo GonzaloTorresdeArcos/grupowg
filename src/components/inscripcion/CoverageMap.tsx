@@ -19,8 +19,7 @@ const FitBounds = ({ codes }: { codes: string[] }) => {
     }
     const points = PROVINCIAS.filter((p) => codes.includes(p.code)).map((p) => [p.lat, p.lng]) as [number, number][];
     if (points.length) {
-      // @ts-expect-error - leaflet bounds typing
-      map.fitBounds(points, { padding: [40, 40], maxZoom: 7 });
+      map.fitBounds(points as [number, number][], { padding: [40, 40], maxZoom: 7 });
     }
   }, [codes, map]);
   return null;
