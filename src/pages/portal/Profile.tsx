@@ -6,12 +6,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, AlertCircle, Loader2, Building2 } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, Building2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const PortalProfile = () => {
   const { profile, user, refreshProfile } = useAuth();
+  const { isAdmin } = useUserRole();
   const [saving, setSaving] = useState(false);
+  const [bootstrapping, setBootstrapping] = useState(false);
+
+  const handleBootstrapAdmin = async () => {
+    setBootstrapping(true);
+    const { data, error } = await supabase.functions.invoke("bootstrap-admin");
+    setBootstrapping(false);
+    if (error || data?.error) {
+      toast.error(data?.error || error?.message || "Error");
+      return;
+    }
+    toast.success("Ahora eres administrador. Recarga la página.");
+    setTimeout(() => window.location.reload(), 1200);
+  };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
