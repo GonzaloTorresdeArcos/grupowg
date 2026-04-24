@@ -2,6 +2,7 @@ import { Reveal } from "@/components/site/Reveal";
 import {
   Wrench, ShieldCheck, FileBadge, Network,
   PackageSearch, BarChart3, ArrowUpRight,
+  Gauge, Target, LineChart, Layers,
 } from "lucide-react";
 
 const items = [
@@ -10,7 +11,34 @@ const items = [
   { icon: FileBadge, t: "Garantía extendida", d: "Soluciones operativas para aseguradoras y programas de protección." },
   { icon: Network, t: "Red técnica nacional", d: "SATs, delegaciones, instaladores y colaboradores técnicos." },
   { icon: PackageSearch, t: "Repuestos y componentes", d: "Centralización, suministro y trazabilidad de piezas." },
-  { icon: BarChart3, t: "Reporting y control operativo", d: "KPIs, SLAs, trazabilidad, ageing e información para cliente." },
+  {
+    icon: BarChart3,
+    t: "Reporting y control operativo",
+    d: "Modelo de medición end-to-end con ownership por área: KPIs financieros y operativos, SLAs, trazabilidad, ageing y cuadros de mando para cliente.",
+  },
+];
+
+const consultingPillars = [
+  {
+    icon: Gauge,
+    t: "Control E2E coste · calidad · TAT",
+    d: "Cada etapa del flujo —Front, asignación, SAT, repuestos, logística, cierre— con KPI propio, owner definido y SLA medido.",
+  },
+  {
+    icon: Target,
+    t: "Ownership por KPI y por área",
+    d: "Cost per Call, Cost per Repair, First Time Fix, Technical Returns, TAT, disponibilidad de stock. Cada indicador con responsable.",
+  },
+  {
+    icon: LineChart,
+    t: "Conexión operación ↔ negocio",
+    d: "Cost per Product Sold y % Service Cost vs Sales: traducimos la operación postventa a impacto económico para el cliente.",
+  },
+  {
+    icon: Layers,
+    t: "Consultoría postventa aplicada",
+    d: "Diagnóstico, modelo de gobierno, cuadros de mando y planes de mejora continua sobre datos reales del servicio.",
+  },
 ];
 
 export const Solutions = () => (
