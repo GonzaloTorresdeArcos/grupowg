@@ -32,9 +32,12 @@ export const Hero = () => (
           <span className="text-teal italic font-normal">nosotros empezamos</span>.
         </h1>
 
-        <div className="mt-12 grid md:grid-cols-12 gap-8 items-end">
-          <p className="md:col-span-7 text-lg md:text-xl text-bone/70 leading-relaxed text-balance">
-            <span className="text-bone">50 años resolviendo lo que otros dejan atrás.</span>{" "}
+        <p className="mt-8 font-display text-2xl md:text-3xl text-bone/90 max-w-3xl text-balance">
+          50 años resolviendo lo que otros dejan atrás.
+        </p>
+
+        <div className="mt-10 grid md:grid-cols-12 gap-8 items-end">
+          <p className="md:col-span-7 text-base md:text-lg text-bone/65 leading-relaxed text-balance">
             Acompañamos a fabricantes, distribuidores, ecommerce, operadores de movilidad y
             compañías aseguradoras en la gestión integral de garantías, reparaciones, repuestos
             y servicio postventa.

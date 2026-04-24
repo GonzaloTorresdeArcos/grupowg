@@ -13,6 +13,8 @@ import WGNetwork from "./pages/WGNetwork.tsx";
 import Inscripcion from "./pages/Inscripcion.tsx";
 import Aniversario from "./pages/Aniversario.tsx";
 import Contacto from "./pages/Contacto.tsx";
+import Privacidad from "./pages/Privacidad.tsx";
+import AvisoLegal from "./pages/AvisoLegal.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/wg-network/inscripcion" element={<Inscripcion />} />
             <Route path="/50-aniversario" element={<Aniversario />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/legal/privacidad" element={<Privacidad />} />
+            <Route path="/legal/aviso-legal" element={<AvisoLegal />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
