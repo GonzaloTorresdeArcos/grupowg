@@ -73,6 +73,46 @@ const PortalDashboard = () => {
         </p>
       </div>
 
+      {/* Incidencias asignadas reales */}
+      {assigned.length > 0 && (
+        <Card className="p-6 md:p-8 border-teal/30 bg-teal/5">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-teal/15 text-teal flex items-center justify-center">
+                <Inbox className="h-5 w-5" strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="eyebrow mb-0.5">Asignadas a ti</p>
+                <h2 className="font-display text-xl text-ink">Incidencias en curso</h2>
+              </div>
+            </div>
+            <Badge variant="outline">{assigned.length}</Badge>
+          </div>
+          <ul className="space-y-2">
+            {assigned.map((i) => (
+              <li key={i.id}>
+                <Link
+                  to={`/portal/incidencias/${i.id}`}
+                  className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-mono text-muted-foreground">{i.ref}</p>
+                    <p className="text-sm text-ink truncate">
+                      {i.customer_name} · {familiaLabel(i.product_family)}
+                      {i.city ? ` · ${i.city}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Badge variant="outline">{STATUS_LABELS[i.status] ?? i.status}</Badge>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
       {/* KPI Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard icon={Wrench} label="Activas" value={mockKpis.active} suffix="casos" tone="amber" />
