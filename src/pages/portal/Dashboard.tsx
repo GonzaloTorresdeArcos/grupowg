@@ -41,10 +41,24 @@ const statusLabel: Record<string, string> = {
 };
 
 const PortalDashboard = () => {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const todayAppts = mockAppointments
     .filter((a) => new Date(a.scheduledAt).toDateString() === new Date().toDateString())
     .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
+
+  const [assigned, setAssigned] = useState<AssignedIncidence[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("wg_incidences")
+      .select("id, ref, customer_name, city, product_family, status, urgency, created_at")
+      .eq("assigned_user_id", user.id)
+      .neq("status", "closed")
+      .order("created_at", { ascending: false })
+      .limit(5)
+      .then(({ data }) => setAssigned((data ?? []) as AssignedIncidence[]));
+  }, [user]);
 
   return (
     <div className="space-y-10">
