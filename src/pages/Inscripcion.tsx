@@ -79,6 +79,8 @@ const Inscripcion = () => {
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
+  // Per-document upload progress: 0–100, or 'done', or 'error'
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number | "done" | "error">>({});
 
   // Step 4
   const [coberturas, setCoberturas] = useState<string[]>([]);
