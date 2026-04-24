@@ -149,10 +149,21 @@ const Inscripcion = () => {
       const uploads = Object.entries(files).filter(([, f]) => f);
       for (const [docType, file] of uploads) {
         if (!file) continue;
+        setUploadProgress((p) => ({ ...p, [docType]: 10 }));
         const path = `${appId}/${Date.now()}-${file.name}`;
+        // Simulated progress (Supabase JS doesn't expose granular upload progress)
+        const tick = setInterval(() => {
+          setUploadProgress((p) => {
+            const cur = p[docType];
+            if (typeof cur === "number" && cur < 85) return { ...p, [docType]: cur + 15 };
+            return p;
+          });
+        }, 200);
         const { error: upErr } = await supabase.storage.from("wg-documents").upload(path, file);
+        clearInterval(tick);
         if (upErr) {
           console.error("Upload error", docType, upErr);
+          setUploadProgress((p) => ({ ...p, [docType]: "error" }));
           continue;
         }
         await supabase.from("wg_network_documents").insert({
@@ -162,6 +173,7 @@ const Inscripcion = () => {
           file_name: file.name,
           file_size: file.size,
         });
+        setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 
       setDone(true);
