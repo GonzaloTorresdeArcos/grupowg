@@ -171,10 +171,9 @@ const Inscripcion = () => {
           </div>
           <p className="eyebrow mb-4">Solicitud recibida</p>
           <h1 className="heading-display text-ink text-5xl md:text-7xl text-balance">
-            Gracias por sumarte.
+            Gracias por completar tu inscripción a WG Professional Network.
           </h1>
           <div className="mt-10 space-y-4 text-ink-soft text-lg leading-relaxed max-w-2xl">
-            <p>Hemos recibido tu inscripción a WG Professional Network.</p>
             <p>Nuestro equipo revisará la información y contactará contigo para confirmar:</p>
             <ul className="space-y-2 pl-6 list-disc text-base text-muted-foreground">
               <li>Documentación pendiente</li>
