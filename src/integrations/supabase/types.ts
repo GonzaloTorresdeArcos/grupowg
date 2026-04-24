@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          application_id: string | null
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id?: string | null
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string | null
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "wg_network_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -32,6 +79,171 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      wg_appointments: {
+        Row: {
+          address: string | null
+          brand: string | null
+          case_ref: string | null
+          city: string | null
+          created_at: string
+          customer_name: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          postal_code: string | null
+          product_family: string | null
+          scheduled_at: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          brand?: string | null
+          case_ref?: string | null
+          city?: string | null
+          created_at?: string
+          customer_name?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          postal_code?: string | null
+          product_family?: string | null
+          scheduled_at: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          brand?: string | null
+          case_ref?: string | null
+          city?: string | null
+          created_at?: string
+          customer_name?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          postal_code?: string | null
+          product_family?: string | null
+          scheduled_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wg_collaborator_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          document_type: string
+          expires_at: string | null
+          file_name: string | null
+          file_path: string | null
+          file_size: number | null
+          id: string
+          issued_at: string | null
+          notes: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          document_type: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          document_type?: string
+          expires_at?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          issued_at?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wg_invoices: {
+        Row: {
+          amount_net: number
+          amount_total: number
+          created_at: string
+          currency: string
+          due_at: string | null
+          id: string
+          invoice_number: string
+          issued_at: string
+          notes: string | null
+          paid_at: string | null
+          pdf_path: string | null
+          period: string | null
+          service_count: number | null
+          status: string
+          updated_at: string
+          user_id: string
+          vat: number
+        }
+        Insert: {
+          amount_net?: number
+          amount_total?: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          id?: string
+          invoice_number: string
+          issued_at: string
+          notes?: string | null
+          paid_at?: string | null
+          pdf_path?: string | null
+          period?: string | null
+          service_count?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          vat?: number
+        }
+        Update: {
+          amount_net?: number
+          amount_total?: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          id?: string
+          invoice_number?: string
+          issued_at?: string
+          notes?: string | null
+          paid_at?: string | null
+          pdf_path?: string | null
+          period?: string | null
+          service_count?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vat?: number
         }
         Relationships: []
       }
