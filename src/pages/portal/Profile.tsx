@@ -130,6 +130,32 @@ const PortalProfile = () => {
           </div>
         </form>
       </Card>
+
+      {/* Acceso administrador */}
+      <Card className="p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-10 w-10 rounded-lg flex items-center justify-center shrink-0 bg-ink/5 text-ink">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-ink mb-1">Acceso administrador</p>
+            {isAdmin ? (
+              <p className="text-sm text-muted-foreground">
+                Tienes rol de administrador. Verás la sección <strong>Operaciones</strong> en el menú.
+              </p>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Si eres el primer usuario del sistema, puedes promocionarte a administrador para gestionar incidencias y asignaciones.
+                </p>
+                <Button size="sm" variant="outline" onClick={handleBootstrapAdmin} disabled={bootstrapping}>
+                  {bootstrapping ? "Activando…" : "Convertirme en administrador"}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
