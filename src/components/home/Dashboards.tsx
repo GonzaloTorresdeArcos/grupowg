@@ -87,8 +87,23 @@ const traceability = [
   { ts: "Pendiente", event: "Validación y cierre", actor: "Quality", state: "todo" },
 ];
 
-export const Dashboards = () => (
-  <section className="py-24 md:py-32 bg-ink text-bone">
+export const Dashboards = () => {
+  const [open, setOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    await new Promise((r) => setTimeout(r, 900));
+    setSubmitting(false);
+    setOpen(false);
+    toast.success("Solicitud enviada", {
+      description: "Te contactaremos en menos de 24h para agendar la demo.",
+    });
+  };
+
+  return (
+  <section id="cuadros-de-mando" className="py-24 md:py-32 bg-ink text-bone">
     <div className="container-tight">
       <Reveal>
         <div className="max-w-3xl mb-16 md:mb-20">
