@@ -308,6 +308,24 @@ const Inscripcion = () => {
         console.error("Agreement PDF error", e);
       }
 
+      // Email de confirmación de inscripción (silencioso si no hay infra de email)
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            templateName: "inscription-received",
+            recipientEmail: s1.email,
+            idempotencyKey: `inscription-received-${appId}`,
+            templateData: {
+              name: signerName,
+              companyName: s1.razon_social,
+              tier: scoring.tier,
+            },
+          },
+        })
+        .then(({ error: emailErr }) => {
+          if (emailErr) console.warn("[email] no enviado:", emailErr.message);
+        });
+
       // Guardar scoring
       try {
         await supabase.from("wg_application_scoring").insert({
