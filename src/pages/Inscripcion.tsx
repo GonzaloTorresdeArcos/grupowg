@@ -319,14 +319,31 @@ const Inscripcion = () => {
             <h2 className="font-display text-3xl text-ink">Compliance documental</h2>
             <div className="rounded-xl border border-border bg-secondary p-4 flex gap-3 items-start">
               <AlertCircle className="h-5 w-5 text-teal-deep shrink-0 mt-0.5" />
-              <p className="text-sm text-ink-soft">
-                Sin la documentación obligatoria no podrá completarse la activación operativa.
-                Puedes subir lo que tengas ahora; el resto se completará en el alta.
-              </p>
+              <div className="text-sm text-ink-soft space-y-1">
+                <p>
+                  Sin la documentación obligatoria no podrá completarse la activación operativa.
+                  Puedes subir lo que tengas ahora; el resto se completará en el alta.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Formatos admitidos: <span className="font-medium text-ink-soft">PDF, JPG, PNG, WEBP</span> · Tamaño máximo por archivo: <span className="font-medium text-ink-soft">10 MB</span>.
+                </p>
+              </div>
             </div>
             <div className="grid md:grid-cols-2 gap-3">
               {docTypes.map((doc) => (
-                <FileSlot key={doc} label={doc} file={files[doc]} onChange={(f) => setFiles({ ...files, [doc]: f })} />
+                <FileSlot
+                  key={doc}
+                  label={doc}
+                  file={files[doc]}
+                  progress={uploadProgress[doc]}
+                  onChange={(f) => {
+                    setFiles({ ...files, [doc]: f });
+                    setUploadProgress((p) => {
+                      const { [doc]: _, ...rest } = p;
+                      return rest;
+                    });
+                  }}
+                />
               ))}
             </div>
           </div>
