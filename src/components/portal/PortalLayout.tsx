@@ -3,13 +3,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight,
+  LogOut, Menu, X, ChevronRight, Inbox,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 
-const navItems = [
+const collaboratorNav = [
   { to: "/portal", label: "Resumen", icon: LayoutDashboard, end: true },
   { to: "/portal/calendario", label: "Calendario", icon: Calendar },
   { to: "/portal/documentos", label: "Documentos", icon: FileText },
@@ -17,8 +18,13 @@ const navItems = [
   { to: "/portal/perfil", label: "Perfil", icon: Settings },
 ];
 
+const adminNav = [
+  { to: "/portal/incidencias", label: "Incidencias", icon: Inbox },
+];
+
 export const PortalLayout = () => {
   const { profile, user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
