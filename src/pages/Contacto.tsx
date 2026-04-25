@@ -4,6 +4,18 @@ import { ArrowRight, Check, Loader2, Mail, Phone, MapPin, Clock } from "lucide-r
 import { Reveal } from "@/components/site/Reveal";
 import { toast } from "sonner";
 
+const MOTIVOS = [
+  { value: "garantias", label: "Garantías" },
+  { value: "reparaciones", label: "Reparaciones" },
+  { value: "repuestos", label: "Repuestos" },
+  { value: "movilidad", label: "Movilidad" },
+  { value: "seguros", label: "Seguros" },
+  { value: "wg-network", label: "WG Network (colaboradores)" },
+  { value: "otro", label: "Otro" },
+] as const;
+
+const motivoValues = MOTIVOS.map((m) => m.value) as [string, ...string[]];
+
 const schema = z.object({
   nombre: z.string().trim().min(1, "Requerido").max(120, "Máximo 120 caracteres"),
   empresa: z.string().trim().max(200, "Máximo 200 caracteres").optional(),
@@ -15,6 +27,7 @@ const schema = z.object({
     .regex(/^[+\d\s().-]*$/, "Sólo dígitos y símbolos válidos")
     .optional()
     .or(z.literal("")),
+  motivo: z.enum(motivoValues, { message: "Selecciona un motivo" }),
   mensaje: z
     .string()
     .trim()
@@ -28,6 +41,7 @@ const Contacto = () => {
     empresa: "",
     email: "",
     telefono: "",
+    motivo: "",
     mensaje: "",
   });
   const [errs, setErrs] = useState<Record<string, string>>({});
