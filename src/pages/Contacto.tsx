@@ -885,7 +885,11 @@ const Contacto = () => {
                     </span>
                   </Field>
 
-                  <div className="pt-2">
+                  <div
+                    className="pt-2"
+                    data-field="consentimiento"
+                    data-invalid={visibleErrs.consentimiento ? "true" : undefined}
+                  >
                     <label className="flex items-start gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
@@ -897,7 +901,10 @@ const Contacto = () => {
                           markTouched("consentimiento");
                         }}
                         onBlur={() => markTouched("consentimiento")}
-                        className="mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0"
+                        className={
+                          "mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0 " +
+                          (visibleErrs.consentimiento ? "ring-2 ring-destructive ring-offset-2" : "")
+                        }
                         aria-invalid={!!visibleErrs.consentimiento}
                       />
                       <span className="text-xs text-muted-foreground leading-relaxed">
@@ -910,7 +917,7 @@ const Contacto = () => {
                       </span>
                     </label>
                     {visibleErrs.consentimiento && (
-                      <span className="block text-xs text-destructive mt-1.5 ml-7">
+                      <span role="alert" aria-live="polite" className="block text-xs text-destructive mt-1.5 ml-7">
                         {visibleErrs.consentimiento}
                       </span>
                     )}
