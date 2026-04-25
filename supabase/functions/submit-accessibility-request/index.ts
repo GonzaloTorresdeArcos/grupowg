@@ -1,6 +1,6 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
-import { z } from "npm:zod@3.23.8";
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const BodySchema = z.object({
   request_type: z.enum(["informacion_accesible", "queja", "reclamacion", "sugerencia"]),
