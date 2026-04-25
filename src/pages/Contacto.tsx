@@ -1062,7 +1062,16 @@ const Field = ({
   <label className="block">
     <span className="block text-sm font-semibold text-teal mb-2">{label}</span>
     {children}
-    {error && <span className="block text-xs text-destructive mt-1.5">{error}</span>}
+    <span
+      role={error ? "alert" : undefined}
+      aria-live="polite"
+      className={
+        "block text-xs mt-1.5 transition-opacity " +
+        (error ? "text-destructive opacity-100" : "opacity-0 h-0 overflow-hidden")
+      }
+    >
+      {error || ""}
+    </span>
   </label>
 );
 
