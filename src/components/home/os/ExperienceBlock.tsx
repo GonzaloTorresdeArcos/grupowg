@@ -4,7 +4,7 @@ export const ExperienceBlock = () => (
   <section className="py-28 md:py-36 bg-ink-elevated border-y border-foreground/5">
     <div className="container-tight grid lg:grid-cols-12 gap-12 items-center">
       <Reveal className="lg:col-span-7">
-        <p className="eyebrow-mono mb-4">12 · Experiencia cliente</p>
+        
         <h2 className="heading-display text-foreground text-4xl md:text-6xl text-balance leading-[1.05]">
           La experiencia no es un canal.
           <br />
