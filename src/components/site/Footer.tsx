@@ -115,6 +115,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
                 </ul>
               </details>
             ))}
+            </div>
           </div>
 
           {/* Desktop: columnas */}
