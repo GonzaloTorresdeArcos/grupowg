@@ -189,7 +189,7 @@ export const IndustriesBlock = () => {
         </div>
 
         <Reveal delay={200}>
-          <p className="mt-16 font-display text-2xl md:text-3xl text-foreground/85 max-w-3xl text-balance leading-snug">
+          <p className="mt-16 font-display text-2xl md:text-3xl text-foreground/85 max-w-3xl mx-auto text-center text-balance leading-snug">
             Un mismo sistema. Diferentes prioridades.{" "}
             <span className="text-teal">Un único resultado: control y rendimiento.</span>
           </p>
