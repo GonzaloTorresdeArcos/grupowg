@@ -153,8 +153,8 @@ const WGNetwork = () => {
 
           <div className="space-y-px bg-bone/10 border border-bone/10 rounded-2xl overflow-hidden">
             {[
-              { n: "1", t: "Repuestos a coste", d: "Para que podáis competir, crecer y respirar en el día a día." },
-              { n: "2", t: "Garantías extendidas", d: "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
+              { n: "1", t: "Repuestos a coste mayorista", d: "Para que podáis competir, crecer y respirar en el día a día." },
+              { n: "2", t: "Garantías extendidas y equipos al mejor precio", d: "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
               { n: "3", t: "Seguros colectivos", d: "Para que estéis protegidos como merecéis." },
             ].map((c, i) => (
               <Reveal key={c.n} delay={i * 100}>
