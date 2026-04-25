@@ -20,7 +20,7 @@ const Soluciones = () => {
   return (
     <>
       <PageHero
-        eyebrow="04 · Soluciones"
+        
         title={
           <>
             Tres formas de{" "}
