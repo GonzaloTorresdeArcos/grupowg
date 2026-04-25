@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Cookie, Settings2 } from "lucide-react";
+import { Cookie, Settings2, Minus } from "lucide-react";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
 import {
   Dialog,
