@@ -168,6 +168,29 @@ const Contacto = () => {
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
 
+  // Cambio de motivo: limpia touched/errs de campos condicionales que ya no aplican
+  const selectMotivo = (value: MotivoValue) => {
+    const activeFields = new Set<string>(
+      (fieldsByMotivo[value] || []) as string[],
+    );
+    setForm((f) => ({ ...f, motivo: value }));
+    markTouched("motivo");
+    setTouched((t) => {
+      const next = { ...t };
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) delete next[field as string];
+      });
+      return next;
+    });
+    setErrs((e) => {
+      const next = { ...e };
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) delete next[field as string];
+      });
+      return next;
+    });
+  };
+
   useEffect(() => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
     const DESC =
