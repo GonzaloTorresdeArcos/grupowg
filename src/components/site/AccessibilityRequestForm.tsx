@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,54 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement | string,
+        options: {
+          sitekey: string;
+          size?: "normal" | "compact" | "invisible";
+          callback?: (token: string) => void;
+          "error-callback"?: () => void;
+          "expired-callback"?: () => void;
+          "timeout-callback"?: () => void;
+          appearance?: "always" | "execute" | "interaction-only";
+        },
+      ) => string;
+      execute: (widgetId: string) => void;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+const TURNSTILE_SCRIPT_ID = "cf-turnstile-script";
+
+function loadTurnstileScript(): Promise<void> {
+  return new Promise((resolve) => {
+    if (window.turnstile) return resolve();
+    if (document.getElementById(TURNSTILE_SCRIPT_ID)) {
+      const check = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      return;
+    }
+    const cbName = `cfTurnstileLoad_${Math.random().toString(36).slice(2)}`;
+    (window as any)[cbName] = () => resolve();
+    const s = document.createElement("script");
+    s.id = TURNSTILE_SCRIPT_ID;
+    s.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?onload=${cbName}&render=explicit`;
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+  });
+}
 
 const schema = z.object({
   request_type: z.enum(["informacion_accesible", "queja", "reclamacion", "sugerencia"], {
@@ -68,6 +115,53 @@ export const AccessibilityRequestForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [siteKey, setSiteKey] = useState<string | null>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const tokenResolverRef = useRef<((token: string | null) => void) | null>(null);
+
+  // Cargar site key + script Turnstile y renderizar widget invisible
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("submit-accessibility-request", {
+          method: "GET",
+        });
+        if (error) throw error;
+        const key = (data as any)?.site_key as string | undefined;
+        if (!key) throw new Error("missing_site_key");
+        if (cancelled) return;
+        setSiteKey(key);
+        await loadTurnstileScript();
+        if (cancelled || !widgetRef.current || !window.turnstile) return;
+        widgetIdRef.current = window.turnstile.render(widgetRef.current, {
+          sitekey: key,
+          size: "invisible",
+          appearance: "interaction-only",
+          callback: (token: string) => {
+            tokenResolverRef.current?.(token);
+            tokenResolverRef.current = null;
+          },
+          "error-callback": () => {
+            tokenResolverRef.current?.(null);
+            tokenResolverRef.current = null;
+          },
+          "expired-callback": () => {
+            if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
+          },
+        });
+      } catch (err) {
+        console.error("[accessibility-form] turnstile init failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      if (widgetIdRef.current && window.turnstile) {
+        try { window.turnstile.remove(widgetIdRef.current); } catch { /* noop */ }
+      }
+    };
+  }, []);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((p) => ({ ...p, [key]: value }));
@@ -78,6 +172,26 @@ export const AccessibilityRequestForm = () => {
         return n;
       });
     }
+  };
+
+  const getCaptchaToken = (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (!widgetIdRef.current || !window.turnstile) return resolve(null);
+      tokenResolverRef.current = resolve;
+      try {
+        window.turnstile.reset(widgetIdRef.current);
+        window.turnstile.execute(widgetIdRef.current);
+      } catch {
+        resolve(null);
+      }
+      // Timeout de seguridad
+      setTimeout(() => {
+        if (tokenResolverRef.current === resolve) {
+          tokenResolverRef.current = null;
+          resolve(null);
+        }
+      }, 30000);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,24 +207,49 @@ export const AccessibilityRequestForm = () => {
       return;
     }
 
+    if (!siteKey) {
+      toast.error("Verificación de seguridad no disponible. Recarga la página.");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("wg_accessibility_requests").insert({
-        request_type: parsed.data.request_type,
-        full_name: parsed.data.full_name,
-        email: parsed.data.email,
-        phone: parsed.data.phone || null,
-        organization: parsed.data.organization || null,
-        page_url: parsed.data.page_url || `${window.location.origin}${location.pathname}`,
-        preferred_format: parsed.data.preferred_format,
-        postal_address: parsed.data.postal_address || null,
-        description: parsed.data.description,
-        assistive_tech: parsed.data.assistive_tech || null,
-        consent_given: true,
-        consent_at: new Date().toISOString(),
-        user_agent: navigator.userAgent.slice(0, 500),
+      const captchaToken = await getCaptchaToken();
+      if (!captchaToken) {
+        toast.error("No hemos podido verificar tu navegador. Inténtalo de nuevo.");
+        setSubmitting(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("submit-accessibility-request", {
+        body: {
+          request_type: parsed.data.request_type,
+          full_name: parsed.data.full_name,
+          email: parsed.data.email,
+          phone: parsed.data.phone || null,
+          organization: parsed.data.organization || null,
+          page_url: parsed.data.page_url || `${window.location.origin}${location.pathname}`,
+          preferred_format: parsed.data.preferred_format,
+          postal_address: parsed.data.postal_address || null,
+          description: parsed.data.description,
+          assistive_tech: parsed.data.assistive_tech || null,
+          consent_given: true,
+          turnstile_token: captchaToken,
+        },
       });
-      if (error) throw error;
+
+      if (error || (data as any)?.error) {
+        const code = (data as any)?.error ?? "unknown";
+        if (code === "captcha_failed") {
+          toast.error("La verificación de seguridad ha fallado. Inténtalo de nuevo.");
+        } else if (code === "validation_failed") {
+          toast.error("Algunos datos no son válidos. Revisa el formulario.");
+        } else {
+          toast.error("No hemos podido enviar tu solicitud. Inténtalo de nuevo.");
+        }
+        return;
+      }
+
       setSuccess(true);
       setForm(initial);
       toast.success("Solicitud enviada correctamente");
@@ -343,16 +482,25 @@ export const AccessibilityRequestForm = () => {
         )}
       </div>
 
-      <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            Enviando…
-          </>
-        ) : (
-          "Enviar comunicación"
-        )}
-      </Button>
+      {/* Widget Turnstile invisible — no requiere interacción del usuario */}
+      <div ref={widgetRef} aria-hidden="true" className="hidden" />
+
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          Protegido por Cloudflare Turnstile
+        </p>
+        <Button type="submit" disabled={submitting || !siteKey} className="w-full sm:w-auto">
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              Enviando…
+            </>
+          ) : (
+            "Enviar comunicación"
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
