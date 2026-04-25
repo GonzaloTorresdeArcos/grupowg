@@ -886,12 +886,23 @@ const Contacto = () => {
                   </Field>
 
                   <div
-                    className="pt-2"
+                    className={
+                      "pt-2 rounded-xl border p-4 transition-colors " +
+                      (visibleErrs.consentimiento
+                        ? "border-destructive/50 bg-destructive/5"
+                        : form.consentimiento
+                          ? "border-teal/40 bg-teal/5"
+                          : "border-border bg-muted/30")
+                    }
                     data-field="consentimiento"
                     data-invalid={visibleErrs.consentimiento ? "true" : undefined}
                   >
-                    <label className="flex items-start gap-3 cursor-pointer group">
+                    <label
+                      htmlFor="consentimiento-input"
+                      className="flex items-start gap-3 cursor-pointer group"
+                    >
                       <input
+                        id="consentimiento-input"
                         type="checkbox"
                         checked={!!form.consentimiento}
                         onChange={(e) => {
@@ -902,25 +913,41 @@ const Contacto = () => {
                         }}
                         onBlur={() => markTouched("consentimiento")}
                         className={
-                          "mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0 " +
+                          "mt-0.5 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0 " +
                           (visibleErrs.consentimiento ? "ring-2 ring-destructive ring-offset-2" : "")
                         }
                         aria-invalid={!!visibleErrs.consentimiento}
+                        aria-required="true"
+                        aria-describedby={
+                          visibleErrs.consentimiento ? "consentimiento-error" : "consentimiento-hint"
+                        }
                       />
-                      <span className="text-xs text-muted-foreground leading-relaxed">
+                      <span
+                        id="consentimiento-hint"
+                        className="text-xs text-muted-foreground leading-relaxed"
+                      >
                         He leído y acepto el tratamiento de mis datos conforme a la{" "}
                         <a href="/privacidad" className="underline hover:text-ink">
                           política de privacidad
                         </a>
                         . Mis datos se usarán únicamente para responder a esta solicitud.{" "}
-                        <span className="text-destructive">*</span>
+                        <span className="text-destructive" aria-hidden="true">*</span>
+                        <span className="sr-only">(obligatorio)</span>
                       </span>
                     </label>
-                    {visibleErrs.consentimiento && (
-                      <span role="alert" aria-live="polite" className="block text-xs text-destructive mt-1.5 ml-7">
-                        {visibleErrs.consentimiento}
-                      </span>
-                    )}
+                    <span
+                      id="consentimiento-error"
+                      role="alert"
+                      aria-live="polite"
+                      className={
+                        "block text-xs mt-2 ml-7 transition-opacity " +
+                        (visibleErrs.consentimiento
+                          ? "text-destructive opacity-100"
+                          : "opacity-0 h-0 overflow-hidden")
+                      }
+                    >
+                      {visibleErrs.consentimiento || ""}
+                    </span>
                   </div>
 
                   {(() => {
