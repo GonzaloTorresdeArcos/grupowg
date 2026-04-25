@@ -49,17 +49,108 @@ const Contacto = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Contacto · Grupo WG";
-    let m = document.querySelector('meta[name="description"]');
-    if (!m) {
-      m = document.createElement("meta");
+    const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
+    const DESC =
+      "Contacta con Grupo WG. Convertimos el servicio postventa en un sistema bajo control: garantías, reparaciones, repuestos, movilidad y seguros.";
+    const URL = typeof window !== "undefined" ? window.location.href : "https://grupowg.com/contacto";
+    const IMAGE = "https://grupowg.com/og-contacto.jpg";
+
+    document.title = TITLE;
+
+    const setMeta = (selector: string, attr: string, value: string, create: () => HTMLMetaElement) => {
+      let el = document.querySelector(selector) as HTMLMetaElement | null;
+      if (!el) {
+        el = create();
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, value);
+    };
+
+    // Description
+    setMeta('meta[name="description"]', "content", DESC, () => {
+      const m = document.createElement("meta");
       m.setAttribute("name", "description");
-      document.head.appendChild(m);
+      return m;
+    });
+
+    // Canonical
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
     }
-    m.setAttribute(
-      "content",
-      "Contacta con Grupo WG: hablemos de cómo convertir tu servicio postventa en un sistema bajo control.",
-    );
+    canonical.setAttribute("href", URL);
+
+    // OpenGraph
+    const og: Array<[string, string]> = [
+      ["og:title", TITLE],
+      ["og:description", DESC],
+      ["og:type", "website"],
+      ["og:url", URL],
+      ["og:image", IMAGE],
+      ["og:site_name", "Grupo WG"],
+      ["og:locale", "es_ES"],
+    ];
+    og.forEach(([prop, val]) => {
+      setMeta(`meta[property="${prop}"]`, "content", val, () => {
+        const m = document.createElement("meta");
+        m.setAttribute("property", prop);
+        return m;
+      });
+    });
+
+    // Twitter
+    const tw: Array<[string, string]> = [
+      ["twitter:card", "summary_large_image"],
+      ["twitter:title", TITLE],
+      ["twitter:description", DESC],
+      ["twitter:image", IMAGE],
+    ];
+    tw.forEach(([name, val]) => {
+      setMeta(`meta[name="${name}"]`, "content", val, () => {
+        const m = document.createElement("meta");
+        m.setAttribute("name", name);
+        return m;
+      });
+    });
+
+    // JSON-LD ContactPage + Organization
+    const ldId = "ld-contacto";
+    document.getElementById(ldId)?.remove();
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.id = ldId;
+    ld.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      name: TITLE,
+      description: DESC,
+      url: URL,
+      mainEntity: {
+        "@type": "Organization",
+        name: "Grupo Warranty Global",
+        url: "https://grupowg.com",
+        email: "info@grupowg.com",
+        telephone: "+34900000000",
+        address: { "@type": "PostalAddress", addressCountry: "ES" },
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            email: "info@grupowg.com",
+            telephone: "+34900000000",
+            availableLanguage: ["Spanish"],
+            areaServed: "ES",
+          },
+        ],
+      },
+    });
+    document.head.appendChild(ld);
+
+    return () => {
+      document.getElementById(ldId)?.remove();
+    };
   }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
