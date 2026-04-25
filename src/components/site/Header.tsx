@@ -139,7 +139,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
           </nav>
 
           <nav className="flex flex-wrap gap-x-6 gap-y-2">
-            {secondaryLinks.map((l) => (
+            {secondaryNav.map((l) => (
               <Link key={l.to} to={l.to} className={cn("text-xs", drawerSub, "hover:opacity-100")}>
                 {l.label}
               </Link>
