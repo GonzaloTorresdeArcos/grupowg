@@ -12,6 +12,10 @@ import Grupo from "./pages/Grupo.tsx";
 import QueHacemos from "./pages/QueHacemos.tsx";
 import Soluciones from "./pages/Soluciones.tsx";
 import Marcas from "./pages/Marcas.tsx";
+import Modelo from "./pages/Modelo.tsx";
+import Plataforma from "./pages/Plataforma.tsx";
+import Industrias from "./pages/Industrias.tsx";
+import Experiencia from "./pages/Experiencia.tsx";
 import WGNetwork from "./pages/WGNetwork.tsx";
 import Inscripcion from "./pages/Inscripcion.tsx";
 import Aniversario from "./pages/Aniversario.tsx";
@@ -40,6 +44,10 @@ const App = () => (
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
+              <Route path="/modelo" element={<Modelo />} />
+              <Route path="/plataforma" element={<Plataforma />} />
+              <Route path="/industrias" element={<Industrias />} />
+              <Route path="/experiencia" element={<Experiencia />} />
               <Route path="/grupo" element={<Grupo />} />
               <Route path="/que-hacemos" element={<QueHacemos />} />
               <Route path="/soluciones" element={<Soluciones />} />
