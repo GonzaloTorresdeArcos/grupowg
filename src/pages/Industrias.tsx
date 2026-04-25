@@ -25,13 +25,11 @@ const Industrias = () => {
         
         title={
           <>
-            El mismo sistema.
-            <br />
-            Adaptado a{" "}
-            <span className="text-teal italic">tu sector</span>.
+            Un modelo.{" "}
+            <span className="text-teal italic">Múltiples realidades</span>.
           </>
         }
-        subtitle="Trabajamos con fabricantes, aseguradoras, retailers y operadores de movilidad. Mismo motor, configuración por industria, resultados medibles."
+        subtitle="Aplicamos el sistema en entornos reales, con múltiples actores, alto volumen y exigencia operativa."
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
       <IndustriesBlock />
