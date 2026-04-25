@@ -843,4 +843,27 @@ const Field = ({
   </label>
 );
 
+const ReviewRow = ({
+  label,
+  value,
+  multiline,
+}: {
+  label: string;
+  value: string;
+  multiline?: boolean;
+}) => (
+  <div className="py-3 grid grid-cols-3 gap-4">
+    <dt className="text-xs uppercase tracking-wider text-muted-foreground col-span-1">
+      {label}
+    </dt>
+    <dd
+      className={
+        "text-ink col-span-2 " + (multiline ? "whitespace-pre-wrap" : "truncate")
+      }
+    >
+      {value}
+    </dd>
+  </div>
+);
+
 export default Contacto;
