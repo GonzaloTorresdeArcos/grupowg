@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { ExperienceBlock } from "@/components/home/os/ExperienceBlock";
-import { MetricsBlock } from "@/components/home/os/MetricsBlock";
+
 import { ClosingBlock } from "@/components/home/os/ClosingBlock";
 
 const Experiencia = () => {
@@ -33,7 +33,7 @@ const Experiencia = () => {
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
       <ExperienceBlock />
-      <MetricsBlock />
+      
       <ClosingBlock />
     </>
   );
