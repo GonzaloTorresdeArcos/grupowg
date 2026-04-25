@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
-import { ClosingBlock } from "@/components/home/os/ClosingBlock";
+
 
 const Modelo = () => {
   useEffect(() => {
