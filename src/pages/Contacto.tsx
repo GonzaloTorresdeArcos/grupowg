@@ -550,10 +550,7 @@ const Contacto = () => {
                           <button
                             key={m.value}
                             type="button"
-                            onClick={() => {
-                              update("motivo", m.value);
-                              markTouched("motivo");
-                            }}
+                            onClick={() => selectMotivo(m.value)}
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all " +
                               (active
