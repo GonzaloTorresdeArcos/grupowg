@@ -82,6 +82,69 @@ export type Database = {
         }
         Relationships: []
       }
+      wg_accessibility_requests: {
+        Row: {
+          admin_notes: string | null
+          assistive_tech: string | null
+          consent_at: string | null
+          consent_given: boolean
+          created_at: string
+          description: string
+          email: string
+          full_name: string
+          id: string
+          organization: string | null
+          page_url: string | null
+          phone: string | null
+          postal_address: string | null
+          preferred_format: string | null
+          request_type: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          assistive_tech?: string | null
+          consent_at?: string | null
+          consent_given?: boolean
+          created_at?: string
+          description: string
+          email: string
+          full_name: string
+          id?: string
+          organization?: string | null
+          page_url?: string | null
+          phone?: string | null
+          postal_address?: string | null
+          preferred_format?: string | null
+          request_type: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          assistive_tech?: string | null
+          consent_at?: string | null
+          consent_given?: boolean
+          created_at?: string
+          description?: string
+          email?: string
+          full_name?: string
+          id?: string
+          organization?: string | null
+          page_url?: string | null
+          phone?: string | null
+          postal_address?: string | null
+          preferred_format?: string | null
+          request_type?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       wg_application_drafts: {
         Row: {
           created_at: string

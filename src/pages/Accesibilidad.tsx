@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SimplePage } from "@/components/site/SimplePage";
+import { AccessibilityRequestForm } from "@/components/site/AccessibilityRequestForm";
 
 const Accesibilidad = () => {
   useEffect(() => {
@@ -114,29 +115,18 @@ const Accesibilidad = () => {
           </p>
         </section>
 
-        <section>
+        <section id="formulario" className="scroll-mt-24">
           <h2 className="font-display text-2xl text-ink mb-3">
-            5. Solicitudes de información accesible y quejas
+            5. Formulario de comunicaciones de accesibilidad
           </h2>
-          <p>
-            A través de la dirección anterior se pueden presentar:
+          <p className="mb-5">
+            Utiliza este formulario para presentar <strong className="text-ink">solicitudes de
+            información accesible</strong>, <strong className="text-ink">quejas</strong>,{" "}
+            <strong className="text-ink">reclamaciones</strong> o{" "}
+            <strong className="text-ink">sugerencias de mejora</strong>. Responderemos en el
+            plazo máximo de veinte días hábiles, conforme al artículo 12 del RD 1112/2018.
           </p>
-          <ul className="list-disc pl-5 mt-3 space-y-1">
-            <li>
-              <strong className="text-ink">Solicitudes de información accesible</strong>:
-              cuando un contenido quede excluido del ámbito de aplicación o esté exento
-              por carga desproporcionada, indicando los hechos, preferencia de medio y
-              formato de acceso, y datos de contacto.
-            </li>
-            <li>
-              <strong className="text-ink">Quejas</strong> relativas al cumplimiento de
-              los requisitos del RD 1112/2018.
-            </li>
-          </ul>
-          <p className="mt-3">
-            La solicitud será respondida en el plazo de <strong className="text-ink">veinte
-            días hábiles</strong>.
-          </p>
+          <AccessibilityRequestForm />
         </section>
 
         <section>
