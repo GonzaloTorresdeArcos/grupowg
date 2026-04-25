@@ -147,6 +147,13 @@
   .hairline {
     @apply h-px w-full bg-border;
   }
+  /* Spacing tokens — vertical rhythm consistent across pages */
+  .section-padding {
+    @apply py-24 md:py-32;
+  }
+  .closing-padding {
+    @apply py-32 md:py-44;
+  }
   .card-soft {
     @apply rounded-2xl border border-border bg-card transition-all duration-500 ease-smooth hover:border-teal/40 hover:shadow-elevated;
   }
