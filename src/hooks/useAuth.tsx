@@ -60,7 +60,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      try {
+        sub?.subscription?.unsubscribe?.();
+      } catch (e) {
+        console.warn("[auth] unsubscribe failed", e);
+      }
+    };
   }, []);
 
   const signOut = async () => {
