@@ -482,16 +482,25 @@ export const AccessibilityRequestForm = () => {
         )}
       </div>
 
-      <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            Enviando…
-          </>
-        ) : (
-          "Enviar comunicación"
-        )}
-      </Button>
+      {/* Widget Turnstile invisible — no requiere interacción del usuario */}
+      <div ref={widgetRef} aria-hidden="true" className="hidden" />
+
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          Protegido por Cloudflare Turnstile
+        </p>
+        <Button type="submit" disabled={submitting || !siteKey} className="w-full sm:w-auto">
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              Enviando…
+            </>
+          ) : (
+            "Enviar comunicación"
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
