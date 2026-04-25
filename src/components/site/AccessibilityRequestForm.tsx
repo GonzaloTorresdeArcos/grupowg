@@ -115,6 +115,7 @@ export const AccessibilityRequestForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [reference, setReference] = useState<string | null>(null);
   const [siteKey, setSiteKey] = useState<string | null>(null);
   const widgetRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
