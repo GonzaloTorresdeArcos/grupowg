@@ -30,7 +30,6 @@ export const Footer = ({ dark = true }: FooterProps) => {
             <p className={cn("text-xs uppercase tracking-[0.2em] mb-4", labelMuted)}>Sistema</p>
             <ul className="space-y-2 text-sm">
               <li><Link to="/modelo" className={textHover}>Modelo</Link></li>
-              <li><Link to="/service-os" className={textHover}>WG Service OS</Link></li>
               <li><Link to="/soluciones" className={textHover}>Soluciones</Link></li>
               <li><Link to="/plataforma" className={textHover}>Plataforma</Link></li>
               <li><Link to="/industrias" className={textHover}>Industrias</Link></li>

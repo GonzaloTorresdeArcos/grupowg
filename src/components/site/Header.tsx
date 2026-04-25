@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 const primaryNav = [
   { to: "/modelo", label: "Modelo" },
-  { to: "/service-os", label: "Service OS" },
   { to: "/soluciones", label: "Soluciones" },
   { to: "/plataforma", label: "Plataforma" },
   { to: "/industrias", label: "Industrias" },
