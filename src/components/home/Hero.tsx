@@ -17,7 +17,7 @@ export const Hero = () => (
     {/* Top label */}
     <div className="absolute top-28 left-0 right-0">
       <div className="container-tight flex items-center justify-between">
-        <p className="eyebrow text-teal-soft animate-fade-in">Grupo Warranty Global · 1975 — 2025</p>
+        <p className="eyebrow text-teal-soft animate-fade-in">Grupo Warranty Global · 1976 — 2026</p>
         <p className="hidden md:block text-xs text-bone/40 uppercase tracking-[0.2em] animate-fade-in">
           Postventa · Garantías · Red técnica
         </p>
