@@ -94,12 +94,6 @@ export const LifecycleBlock = () => (
         </div>
       </Reveal>
 
-      <Reveal delay={300}>
-        <p className="mt-16 max-w-3xl font-display text-xl md:text-2xl text-foreground/80 text-balance">
-          No gestionamos partes del servicio.{" "}
-          <span className="text-teal">Diseñamos el sistema para que el resultado sea correcto.</span>
-        </p>
-      </Reveal>
     </div>
   </section>
 );
