@@ -98,12 +98,21 @@ const ALL_CONDITIONAL_FIELDS: Array<keyof FormData> = [
 const validateAll = (data: FormData) => {
   const r = baseSchema.safeParse(data);
   const errors: Record<string, string> = {};
+  const activeFields = new Set<string>(
+    (fieldsByMotivo[data.motivo as MotivoValue] || []) as string[],
+  );
+
   if (!r.success) {
     r.error.issues.forEach((i) => {
-      errors[i.path[0] as string] = i.message;
+      const key = i.path[0] as string;
+      // Ignora errores de campos condicionales que no pertenecen al motivo activo
+      if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
+        return;
+      }
+      errors[key] = i.message;
     });
   }
-  // Validación condicional
+  // Validación condicional: campos requeridos del motivo activo
   const required = requiredByMotivo[data.motivo as MotivoValue] || [];
   required.forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
