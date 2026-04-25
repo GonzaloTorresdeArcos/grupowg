@@ -109,7 +109,7 @@ const Grupo = () => {
       </section>
 
       {/* SOLUCIÓN */}
-      <section className="py-24 md:py-32 bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
+      <section className="section-padding bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-25" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,hsl(var(--teal)/0.12),transparent_60%)]" />
         <div className="container-tight relative">
