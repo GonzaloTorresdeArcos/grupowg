@@ -3,22 +3,8 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
+import { primaryNav, secondaryNav } from "@/config/navigation";
 
-const primaryNav = [
-  { to: "/grupo", label: "Grupo WG" },
-  { to: "/modelo", label: "Modelo" },
-  { to: "/soluciones", label: "Soluciones" },
-  { to: "/plataforma", label: "Plataforma" },
-  { to: "/experiencia", label: "Experiencia" },
-  { to: "/industrias", label: "Industrias" },
-  { to: "/wg-network", label: "WG Network" },
-];
-
-const secondaryLinks = [
-  { to: "/contacto", label: "Contacto" },
-  { to: "/legal/privacidad", label: "Privacidad" },
-  { to: "/legal/aviso-legal", label: "Aviso legal" },
-];
 
 interface HeaderProps {
   dark?: boolean;
