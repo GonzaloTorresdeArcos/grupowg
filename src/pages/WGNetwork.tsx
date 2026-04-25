@@ -138,7 +138,7 @@ const WGNetwork = () => {
 
       {/* 3 compromisos */}
       <section className="relative py-24 md:py-32 bg-ink text-bone overflow-hidden">
-        <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-24 md:top-32 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
+        <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-0 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
         <div className="container-tight relative">
           <Reveal>
             <div className="max-w-3xl mb-16">
