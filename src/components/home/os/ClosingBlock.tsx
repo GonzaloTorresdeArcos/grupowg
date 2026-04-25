@@ -9,13 +9,10 @@ export const ClosingBlock = () => (
     <div className="container-tight relative text-center">
       <Reveal>
         <h2 className="heading-display text-bone text-4xl md:text-6xl lg:text-7xl max-w-4xl mx-auto text-balance leading-[1.05]">
-          El problema no es quién presta el servicio.
+          No gestionamos la experiencia como un canal.
           <br />
-          <span className="text-teal italic">Es que el sistema funcione.</span>
+          <span className="text-teal italic">La construimos desde el sistema.</span>
         </h2>
-        <p className="mt-10 font-display text-2xl text-bone/85">
-          Nosotros nos aseguramos de ello.
-        </p>
       </Reveal>
       <Reveal delay={200}>
         <div className="mt-12 flex flex-wrap gap-3 justify-center">
