@@ -86,7 +86,7 @@ export const IndustriesBlock = () => {
     <section className="py-28 md:py-36 bg-background">
       <div className="container-tight">
         <Reveal>
-          <p className="eyebrow-mono mb-4">11 · Industrias</p>
+          
           <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
             Un modelo.{" "}
             <span className="text-teal italic">Múltiples realidades</span>.

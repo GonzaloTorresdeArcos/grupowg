@@ -15,7 +15,7 @@ export const MetricsBlock = () => (
       <Reveal>
         <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
           <div>
-            <p className="eyebrow-mono mb-4 text-teal">06 · Credibilidad</p>
+            
             <h2 className="heading-display text-bone text-3xl md:text-5xl text-balance max-w-2xl">
               Esto es lo que hacemos cada día.
             </h2>
