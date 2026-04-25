@@ -418,6 +418,117 @@ const Contacto = () => {
         </div>
       </section>
 
+      {/* SEO CONTENT — direcciones, horarios, áreas de servicio */}
+      <section className="bg-bone border-t border-foreground/5">
+        <div className="container-tight py-16 md:py-24">
+          <Reveal>
+            <p className="eyebrow-mono mb-3">Información de contacto</p>
+            <h2 className="heading-display text-ink text-3xl md:text-5xl text-balance max-w-3xl">
+              Cómo y cuándo <span className="text-teal italic">trabajamos contigo</span>.
+            </h2>
+          </Reveal>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <Reveal>
+              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+                <h3 className="font-display text-xl text-ink mb-4">Sede y direcciones</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Grupo Warranty Global opera desde su sede central en España, con presencia
+                  operativa nacional a través de la red WG Network.
+                </p>
+                <dl className="mt-5 space-y-3 text-sm">
+                  <div>
+                    <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Oficina central
+                    </dt>
+                    <dd className="text-ink font-medium">España</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Email corporativo
+                    </dt>
+                    <dd>
+                      <a
+                        href="mailto:info@grupowg.com"
+                        className="text-ink font-medium hover:text-teal"
+                      >
+                        info@grupowg.com
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </article>
+            </Reveal>
+
+            <Reveal delay={100}>
+              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+                <h3 className="font-display text-xl text-ink mb-4">Horarios de atención</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Atención comercial y técnica en horario laboral peninsular. Las urgencias
+                  operativas se gestionan a través de los canales contratados con cada cliente.
+                </p>
+                <dl className="mt-5 space-y-3 text-sm">
+                  <div>
+                    <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Lunes a Viernes
+                    </dt>
+                    <dd className="text-ink font-medium">09:00 – 18:00 (CET)</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Sábados, Domingos y festivos
+                    </dt>
+                    <dd className="text-ink font-medium">Cerrado · Guardias bajo contrato</dd>
+                  </div>
+                </dl>
+              </article>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+                <h3 className="font-display text-xl text-ink mb-4">Áreas de servicio</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Cobertura nacional en España (Península, Baleares y Canarias) y proyectos
+                  internacionales seleccionados.
+                </p>
+                <ul className="mt-5 space-y-2 text-sm text-ink/85">
+                  <li className="flex gap-2">
+                    <span className="text-teal">·</span> Garantías y postventa industrial
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-teal">·</span> Reparaciones e instalaciones
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-teal">·</span> Repuestos y logística
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-teal">·</span> Movilidad y aseguradoras
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-teal">·</span> WG Network · Colaboradores
+                  </li>
+                </ul>
+              </article>
+            </Reveal>
+          </div>
+
+          <Reveal delay={250}>
+            <p className="mt-12 text-sm text-muted-foreground max-w-2xl">
+              Si representas a un fabricante, distribuidor, ecommerce, aseguradora, SAT o
+              instalador y quieres explorar una colaboración, escríbenos a{" "}
+              <a
+                href="mailto:info@grupowg.com"
+                className="text-ink font-medium underline hover:text-teal"
+              >
+                info@grupowg.com
+              </a>{" "}
+              o utiliza el formulario superior. Respondemos en un plazo máximo de 48 horas
+              laborables.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       <style>{`
         .input-base {
           width: 100%; border: 1px solid hsl(var(--border));
