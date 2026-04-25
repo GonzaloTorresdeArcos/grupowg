@@ -115,6 +115,53 @@ export const AccessibilityRequestForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [siteKey, setSiteKey] = useState<string | null>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const tokenResolverRef = useRef<((token: string | null) => void) | null>(null);
+
+  // Cargar site key + script Turnstile y renderizar widget invisible
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("submit-accessibility-request", {
+          method: "GET",
+        });
+        if (error) throw error;
+        const key = (data as any)?.site_key as string | undefined;
+        if (!key) throw new Error("missing_site_key");
+        if (cancelled) return;
+        setSiteKey(key);
+        await loadTurnstileScript();
+        if (cancelled || !widgetRef.current || !window.turnstile) return;
+        widgetIdRef.current = window.turnstile.render(widgetRef.current, {
+          sitekey: key,
+          size: "invisible",
+          appearance: "interaction-only",
+          callback: (token: string) => {
+            tokenResolverRef.current?.(token);
+            tokenResolverRef.current = null;
+          },
+          "error-callback": () => {
+            tokenResolverRef.current?.(null);
+            tokenResolverRef.current = null;
+          },
+          "expired-callback": () => {
+            if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
+          },
+        });
+      } catch (err) {
+        console.error("[accessibility-form] turnstile init failed", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      if (widgetIdRef.current && window.turnstile) {
+        try { window.turnstile.remove(widgetIdRef.current); } catch { /* noop */ }
+      }
+    };
+  }, []);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((p) => ({ ...p, [key]: value }));
@@ -125,6 +172,26 @@ export const AccessibilityRequestForm = () => {
         return n;
       });
     }
+  };
+
+  const getCaptchaToken = (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      if (!widgetIdRef.current || !window.turnstile) return resolve(null);
+      tokenResolverRef.current = resolve;
+      try {
+        window.turnstile.reset(widgetIdRef.current);
+        window.turnstile.execute(widgetIdRef.current);
+      } catch {
+        resolve(null);
+      }
+      // Timeout de seguridad
+      setTimeout(() => {
+        if (tokenResolverRef.current === resolve) {
+          tokenResolverRef.current = null;
+          resolve(null);
+        }
+      }, 30000);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,24 +207,49 @@ export const AccessibilityRequestForm = () => {
       return;
     }
 
+    if (!siteKey) {
+      toast.error("Verificación de seguridad no disponible. Recarga la página.");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("wg_accessibility_requests").insert({
-        request_type: parsed.data.request_type,
-        full_name: parsed.data.full_name,
-        email: parsed.data.email,
-        phone: parsed.data.phone || null,
-        organization: parsed.data.organization || null,
-        page_url: parsed.data.page_url || `${window.location.origin}${location.pathname}`,
-        preferred_format: parsed.data.preferred_format,
-        postal_address: parsed.data.postal_address || null,
-        description: parsed.data.description,
-        assistive_tech: parsed.data.assistive_tech || null,
-        consent_given: true,
-        consent_at: new Date().toISOString(),
-        user_agent: navigator.userAgent.slice(0, 500),
+      const captchaToken = await getCaptchaToken();
+      if (!captchaToken) {
+        toast.error("No hemos podido verificar tu navegador. Inténtalo de nuevo.");
+        setSubmitting(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("submit-accessibility-request", {
+        body: {
+          request_type: parsed.data.request_type,
+          full_name: parsed.data.full_name,
+          email: parsed.data.email,
+          phone: parsed.data.phone || null,
+          organization: parsed.data.organization || null,
+          page_url: parsed.data.page_url || `${window.location.origin}${location.pathname}`,
+          preferred_format: parsed.data.preferred_format,
+          postal_address: parsed.data.postal_address || null,
+          description: parsed.data.description,
+          assistive_tech: parsed.data.assistive_tech || null,
+          consent_given: true,
+          turnstile_token: captchaToken,
+        },
       });
-      if (error) throw error;
+
+      if (error || (data as any)?.error) {
+        const code = (data as any)?.error ?? "unknown";
+        if (code === "captcha_failed") {
+          toast.error("La verificación de seguridad ha fallado. Inténtalo de nuevo.");
+        } else if (code === "validation_failed") {
+          toast.error("Algunos datos no son válidos. Revisa el formulario.");
+        } else {
+          toast.error("No hemos podido enviar tu solicitud. Inténtalo de nuevo.");
+        }
+        return;
+      }
+
       setSuccess(true);
       setForm(initial);
       toast.success("Solicitud enviada correctamente");
