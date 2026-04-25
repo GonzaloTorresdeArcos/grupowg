@@ -23,7 +23,6 @@ const Plataforma = () => {
   return (
     <>
       <PageHero
-        eyebrow="03 · Plataforma"
         title={
           <>
             WG Service OS.{" "}

@@ -8,7 +8,6 @@ export const ClosingBlock = () => (
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--teal)/0.18),transparent_60%)]" />
     <div className="container-tight relative text-center">
       <Reveal>
-        <p className="eyebrow-mono mb-8 text-teal">14 · Cierre</p>
         <h2 className="heading-display text-bone text-4xl md:text-6xl lg:text-7xl max-w-4xl mx-auto text-balance leading-[1.05]">
           El problema no es quién presta el servicio.
           <br />
