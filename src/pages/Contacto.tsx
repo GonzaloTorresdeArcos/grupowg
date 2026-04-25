@@ -190,6 +190,7 @@ const Contacto = () => {
   const [loading, setLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState<Date | null>(null);
+  const [consentAt, setConsentAt] = useState<Date | null>(null);
 
   // Hidratar borrador desde localStorage al montar
   useEffect(() => {
@@ -198,6 +199,9 @@ const Contacto = () => {
       setForm(draft.form);
       setStep(draft.step ?? "form");
       setRestored(new Date(draft.savedAt));
+      if (draft.consentAt && draft.form.consentimiento) {
+        setConsentAt(new Date(draft.consentAt));
+      }
     }
     setHydrated(true);
   }, []);
