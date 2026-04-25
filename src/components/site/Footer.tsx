@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
@@ -23,6 +24,23 @@ export const Footer = ({ dark = true }: FooterProps) => {
   const textHover = "hover:text-bone";
   const labelMuted = "text-bone/40";
 
+  const detailsRefs = useRef<Array<HTMLDetailsElement | null>>([]);
+  const [allOpen, setAllOpen] = useState(false);
+
+  const toggleAll = () => {
+    const next = !allOpen;
+    detailsRefs.current.forEach((el) => {
+      if (el) el.open = next;
+    });
+    setAllOpen(next);
+  };
+
+  const handleDetailsToggle = () => {
+    const states = detailsRefs.current.map((el) => !!el?.open);
+    if (states.every(Boolean)) setAllOpen(true);
+    else if (states.every((s) => !s)) setAllOpen(false);
+  };
+
   return (
     <footer className={cn(bg, textBase, "relative overflow-hidden")}>
       <div className="absolute inset-0 bg-grid bg-grid-fade opacity-40 pointer-events-none" />
@@ -40,9 +58,31 @@ export const Footer = ({ dark = true }: FooterProps) => {
           </div>
 
           {/* Móvil: acordeón nativo (<details>) — sin saltos de layout, accesible */}
-          <div className="md:hidden divide-y divide-bone/10 border-y border-bone/10">
-            {footerNav.map((group) => (
-              <details key={group.id} className="group">
+          <div className="md:hidden">
+            <div className="flex justify-end pb-2">
+              <button
+                type="button"
+                onClick={toggleAll}
+                aria-expanded={allOpen}
+                className={cn(
+                  "text-[11px] uppercase tracking-[0.2em] text-bone/60 hover:text-bone",
+                  "py-1.5 px-2 -mx-2 rounded-md",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
+                )}
+              >
+                {allOpen ? "Contraer todo" : "Expandir todo"}
+              </button>
+            </div>
+            <div className="divide-y divide-bone/10 border-y border-bone/10">
+            {footerNav.map((group, idx) => (
+              <details
+                key={group.id}
+                className="group"
+                ref={(el) => {
+                  detailsRefs.current[idx] = el;
+                }}
+                onToggle={handleDetailsToggle}
+              >
                 <summary
                   className={cn(
                     "flex items-center justify-between py-3 px-2 -mx-2 rounded-md cursor-pointer select-none",
