@@ -398,6 +398,36 @@ const Contacto = () => {
     };
   }, []);
 
+  // Orden visual de los campos para focus al primer error
+  const FIELD_ORDER: Array<keyof FormData> = [
+    "nombre", "empresa", "email", "telefono", "motivo",
+    "marca", "numeroSerie", "producto", "urgencia", "referencia",
+    "vehiculo", "matricula", "ramo", "poliza", "mensaje", "consentimiento",
+  ];
+
+  const focusFirstError = (errors: Record<string, string>) => {
+    if (typeof document === "undefined") return;
+    const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
+    if (!firstKey) return;
+    // Espera al render para que data-invalid esté aplicado
+    requestAnimationFrame(() => {
+      const wrapper = document.querySelector<HTMLElement>(
+        `[data-field="${firstKey}"]`,
+      );
+      if (!wrapper) return;
+      // Animación de shake
+      wrapper.setAttribute("data-shake", "true");
+      window.setTimeout(() => wrapper.removeAttribute("data-shake"), 500);
+      // Scroll suave al campo
+      wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Focus al control interactivo
+      const control = wrapper.querySelector<HTMLElement>(
+        "input, select, textarea, button",
+      );
+      window.setTimeout(() => control?.focus({ preventScroll: true }), 250);
+    });
+  };
+
   const goReview = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateAll(form);
@@ -408,6 +438,7 @@ const Contacto = () => {
       Object.keys(errors).forEach((k) => (t[k] = true));
       setTouched((prev) => ({ ...prev, ...t }));
       toast.error("Revisa los campos marcados");
+      focusFirstError(errors);
       return;
     }
     setErrs({});
@@ -645,7 +676,7 @@ const Contacto = () => {
                     </div>
                   )}
                   <div className="grid md:grid-cols-2 gap-5">
-                    <Field label="Nombre *" error={visibleErrs.nombre}>
+                    <Field name="nombre" label="Nombre *" error={visibleErrs.nombre}>
                       <input
                         className="input-base"
                         value={form.nombre}
@@ -655,7 +686,7 @@ const Contacto = () => {
                         autoComplete="name"
                       />
                     </Field>
-                    <Field label="Empresa" error={visibleErrs.empresa}>
+                    <Field name="empresa" label="Empresa" error={visibleErrs.empresa}>
                       <input
                         className="input-base"
                         value={form.empresa ?? ""}
@@ -665,7 +696,7 @@ const Contacto = () => {
                         autoComplete="organization"
                       />
                     </Field>
-                    <Field label="Email *" error={visibleErrs.email}>
+                    <Field name="email" label="Email *" error={visibleErrs.email}>
                       <input
                         type="email"
                         className="input-base"
@@ -677,7 +708,7 @@ const Contacto = () => {
                         inputMode="email"
                       />
                     </Field>
-                    <Field label="Teléfono" error={visibleErrs.telefono}>
+                    <Field name="telefono" label="Teléfono" error={visibleErrs.telefono}>
                       <input
                         className="input-base"
                         value={form.telefono ?? ""}
@@ -690,7 +721,7 @@ const Contacto = () => {
                     </Field>
                   </div>
 
-                  <Field label="Motivo de contacto *" error={visibleErrs.motivo}>
+                  <Field name="motivo" label="Motivo de contacto *" error={visibleErrs.motivo}>
                     <div className="flex flex-wrap gap-2">
                       {MOTIVOS.map((m) => {
                         const active = form.motivo === m.value;
@@ -717,7 +748,7 @@ const Contacto = () => {
                   {/* Campos por motivo */}
                   {form.motivo === "garantias" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Marca *" error={visibleErrs.marca}>
+                      <Field name="marca" label="Marca *" error={visibleErrs.marca}>
                         <input
                           className="input-base"
                           value={form.marca ?? ""}
@@ -726,7 +757,7 @@ const Contacto = () => {
                           maxLength={80}
                         />
                       </Field>
-                      <Field label="Nº de serie" error={visibleErrs.numeroSerie}>
+                      <Field name="numeroSerie" label="Nº de serie" error={visibleErrs.numeroSerie}>
                         <input
                           className="input-base"
                           value={form.numeroSerie ?? ""}
@@ -740,7 +771,7 @@ const Contacto = () => {
 
                   {form.motivo === "reparaciones" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Producto *" error={visibleErrs.producto}>
+                      <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
                           className="input-base"
                           value={form.producto ?? ""}
@@ -749,7 +780,7 @@ const Contacto = () => {
                           maxLength={120}
                         />
                       </Field>
-                      <Field label="Urgencia *" error={visibleErrs.urgencia}>
+                      <Field name="urgencia" label="Urgencia *" error={visibleErrs.urgencia}>
                         <select
                           className="input-base"
                           value={form.urgencia ?? ""}
@@ -770,7 +801,7 @@ const Contacto = () => {
                   )}
 
                   {form.motivo === "repuestos" && (
-                    <Field label="Referencia o código de pieza *" error={visibleErrs.referencia}>
+                    <Field name="referencia" label="Referencia o código de pieza *" error={visibleErrs.referencia}>
                       <input
                         className="input-base"
                         value={form.referencia ?? ""}
@@ -783,7 +814,7 @@ const Contacto = () => {
 
                   {form.motivo === "movilidad" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
+                      <Field name="vehiculo" label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
                         <select
                           className="input-base"
                           value={form.vehiculo ?? ""}
@@ -800,7 +831,7 @@ const Contacto = () => {
                           ))}
                         </select>
                       </Field>
-                      <Field label="Matrícula" error={visibleErrs.matricula}>
+                      <Field name="matricula" label="Matrícula" error={visibleErrs.matricula}>
                         <input
                           className="input-base"
                           value={form.matricula ?? ""}
@@ -814,7 +845,7 @@ const Contacto = () => {
 
                   {form.motivo === "seguros" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Ramo *" error={visibleErrs.ramo}>
+                      <Field name="ramo" label="Ramo *" error={visibleErrs.ramo}>
                         <select
                           className="input-base"
                           value={form.ramo ?? ""}
@@ -829,7 +860,7 @@ const Contacto = () => {
                           ))}
                         </select>
                       </Field>
-                      <Field label="Nº de póliza" error={visibleErrs.poliza}>
+                      <Field name="poliza" label="Nº de póliza" error={visibleErrs.poliza}>
                         <input
                           className="input-base"
                           value={form.poliza ?? ""}
@@ -841,7 +872,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  <Field label="¿En qué podemos ayudarte? *" error={visibleErrs.mensaje}>
+                  <Field name="mensaje" label="¿En qué podemos ayudarte? *" error={visibleErrs.mensaje}>
                     <textarea
                       className="input-base min-h-32"
                       value={form.mensaje}
@@ -854,7 +885,11 @@ const Contacto = () => {
                     </span>
                   </Field>
 
-                  <div className="pt-2">
+                  <div
+                    className="pt-2"
+                    data-field="consentimiento"
+                    data-invalid={visibleErrs.consentimiento ? "true" : undefined}
+                  >
                     <label className="flex items-start gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
@@ -866,7 +901,10 @@ const Contacto = () => {
                           markTouched("consentimiento");
                         }}
                         onBlur={() => markTouched("consentimiento")}
-                        className="mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0"
+                        className={
+                          "mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0 " +
+                          (visibleErrs.consentimiento ? "ring-2 ring-destructive ring-offset-2" : "")
+                        }
                         aria-invalid={!!visibleErrs.consentimiento}
                       />
                       <span className="text-xs text-muted-foreground leading-relaxed">
@@ -879,7 +917,7 @@ const Contacto = () => {
                       </span>
                     </label>
                     {visibleErrs.consentimiento && (
-                      <span className="block text-xs text-destructive mt-1.5 ml-7">
+                      <span role="alert" aria-live="polite" className="block text-xs text-destructive mt-1.5 ml-7">
                         {visibleErrs.consentimiento}
                       </span>
                     )}
@@ -1080,21 +1118,50 @@ const Contacto = () => {
           transition: all 0.2s;
         }
         .input-base:focus { outline: none; border-color: hsl(var(--ink)); box-shadow: 0 0 0 3px hsl(var(--teal) / 0.2); }
+        [data-invalid="true"] .input-base,
+        .input-base[aria-invalid="true"] {
+          border-color: hsl(var(--destructive));
+          background: hsl(var(--destructive) / 0.04);
+          box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.12);
+        }
+        [data-invalid="true"] .input-base:focus,
+        .input-base[aria-invalid="true"]:focus {
+          box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.25);
+        }
+        @keyframes wg-shake {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-4px); }
+          40% { transform: translateX(4px); }
+          60% { transform: translateX(-3px); }
+          80% { transform: translateX(2px); }
+        }
+        [data-shake="true"] {
+          animation: wg-shake 0.4s ease-in-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-shake="true"] { animation: none; }
+        }
       `}</style>
     </>
   );
 };
 
 const Field = ({
+  name,
   label,
   error,
   children,
 }: {
+  name?: string;
   label: string;
   error?: string;
   children: React.ReactNode;
 }) => (
-  <label className="block">
+  <label
+    className="block"
+    data-field={name}
+    data-invalid={error ? "true" : undefined}
+  >
     <span className="block text-sm font-semibold text-teal mb-2">{label}</span>
     {children}
     <span
