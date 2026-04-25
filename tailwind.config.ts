@@ -53,13 +53,16 @@ export default {
         ink: {
           DEFAULT: "hsl(var(--ink))",
           soft: "hsl(var(--ink-soft))",
+          elevated: "hsl(var(--ink-elevated))",
         },
         teal: {
           DEFAULT: "hsl(var(--teal))",
           soft: "hsl(var(--teal-soft))",
           deep: "hsl(var(--teal-deep))",
+          glow: "hsl(var(--teal-glow))",
         },
         bone: "hsl(var(--bone))",
+        "card-os": "hsl(var(--ink-elevated))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
