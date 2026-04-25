@@ -60,7 +60,8 @@ const Grupo = () => {
             <br />
             <br />
             Integramos operación, experiencia de cliente y conocimiento técnico para
-            ejecutar, controlar y optimizar el servicio de principio a fin.
+            ejecutar, controlar y optimizar el servicio{" "}
+            <span className="whitespace-nowrap">de principio a fin</span>.
           </>
         }
         cta={{ label: "Hablar con nuestro equipo", to: "/contacto" }}
