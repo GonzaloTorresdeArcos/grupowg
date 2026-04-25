@@ -241,6 +241,7 @@ const Contacto = () => {
     setErrs({});
     setTouched({});
     setStep("form");
+    setConsentAt(null);
     toast.success("Borrador descartado");
   };
 
