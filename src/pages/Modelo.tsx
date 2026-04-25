@@ -32,7 +32,10 @@ const Modelo = () => {
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
       <LifecycleBlock />
-      <ClosingBlock />
+      <ClosingBlock
+        lineOne="No gestionamos partes del servicio."
+        lineTwo="Diseñamos el sistema para que el resultado sea correcto."
+      />
     </>
   );
 };
