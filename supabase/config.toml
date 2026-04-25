@@ -1,1 +1,4 @@
 project_id = "ceefisrtzptheqdvduhc"
+
+[functions.submit-accessibility-request]
+verify_jwt = false
