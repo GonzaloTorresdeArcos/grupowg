@@ -1,40 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
-
-/**
- * Etiquetas legibles por slug de ruta. Cualquier ruta no listada usa el slug
- * formateado (capitalizado, guiones reemplazados por espacios).
- */
-const ROUTE_LABELS: Record<string, string> = {
-  modelo: "Modelo",
-  soluciones: "Soluciones",
-  plataforma: "Plataforma",
-  experiencia: "Experiencia",
-  industrias: "Industrias",
-  grupo: "Grupo WG",
-  "que-hacemos": "Qué hacemos",
-  marcas: "Marcas",
-  "wg-network": "WG Network",
-  inscripcion: "Inscripción",
-  "50-aniversario": "50 aniversario",
-  contacto: "Contacto",
-  legal: "Legal",
-  privacidad: "Política de privacidad",
-  "aviso-legal": "Aviso legal",
-  cookies: "Política de cookies",
-  accesibilidad: "Accesibilidad",
-  estado: "Consultar estado",
-};
-
-const formatSegment = (slug: string): string => {
-  if (ROUTE_LABELS[slug]) return ROUTE_LABELS[slug];
-  return slug
-    .split("-")
-    .map((p) => (p.length ? p[0].toUpperCase() + p.slice(1) : p))
-    .join(" ");
-};
+import { buildCrumbs } from "@/lib/breadcrumbs";
 
 interface BreadcrumbsProps {
   dark?: boolean;
@@ -42,59 +10,7 @@ interface BreadcrumbsProps {
 
 export const Breadcrumbs = ({ dark = true }: BreadcrumbsProps) => {
   const { pathname } = useLocation();
-
-  const crumbs = useMemo(() => {
-    const segments = pathname.split("/").filter(Boolean);
-    return segments.map((seg, i) => ({
-      label: formatSegment(seg),
-      to: "/" + segments.slice(0, i + 1).join("/"),
-      isLast: i === segments.length - 1,
-    }));
-  }, [pathname]);
-
-  // JSON-LD para SEO (BreadcrumbList) — uno por navegación, sin duplicados
-  useEffect(() => {
-    const SCRIPT_ID = "ld-breadcrumbs";
-
-    // Limpieza defensiva: elimina cualquier script previo con este id
-    // (cubre StrictMode, navegaciones rápidas y casos donde el componente
-    // anterior no completara su cleanup).
-    document.querySelectorAll(`script#${SCRIPT_ID}`).forEach((el) => el.remove());
-
-    if (crumbs.length === 0) return;
-
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://grupowg.com";
-
-    const ld = document.createElement("script");
-    ld.type = "application/ld+json";
-    ld.id = SCRIPT_ID;
-    ld.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Inicio",
-          item: `${origin}/`,
-        },
-        ...crumbs.map((c, i) => ({
-          "@type": "ListItem",
-          position: i + 2,
-          name: c.label,
-          item: `${origin}${c.to}`,
-        })),
-      ],
-    });
-    document.head.appendChild(ld);
-
-    return () => {
-      document
-        .querySelectorAll(`script#${SCRIPT_ID}`)
-        .forEach((el) => el.remove());
-    };
-  }, [crumbs]);
+  const crumbs = useMemo(() => buildCrumbs(pathname), [pathname]);
 
   if (crumbs.length === 0) return null;
 
