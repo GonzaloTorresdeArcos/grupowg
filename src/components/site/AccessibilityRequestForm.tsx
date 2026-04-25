@@ -251,6 +251,8 @@ export const AccessibilityRequestForm = () => {
         return;
       }
 
+      const ref = (data as any)?.reference as string | undefined;
+      setReference(ref ?? null);
       setSuccess(true);
       setForm(initial);
       toast.success("Solicitud enviada correctamente");
