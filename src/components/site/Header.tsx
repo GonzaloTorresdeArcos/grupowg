@@ -85,14 +85,14 @@ export const Header = ({ dark = true }: HeaderProps) => {
           <Logo className={cn("h-10 sm:h-12 md:h-14", dark && "brightness-0 invert")} />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-0.5">
           {primaryNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
                 cn(
-                  "px-3 py-2 text-[13px] font-medium transition-colors",
+                  "px-2.5 py-2 text-[12px] font-medium whitespace-nowrap transition-colors",
                   textBase,
                   isActive && textActive,
                 )
