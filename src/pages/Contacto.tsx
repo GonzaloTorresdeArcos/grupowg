@@ -248,24 +248,32 @@ const Contacto = () => {
     };
   }, []);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const goReview = (e: React.FormEvent) => {
     e.preventDefault();
-    const r = schema.safeParse(form);
-    if (!r.success) {
-      const ne: Record<string, string> = {};
-      r.error.issues.forEach((i) => {
-        ne[i.path[0] as string] = i.message;
-      });
-      setErrs(ne);
+    const errors = validateAll(form);
+    if (Object.keys(errors).length > 0) {
+      setErrs(errors);
+      // marca todos como touched para mostrar errores
+      const t: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (t[k] = true));
+      setTouched((prev) => ({ ...prev, ...t }));
+      toast.error("Revisa los campos marcados");
       return;
     }
     setErrs({});
+    setStep("review");
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const confirmSend = async () => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     setSent(true);
     toast.success("Mensaje recibido");
   };
+
+  const motivoLabel = MOTIVOS.find((m) => m.value === form.motivo)?.label ?? "—";
 
   return (
     <>
