@@ -47,7 +47,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
               <li><Link to="/contacto" className={textHover}>Contacto</Link></li>
             </ul>
           </div>
-          <div className="md:col-span-3">
+          <div className="col-span-2 md:col-span-3">
             <p className={cn("text-xs uppercase tracking-[0.2em] mb-4", labelMuted)}>Red profesional</p>
             <ul className="space-y-2 text-sm">
               <li><Link to="/wg-network" className={textHover}>WG Professional Network</Link></li>
