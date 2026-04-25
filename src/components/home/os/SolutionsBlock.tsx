@@ -8,16 +8,28 @@ const cards = [
     code: "WG/01",
     t: "WG Execute",
     sub: "Lo hacemos por ti",
-    d: "Operación postventa completa. Asumimos la ejecución end-to-end con criterio técnico.",
-    bullets: ["Operación end-to-end", "Red propia y partners certificados", "SLA y reporting integrados"],
+    d: "Gestionamos el servicio postventa de principio a fin. Nos encargamos de toda la operación para que el servicio funcione con calidad, rapidez y control.",
+    bullets: [
+      "Atención y diagnóstico",
+      "Asignación de red técnica",
+      "Gestión de intervenciones",
+      "Coordinación logística y repuestos",
+    ],
+    tagline: "Externalizas el servicio. Nosotros lo operamos.",
   },
   {
     icon: Eye,
     code: "WG/02",
     t: "WG Control Tower",
     sub: "Lo controlamos contigo",
-    d: "Tú ejecutas, nosotros aportamos visión, sistema, datos y criterio. Control sin perder propiedad.",
-    bullets: ["Dashboard único", "KPIs y alertas en tiempo real", "Auditoría continua de proveedores"],
+    d: "Controlamos y mejoramos el servicio cuando intervienen varios proveedores. Integramos toda la información en una visión única para tomar decisiones.",
+    bullets: [
+      "Dashboards claros y control de costes",
+      "Comparativa real entre proveedores",
+      "Detección de problemas y mejoras",
+      "KPIs alineados a negocio",
+    ],
+    tagline: "Una única visión para todo el servicio.",
     featured: true,
   },
   {
@@ -25,8 +37,14 @@ const cards = [
     code: "WG/03",
     t: "WG Scale",
     sub: "Te acompañamos en tu expansión",
-    d: "Modelo replicable a nuevos países, líneas de producto o segmentos. Sin perder el control.",
-    bullets: ["Roll-out por mercado", "Adaptación regulatoria", "Onboarding de red local"],
+    d: "Diseñamos el servicio y lo ayudamos a crecer de forma ordenada, también internacionalmente. Mismo estándar en todos los mercados.",
+    bullets: [
+      "Definición del modelo, SLA y KPIs",
+      "Selección y homologación de red",
+      "Repuestos, logística y stock óptimo",
+      "Despliegue multi-país con control central",
+    ],
+    tagline: "De diseñar el servicio a hacerlo funcionar a escala.",
   },
 ];
 
@@ -72,9 +90,12 @@ export const SolutionsBlock = () => (
                     </li>
                   ))}
                 </ul>
+                <p className="mt-8 pt-6 border-t border-foreground/10 text-foreground italic text-[15px] leading-snug">
+                  {c.tagline}
+                </p>
                 <Link
                   to="/soluciones"
-                  className="mt-8 inline-flex items-center gap-2 text-sm text-teal font-medium hover:gap-3 transition-all"
+                  className="mt-6 inline-flex items-center gap-2 text-sm text-teal font-medium hover:gap-3 transition-all"
                 >
                   Ver detalle <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
