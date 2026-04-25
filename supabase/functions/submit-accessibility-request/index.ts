@@ -78,11 +78,13 @@ Deno.serve(async (req) => {
       // Reconstruir prefijo del UUID (8 hex iniciales sin guion)
       const prefix = reference!.slice(4).toLowerCase();
 
+      // Buscar por email (indexable, evita complicaciones de cast uuid->text)
       const { data, error } = await supabase
         .from("wg_accessibility_requests")
         .select("id, request_type, status, created_at, updated_at, preferred_format, email, admin_notes")
-        .ilike("id", `${prefix}%`)
-        .limit(5);
+        .eq("email", email!)
+        .order("created_at", { ascending: false })
+        .limit(20);
 
       if (error) {
         console.error("[accessibility-request] lookup error", error);
@@ -93,7 +95,7 @@ Deno.serve(async (req) => {
       }
 
       const match = (data ?? []).find(
-        (r) => String(r.email).toLowerCase() === email,
+        (r) => String(r.id).replace(/-/g, "").slice(0, 8).toLowerCase() === prefix,
       );
 
       if (!match) {
