@@ -11,7 +11,7 @@ export const ClosingBlock = ({
   lineOne = "No gestionamos la experiencia como un canal.",
   lineTwo = "La construimos desde el sistema.",
 }: ClosingBlockProps = {}) => (
-  <section className="py-32 md:py-44 bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
+  <section className="closing-padding bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
     <div className="absolute inset-0 bg-grid bg-grid-fade opacity-30" />
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--teal)/0.18),transparent_60%)]" />
     <div className="container-tight relative text-center">
