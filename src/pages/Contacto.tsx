@@ -834,7 +834,9 @@ const Contacto = () => {
                         type="checkbox"
                         checked={!!form.consentimiento}
                         onChange={(e) => {
-                          update("consentimiento", e.target.checked as unknown as true);
+                          const checked = e.target.checked;
+                          update("consentimiento", checked as unknown as true);
+                          setConsentAt(checked ? new Date() : null);
                           markTouched("consentimiento");
                         }}
                         onBlur={() => markTouched("consentimiento")}
