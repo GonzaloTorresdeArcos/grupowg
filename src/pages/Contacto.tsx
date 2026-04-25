@@ -885,13 +885,48 @@ const Contacto = () => {
                     )}
                   </div>
 
-                  <button
-                    type="submit"
-                    className="btn-primary w-full sm:w-auto justify-center"
-                  >
-                    Continuar a revisión
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
+                  {(() => {
+                    const errorCount = Object.keys(allErrors).length;
+                    const visibleCount = Object.keys(visibleErrs).length;
+                    const isValid = errorCount === 0;
+                    return (
+                      <>
+                        <div
+                          role="status"
+                          aria-live="polite"
+                          className={
+                            "rounded-xl border px-4 py-3 text-sm transition-colors " +
+                            (isValid
+                              ? "border-teal/40 bg-teal/10 text-teal"
+                              : visibleCount > 0
+                                ? "border-destructive/40 bg-destructive/10 text-destructive"
+                                : "border-border bg-muted/40 text-muted-foreground")
+                          }
+                        >
+                          {isValid ? (
+                            <span className="flex items-center gap-2">
+                              <Check className="h-4 w-4" />
+                              Todo correcto. Puedes continuar a la revisión.
+                            </span>
+                          ) : visibleCount > 0 ? (
+                            `Revisa ${visibleCount} ${visibleCount === 1 ? "campo" : "campos"} con errores antes de continuar.`
+                          ) : (
+                            `Faltan ${errorCount} ${errorCount === 1 ? "campo obligatorio" : "campos obligatorios"} por completar.`
+                          )}
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={!isValid}
+                          aria-disabled={!isValid}
+                          className="btn-primary w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Continuar a revisión
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </>
+                    );
+                  })()}
                 </form>
               </Reveal>
             )}
@@ -1062,7 +1097,16 @@ const Field = ({
   <label className="block">
     <span className="block text-sm font-semibold text-teal mb-2">{label}</span>
     {children}
-    {error && <span className="block text-xs text-destructive mt-1.5">{error}</span>}
+    <span
+      role={error ? "alert" : undefined}
+      aria-live="polite"
+      className={
+        "block text-xs mt-1.5 transition-opacity " +
+        (error ? "text-destructive opacity-100" : "opacity-0 h-0 overflow-hidden")
+      }
+    >
+      {error || ""}
+    </span>
   </label>
 );
 
