@@ -19,7 +19,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
       <div className="absolute inset-0 bg-grid bg-grid-fade opacity-40 pointer-events-none" />
       <div className="container-tight relative py-16 md:py-20">
         <div className="grid gap-10 md:gap-12 grid-cols-2 md:grid-cols-12">
-          <div className="md:col-span-5 space-y-6">
+          <div className="col-span-2 md:col-span-5 space-y-6">
             <Logo className="h-10 brightness-0 invert opacity-90" />
             <p className="font-display text-3xl text-bone leading-tight max-w-md text-balance">
               El sistema operativo del servicio postventa.
