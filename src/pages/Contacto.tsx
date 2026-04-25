@@ -1080,6 +1080,29 @@ const Contacto = () => {
           transition: all 0.2s;
         }
         .input-base:focus { outline: none; border-color: hsl(var(--ink)); box-shadow: 0 0 0 3px hsl(var(--teal) / 0.2); }
+        [data-invalid="true"] .input-base,
+        .input-base[aria-invalid="true"] {
+          border-color: hsl(var(--destructive));
+          background: hsl(var(--destructive) / 0.04);
+          box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.12);
+        }
+        [data-invalid="true"] .input-base:focus,
+        .input-base[aria-invalid="true"]:focus {
+          box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.25);
+        }
+        @keyframes wg-shake {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-4px); }
+          40% { transform: translateX(4px); }
+          60% { transform: translateX(-3px); }
+          80% { transform: translateX(2px); }
+        }
+        [data-shake="true"] {
+          animation: wg-shake 0.4s ease-in-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-shake="true"] { animation: none; }
+        }
       `}</style>
     </>
   );
