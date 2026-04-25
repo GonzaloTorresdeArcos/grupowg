@@ -92,6 +92,51 @@ const validateAll = (data: FormData) => {
   return errors;
 };
 
+const initialForm: FormData = {
+  nombre: "",
+  empresa: "",
+  email: "",
+  telefono: "",
+  motivo: "" as MotivoValue,
+  marca: "",
+  numeroSerie: "",
+  producto: "",
+  urgencia: undefined,
+  referencia: "",
+  vehiculo: undefined,
+  matricula: "",
+  ramo: undefined,
+  poliza: "",
+  mensaje: "",
+};
+
+const Contacto = () => {
+  const [form, setForm] = useState<FormData>(initialForm);
+  const [errs, setErrs] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [step, setStep] = useState<"form" | "review">("form");
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const allErrors = useMemo(() => validateAll(form), [form]);
+  const visibleErrs = useMemo(() => {
+    const out: Record<string, string> = {};
+    Object.entries(allErrors).forEach(([k, v]) => {
+      if (touched[k]) out[k] = v;
+    });
+    // Errores forzados (al intentar avanzar) se mantienen
+    Object.entries(errs).forEach(([k, v]) => {
+      if (v) out[k] = v;
+    });
+    return out;
+  }, [allErrors, touched, errs]);
+
+  const markTouched = (field: string) =>
+    setTouched((t) => (t[field] ? t : { ...t, [field]: true }));
+
+  const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
+    setForm((f) => ({ ...f, [field]: value }));
+
   useEffect(() => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
     const DESC =
