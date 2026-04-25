@@ -109,7 +109,7 @@ export const ExperienceGovernanceBlock = () => (
               </div>
             ))}
           </div>
-          <div className="mt-10 pt-8 border-t border-foreground/10">
+          <div className="mt-10 pt-8 border-t border-foreground/10 text-center">
             <p className="font-display italic text-foreground text-lg md:text-xl text-balance">
               Cada interacción no solo resuelve un caso.{" "}
               <span className="text-teal">Mejora el sistema.</span>
