@@ -405,6 +405,7 @@ const Contacto = () => {
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     setSent(true);
+    clearDraft();
     toast.success("Mensaje recibido");
   };
 
