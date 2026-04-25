@@ -22,7 +22,7 @@ const Modelo = () => {
   return (
     <>
       <PageHero
-        eyebrow="01 · Modelo"
+        
         title={
           <>
             Un sistema operativo de servicio,{" "}
