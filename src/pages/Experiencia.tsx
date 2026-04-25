@@ -22,7 +22,7 @@ const Experiencia = () => {
   return (
     <>
       <PageHero
-        eyebrow="05 · Experiencia"
+        
         title={
           <>
             La experiencia es el{" "}
