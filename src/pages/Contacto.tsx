@@ -562,6 +562,32 @@ const Contacto = () => {
                     <ReviewRow label="Mensaje" value={form.mensaje} multiline />
                   </dl>
 
+                  <div className="mt-6 rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
+                    <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0 text-xs">
+                      <p className="font-medium text-ink">
+                        Consentimiento aceptado
+                      </p>
+                      <p className="mt-0.5 text-muted-foreground leading-relaxed">
+                        Aceptaste el tratamiento de datos conforme a la{" "}
+                        <a href="/privacidad" className="underline hover:text-ink">
+                          política de privacidad
+                        </a>{" "}
+                        el{" "}
+                        <span className="text-ink font-medium">
+                          {(consentAt ?? new Date()).toLocaleString("es-ES", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        .
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="mt-8 flex flex-col sm:flex-row gap-3">
                     <button
                       type="button"
