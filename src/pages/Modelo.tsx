@@ -1,9 +1,5 @@
 import { useEffect } from "react";
 import { PageHero } from "@/components/site/PageHero";
-import { ProblemBlock } from "@/components/home/os/ProblemBlock";
-import { SolutionBlock } from "@/components/home/os/SolutionBlock";
-import { DifferentialBlock } from "@/components/home/os/DifferentialBlock";
-import { ServiceOSBlock } from "@/components/home/os/ServiceOSBlock";
 import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
 import { ClosingBlock } from "@/components/home/os/ClosingBlock";
 
@@ -35,10 +31,6 @@ const Modelo = () => {
         subtitle="El rendimiento del servicio no depende de áreas aisladas, sino de cómo funciona el sistema en su conjunto. Estructuramos el servicio como un flujo completo, donde cada etapa está conectada, tiene un objetivo claro y contribuye directamente al resultado final."
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
-      <ProblemBlock />
-      <SolutionBlock />
-      <DifferentialBlock />
-      <ServiceOSBlock />
       <LifecycleBlock />
       <ClosingBlock />
     </>
