@@ -6,8 +6,8 @@ import networkImg from "@/assets/network.jpg";
 import { useEffect } from "react";
 
 const layers = [
-  { n: "01", t: "Aliviar presión", d: "Material sin margen, repuestos a coste real, acceso a piezas críticas y menos fricción operativa." },
-  { n: "02", t: "Hacer crecer", d: "Garantías extendidas, acuerdos con fabricantes, acceso a recambios OEM y nuevas oportunidades de negocio." },
+  { n: "01", t: "Aliviar presión", d: "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa." },
+  { n: "02", t: "Hacer crecer", d: "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos." },
   { n: "03", t: "Proteger", d: "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación." },
 ];
 
