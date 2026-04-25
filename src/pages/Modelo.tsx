@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
-import { ClosingBlock } from "@/components/home/os/ClosingBlock";
+
 
 const Modelo = () => {
   useEffect(() => {
@@ -32,10 +32,6 @@ const Modelo = () => {
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
       <LifecycleBlock />
-      <ClosingBlock
-        lineOne="No gestionamos partes del servicio."
-        lineTwo="Diseñamos el sistema para que el resultado sea correcto."
-      />
     </>
   );
 };
