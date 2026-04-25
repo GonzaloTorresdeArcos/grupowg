@@ -8,8 +8,8 @@ const primaryNav = [
   { to: "/modelo", label: "Modelo" },
   { to: "/soluciones", label: "Soluciones" },
   { to: "/plataforma", label: "Plataforma" },
-  { to: "/industrias", label: "Industrias" },
   { to: "/experiencia", label: "Experiencia" },
+  { to: "/industrias", label: "Industrias" },
   { to: "/grupo", label: "Grupo WG" },
   { to: "/wg-network", label: "WG Network" },
 ];
