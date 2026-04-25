@@ -99,6 +99,16 @@ export default {
         "fade-in": { from: { opacity: "0" }, to: { opacity: "1" } },
         "shimmer": { "0%": { transform: "translateX(-100%)" }, "100%": { transform: "translateX(100%)" } },
         "marquee": { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
+        "pulse-dot": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.55", transform: "scale(1.4)" },
+        },
+        "flow-x": {
+          "0%": { transform: "translateX(-30%)", opacity: "0" },
+          "20%": { opacity: "1" },
+          "80%": { opacity: "1" },
+          "100%": { transform: "translateX(130%)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -106,6 +116,8 @@ export default {
         "fade-up": "fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "fade-in": "fade-in 0.6s ease-out both",
         "marquee": "marquee 40s linear infinite",
+        "pulse-dot": "pulse-dot 2.4s ease-in-out infinite",
+        "flow-x": "flow-x 3.5s ease-in-out infinite",
       },
       transitionTimingFunction: {
         smooth: "cubic-bezier(0.22, 1, 0.36, 1)",
