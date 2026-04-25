@@ -45,23 +45,23 @@ export const Footer = ({ dark = true }: FooterProps) => {
               <details key={group.id} className="group">
                 <summary
                   className={cn(
-                    "flex items-center justify-between py-4 cursor-pointer select-none",
-                    "text-xs uppercase tracking-[0.2em] text-bone/80 list-none",
+                    "flex items-center justify-between py-3 cursor-pointer select-none",
+                    "text-[11px] uppercase tracking-[0.2em] text-bone/80 list-none",
                     "[&::-webkit-details-marker]:hidden",
                   )}
                 >
                   {group.label}
                   <ChevronDown
-                    className="h-4 w-4 text-bone/50 transition-transform duration-200 group-open:rotate-180"
+                    className="h-3.5 w-3.5 text-bone/50 transition-transform duration-200 group-open:rotate-180"
                     aria-hidden="true"
                   />
                 </summary>
-                <ul className="pb-4 space-y-2 text-sm">
+                <ul className="pb-3 space-y-0.5 text-[13px]">
                   {group.items.map((item) => (
                     <li key={item.to}>
                       <Link
                         to={item.to}
-                        className={cn("block py-1.5 text-bone/75", textHover)}
+                        className={cn("block py-1 text-bone/75", textHover)}
                       >
                         {item.label}
                       </Link>
