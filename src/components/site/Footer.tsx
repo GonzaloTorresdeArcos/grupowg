@@ -63,6 +63,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
             <Link to="/legal/privacidad" className={textHover}>Política de privacidad</Link>
             <Link to="/legal/aviso-legal" className={textHover}>Aviso legal</Link>
             <Link to="/legal/cookies" className={textHover}>Política de cookies</Link>
+            <Link to="/legal/accesibilidad" className={textHover}>Accesibilidad</Link>
             <button
               type="button"
               onClick={openPreferences}
