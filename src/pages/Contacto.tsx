@@ -60,6 +60,9 @@ const baseSchema = z.object({
     .trim()
     .min(10, "Cuéntanos un poco más")
     .max(2000, "Máximo 2000 caracteres"),
+  consentimiento: z.literal(true, {
+    errorMap: () => ({ message: "Debes aceptar el tratamiento de datos para continuar" }),
+  }),
 });
 
 type FormData = z.infer<typeof baseSchema>;
