@@ -45,9 +45,10 @@ export const Footer = ({ dark = true }: FooterProps) => {
               <details key={group.id} className="group">
                 <summary
                   className={cn(
-                    "flex items-center justify-between py-3 cursor-pointer select-none",
+                    "flex items-center justify-between py-3 px-2 -mx-2 rounded-md cursor-pointer select-none",
                     "text-[11px] uppercase tracking-[0.2em] text-bone/80 list-none",
                     "[&::-webkit-details-marker]:hidden",
+                    "outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink",
                   )}
                 >
                   {group.label}
@@ -61,7 +62,11 @@ export const Footer = ({ dark = true }: FooterProps) => {
                     <li key={item.to}>
                       <Link
                         to={item.to}
-                        className={cn("block py-1 text-bone/75", textHover)}
+                        className={cn(
+                          "block py-1 px-2 -mx-2 rounded-md text-bone/75",
+                          textHover,
+                          "outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-ink focus-visible:text-bone",
+                        )}
                       >
                         {item.label}
                       </Link>
