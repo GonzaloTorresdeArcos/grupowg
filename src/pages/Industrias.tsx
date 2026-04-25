@@ -22,7 +22,7 @@ const Industrias = () => {
   return (
     <>
       <PageHero
-        eyebrow="04 · Industrias"
+        
         title={
           <>
             El mismo sistema.
