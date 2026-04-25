@@ -45,47 +45,53 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/modelo" element={<Modelo />} />
-              <Route path="/plataforma" element={<Plataforma />} />
-              <Route path="/industrias" element={<Industrias />} />
-              <Route path="/experiencia" element={<Experiencia />} />
-              <Route path="/grupo" element={<Grupo />} />
-              <Route path="/que-hacemos" element={<QueHacemos />} />
-              <Route path="/soluciones" element={<Soluciones />} />
-              <Route path="/marcas" element={<Marcas />} />
-              <Route path="/wg-network" element={<WGNetwork />} />
-              <Route path="/wg-network/inscripcion" element={<Inscripcion />} />
-              <Route path="/50-aniversario" element={<Aniversario />} />
-              <Route path="/contacto" element={<Contacto />} />
-              <Route path="/legal/privacidad" element={<Privacidad />} />
-              <Route path="/legal/aviso-legal" element={<AvisoLegal />} />
-            </Route>
+          <CookieConsentProvider>
+            <ConsentScripts />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/modelo" element={<Modelo />} />
+                <Route path="/plataforma" element={<Plataforma />} />
+                <Route path="/industrias" element={<Industrias />} />
+                <Route path="/experiencia" element={<Experiencia />} />
+                <Route path="/grupo" element={<Grupo />} />
+                <Route path="/que-hacemos" element={<QueHacemos />} />
+                <Route path="/soluciones" element={<Soluciones />} />
+                <Route path="/marcas" element={<Marcas />} />
+                <Route path="/wg-network" element={<WGNetwork />} />
+                <Route path="/wg-network/inscripcion" element={<Inscripcion />} />
+                <Route path="/50-aniversario" element={<Aniversario />} />
+                <Route path="/contacto" element={<Contacto />} />
+                <Route path="/legal/privacidad" element={<Privacidad />} />
+                <Route path="/legal/aviso-legal" element={<AvisoLegal />} />
+                <Route path="/legal/cookies" element={<Cookies />} />
+              </Route>
 
-            {/* Portal del colaborador */}
-            <Route path="/portal/login" element={<PortalLogin />} />
-            <Route
-              element={
-                <ProtectedRoute>
-                  <PortalLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/portal" element={<PortalDashboard />} />
-              <Route path="/portal/calendario" element={<PortalCalendar />} />
-              <Route path="/portal/documentos" element={<PortalDocuments />} />
-              <Route path="/portal/facturacion" element={<PortalInvoices />} />
-              <Route path="/portal/perfil" element={<PortalProfile />} />
-              <Route path="/portal/incidencias" element={<PortalIncidencias />} />
-              <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
-            </Route>
+              {/* Portal del colaborador */}
+              <Route path="/portal/login" element={<PortalLogin />} />
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <PortalLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/portal" element={<PortalDashboard />} />
+                <Route path="/portal/calendario" element={<PortalCalendar />} />
+                <Route path="/portal/documentos" element={<PortalDocuments />} />
+                <Route path="/portal/facturacion" element={<PortalInvoices />} />
+                <Route path="/portal/perfil" element={<PortalProfile />} />
+                <Route path="/portal/incidencias" element={<PortalIncidencias />} />
+                <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
+              </Route>
 
-            <Route element={<Layout />}>
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
+              <Route element={<Layout />}>
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+            <CookieBanner />
+            <CookiePreferencesDialog />
+          </CookieConsentProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
