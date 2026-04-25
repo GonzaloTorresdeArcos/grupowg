@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
@@ -17,7 +18,6 @@ const GROUP_SPAN: Record<string, string> = {
 
 export const Footer = ({ dark = true }: FooterProps) => {
   const { openPreferences } = useCookieConsent();
-  // En oscuro usamos los colores del tema oscuro (foreground = bone). En claro usamos paleta fija oscura.
   const bg = dark ? "bg-ink" : "bg-ink";
   const textBase = "text-bone/70";
   const textHover = "hover:text-bone";
@@ -27,8 +27,9 @@ export const Footer = ({ dark = true }: FooterProps) => {
     <footer className={cn(bg, textBase, "relative overflow-hidden")}>
       <div className="absolute inset-0 bg-grid bg-grid-fade opacity-40 pointer-events-none" />
       <div className="container-tight relative py-16 md:py-20">
-        <div className="grid gap-10 md:gap-12 grid-cols-2 md:grid-cols-12">
-          <div className="col-span-2 md:col-span-5 space-y-6">
+        {/* Bloque marca */}
+        <div className="md:grid md:gap-12 md:grid-cols-12">
+          <div className="md:col-span-5 space-y-6 mb-10 md:mb-0">
             <Logo className="h-10 brightness-0 invert opacity-90" />
             <p className="font-display text-3xl text-bone leading-tight max-w-md text-balance">
               El sistema operativo del servicio postventa.
@@ -38,13 +39,44 @@ export const Footer = ({ dark = true }: FooterProps) => {
             </p>
           </div>
 
+          {/* Móvil: acordeón nativo (<details>) — sin saltos de layout, accesible */}
+          <div className="md:hidden divide-y divide-bone/10 border-y border-bone/10">
+            {footerNav.map((group) => (
+              <details key={group.id} className="group">
+                <summary
+                  className={cn(
+                    "flex items-center justify-between py-4 cursor-pointer select-none",
+                    "text-xs uppercase tracking-[0.2em] text-bone/80 list-none",
+                    "[&::-webkit-details-marker]:hidden",
+                  )}
+                >
+                  {group.label}
+                  <ChevronDown
+                    className="h-4 w-4 text-bone/50 transition-transform duration-200 group-open:rotate-180"
+                    aria-hidden="true"
+                  />
+                </summary>
+                <ul className="pb-4 space-y-2 text-sm">
+                  {group.items.map((item) => (
+                    <li key={item.to}>
+                      <Link
+                        to={item.to}
+                        className={cn("block py-1.5 text-bone/75", textHover)}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+
+          {/* Desktop: columnas */}
           {footerNav.map((group) => (
             <div
               key={group.id}
-              className={cn(
-                group.id === "network" ? "col-span-2" : "col-span-1",
-                GROUP_SPAN[group.id] ?? "md:col-span-2",
-              )}
+              className={cn("hidden md:block", GROUP_SPAN[group.id] ?? "md:col-span-2")}
             >
               <p className={cn("text-xs uppercase tracking-[0.2em] mb-4", labelMuted)}>
                 {group.label}
@@ -62,7 +94,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
           ))}
         </div>
 
-        <div className="hairline bg-bone/10 my-12" />
+        <div className="hairline bg-bone/10 my-10 md:my-12" />
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-bone/45">
           <p>© {new Date().getFullYear()} Grupo Warranty Global · Todos los derechos reservados</p>
