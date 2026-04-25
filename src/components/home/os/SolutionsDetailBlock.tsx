@@ -331,7 +331,7 @@ export const SolutionsDetailBlock = () => (
     <section className="py-24 md:py-32 bg-ink-elevated border-y border-foreground/5">
       <div className="container-tight">
         <Reveal>
-          <p className="eyebrow-mono mb-4">05 · Capacidades del sistema</p>
+          <p className="eyebrow-mono mb-4">02 · Capacidades del sistema</p>
           <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
             La inteligencia que{" "}
             <span className="text-teal italic">recorre</span> cada solución.
