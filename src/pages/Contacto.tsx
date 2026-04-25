@@ -236,6 +236,31 @@ const Contacto = () => {
                       />
                     </Field>
                   </div>
+
+                  <Field label="Motivo de contacto *" error={errs.motivo}>
+                    <div className="flex flex-wrap gap-2">
+                      {MOTIVOS.map((m) => {
+                        const active = form.motivo === m.value;
+                        return (
+                          <button
+                            key={m.value}
+                            type="button"
+                            onClick={() => setForm({ ...form, motivo: m.value })}
+                            className={
+                              "px-3.5 py-2 rounded-full text-xs font-medium border transition-all " +
+                              (active
+                                ? "bg-ink text-bone border-ink shadow-sm"
+                                : "bg-card text-ink/80 border-border hover:border-ink/40 hover:text-ink")
+                            }
+                            aria-pressed={active}
+                          >
+                            {m.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Field>
+
                   <Field label="¿En qué podemos ayudarte? *" error={errs.mensaje}>
                     <textarea
                       className="input-base min-h-32"
