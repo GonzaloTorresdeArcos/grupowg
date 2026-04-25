@@ -578,6 +578,31 @@ const Contacto = () => {
                   noValidate
                 >
                   <p className="eyebrow-mono">Paso 1 de 2 · Datos</p>
+                  {restored && (
+                    <div className="rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
+                      <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0 text-xs text-ink/80">
+                        <p className="font-medium text-ink">Borrador restaurado</p>
+                        <p className="mt-0.5 text-muted-foreground">
+                          Recuperamos tus datos guardados el{" "}
+                          {restored.toLocaleString("es-ES", {
+                            day: "2-digit",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          .
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={discardDraft}
+                        className="text-xs font-medium text-ink/70 hover:text-ink underline underline-offset-2 flex-shrink-0"
+                      >
+                        Descartar
+                      </button>
+                    </div>
+                  )}
                   <div className="grid md:grid-cols-2 gap-5">
                     <Field label="Nombre *" error={visibleErrs.nombre}>
                       <input
