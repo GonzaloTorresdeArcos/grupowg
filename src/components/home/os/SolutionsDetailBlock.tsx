@@ -172,7 +172,7 @@ export const SolutionsDetailBlock = () => (
     <section className="py-24 md:py-32 bg-background border-y border-foreground/5">
       <div className="container-tight">
         <Reveal>
-          <p className="eyebrow-mono mb-4">04 · Soluciones</p>
+          
           <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
             Tres formas de{" "}
             <span className="text-teal italic">activar el sistema</span> de servicio.
