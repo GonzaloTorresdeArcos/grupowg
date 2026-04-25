@@ -1086,15 +1086,21 @@ const Contacto = () => {
 };
 
 const Field = ({
+  name,
   label,
   error,
   children,
 }: {
+  name?: string;
   label: string;
   error?: string;
   children: React.ReactNode;
 }) => (
-  <label className="block">
+  <label
+    className="block"
+    data-field={name}
+    data-invalid={error ? "true" : undefined}
+  >
     <span className="block text-sm font-semibold text-teal mb-2">{label}</span>
     {children}
     <span
