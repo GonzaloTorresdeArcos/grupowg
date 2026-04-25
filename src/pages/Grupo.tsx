@@ -56,8 +56,7 @@ const Grupo = () => {
         }
         subtitle={
           <>
-            Convertimos el servicio postventa en un sistema que funciona. Bajo control.
-            Incluso cuando el servicio está fragmentado entre múltiples proveedores.
+            Convertimos el servicio postventa en un sistema que funciona.
             <br />
             <br />
             Integramos operación, experiencia de cliente y conocimiento técnico para
