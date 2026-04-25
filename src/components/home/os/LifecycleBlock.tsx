@@ -64,50 +64,77 @@ export const LifecycleBlock = () => (
         </div>
       </Reveal>
 
-      {/* Cómo funciona — KPIs por capa */}
+      {/* Cómo funciona */}
       <Reveal delay={250}>
         <div className="mt-24 border-t border-foreground/10 pt-16">
           <p className="eyebrow-mono mb-4">08 · Cómo funciona</p>
           <h3 className="heading-display text-foreground text-3xl md:text-5xl max-w-3xl text-balance">
-            Diseñado para funcionar como un sistema,{" "}
-            <span className="text-teal italic">no como áreas aisladas</span>.
+            Cada capa del servicio,{" "}
+            <span className="text-teal italic">bajo control</span>.
           </h3>
-          <p className="mt-6 text-muted-foreground max-w-2xl">
-            Cada capa del servicio tiene un responsable claro, unos KPIs definidos y un
-            impacto directo en coste, calidad y tiempo.
-          </p>
 
-          <div className="mt-10 max-w-2xl">
-            <p className="eyebrow-mono mb-4 text-foreground/60">Esto permite</p>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="flex gap-3">
-                <span className="text-teal mt-1">·</span>
-                <span>Tomar decisiones con criterio.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal mt-1">·</span>
-                <span>Detectar desviaciones rápidamente.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal mt-1">·</span>
-                <span>Mejorar el rendimiento de forma continua.</span>
-              </li>
-            </ul>
+          {/* Dos columnas: estructura y consecuencia */}
+          <div className="mt-12 grid md:grid-cols-2 gap-8">
+            <Reveal>
+              <div className="card-os h-full p-8">
+                <p className="eyebrow-mono mb-5 text-foreground/60">Cada capa tiene</p>
+                <ul className="space-y-3">
+                  {[
+                    "Un responsable claro.",
+                    "Unos KPIs definidos.",
+                    "Un impacto directo en coste, calidad y tiempo.",
+                  ].map((item) => (
+                    <li key={item} className="flex gap-3 text-foreground/85">
+                      <span className="text-teal mt-1.5 leading-none">·</span>
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <div className="card-os h-full p-8">
+                <p className="eyebrow-mono mb-5 text-foreground/60">Esto permite</p>
+                <ul className="space-y-3">
+                  {[
+                    "Tomar decisiones con criterio.",
+                    "Detectar desviaciones rápidamente.",
+                    "Mejorar el rendimiento de forma continua.",
+                  ].map((item) => (
+                    <li key={item} className="flex gap-3 text-foreground/85">
+                      <span className="text-teal mt-1.5 leading-none">·</span>
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
           </div>
 
-          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {layerKpis.map((k, i) => {
-              const Icon = k.icon;
-              return (
-                <Reveal key={k.t} delay={i * 80}>
-                  <div className="card-os h-full p-6">
-                    <Icon className="h-5 w-5 text-teal mb-4" />
-                    <p className="heading-tight text-foreground text-lg">{k.t}</p>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{k.d}</p>
-                  </div>
-                </Reveal>
-              );
-            })}
+          {/* Síntesis: 4 pilares como prueba del diseño sistémico */}
+          <div className="mt-20">
+            <Reveal>
+              <h4 className="heading-display text-foreground text-2xl md:text-4xl max-w-3xl text-balance">
+                Diseñado para funcionar como un sistema,{" "}
+                <span className="text-teal italic">no como áreas aisladas</span>.
+              </h4>
+            </Reveal>
+
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {layerKpis.map((k, i) => {
+                const Icon = k.icon;
+                return (
+                  <Reveal key={k.t} delay={i * 80}>
+                    <div className="card-os h-full p-6">
+                      <Icon className="h-5 w-5 text-teal mb-4" />
+                      <p className="heading-tight text-foreground text-lg">{k.t}</p>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{k.d}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
           </div>
         </div>
       </Reveal>
