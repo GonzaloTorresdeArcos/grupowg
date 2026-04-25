@@ -145,6 +145,37 @@ const initialForm: FormData = {
   consentimiento: false as unknown as true,
 };
 
+const DRAFT_KEY = "wg:contacto:draft:v1";
+const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
+
+type DraftPayload = { form: FormData; step: "form" | "review"; savedAt: number };
+
+const loadDraft = (): DraftPayload | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as DraftPayload;
+    if (!parsed?.savedAt || Date.now() - parsed.savedAt > DRAFT_TTL_MS) {
+      window.localStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const isDraftMeaningful = (f: FormData) =>
+  !!(
+    f.nombre?.trim() ||
+    f.empresa?.trim() ||
+    f.email?.trim() ||
+    f.telefono?.trim() ||
+    f.motivo ||
+    f.mensaje?.trim()
+  );
+
 const Contacto = () => {
   const [form, setForm] = useState<FormData>(initialForm);
   const [errs, setErrs] = useState<Record<string, string>>({});
@@ -152,6 +183,52 @@ const Contacto = () => {
   const [step, setStep] = useState<"form" | "review">("form");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const [restored, setRestored] = useState<Date | null>(null);
+
+  // Hidratar borrador desde localStorage al montar
+  useEffect(() => {
+    const draft = loadDraft();
+    if (draft && isDraftMeaningful(draft.form)) {
+      setForm(draft.form);
+      setStep(draft.step ?? "form");
+      setRestored(new Date(draft.savedAt));
+    }
+    setHydrated(true);
+  }, []);
+
+  // Autoguardado con debounce
+  useEffect(() => {
+    if (!hydrated || sent) return;
+    if (typeof window === "undefined") return;
+    if (!isDraftMeaningful(form)) {
+      window.localStorage.removeItem(DRAFT_KEY);
+      return;
+    }
+    const id = window.setTimeout(() => {
+      try {
+        const payload: DraftPayload = { form, step, savedAt: Date.now() };
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+      } catch {
+        // noop (quota, modo privado, etc.)
+      }
+    }, 400);
+    return () => window.clearTimeout(id);
+  }, [form, step, hydrated, sent]);
+
+  const clearDraft = () => {
+    if (typeof window !== "undefined") window.localStorage.removeItem(DRAFT_KEY);
+    setRestored(null);
+  };
+
+  const discardDraft = () => {
+    clearDraft();
+    setForm(initialForm);
+    setErrs({});
+    setTouched({});
+    setStep("form");
+    toast.success("Borrador descartado");
+  };
 
   const allErrors = useMemo(() => validateAll(form), [form]);
   const visibleErrs = useMemo(() => {
