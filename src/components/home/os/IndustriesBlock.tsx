@@ -86,14 +86,13 @@ export const IndustriesBlock = () => {
     <section className="py-28 md:py-36 bg-background">
       <div className="container-tight">
         <Reveal>
-          
           <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
-            Un modelo.{" "}
-            <span className="text-teal italic">Múltiples realidades</span>.
+            No cambia el modelo. Cambia{" "}
+            <span className="text-teal italic">dónde ponemos el control</span>{" "}
+            y qué optimizamos.
           </h2>
           <p className="mt-6 max-w-2xl text-muted-foreground text-lg leading-relaxed">
-            No cambia el modelo. Cambia dónde ponemos el control y qué optimizamos. El rendimiento
-            siempre es el resultado de un sistema coordinado.
+            El rendimiento siempre es el resultado de un sistema coordinado.
           </p>
         </Reveal>
 
