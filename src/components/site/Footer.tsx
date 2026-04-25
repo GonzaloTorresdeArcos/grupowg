@@ -34,8 +34,8 @@ export const Footer = ({ dark = true }: FooterProps) => {
               <li><Link to="/modelo" className={textHover}>Modelo</Link></li>
               <li><Link to="/soluciones" className={textHover}>Soluciones</Link></li>
               <li><Link to="/plataforma" className={textHover}>Plataforma</Link></li>
-              <li><Link to="/industrias" className={textHover}>Industrias</Link></li>
               <li><Link to="/experiencia" className={textHover}>Experiencia</Link></li>
+              <li><Link to="/industrias" className={textHover}>Industrias</Link></li>
             </ul>
           </div>
           <div className="md:col-span-2">
