@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, AlertTriangle, Workflow, Eye, Brain, Cog } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
-import { ClosingBlock } from "@/components/home/os/ClosingBlock";
+
 
 const problemas = [
   "Múltiples proveedores operando sin coordinación.",
@@ -179,7 +179,7 @@ const Grupo = () => {
         </div>
       </section>
 
-      <ClosingBlock />
+      
     </>
   );
 };
