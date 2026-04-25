@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle2, Copy, Loader2, Mail, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Copy, Loader2, Mail, Search, ShieldCheck } from "lucide-react";
 
 declare global {
   interface Window {
@@ -328,13 +328,21 @@ export const AccessibilityRequestForm = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <Button asChild variant="default">
+            <Link
+              to={`/legal/accesibilidad/estado${reference ? `?ref=${reference}` : ""}`}
+            >
+              <Search className="h-4 w-4 mr-1.5" aria-hidden="true" />
+              Consultar estado online
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
             <a href={mailtoHref}>
               <Mail className="h-4 w-4 mr-1.5" aria-hidden="true" />
-              Consultar el estado por email
+              Consultar por email
             </a>
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={() => {
               setSuccess(false);
               setReference(null);
