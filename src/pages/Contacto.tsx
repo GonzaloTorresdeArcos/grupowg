@@ -64,7 +64,7 @@ const baseSchema = z.object({
 
 type FormData = z.infer<typeof baseSchema>;
 
-// Reglas condicionales por motivo
+// Reglas condicionales por motivo (campos requeridos)
 const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca"],
   reparaciones: ["producto", "urgencia"],
@@ -73,15 +73,46 @@ const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   seguros: ["ramo"],
 };
 
+// Todos los campos visibles por motivo (requeridos + opcionales)
+const fieldsByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
+  garantias: ["marca", "numeroSerie"],
+  reparaciones: ["producto", "urgencia"],
+  repuestos: ["referencia"],
+  movilidad: ["vehiculo", "matricula"],
+  seguros: ["ramo", "poliza"],
+};
+
+// Todos los campos posibles condicionales (para limpieza al cambiar de motivo)
+const ALL_CONDITIONAL_FIELDS: Array<keyof FormData> = [
+  "marca",
+  "numeroSerie",
+  "producto",
+  "urgencia",
+  "referencia",
+  "vehiculo",
+  "matricula",
+  "ramo",
+  "poliza",
+];
+
 const validateAll = (data: FormData) => {
   const r = baseSchema.safeParse(data);
   const errors: Record<string, string> = {};
+  const activeFields = new Set<string>(
+    (fieldsByMotivo[data.motivo as MotivoValue] || []) as string[],
+  );
+
   if (!r.success) {
     r.error.issues.forEach((i) => {
-      errors[i.path[0] as string] = i.message;
+      const key = i.path[0] as string;
+      // Ignora errores de campos condicionales que no pertenecen al motivo activo
+      if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
+        return;
+      }
+      errors[key] = i.message;
     });
   }
-  // Validación condicional
+  // Validación condicional: campos requeridos del motivo activo
   const required = requiredByMotivo[data.motivo as MotivoValue] || [];
   required.forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
@@ -136,6 +167,29 @@ const Contacto = () => {
 
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
+
+  // Cambio de motivo: limpia touched/errs de campos condicionales que ya no aplican
+  const selectMotivo = (value: MotivoValue) => {
+    const activeFields = new Set<string>(
+      (fieldsByMotivo[value] || []) as string[],
+    );
+    setForm((f) => ({ ...f, motivo: value }));
+    markTouched("motivo");
+    setTouched((t) => {
+      const next = { ...t };
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) delete next[field as string];
+      });
+      return next;
+    });
+    setErrs((e) => {
+      const next = { ...e };
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) delete next[field as string];
+      });
+      return next;
+    });
+  };
 
   useEffect(() => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
@@ -496,10 +550,7 @@ const Contacto = () => {
                           <button
                             key={m.value}
                             type="button"
-                            onClick={() => {
-                              update("motivo", m.value);
-                              markTouched("motivo");
-                            }}
+                            onClick={() => selectMotivo(m.value)}
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all " +
                               (active
