@@ -398,6 +398,36 @@ const Contacto = () => {
     };
   }, []);
 
+  // Orden visual de los campos para focus al primer error
+  const FIELD_ORDER: Array<keyof FormData> = [
+    "nombre", "empresa", "email", "telefono", "motivo",
+    "marca", "numeroSerie", "producto", "urgencia", "referencia",
+    "vehiculo", "matricula", "ramo", "poliza", "mensaje", "consentimiento",
+  ];
+
+  const focusFirstError = (errors: Record<string, string>) => {
+    if (typeof document === "undefined") return;
+    const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
+    if (!firstKey) return;
+    // Espera al render para que data-invalid esté aplicado
+    requestAnimationFrame(() => {
+      const wrapper = document.querySelector<HTMLElement>(
+        `[data-field="${firstKey}"]`,
+      );
+      if (!wrapper) return;
+      // Animación de shake
+      wrapper.setAttribute("data-shake", "true");
+      window.setTimeout(() => wrapper.removeAttribute("data-shake"), 500);
+      // Scroll suave al campo
+      wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+      // Focus al control interactivo
+      const control = wrapper.querySelector<HTMLElement>(
+        "input, select, textarea, button",
+      );
+      window.setTimeout(() => control?.focus({ preventScroll: true }), 250);
+    });
+  };
+
   const goReview = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = validateAll(form);
@@ -408,6 +438,7 @@ const Contacto = () => {
       Object.keys(errors).forEach((k) => (t[k] = true));
       setTouched((prev) => ({ ...prev, ...t }));
       toast.error("Revisa los campos marcados");
+      focusFirstError(errors);
       return;
     }
     setErrs({});
