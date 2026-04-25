@@ -28,12 +28,11 @@ const Modelo = () => {
         eyebrow="01 · Modelo"
         title={
           <>
-            Un sistema operativo,
-            <br />
-            <span className="text-teal italic">no un proveedor</span>.
+            Un sistema operativo de servicio,{" "}
+            <span className="text-teal italic">end-to-end</span>.
           </>
         }
-        subtitle="Convertimos el servicio postventa en un sistema que funciona. Bajo control. Operación, experiencia y conocimiento técnico integrados de principio a fin."
+        subtitle="El rendimiento del servicio no depende de áreas aisladas, sino de cómo funciona el sistema en su conjunto. Estructuramos el servicio como un flujo completo, donde cada etapa está conectada, tiene un objetivo claro y contribuye directamente al resultado final."
         cta={{ label: "Solicitar información", to: "/contacto" }}
       />
       <ProblemBlock />
