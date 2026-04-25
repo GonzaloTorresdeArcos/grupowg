@@ -60,6 +60,9 @@ const baseSchema = z.object({
     .trim()
     .min(10, "Cuéntanos un poco más")
     .max(2000, "Máximo 2000 caracteres"),
+  consentimiento: z.literal(true, {
+    errorMap: () => ({ message: "Debes aceptar el tratamiento de datos para continuar" }),
+  }),
 });
 
 type FormData = z.infer<typeof baseSchema>;
@@ -139,6 +142,7 @@ const initialForm: FormData = {
   ramo: undefined,
   poliza: "",
   mensaje: "",
+  consentimiento: false as unknown as true,
 };
 
 const Contacto = () => {
@@ -706,6 +710,35 @@ const Contacto = () => {
                     </span>
                   </Field>
 
+                  <div className="pt-2">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={!!form.consentimiento}
+                        onChange={(e) => {
+                          update("consentimiento", e.target.checked as unknown as true);
+                          markTouched("consentimiento");
+                        }}
+                        onBlur={() => markTouched("consentimiento")}
+                        className="mt-1 h-4 w-4 rounded border-border accent-ink cursor-pointer flex-shrink-0"
+                        aria-invalid={!!visibleErrs.consentimiento}
+                      />
+                      <span className="text-xs text-muted-foreground leading-relaxed">
+                        He leído y acepto el tratamiento de mis datos conforme a la{" "}
+                        <a href="/privacidad" className="underline hover:text-ink">
+                          política de privacidad
+                        </a>
+                        . Mis datos se usarán únicamente para responder a esta solicitud.{" "}
+                        <span className="text-destructive">*</span>
+                      </span>
+                    </label>
+                    {visibleErrs.consentimiento && (
+                      <span className="block text-xs text-destructive mt-1.5 ml-7">
+                        {visibleErrs.consentimiento}
+                      </span>
+                    )}
+                  </div>
+
                   <button
                     type="submit"
                     className="btn-primary w-full sm:w-auto justify-center"
@@ -713,13 +746,6 @@ const Contacto = () => {
                     Continuar a revisión
                     <ArrowRight className="h-4 w-4" />
                   </button>
-                  <p className="text-xs text-muted-foreground">
-                    Al enviar este formulario aceptas nuestra{" "}
-                    <a href="/privacidad" className="underline hover:text-ink">
-                      política de privacidad
-                    </a>
-                    .
-                  </p>
                 </form>
               </Reveal>
             )}
