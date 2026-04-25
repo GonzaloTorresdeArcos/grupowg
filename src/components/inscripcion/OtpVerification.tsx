@@ -26,17 +26,26 @@ export const OtpVerification = ({ channel, destination, verified, onVerified }: 
       toast.error(`Introduce primero tu ${label}`);
       return;
     }
+    console.info("[OTP][send] start", { channel, destination });
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-otp", {
         body: { action: "send", channel, destination },
       });
+      console.info("[OTP][send] response", { data, error });
       if (error) throw error;
       setSent(true);
-      // Demo: mostramos el código devuelto por la edge function
       if (data?.demo_code) setDemoCode(data.demo_code);
       toast.success(channel === "email" ? "Código enviado al email" : "Código (modo demo) generado");
     } catch (e: any) {
+      console.error("[OTP][send] error", {
+        channel,
+        destination,
+        message: e?.message,
+        name: e?.name,
+        stack: e?.stack,
+        raw: e,
+      });
       toast.error("No hemos podido enviar el código");
     } finally {
       setSending(false);
@@ -48,19 +57,41 @@ export const OtpVerification = ({ channel, destination, verified, onVerified }: 
       toast.error("El código debe tener 6 dígitos");
       return;
     }
+    console.info("[OTP][verify] start", { channel, destination, codeLen: code.length });
     setVerifying(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-otp", {
         body: { action: "verify", channel, destination, code },
       });
+      console.info("[OTP][verify] response", { data, error });
       if (error) throw error;
       if (data?.ok) {
         toast.success(`${channel === "email" ? "Email" : "Teléfono"} verificado`);
-        onVerified();
+        try {
+          console.info("[OTP][verify] calling onVerified", { hasCallback: typeof onVerified });
+          onVerified();
+          console.info("[OTP][verify] onVerified finished OK");
+        } catch (cbErr: any) {
+          console.error("[OTP][verify] onVerified threw", {
+            message: cbErr?.message,
+            name: cbErr?.name,
+            stack: cbErr?.stack,
+            raw: cbErr,
+          });
+          throw cbErr;
+        }
       } else {
         toast.error(data?.error || "Código incorrecto");
       }
     } catch (e: any) {
+      console.error("[OTP][verify] error", {
+        channel,
+        destination,
+        message: e?.message,
+        name: e?.name,
+        stack: e?.stack,
+        raw: e,
+      });
       toast.error("Error al verificar el código");
     } finally {
       setVerifying(false);

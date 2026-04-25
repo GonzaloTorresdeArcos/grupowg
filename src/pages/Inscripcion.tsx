@@ -15,6 +15,7 @@ import { computeScoring } from "@/lib/scoring";
 import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode } from "@/lib/spain-provinces";
+import { ErrorLogger } from "@/components/site/ErrorLogger";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -464,8 +465,28 @@ const Inscripcion = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 pt-2">
-              <OtpVerification channel="email" destination={s1.email} verified={emailVerified} onVerified={() => setEmailVerified(true)} />
-              <OtpVerification channel="sms" destination={s1.telefono} verified={phoneVerified} onVerified={() => setPhoneVerified(true)} />
+              <ErrorLogger context="OtpVerification:email">
+                <OtpVerification
+                  channel="email"
+                  destination={s1.email}
+                  verified={emailVerified}
+                  onVerified={() => {
+                    console.info("[Inscripcion] email onVerified");
+                    setEmailVerified(true);
+                  }}
+                />
+              </ErrorLogger>
+              <ErrorLogger context="OtpVerification:sms">
+                <OtpVerification
+                  channel="sms"
+                  destination={s1.telefono}
+                  verified={phoneVerified}
+                  onVerified={() => {
+                    console.info("[Inscripcion] phone onVerified");
+                    setPhoneVerified(true);
+                  }}
+                />
+              </ErrorLogger>
             </div>
           </div>
         )}
