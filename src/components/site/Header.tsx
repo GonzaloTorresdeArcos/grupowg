@@ -5,12 +5,12 @@ import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 const primaryNav = [
+  { to: "/grupo", label: "Grupo WG" },
   { to: "/modelo", label: "Modelo" },
   { to: "/soluciones", label: "Soluciones" },
   { to: "/plataforma", label: "Plataforma" },
   { to: "/experiencia", label: "Experiencia" },
   { to: "/industrias", label: "Industrias" },
-  { to: "/grupo", label: "Grupo WG" },
   { to: "/wg-network", label: "WG Network" },
 ];
 
