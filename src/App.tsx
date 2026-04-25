@@ -24,6 +24,7 @@ import Privacidad from "./pages/Privacidad.tsx";
 import AvisoLegal from "./pages/AvisoLegal.tsx";
 import Cookies from "./pages/Cookies.tsx";
 import Accesibilidad from "./pages/Accesibilidad.tsx";
+import AccesibilidadEstado from "./pages/AccesibilidadEstado.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PortalLogin from "./pages/portal/Login.tsx";
 import PortalDashboard from "./pages/portal/Dashboard.tsx";
@@ -67,6 +68,7 @@ const App = () => (
                 <Route path="/legal/aviso-legal" element={<AvisoLegal />} />
                 <Route path="/legal/cookies" element={<Cookies />} />
                 <Route path="/legal/accesibilidad" element={<Accesibilidad />} />
+                <Route path="/legal/accesibilidad/estado" element={<AccesibilidadEstado />} />
               </Route>
 
               {/* Portal del colaborador */}
