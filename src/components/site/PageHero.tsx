@@ -16,11 +16,11 @@ export const PageHero = ({ eyebrow, title, subtitle, cta }: PageHeroProps) => (
     <div className="container-tight relative">
       <Reveal>
         {eyebrow && <p className="eyebrow-mono mb-6">{eyebrow}</p>}
-        <h1 className="heading-display text-foreground text-5xl md:text-7xl max-w-4xl text-balance leading-[1.02]">
+        <h1 className="heading-display text-foreground text-4xl sm:text-5xl md:text-7xl max-w-4xl text-balance leading-[1.05] md:leading-[1.02] tracking-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+          <p className="mt-7 md:mt-8 max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
             {subtitle}
           </p>
         )}
