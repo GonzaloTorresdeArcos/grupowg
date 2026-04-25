@@ -148,7 +148,12 @@ const initialForm: FormData = {
 const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
-type DraftPayload = { form: FormData; step: "form" | "review"; savedAt: number };
+type DraftPayload = {
+  form: FormData;
+  step: "form" | "review";
+  savedAt: number;
+  consentAt?: number | null;
+};
 
 const loadDraft = (): DraftPayload | null => {
   if (typeof window === "undefined") return null;
@@ -185,6 +190,7 @@ const Contacto = () => {
   const [loading, setLoading] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState<Date | null>(null);
+  const [consentAt, setConsentAt] = useState<Date | null>(null);
 
   // Hidratar borrador desde localStorage al montar
   useEffect(() => {
@@ -193,6 +199,9 @@ const Contacto = () => {
       setForm(draft.form);
       setStep(draft.step ?? "form");
       setRestored(new Date(draft.savedAt));
+      if (draft.consentAt && draft.form.consentimiento) {
+        setConsentAt(new Date(draft.consentAt));
+      }
     }
     setHydrated(true);
   }, []);
@@ -207,14 +216,19 @@ const Contacto = () => {
     }
     const id = window.setTimeout(() => {
       try {
-        const payload: DraftPayload = { form, step, savedAt: Date.now() };
+        const payload: DraftPayload = {
+          form,
+          step,
+          savedAt: Date.now(),
+          consentAt: consentAt ? consentAt.getTime() : null,
+        };
         window.localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
       } catch {
         // noop (quota, modo privado, etc.)
       }
     }, 400);
     return () => window.clearTimeout(id);
-  }, [form, step, hydrated, sent]);
+  }, [form, step, hydrated, sent, consentAt]);
 
   const clearDraft = () => {
     if (typeof window !== "undefined") window.localStorage.removeItem(DRAFT_KEY);
@@ -227,6 +241,7 @@ const Contacto = () => {
     setErrs({});
     setTouched({});
     setStep("form");
+    setConsentAt(null);
     toast.success("Borrador descartado");
   };
 
@@ -547,6 +562,32 @@ const Contacto = () => {
                     <ReviewRow label="Mensaje" value={form.mensaje} multiline />
                   </dl>
 
+                  <div className="mt-6 rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
+                    <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0 text-xs">
+                      <p className="font-medium text-ink">
+                        Consentimiento aceptado
+                      </p>
+                      <p className="mt-0.5 text-muted-foreground leading-relaxed">
+                        Aceptaste el tratamiento de datos conforme a la{" "}
+                        <a href="/privacidad" className="underline hover:text-ink">
+                          política de privacidad
+                        </a>{" "}
+                        el{" "}
+                        <span className="text-ink font-medium">
+                          {(consentAt ?? new Date()).toLocaleString("es-ES", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        .
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="mt-8 flex flex-col sm:flex-row gap-3">
                     <button
                       type="button"
@@ -819,7 +860,9 @@ const Contacto = () => {
                         type="checkbox"
                         checked={!!form.consentimiento}
                         onChange={(e) => {
-                          update("consentimiento", e.target.checked as unknown as true);
+                          const checked = e.target.checked;
+                          update("consentimiento", checked as unknown as true);
+                          setConsentAt(checked ? new Date() : null);
                           markTouched("consentimiento");
                         }}
                         onBlur={() => markTouched("consentimiento")}
