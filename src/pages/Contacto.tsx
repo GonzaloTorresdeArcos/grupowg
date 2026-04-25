@@ -676,7 +676,7 @@ const Contacto = () => {
                     </div>
                   )}
                   <div className="grid md:grid-cols-2 gap-5">
-                    <Field label="Nombre *" error={visibleErrs.nombre}>
+                    <Field name="nombre" label="Nombre *" error={visibleErrs.nombre}>
                       <input
                         className="input-base"
                         value={form.nombre}
@@ -686,7 +686,7 @@ const Contacto = () => {
                         autoComplete="name"
                       />
                     </Field>
-                    <Field label="Empresa" error={visibleErrs.empresa}>
+                    <Field name="empresa" label="Empresa" error={visibleErrs.empresa}>
                       <input
                         className="input-base"
                         value={form.empresa ?? ""}
@@ -696,7 +696,7 @@ const Contacto = () => {
                         autoComplete="organization"
                       />
                     </Field>
-                    <Field label="Email *" error={visibleErrs.email}>
+                    <Field name="email" label="Email *" error={visibleErrs.email}>
                       <input
                         type="email"
                         className="input-base"
@@ -708,7 +708,7 @@ const Contacto = () => {
                         inputMode="email"
                       />
                     </Field>
-                    <Field label="Teléfono" error={visibleErrs.telefono}>
+                    <Field name="telefono" label="Teléfono" error={visibleErrs.telefono}>
                       <input
                         className="input-base"
                         value={form.telefono ?? ""}
@@ -721,7 +721,7 @@ const Contacto = () => {
                     </Field>
                   </div>
 
-                  <Field label="Motivo de contacto *" error={visibleErrs.motivo}>
+                  <Field name="motivo" label="Motivo de contacto *" error={visibleErrs.motivo}>
                     <div className="flex flex-wrap gap-2">
                       {MOTIVOS.map((m) => {
                         const active = form.motivo === m.value;
@@ -748,7 +748,7 @@ const Contacto = () => {
                   {/* Campos por motivo */}
                   {form.motivo === "garantias" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Marca *" error={visibleErrs.marca}>
+                      <Field name="marca" label="Marca *" error={visibleErrs.marca}>
                         <input
                           className="input-base"
                           value={form.marca ?? ""}
@@ -757,7 +757,7 @@ const Contacto = () => {
                           maxLength={80}
                         />
                       </Field>
-                      <Field label="Nº de serie" error={visibleErrs.numeroSerie}>
+                      <Field name="numeroSerie" label="Nº de serie" error={visibleErrs.numeroSerie}>
                         <input
                           className="input-base"
                           value={form.numeroSerie ?? ""}
@@ -771,7 +771,7 @@ const Contacto = () => {
 
                   {form.motivo === "reparaciones" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Producto *" error={visibleErrs.producto}>
+                      <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
                           className="input-base"
                           value={form.producto ?? ""}
@@ -780,7 +780,7 @@ const Contacto = () => {
                           maxLength={120}
                         />
                       </Field>
-                      <Field label="Urgencia *" error={visibleErrs.urgencia}>
+                      <Field name="urgencia" label="Urgencia *" error={visibleErrs.urgencia}>
                         <select
                           className="input-base"
                           value={form.urgencia ?? ""}
@@ -801,7 +801,7 @@ const Contacto = () => {
                   )}
 
                   {form.motivo === "repuestos" && (
-                    <Field label="Referencia o código de pieza *" error={visibleErrs.referencia}>
+                    <Field name="referencia" label="Referencia o código de pieza *" error={visibleErrs.referencia}>
                       <input
                         className="input-base"
                         value={form.referencia ?? ""}
@@ -814,7 +814,7 @@ const Contacto = () => {
 
                   {form.motivo === "movilidad" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
+                      <Field name="vehiculo" label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
                         <select
                           className="input-base"
                           value={form.vehiculo ?? ""}
@@ -831,7 +831,7 @@ const Contacto = () => {
                           ))}
                         </select>
                       </Field>
-                      <Field label="Matrícula" error={visibleErrs.matricula}>
+                      <Field name="matricula" label="Matrícula" error={visibleErrs.matricula}>
                         <input
                           className="input-base"
                           value={form.matricula ?? ""}
@@ -845,7 +845,7 @@ const Contacto = () => {
 
                   {form.motivo === "seguros" && (
                     <div className="grid md:grid-cols-2 gap-5">
-                      <Field label="Ramo *" error={visibleErrs.ramo}>
+                      <Field name="ramo" label="Ramo *" error={visibleErrs.ramo}>
                         <select
                           className="input-base"
                           value={form.ramo ?? ""}
@@ -860,7 +860,7 @@ const Contacto = () => {
                           ))}
                         </select>
                       </Field>
-                      <Field label="Nº de póliza" error={visibleErrs.poliza}>
+                      <Field name="poliza" label="Nº de póliza" error={visibleErrs.poliza}>
                         <input
                           className="input-base"
                           value={form.poliza ?? ""}
@@ -872,7 +872,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  <Field label="¿En qué podemos ayudarte? *" error={visibleErrs.mensaje}>
+                  <Field name="mensaje" label="¿En qué podemos ayudarte? *" error={visibleErrs.mensaje}>
                     <textarea
                       className="input-base min-h-32"
                       value={form.mensaje}
