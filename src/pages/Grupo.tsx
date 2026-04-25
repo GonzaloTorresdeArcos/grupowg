@@ -179,7 +179,7 @@ const Grupo = () => {
         </div>
       </section>
 
-      <ClosingBlock />
+      
     </>
   );
 };
