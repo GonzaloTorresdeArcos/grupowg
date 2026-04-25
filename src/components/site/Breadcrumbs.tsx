@@ -97,11 +97,11 @@ export const Breadcrumbs = ({ dark = true }: BreadcrumbsProps) => {
     <nav
       aria-label="Migas de pan"
       className={cn(
-        "container-tight pt-24 md:pt-28 pb-2 text-xs",
+        "absolute left-0 right-0 top-[68px] md:top-[76px] z-10 container-tight pt-3 pb-2 text-xs pointer-events-none",
         baseText,
       )}
     >
-      <ol className="flex flex-wrap items-center gap-1.5">
+      <ol className="flex flex-wrap items-center gap-1.5 pointer-events-auto">
         <li className="flex items-center gap-1.5">
           <Link
             to="/"
