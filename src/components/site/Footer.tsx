@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 interface FooterProps {
   dark?: boolean;
 }
 
 export const Footer = ({ dark = true }: FooterProps) => {
+  const { openPreferences } = useCookieConsent();
   // En oscuro usamos los colores del tema oscuro (foreground = bone). En claro usamos paleta fija oscura.
   const bg = dark ? "bg-ink" : "bg-ink";
   const textBase = "text-bone/70";
@@ -57,9 +59,17 @@ export const Footer = ({ dark = true }: FooterProps) => {
         <div className="hairline bg-bone/10 my-12" />
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-bone/45">
           <p>© {new Date().getFullYear()} Grupo Warranty Global · Todos los derechos reservados</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link to="/legal/privacidad" className={textHover}>Política de privacidad</Link>
             <Link to="/legal/aviso-legal" className={textHover}>Aviso legal</Link>
+            <Link to="/legal/cookies" className={textHover}>Política de cookies</Link>
+            <button
+              type="button"
+              onClick={openPreferences}
+              className={cn(textHover, "underline-offset-2 hover:underline")}
+            >
+              Configurar cookies
+            </button>
           </div>
         </div>
       </div>
