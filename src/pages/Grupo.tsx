@@ -140,7 +140,7 @@ const Grupo = () => {
       </section>
 
       {/* DIFERENCIAL */}
-      <section className="py-24 md:py-32 bg-background relative overflow-hidden">
+      <section className="section-padding bg-background relative overflow-hidden">
         <div className="container-tight relative">
           <Reveal>
             <p className="eyebrow-mono mb-4">03 · Diferencial</p>
