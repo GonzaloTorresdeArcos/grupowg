@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { ArrowRight, Check, Loader2, Mail, Phone, MapPin, Clock } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Loader2,
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+} from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { toast } from "sonner";
 
@@ -14,11 +23,19 @@ const MOTIVOS = [
   { value: "otro", label: "Otro" },
 ] as const;
 
-const motivoValues = MOTIVOS.map((m) => m.value) as [string, ...string[]];
+type MotivoValue = (typeof MOTIVOS)[number]["value"];
+const motivoValues = MOTIVOS.map((m) => m.value) as [MotivoValue, ...MotivoValue[]];
 
-const schema = z.object({
+const URGENCIAS = ["Estándar", "Alta", "Crítica"] as const;
+const RAMOS = ["Hogar", "Decesos", "Salud", "Auto", "Comercio", "Otro"] as const;
+const VEHICULOS = ["Turismo", "Furgoneta", "Industrial", "Moto", "Otro"] as const;
+
+const optionalString = (max: number) =>
+  z.string().trim().max(max, `Máximo ${max} caracteres`).optional().or(z.literal(""));
+
+const baseSchema = z.object({
   nombre: z.string().trim().min(1, "Requerido").max(120, "Máximo 120 caracteres"),
-  empresa: z.string().trim().max(200, "Máximo 200 caracteres").optional(),
+  empresa: optionalString(200),
   email: z.string().trim().email("Email no válido").max(255, "Máximo 255 caracteres"),
   telefono: z
     .string()
@@ -28,6 +45,16 @@ const schema = z.object({
     .optional()
     .or(z.literal("")),
   motivo: z.enum(motivoValues, { message: "Selecciona un motivo" }),
+  // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
+  marca: optionalString(80),
+  numeroSerie: optionalString(60),
+  producto: optionalString(120),
+  urgencia: z.enum(URGENCIAS).optional(),
+  referencia: optionalString(80),
+  vehiculo: z.enum(VEHICULOS).optional(),
+  matricula: optionalString(15),
+  ramo: z.enum(RAMOS).optional(),
+  poliza: optionalString(60),
   mensaje: z
     .string()
     .trim()
@@ -35,18 +62,80 @@ const schema = z.object({
     .max(2000, "Máximo 2000 caracteres"),
 });
 
-const Contacto = () => {
-  const [form, setForm] = useState({
-    nombre: "",
-    empresa: "",
-    email: "",
-    telefono: "",
-    motivo: "",
-    mensaje: "",
+type FormData = z.infer<typeof baseSchema>;
+
+// Reglas condicionales por motivo
+const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
+  garantias: ["marca"],
+  reparaciones: ["producto", "urgencia"],
+  repuestos: ["referencia"],
+  movilidad: ["vehiculo"],
+  seguros: ["ramo"],
+};
+
+const validateAll = (data: FormData) => {
+  const r = baseSchema.safeParse(data);
+  const errors: Record<string, string> = {};
+  if (!r.success) {
+    r.error.issues.forEach((i) => {
+      errors[i.path[0] as string] = i.message;
+    });
+  }
+  // Validación condicional
+  const required = requiredByMotivo[data.motivo as MotivoValue] || [];
+  required.forEach((field) => {
+    const v = (data as Record<string, unknown>)[field];
+    if (!v || (typeof v === "string" && v.trim() === "")) {
+      errors[field as string] = "Requerido para este motivo";
+    }
   });
+  return errors;
+};
+
+const initialForm: FormData = {
+  nombre: "",
+  empresa: "",
+  email: "",
+  telefono: "",
+  motivo: "" as MotivoValue,
+  marca: "",
+  numeroSerie: "",
+  producto: "",
+  urgencia: undefined,
+  referencia: "",
+  vehiculo: undefined,
+  matricula: "",
+  ramo: undefined,
+  poliza: "",
+  mensaje: "",
+};
+
+const Contacto = () => {
+  const [form, setForm] = useState<FormData>(initialForm);
   const [errs, setErrs] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [step, setStep] = useState<"form" | "review">("form");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const allErrors = useMemo(() => validateAll(form), [form]);
+  const visibleErrs = useMemo(() => {
+    const out: Record<string, string> = {};
+    Object.entries(allErrors).forEach(([k, v]) => {
+      if (touched[k]) out[k] = v;
+    });
+    // Errores forzados (al intentar avanzar) se mantienen
+    Object.entries(errs).forEach(([k, v]) => {
+      if (v) out[k] = v;
+    });
+    return out;
+  }, [allErrors, touched, errs]);
+
+  const markTouched = (field: string) =>
+    setTouched((t) => (t[field] ? t : { ...t, [field]: true }));
+
+  const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
+    setForm((f) => ({ ...f, [field]: value }));
 
   useEffect(() => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
@@ -159,24 +248,32 @@ const Contacto = () => {
     };
   }, []);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const goReview = (e: React.FormEvent) => {
     e.preventDefault();
-    const r = schema.safeParse(form);
-    if (!r.success) {
-      const ne: Record<string, string> = {};
-      r.error.issues.forEach((i) => {
-        ne[i.path[0] as string] = i.message;
-      });
-      setErrs(ne);
+    const errors = validateAll(form);
+    if (Object.keys(errors).length > 0) {
+      setErrs(errors);
+      // marca todos como touched para mostrar errores
+      const t: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (t[k] = true));
+      setTouched((prev) => ({ ...prev, ...t }));
+      toast.error("Revisa los campos marcados");
       return;
     }
     setErrs({});
+    setStep("review");
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const confirmSend = async () => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     setSent(true);
     toast.success("Mensaje recibido");
   };
+
+  const motivoLabel = MOTIVOS.find((m) => m.value === form.motivo)?.label ?? "—";
 
   return (
     <>
@@ -285,48 +382,105 @@ const Contacto = () => {
                   </div>
                 </div>
               </Reveal>
+            ) : step === "review" ? (
+              <Reveal>
+                <div className="rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm">
+                  <p className="eyebrow-mono mb-3">Paso 2 de 2 · Revisión</p>
+                  <h2 className="font-display text-2xl md:text-3xl text-ink mb-6">
+                    Revisa antes de enviar
+                  </h2>
+                  <dl className="divide-y divide-border text-sm">
+                    <ReviewRow label="Nombre" value={form.nombre} />
+                    {form.empresa && <ReviewRow label="Empresa" value={form.empresa} />}
+                    <ReviewRow label="Email" value={form.email} />
+                    {form.telefono && <ReviewRow label="Teléfono" value={form.telefono} />}
+                    <ReviewRow label="Motivo" value={motivoLabel} />
+                    {form.marca && <ReviewRow label="Marca" value={form.marca} />}
+                    {form.numeroSerie && (
+                      <ReviewRow label="Nº de serie" value={form.numeroSerie} />
+                    )}
+                    {form.producto && <ReviewRow label="Producto" value={form.producto} />}
+                    {form.urgencia && <ReviewRow label="Urgencia" value={form.urgencia} />}
+                    {form.referencia && (
+                      <ReviewRow label="Referencia" value={form.referencia} />
+                    )}
+                    {form.vehiculo && <ReviewRow label="Vehículo" value={form.vehiculo} />}
+                    {form.matricula && <ReviewRow label="Matrícula" value={form.matricula} />}
+                    {form.ramo && <ReviewRow label="Ramo" value={form.ramo} />}
+                    {form.poliza && <ReviewRow label="Póliza" value={form.poliza} />}
+                    <ReviewRow label="Mensaje" value={form.mensaje} multiline />
+                  </dl>
+
+                  <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setStep("form")}
+                      disabled={loading}
+                      className="btn-on-light w-full sm:w-auto justify-center"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Volver y editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={confirmSend}
+                      disabled={loading}
+                      className="btn-primary disabled:opacity-50 w-full sm:flex-1 justify-center"
+                    >
+                      {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                      Confirmar y enviar
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </Reveal>
             ) : (
               <Reveal delay={80}>
                 <form
-                  onSubmit={onSubmit}
+                  onSubmit={goReview}
                   className="space-y-5 rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm"
                   noValidate
                 >
+                  <p className="eyebrow-mono">Paso 1 de 2 · Datos</p>
                   <div className="grid md:grid-cols-2 gap-5">
-                    <Field label="Nombre *" error={errs.nombre}>
+                    <Field label="Nombre *" error={visibleErrs.nombre}>
                       <input
                         className="input-base"
                         value={form.nombre}
-                        onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                        onChange={(e) => update("nombre", e.target.value)}
+                        onBlur={() => markTouched("nombre")}
                         maxLength={120}
                         autoComplete="name"
                       />
                     </Field>
-                    <Field label="Empresa" error={errs.empresa}>
+                    <Field label="Empresa" error={visibleErrs.empresa}>
                       <input
                         className="input-base"
-                        value={form.empresa}
-                        onChange={(e) => setForm({ ...form, empresa: e.target.value })}
+                        value={form.empresa ?? ""}
+                        onChange={(e) => update("empresa", e.target.value)}
+                        onBlur={() => markTouched("empresa")}
                         maxLength={200}
                         autoComplete="organization"
                       />
                     </Field>
-                    <Field label="Email *" error={errs.email}>
+                    <Field label="Email *" error={visibleErrs.email}>
                       <input
                         type="email"
                         className="input-base"
                         value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        onChange={(e) => update("email", e.target.value)}
+                        onBlur={() => markTouched("email")}
                         maxLength={255}
                         autoComplete="email"
                         inputMode="email"
                       />
                     </Field>
-                    <Field label="Teléfono" error={errs.telefono}>
+                    <Field label="Teléfono" error={visibleErrs.telefono}>
                       <input
                         className="input-base"
-                        value={form.telefono}
-                        onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+                        value={form.telefono ?? ""}
+                        onChange={(e) => update("telefono", e.target.value)}
+                        onBlur={() => markTouched("telefono")}
                         maxLength={20}
                         autoComplete="tel"
                         inputMode="tel"
@@ -334,7 +488,7 @@ const Contacto = () => {
                     </Field>
                   </div>
 
-                  <Field label="Motivo de contacto *" error={errs.motivo}>
+                  <Field label="Motivo de contacto *" error={visibleErrs.motivo}>
                     <div className="flex flex-wrap gap-2">
                       {MOTIVOS.map((m) => {
                         const active = form.motivo === m.value;
@@ -342,7 +496,10 @@ const Contacto = () => {
                           <button
                             key={m.value}
                             type="button"
-                            onClick={() => setForm({ ...form, motivo: m.value })}
+                            onClick={() => {
+                              update("motivo", m.value);
+                              markTouched("motivo");
+                            }}
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all " +
                               (active
@@ -358,24 +515,152 @@ const Contacto = () => {
                     </div>
                   </Field>
 
-                  <Field label="¿En qué podemos ayudarte? *" error={errs.mensaje}>
+                  {/* Campos por motivo */}
+                  {form.motivo === "garantias" && (
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <Field label="Marca *" error={visibleErrs.marca}>
+                        <input
+                          className="input-base"
+                          value={form.marca ?? ""}
+                          onChange={(e) => update("marca", e.target.value)}
+                          onBlur={() => markTouched("marca")}
+                          maxLength={80}
+                        />
+                      </Field>
+                      <Field label="Nº de serie" error={visibleErrs.numeroSerie}>
+                        <input
+                          className="input-base"
+                          value={form.numeroSerie ?? ""}
+                          onChange={(e) => update("numeroSerie", e.target.value)}
+                          onBlur={() => markTouched("numeroSerie")}
+                          maxLength={60}
+                        />
+                      </Field>
+                    </div>
+                  )}
+
+                  {form.motivo === "reparaciones" && (
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <Field label="Producto *" error={visibleErrs.producto}>
+                        <input
+                          className="input-base"
+                          value={form.producto ?? ""}
+                          onChange={(e) => update("producto", e.target.value)}
+                          onBlur={() => markTouched("producto")}
+                          maxLength={120}
+                        />
+                      </Field>
+                      <Field label="Urgencia *" error={visibleErrs.urgencia}>
+                        <select
+                          className="input-base"
+                          value={form.urgencia ?? ""}
+                          onChange={(e) =>
+                            update("urgencia", e.target.value as FormData["urgencia"])
+                          }
+                          onBlur={() => markTouched("urgencia")}
+                        >
+                          <option value="">Selecciona…</option>
+                          {URGENCIAS.map((u) => (
+                            <option key={u} value={u}>
+                              {u}
+                            </option>
+                          ))}
+                        </select>
+                      </Field>
+                    </div>
+                  )}
+
+                  {form.motivo === "repuestos" && (
+                    <Field label="Referencia o código de pieza *" error={visibleErrs.referencia}>
+                      <input
+                        className="input-base"
+                        value={form.referencia ?? ""}
+                        onChange={(e) => update("referencia", e.target.value)}
+                        onBlur={() => markTouched("referencia")}
+                        maxLength={80}
+                      />
+                    </Field>
+                  )}
+
+                  {form.motivo === "movilidad" && (
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <Field label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
+                        <select
+                          className="input-base"
+                          value={form.vehiculo ?? ""}
+                          onChange={(e) =>
+                            update("vehiculo", e.target.value as FormData["vehiculo"])
+                          }
+                          onBlur={() => markTouched("vehiculo")}
+                        >
+                          <option value="">Selecciona…</option>
+                          {VEHICULOS.map((v) => (
+                            <option key={v} value={v}>
+                              {v}
+                            </option>
+                          ))}
+                        </select>
+                      </Field>
+                      <Field label="Matrícula" error={visibleErrs.matricula}>
+                        <input
+                          className="input-base"
+                          value={form.matricula ?? ""}
+                          onChange={(e) => update("matricula", e.target.value.toUpperCase())}
+                          onBlur={() => markTouched("matricula")}
+                          maxLength={15}
+                        />
+                      </Field>
+                    </div>
+                  )}
+
+                  {form.motivo === "seguros" && (
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <Field label="Ramo *" error={visibleErrs.ramo}>
+                        <select
+                          className="input-base"
+                          value={form.ramo ?? ""}
+                          onChange={(e) => update("ramo", e.target.value as FormData["ramo"])}
+                          onBlur={() => markTouched("ramo")}
+                        >
+                          <option value="">Selecciona…</option>
+                          {RAMOS.map((r) => (
+                            <option key={r} value={r}>
+                              {r}
+                            </option>
+                          ))}
+                        </select>
+                      </Field>
+                      <Field label="Nº de póliza" error={visibleErrs.poliza}>
+                        <input
+                          className="input-base"
+                          value={form.poliza ?? ""}
+                          onChange={(e) => update("poliza", e.target.value)}
+                          onBlur={() => markTouched("poliza")}
+                          maxLength={60}
+                        />
+                      </Field>
+                    </div>
+                  )}
+
+                  <Field label="¿En qué podemos ayudarte? *" error={visibleErrs.mensaje}>
                     <textarea
                       className="input-base min-h-32"
                       value={form.mensaje}
-                      onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+                      onChange={(e) => update("mensaje", e.target.value)}
+                      onBlur={() => markTouched("mensaje")}
                       maxLength={2000}
                     />
                     <span className="block text-[11px] text-muted-foreground mt-1.5 text-right">
                       {form.mensaje.length}/2000
                     </span>
                   </Field>
+
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="btn-primary disabled:opacity-50 w-full sm:w-auto justify-center"
+                    className="btn-primary w-full sm:w-auto justify-center"
                   >
-                    {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                    Enviar mensaje <ArrowRight className="h-4 w-4" />
+                    Continuar a revisión
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                   <p className="text-xs text-muted-foreground">
                     Al enviar este formulario aceptas nuestra{" "}
@@ -556,6 +841,29 @@ const Field = ({
     {children}
     {error && <span className="block text-xs text-destructive mt-1.5">{error}</span>}
   </label>
+);
+
+const ReviewRow = ({
+  label,
+  value,
+  multiline,
+}: {
+  label: string;
+  value: string;
+  multiline?: boolean;
+}) => (
+  <div className="py-3 grid grid-cols-3 gap-4">
+    <dt className="text-xs uppercase tracking-wider text-muted-foreground col-span-1">
+      {label}
+    </dt>
+    <dd
+      className={
+        "text-ink col-span-2 " + (multiline ? "whitespace-pre-wrap" : "truncate")
+      }
+    >
+      {value}
+    </dd>
+  </div>
 );
 
 export default Contacto;
