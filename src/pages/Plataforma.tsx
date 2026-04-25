@@ -35,7 +35,10 @@ const Plataforma = () => {
       <PlatformBlock />
       <IntelligenceBlock />
       <ExperienceGovernanceBlock />
-      <ClosingBlock />
+      <ClosingBlock
+        lineOne="Una plataforma. Un sistema."
+        lineTwo="Control total del servicio."
+      />
     </>
   );
 };
