@@ -1,12 +1,12 @@
 import { Reveal } from "@/components/site/Reveal";
 
 const metrics = [
-  { v: "+150K", l: "Incidencias resueltas / año", c: "Operación" },
-  { v: "+400", l: "SATs activos en red", c: "Cobertura" },
-  { v: "50", l: "Años de oficio", c: "Trayectoria" },
-  { v: "ES · PT · MX", l: "Presencia operativa", c: "Multi-país" },
-  { v: "+25", l: "Años de relación con clientes", c: "Confianza" },
-  { v: "24/7", l: "Control y respuesta", c: "Disponibilidad" },
+  { v: "+150K", l: "Incidencias gestionadas / año", c: "Operación" },
+  { v: "+400", l: "Servicios técnicos en red", c: "Cobertura" },
+  { v: "50 años", l: "De experiencia operativa", c: "Trayectoria" },
+  { v: "4 hubs", l: "Madrid · Barcelona · Valencia · Canarias", c: "Presencia" },
+  { v: "Multi-país", l: "Operación internacional", c: "Escala" },
+  { v: "+25 años", l: "De relación con clientes clave", c: "Confianza" },
 ];
 
 export const MetricsBlock = () => (
@@ -19,6 +19,10 @@ export const MetricsBlock = () => (
             <h2 className="heading-display text-bone text-3xl md:text-5xl text-balance max-w-2xl">
               Esto es lo que hacemos cada día.
             </h2>
+            <p className="mt-4 text-bone/60 max-w-xl text-base leading-relaxed">
+              Modelo aplicado en algunos de los principales retailers, fabricantes y aseguradoras
+              de España y Europa.
+            </p>
           </div>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone/40">
             wg-os :: metrics.live

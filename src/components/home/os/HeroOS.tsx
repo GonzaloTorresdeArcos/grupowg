@@ -21,8 +21,9 @@ export const HeroOS = () => (
         </h1>
 
         <p className="mt-8 font-display text-2xl md:text-[1.75rem] text-bone/90 max-w-2xl text-balance leading-snug">
-          Convertimos el servicio postventa en un sistema que funciona.{" "}
-          <span className="text-teal-soft">Bajo control.</span>
+          Convertimos el servicio postventa en un sistema que funciona{" "}
+          <span className="text-teal-soft">bajo control</span>. Incluso cuando está fragmentado
+          entre múltiples proveedores.
         </p>
 
         <p className="mt-6 max-w-xl text-base md:text-lg text-bone/60 leading-relaxed">

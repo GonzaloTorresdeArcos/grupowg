@@ -10,14 +10,18 @@ export const AboutBlock = () => (
 
         <Reveal className="lg:col-span-8" delay={100}>
           <h2 className="heading-display text-foreground text-3xl md:text-5xl text-balance leading-[1.08]">
-            No somos operadores.
+            No somos solo operadores.
             <br />
-            No somos consultores.
+            No somos consultores tradicionales.
             <br />
             <span className="text-teal italic">
-              Somos el sistema que hace que funcione.
+              Somos la combinación de ejecución, control y conocimiento técnico.
             </span>
           </h2>
+          <p className="mt-6 text-muted-foreground text-lg leading-relaxed max-w-2xl">
+            Operamos cuando hace falta. Controlamos cuando es crítico. Y aportamos criterio en todo
+            momento.
+          </p>
           <div className="mt-10 grid sm:grid-cols-3 gap-6 border-t border-foreground/10 pt-10">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal mb-2">
