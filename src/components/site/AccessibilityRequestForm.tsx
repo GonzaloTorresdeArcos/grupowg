@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,54 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement | string,
+        options: {
+          sitekey: string;
+          size?: "normal" | "compact" | "invisible";
+          callback?: (token: string) => void;
+          "error-callback"?: () => void;
+          "expired-callback"?: () => void;
+          "timeout-callback"?: () => void;
+          appearance?: "always" | "execute" | "interaction-only";
+        },
+      ) => string;
+      execute: (widgetId: string) => void;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+const TURNSTILE_SCRIPT_ID = "cf-turnstile-script";
+
+function loadTurnstileScript(): Promise<void> {
+  return new Promise((resolve) => {
+    if (window.turnstile) return resolve();
+    if (document.getElementById(TURNSTILE_SCRIPT_ID)) {
+      const check = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      return;
+    }
+    const cbName = `cfTurnstileLoad_${Math.random().toString(36).slice(2)}`;
+    (window as any)[cbName] = () => resolve();
+    const s = document.createElement("script");
+    s.id = TURNSTILE_SCRIPT_ID;
+    s.src = `https://challenges.cloudflare.com/turnstile/v0/api.js?onload=${cbName}&render=explicit`;
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+  });
+}
 
 const schema = z.object({
   request_type: z.enum(["informacion_accesible", "queja", "reclamacion", "sugerencia"], {
