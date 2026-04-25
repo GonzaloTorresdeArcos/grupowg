@@ -169,7 +169,7 @@ const WGNetwork = () => {
           </div>
 
           <Reveal>
-            <p className="mt-12 font-display italic text-xl md:text-2xl text-bone/80 max-w-3xl">
+            <p className="mt-12 font-display italic text-xl md:text-2xl text-bone/80 max-w-3xl mx-auto text-center">
               El resto lo construiremos juntos, según vuestras necesidades y apetito.
             </p>
           </Reveal>
