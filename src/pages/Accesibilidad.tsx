@@ -126,6 +126,16 @@ const Accesibilidad = () => {
             <strong className="text-ink">sugerencias de mejora</strong>. Responderemos en el
             plazo máximo de veinte días hábiles, conforme al artículo 12 del RD 1112/2018.
           </p>
+          <p className="mb-5 text-sm">
+            ¿Ya enviaste una solicitud?{" "}
+            <Link
+              to="/legal/accesibilidad/estado"
+              className="underline hover:text-ink font-medium"
+            >
+              Consulta su estado aquí
+            </Link>
+            .
+          </p>
           <AccessibilityRequestForm />
         </section>
 

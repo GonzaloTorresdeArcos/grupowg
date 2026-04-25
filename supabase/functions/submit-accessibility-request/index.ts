@@ -51,8 +51,76 @@ async function verifyTurnstile(token: string, ip: string | null): Promise<boolea
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  // GET: devuelve la site key pública para que el frontend renderice el widget
+  // GET: dos modos
+  //  - sin params  -> devuelve la site key pública (para renderizar Turnstile)
+  //  - con reference + email -> consulta el estado de una solicitud
   if (req.method === "GET") {
+    const url = new URL(req.url);
+    const reference = url.searchParams.get("reference")?.trim();
+    const email = url.searchParams.get("email")?.trim().toLowerCase();
+
+    if (reference || email) {
+      // Validar inputs
+      const refOk = /^ACC-[A-F0-9]{8}$/i.test(reference ?? "");
+      const emailOk = z.string().email().safeParse(email).success;
+      if (!refOk || !emailOk) {
+        return new Response(JSON.stringify({ error: "invalid_lookup" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      );
+
+      // Reconstruir prefijo del UUID (8 hex iniciales sin guion)
+      const prefix = reference!.slice(4).toLowerCase();
+
+      // Buscar por email (indexable, evita complicaciones de cast uuid->text)
+      const { data, error } = await supabase
+        .from("wg_accessibility_requests")
+        .select("id, request_type, status, created_at, updated_at, preferred_format, email, admin_notes")
+        .eq("email", email!)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("[accessibility-request] lookup error", error);
+        return new Response(JSON.stringify({ error: "db_error" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const match = (data ?? []).find(
+        (r) => String(r.id).replace(/-/g, "").slice(0, 8).toLowerCase() === prefix,
+      );
+
+      if (!match) {
+        // Respuesta genérica para no filtrar existencia
+        return new Response(JSON.stringify({ found: false }), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(
+        JSON.stringify({
+          found: true,
+          reference,
+          request_type: match.request_type,
+          status: match.status,
+          created_at: match.created_at,
+          updated_at: match.updated_at,
+          preferred_format: match.preferred_format,
+          admin_notes: match.admin_notes ?? null,
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const siteKey = Deno.env.get("TURNSTILE_SITE_KEY") ?? "";
     return new Response(JSON.stringify({ site_key: siteKey }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
