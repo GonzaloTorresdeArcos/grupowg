@@ -77,6 +77,24 @@ export const LifecycleBlock = () => (
             impacto directo en coste, calidad y tiempo.
           </p>
 
+          <div className="mt-10 max-w-2xl">
+            <p className="eyebrow-mono mb-4 text-foreground/60">Esto permite</p>
+            <ul className="space-y-2 text-muted-foreground">
+              <li className="flex gap-3">
+                <span className="text-teal mt-1">·</span>
+                <span>Tomar decisiones con criterio.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-teal mt-1">·</span>
+                <span>Detectar desviaciones rápidamente.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-teal mt-1">·</span>
+                <span>Mejorar el rendimiento de forma continua.</span>
+              </li>
+            </ul>
+          </div>
+
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {layerKpis.map((k, i) => {
               const Icon = k.icon;
