@@ -68,7 +68,7 @@ const Grupo = () => {
       />
 
       {/* PROBLEMA */}
-      <section className="py-24 md:py-32 bg-background border-t border-foreground/5 relative overflow-hidden">
+      <section className="section-padding bg-background border-t border-foreground/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-15 pointer-events-none" />
         <div className="container-tight relative">
           <Reveal>
@@ -109,7 +109,7 @@ const Grupo = () => {
       </section>
 
       {/* SOLUCIÓN */}
-      <section className="py-24 md:py-32 bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
+      <section className="section-padding bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-25" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,hsl(var(--teal)/0.12),transparent_60%)]" />
         <div className="container-tight relative">
@@ -140,7 +140,7 @@ const Grupo = () => {
       </section>
 
       {/* DIFERENCIAL */}
-      <section className="py-24 md:py-32 bg-background relative overflow-hidden">
+      <section className="section-padding bg-background relative overflow-hidden">
         <div className="container-tight relative">
           <Reveal>
             <p className="eyebrow-mono mb-4">03 · Diferencial</p>
