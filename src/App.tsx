@@ -22,6 +22,7 @@ import Aniversario from "./pages/Aniversario.tsx";
 import Contacto from "./pages/Contacto.tsx";
 import Privacidad from "./pages/Privacidad.tsx";
 import AvisoLegal from "./pages/AvisoLegal.tsx";
+import Cookies from "./pages/Cookies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PortalLogin from "./pages/portal/Login.tsx";
 import PortalDashboard from "./pages/portal/Dashboard.tsx";
@@ -31,6 +32,9 @@ import PortalInvoices from "./pages/portal/Invoices.tsx";
 import PortalProfile from "./pages/portal/Profile.tsx";
 import PortalIncidencias from "./pages/portal/Incidencias.tsx";
 import PortalIncidenciaDetail from "./pages/portal/IncidenciaDetail.tsx";
+import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
+import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
+import { ConsentScripts } from "./components/site/ConsentScripts.tsx";
 
 const queryClient = new QueryClient();
 
