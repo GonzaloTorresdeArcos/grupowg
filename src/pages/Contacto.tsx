@@ -142,6 +142,7 @@ const initialForm: FormData = {
   ramo: undefined,
   poliza: "",
   mensaje: "",
+  consentimiento: false as unknown as true,
 };
 
 const Contacto = () => {
