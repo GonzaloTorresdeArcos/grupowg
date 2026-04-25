@@ -1,0 +1,47 @@
+import { Reveal } from "@/components/site/Reveal";
+
+const metrics = [
+  { v: "+150K", l: "Incidencias resueltas / año", c: "Operación" },
+  { v: "+400", l: "SATs activos en red", c: "Cobertura" },
+  { v: "50", l: "Años de oficio", c: "Trayectoria" },
+  { v: "ES · PT · MX", l: "Presencia operativa", c: "Multi-país" },
+  { v: "+25", l: "Años de relación con clientes", c: "Confianza" },
+  { v: "24/7", l: "Control y respuesta", c: "Disponibilidad" },
+];
+
+export const MetricsBlock = () => (
+  <section className="py-24 md:py-32 bg-ink text-bone border-y border-foreground/5">
+    <div className="container-tight">
+      <Reveal>
+        <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
+          <div>
+            <p className="eyebrow-mono mb-4 text-teal">06 · Credibilidad</p>
+            <h2 className="heading-display text-bone text-3xl md:text-5xl text-balance max-w-2xl">
+              Esto es lo que hacemos cada día.
+            </h2>
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone/40">
+            wg-os :: metrics.live
+          </p>
+        </div>
+      </Reveal>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 border-t border-l border-bone/10">
+        {metrics.map((m, i) => (
+          <Reveal key={m.l} delay={i * 60}>
+            <div className="border-r border-b border-bone/10 p-8 md:p-10 h-full hover:bg-bone/[0.02] transition-colors group relative overflow-hidden">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal/80 mb-6">
+                {m.c}
+              </p>
+              <p className="font-display text-bone text-4xl md:text-5xl lg:text-6xl tracking-tight">
+                {m.v}
+              </p>
+              <p className="mt-3 text-bone/60 text-sm">{m.l}</p>
+              <div className="absolute top-0 right-0 h-px w-0 bg-teal transition-all duration-700 group-hover:w-full" />
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+);

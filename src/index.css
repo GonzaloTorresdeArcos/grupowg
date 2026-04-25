@@ -1,25 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Grupo Warranty Global — Design System
-   Corporate, sober, premium B2B.
-   Palette: deep navy ink, technical teal, bone white, soft grays.
-   All colors HSL.
+/* Grupo Warranty Global — World-class B2B Service OS
+   Default theme: dark premium (Palantir / Stripe / ServiceNow language)
+   Section "WG Network" + Inscripción + Portal mantienen tema claro vía .theme-light.
 */
 
 @layer base {
   :root {
+    /* Surfaces */
     --bone: 40 30% 97%;
+    --background: 215 55% 5%;            /* deep navy-black */
+    --foreground: 40 30% 97%;             /* bone */
+
+    /* Brand */
+    --ink: 215 55% 5%;                    /* very deep navy */
+    --ink-soft: 215 35% 14%;
+    --ink-elevated: 215 35% 9%;           /* card surface on dark */
+
+    --teal: 178 70% 48%;                  /* bright technical teal accent */
+    --teal-soft: 178 50% 70%;
+    --teal-deep: 195 65% 22%;
+    --teal-glow: 178 90% 55%;
+
+    /* Components */
+    --card: 215 35% 9%;
+    --card-foreground: 40 30% 97%;
+    --popover: 215 35% 9%;
+    --popover-foreground: 40 30% 97%;
+
+    --primary: 178 70% 48%;
+    --primary-foreground: 215 55% 5%;
+
+    --secondary: 215 30% 12%;
+    --secondary-foreground: 40 30% 97%;
+
+    --muted: 215 25% 14%;
+    --muted-foreground: 215 12% 62%;
+
+    --accent: 178 70% 48%;
+    --accent-foreground: 215 55% 5%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 25% 16%;
+    --input: 215 25% 16%;
+    --ring: 178 70% 48%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 215 35% 9%;
+    --sidebar-foreground: 40 30% 90%;
+    --sidebar-primary: 178 70% 48%;
+    --sidebar-primary-foreground: 215 55% 5%;
+    --sidebar-accent: 215 30% 14%;
+    --sidebar-accent-foreground: 40 30% 95%;
+    --sidebar-border: 215 25% 16%;
+    --sidebar-ring: 178 70% 48%;
+  }
+
+  /* Light scope for WG Network, Inscripción, Portal — keeps the existing look */
+  .theme-light {
     --background: 40 30% 98%;
     --foreground: 215 45% 12%;
 
-    --ink: 215 50% 11%;          /* Azul oscuro corporativo del logo */
+    --ink: 215 50% 11%;
     --ink-soft: 215 35% 22%;
+    --ink-elevated: 0 0% 100%;
 
-    --teal: 178 35% 55%;          /* Turquesa técnico */
+    --teal: 178 35% 55%;
     --teal-soft: 178 30% 78%;
     --teal-deep: 195 45% 28%;
 
@@ -41,44 +94,8 @@
     --accent: 178 35% 55%;
     --accent-foreground: 215 50% 11%;
 
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 0 0% 100%;
-
     --border: 215 20% 88%;
     --input: 215 20% 88%;
-    --ring: 178 35% 55%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 215 50% 8%;
-    --foreground: 40 30% 96%;
-    --card: 215 45% 11%;
-    --card-foreground: 40 30% 96%;
-    --popover: 215 45% 11%;
-    --popover-foreground: 40 30% 96%;
-    --primary: 40 30% 96%;
-    --primary-foreground: 215 50% 11%;
-    --secondary: 215 30% 18%;
-    --secondary-foreground: 40 30% 96%;
-    --muted: 215 30% 16%;
-    --muted-foreground: 215 15% 65%;
-    --accent: 178 35% 55%;
-    --accent-foreground: 215 50% 11%;
-    --destructive: 0 62.8% 45%;
-    --destructive-foreground: 40 30% 96%;
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
     --ring: 178 35% 55%;
   }
 }
@@ -89,14 +106,19 @@
   }
   html {
     scroll-behavior: smooth;
+    background: hsl(var(--background));
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "ss01", "cv11";
   }
+  .theme-light {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
   ::selection {
-    background: hsl(var(--ink));
-    color: hsl(var(--bone));
+    background: hsl(var(--teal));
+    color: hsl(var(--ink));
   }
 }
 
@@ -104,11 +126,20 @@
   .container-tight {
     @apply container max-w-[1280px];
   }
+  .container-wide {
+    @apply container max-w-[1440px];
+  }
   .eyebrow {
-    @apply text-xs font-medium uppercase tracking-[0.2em] text-teal;
+    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-teal;
+  }
+  .eyebrow-mono {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-teal;
   }
   .heading-display {
     @apply font-display font-light tracking-[-0.02em] leading-[1.02];
+  }
+  .heading-tight {
+    @apply font-sans font-semibold tracking-[-0.02em] leading-[1.05];
   }
   .text-balance {
     text-wrap: balance;
@@ -117,18 +148,47 @@
     @apply h-px w-full bg-border;
   }
   .card-soft {
-    @apply rounded-2xl border border-border bg-card transition-all duration-500 ease-smooth hover:border-ink/20 hover:shadow-soft;
+    @apply rounded-2xl border border-border bg-card transition-all duration-500 ease-smooth hover:border-teal/40 hover:shadow-elevated;
   }
+  .card-os {
+    @apply rounded-2xl border border-border bg-card-os transition-all duration-300 ease-smooth hover:border-teal/40;
+  }
+
+  /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bone transition-all duration-300 ease-smooth hover:bg-ink-soft hover:gap-3;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-medium text-ink transition-all duration-300 ease-smooth hover:bg-teal-soft hover:gap-3;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-medium text-ink transition-all duration-300 ease-smooth hover:border-ink hover:gap-3;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium text-foreground transition-all duration-300 ease-smooth hover:border-foreground/60 hover:gap-3;
   }
   .btn-teal {
     @apply inline-flex items-center justify-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-medium text-ink transition-all duration-300 ease-smooth hover:bg-teal-soft hover:gap-3;
   }
   .btn-on-dark {
     @apply inline-flex items-center justify-center gap-2 rounded-full border border-bone/30 bg-transparent px-6 py-3 text-sm font-medium text-bone transition-all duration-300 ease-smooth hover:bg-bone hover:text-ink hover:gap-3;
+  }
+  .btn-on-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-medium text-bone transition-all duration-300 ease-smooth hover:bg-ink-soft hover:gap-3;
+  }
+
+  /* Tech grid background */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .bg-grid-fade {
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  }
+
+  /* Decorative ticker for technical micro-data */
+  .badge-os {
+    @apply inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-teal;
+  }
+  .badge-os::before {
+    content: "";
+    @apply h-1.5 w-1.5 rounded-full bg-teal;
+    box-shadow: 0 0 8px hsl(var(--teal-glow));
   }
 }
