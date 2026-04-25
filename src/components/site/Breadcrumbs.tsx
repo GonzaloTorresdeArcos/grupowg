@@ -52,16 +52,23 @@ export const Breadcrumbs = ({ dark = true }: BreadcrumbsProps) => {
     }));
   }, [pathname]);
 
-  // JSON-LD para SEO (BreadcrumbList)
+  // JSON-LD para SEO (BreadcrumbList) — uno por navegación, sin duplicados
   useEffect(() => {
+    const SCRIPT_ID = "ld-breadcrumbs";
+
+    // Limpieza defensiva: elimina cualquier script previo con este id
+    // (cubre StrictMode, navegaciones rápidas y casos donde el componente
+    // anterior no completara su cleanup).
+    document.querySelectorAll(`script#${SCRIPT_ID}`).forEach((el) => el.remove());
+
     if (crumbs.length === 0) return;
+
     const origin =
       typeof window !== "undefined" ? window.location.origin : "https://grupowg.com";
-    const id = "ld-breadcrumbs";
-    document.getElementById(id)?.remove();
+
     const ld = document.createElement("script");
     ld.type = "application/ld+json";
-    ld.id = id;
+    ld.id = SCRIPT_ID;
     ld.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -81,8 +88,11 @@ export const Breadcrumbs = ({ dark = true }: BreadcrumbsProps) => {
       ],
     });
     document.head.appendChild(ld);
+
     return () => {
-      document.getElementById(id)?.remove();
+      document
+        .querySelectorAll(`script#${SCRIPT_ID}`)
+        .forEach((el) => el.remove());
     };
   }, [crumbs]);
 
