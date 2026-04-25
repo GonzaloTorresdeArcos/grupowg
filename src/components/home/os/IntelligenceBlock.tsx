@@ -120,7 +120,7 @@ export const IntelligenceBlock = () => (
       </div>
 
       <Reveal delay={500}>
-        <div className="mt-16 max-w-5xl">
+        <div className="mt-16 max-w-5xl mx-auto text-center">
           <p className="font-display text-2xl md:text-3xl text-bone/90 text-balance leading-snug">
             Cada interacción genera información. Cada decisión mejora el sistema.{" "}
             <span className="text-teal">Cada mejora impacta en coste, calidad y tiempo.</span>
