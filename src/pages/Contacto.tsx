@@ -52,8 +52,14 @@ const Contacto = () => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
     const DESC =
       "Contacta con Grupo WG. Convertimos el servicio postventa en un sistema bajo control: garantías, reparaciones, repuestos, movilidad y seguros.";
-    const URL = typeof window !== "undefined" ? window.location.href : "https://grupowg.com/contacto";
-    const IMAGE = "https://grupowg.com/og-contacto.jpg";
+    const ORIGIN =
+      typeof window !== "undefined" ? window.location.origin : "https://grupowg.lovable.app";
+    const URL = `${ORIGIN}/contacto`;
+    // Reutiliza la OG image global definida en index.html (verificada y servida correctamente).
+    const existingOg = document.querySelector('meta[property="og:image"]') as HTMLMetaElement | null;
+    const IMAGE =
+      existingOg?.getAttribute("content") ||
+      "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/81e8433f-b22f-4fcd-8e97-ed835e2d2373/id-preview-30d46061--9ab87566-7170-4271-8fbb-e76ea62dec17.lovable.app-1777036857514.png";
 
     document.title = TITLE;
 
