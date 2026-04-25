@@ -148,7 +148,12 @@ const initialForm: FormData = {
 const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
-type DraftPayload = { form: FormData; step: "form" | "review"; savedAt: number };
+type DraftPayload = {
+  form: FormData;
+  step: "form" | "review";
+  savedAt: number;
+  consentAt?: number | null;
+};
 
 const loadDraft = (): DraftPayload | null => {
   if (typeof window === "undefined") return null;
