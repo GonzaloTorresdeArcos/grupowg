@@ -38,7 +38,9 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setOpen(false), [location.pathname]);
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
