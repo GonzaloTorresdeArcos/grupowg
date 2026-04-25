@@ -68,7 +68,7 @@ const Grupo = () => {
       />
 
       {/* PROBLEMA */}
-      <section className="py-24 md:py-32 bg-background border-t border-foreground/5 relative overflow-hidden">
+      <section className="section-padding bg-background border-t border-foreground/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-15 pointer-events-none" />
         <div className="container-tight relative">
           <Reveal>
