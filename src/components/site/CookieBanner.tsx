@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Cookie, Settings2 } from "lucide-react";
+import { Cookie, Settings2, Minus } from "lucide-react";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
 import {
   Dialog,
@@ -53,67 +53,101 @@ export const CookieBanner = () => {
     rejectAll,
     openPreferences,
   } = useCookieConsent();
+  const [minimized, setMinimized] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Pequeño retardo para una entrada suave sin bloquear el LCP
+  useEffect(() => {
+    if (!ready || !showBanner) return;
+    const id = window.setTimeout(() => setMounted(true), 250);
+    return () => window.clearTimeout(id);
+  }, [ready, showBanner]);
 
   if (!ready || !showBanner) return null;
 
+  // Pestaña minimizada — tap reabre el banner
+  if (minimized) {
+    return (
+      <button
+        type="button"
+        onClick={() => setMinimized(false)}
+        aria-label="Abrir aviso de cookies"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] h-12 w-12 rounded-full bg-ink text-bone shadow-xl border border-bone/10 flex items-center justify-center hover:bg-ink/90 hover:scale-105 transition-all"
+      >
+        <Cookie className="h-5 w-5 text-teal" />
+      </button>
+    );
+  }
+
   return (
     <div
-      role="dialog"
-      aria-modal="false"
+      role="region"
       aria-label="Aviso de cookies"
-      className="fixed inset-x-0 bottom-0 z-[60] p-4 sm:p-6 pointer-events-none"
+      className={
+        "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] w-[calc(100vw-2rem)] sm:w-[420px] max-w-md transition-all duration-500 ease-out " +
+        (mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none")
+      }
     >
-      <div className="container-tight pointer-events-auto">
-        <div className="rounded-2xl border border-bone/10 bg-ink/95 backdrop-blur-md text-bone shadow-2xl p-5 sm:p-6 md:p-7 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--teal)/0.18),transparent_60%)] pointer-events-none" />
-          <div className="relative flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
-            <div className="flex items-start gap-3 flex-1 min-w-0">
-              <span className="h-10 w-10 rounded-xl bg-teal/15 flex items-center justify-center flex-shrink-0">
-                <Cookie className="h-5 w-5 text-teal" />
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-display text-lg md:text-xl text-bone leading-tight">
-                  Usamos cookies en grupowg.com
-                </p>
-                <p className="mt-2 text-sm text-bone/70 leading-relaxed max-w-2xl">
-                  Utilizamos cookies propias y de terceros para fines técnicos, de
-                  análisis y de marketing. Puedes aceptarlas todas, rechazarlas o
-                  configurarlas. Las estrictamente necesarias se cargan siempre. Más
-                  información en nuestra{" "}
-                  <Link
-                    to="/legal/cookies"
-                    className="underline underline-offset-2 hover:text-bone"
-                  >
-                    Política de cookies
-                  </Link>
-                  .
-                </p>
-              </div>
+      <div className="relative rounded-2xl border border-bone/10 bg-ink/95 backdrop-blur-md text-bone shadow-2xl overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--teal)/0.18),transparent_60%)] pointer-events-none" />
+
+        {/* Botón minimizar */}
+        <button
+          type="button"
+          onClick={() => setMinimized(true)}
+          aria-label="Minimizar aviso de cookies"
+          className="absolute top-3 right-3 h-7 w-7 rounded-full text-bone/50 hover:text-bone hover:bg-bone/10 flex items-center justify-center transition-colors z-10"
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+
+        <div className="relative p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="h-10 w-10 rounded-xl bg-teal/15 flex items-center justify-center flex-shrink-0 ring-1 ring-teal/20">
+              <Cookie className="h-5 w-5 text-teal" />
+            </span>
+            <div className="flex-1 min-w-0 pr-6">
+              <p className="font-display text-base sm:text-lg text-bone leading-tight">
+                Cookies en grupowg.com
+              </p>
+              <p className="mt-1.5 text-xs sm:text-[13px] text-bone/65 leading-relaxed">
+                Usamos cookies propias y de terceros para fines técnicos, de
+                análisis y marketing. Puedes aceptarlas, rechazarlas o
+                configurarlas. Más info en la{" "}
+                <Link
+                  to="/legal/cookies"
+                  className="underline underline-offset-2 hover:text-bone"
+                >
+                  Política de cookies
+                </Link>
+                .
+              </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:flex-shrink-0">
-              <button
-                type="button"
-                onClick={rejectAll}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium border border-bone/20 text-bone hover:bg-bone/5 transition-colors"
-              >
-                Rechazar todo
-              </button>
-              <button
-                type="button"
-                onClick={openPreferences}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium border border-bone/20 text-bone hover:bg-bone/5 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <Settings2 className="h-4 w-4" />
-                Configurar
-              </button>
-              <button
-                type="button"
-                onClick={acceptAll}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold bg-teal text-ink hover:bg-teal/90 transition-colors"
-              >
-                Aceptar todo
-              </button>
-            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={rejectAll}
+              className="col-span-1 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium border border-bone/20 text-bone hover:bg-bone/5 transition-colors"
+            >
+              Rechazar
+            </button>
+            <button
+              type="button"
+              onClick={openPreferences}
+              className="col-span-1 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium border border-bone/20 text-bone hover:bg-bone/5 transition-colors inline-flex items-center justify-center gap-1.5"
+            >
+              <Settings2 className="h-3.5 w-3.5" />
+              Configurar
+            </button>
+            <button
+              type="button"
+              onClick={acceptAll}
+              className="col-span-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-teal text-ink hover:bg-teal/90 transition-colors"
+            >
+              Aceptar todo
+            </button>
           </div>
         </div>
       </div>
