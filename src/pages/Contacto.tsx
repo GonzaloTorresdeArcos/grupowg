@@ -23,11 +23,19 @@ const MOTIVOS = [
   { value: "otro", label: "Otro" },
 ] as const;
 
-const motivoValues = MOTIVOS.map((m) => m.value) as [string, ...string[]];
+type MotivoValue = (typeof MOTIVOS)[number]["value"];
+const motivoValues = MOTIVOS.map((m) => m.value) as [MotivoValue, ...MotivoValue[]];
 
-const schema = z.object({
+const URGENCIAS = ["Estándar", "Alta", "Crítica"] as const;
+const RAMOS = ["Hogar", "Decesos", "Salud", "Auto", "Comercio", "Otro"] as const;
+const VEHICULOS = ["Turismo", "Furgoneta", "Industrial", "Moto", "Otro"] as const;
+
+const optionalString = (max: number) =>
+  z.string().trim().max(max, `Máximo ${max} caracteres`).optional().or(z.literal(""));
+
+const baseSchema = z.object({
   nombre: z.string().trim().min(1, "Requerido").max(120, "Máximo 120 caracteres"),
-  empresa: z.string().trim().max(200, "Máximo 200 caracteres").optional(),
+  empresa: optionalString(200),
   email: z.string().trim().email("Email no válido").max(255, "Máximo 255 caracteres"),
   telefono: z
     .string()
@@ -37,6 +45,16 @@ const schema = z.object({
     .optional()
     .or(z.literal("")),
   motivo: z.enum(motivoValues, { message: "Selecciona un motivo" }),
+  // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
+  marca: optionalString(80),
+  numeroSerie: optionalString(60),
+  producto: optionalString(120),
+  urgencia: z.enum(URGENCIAS).optional(),
+  referencia: optionalString(80),
+  vehiculo: z.enum(VEHICULOS).optional(),
+  matricula: optionalString(15),
+  ramo: z.enum(RAMOS).optional(),
+  poliza: optionalString(60),
   mensaje: z
     .string()
     .trim()
@@ -44,18 +62,35 @@ const schema = z.object({
     .max(2000, "Máximo 2000 caracteres"),
 });
 
-const Contacto = () => {
-  const [form, setForm] = useState({
-    nombre: "",
-    empresa: "",
-    email: "",
-    telefono: "",
-    motivo: "",
-    mensaje: "",
+type FormData = z.infer<typeof baseSchema>;
+
+// Reglas condicionales por motivo
+const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
+  garantias: ["marca"],
+  reparaciones: ["producto", "urgencia"],
+  repuestos: ["referencia"],
+  movilidad: ["vehiculo"],
+  seguros: ["ramo"],
+};
+
+const validateAll = (data: FormData) => {
+  const r = baseSchema.safeParse(data);
+  const errors: Record<string, string> = {};
+  if (!r.success) {
+    r.error.issues.forEach((i) => {
+      errors[i.path[0] as string] = i.message;
+    });
+  }
+  // Validación condicional
+  const required = requiredByMotivo[data.motivo as MotivoValue] || [];
+  required.forEach((field) => {
+    const v = (data as Record<string, unknown>)[field];
+    if (!v || (typeof v === "string" && v.trim() === "")) {
+      errors[field as string] = "Requerido para este motivo";
+    }
   });
-  const [errs, setErrs] = useState<Record<string, string>>({});
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+  return errors;
+};
 
   useEffect(() => {
     const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
