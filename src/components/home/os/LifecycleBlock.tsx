@@ -25,7 +25,7 @@ export const LifecycleBlock = () => (
     <div className="absolute inset-0 bg-grid bg-grid-fade opacity-20 pointer-events-none" />
     <div className="container-wide relative">
       <Reveal>
-        <p className="eyebrow-mono mb-4">07 · Service Lifecycle</p>
+        <p className="eyebrow-mono mb-4">02 · Service Lifecycle</p>
         <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-4xl text-balance">
           Un flujo único,{" "}
           <span className="text-teal italic">de principio a fin</span>.
@@ -67,7 +67,7 @@ export const LifecycleBlock = () => (
       {/* Cómo funciona */}
       <Reveal delay={250}>
         <div className="mt-24 border-t border-foreground/10 pt-16">
-          <p className="eyebrow-mono mb-4">08 · Cómo funciona</p>
+          <p className="eyebrow-mono mb-4">03 · Cómo funciona</p>
           <h3 className="heading-display text-foreground text-3xl md:text-5xl max-w-3xl text-balance">
             Cada capa del servicio,{" "}
             <span className="text-teal italic">bajo control</span>.
