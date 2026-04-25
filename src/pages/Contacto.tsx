@@ -216,14 +216,19 @@ const Contacto = () => {
     }
     const id = window.setTimeout(() => {
       try {
-        const payload: DraftPayload = { form, step, savedAt: Date.now() };
+        const payload: DraftPayload = {
+          form,
+          step,
+          savedAt: Date.now(),
+          consentAt: consentAt ? consentAt.getTime() : null,
+        };
         window.localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
       } catch {
         // noop (quota, modo privado, etc.)
       }
     }, 400);
     return () => window.clearTimeout(id);
-  }, [form, step, hydrated, sent]);
+  }, [form, step, hydrated, sent, consentAt]);
 
   const clearDraft = () => {
     if (typeof window !== "undefined") window.localStorage.removeItem(DRAFT_KEY);
