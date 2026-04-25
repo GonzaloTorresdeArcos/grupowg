@@ -64,7 +64,7 @@ const baseSchema = z.object({
 
 type FormData = z.infer<typeof baseSchema>;
 
-// Reglas condicionales por motivo
+// Reglas condicionales por motivo (campos requeridos)
 const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca"],
   reparaciones: ["producto", "urgencia"],
@@ -72,6 +72,28 @@ const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   movilidad: ["vehiculo"],
   seguros: ["ramo"],
 };
+
+// Todos los campos visibles por motivo (requeridos + opcionales)
+const fieldsByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
+  garantias: ["marca", "numeroSerie"],
+  reparaciones: ["producto", "urgencia"],
+  repuestos: ["referencia"],
+  movilidad: ["vehiculo", "matricula"],
+  seguros: ["ramo", "poliza"],
+};
+
+// Todos los campos posibles condicionales (para limpieza al cambiar de motivo)
+const ALL_CONDITIONAL_FIELDS: Array<keyof FormData> = [
+  "marca",
+  "numeroSerie",
+  "producto",
+  "urgencia",
+  "referencia",
+  "vehiculo",
+  "matricula",
+  "ramo",
+  "poliza",
+];
 
 const validateAll = (data: FormData) => {
   const r = baseSchema.safeParse(data);
