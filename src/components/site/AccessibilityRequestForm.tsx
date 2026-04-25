@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Copy, Loader2, Mail, ShieldCheck } from "lucide-react";
 
 declare global {
   interface Window {
@@ -115,6 +115,7 @@ export const AccessibilityRequestForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [reference, setReference] = useState<string | null>(null);
   const [siteKey, setSiteKey] = useState<string | null>(null);
   const widgetRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -250,6 +251,8 @@ export const AccessibilityRequestForm = () => {
         return;
       }
 
+      const ref = (data as any)?.reference as string | undefined;
+      setReference(ref ?? null);
       setSuccess(true);
       setForm(initial);
       toast.success("Solicitud enviada correctamente");
@@ -262,19 +265,84 @@ export const AccessibilityRequestForm = () => {
   };
 
   if (success) {
+    const mailtoSubject = encodeURIComponent(
+      `Consulta sobre solicitud de accesibilidad ${reference ?? ""}`.trim(),
+    );
+    const mailtoBody = encodeURIComponent(
+      `Hola,\n\nQuisiera consultar el estado de mi solicitud de accesibilidad${
+        reference ? ` con referencia ${reference}` : ""
+      }.\n\nGracias.`,
+    );
+    const mailtoHref = `mailto:info@grupowg.com?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+    const copyReference = async () => {
+      if (!reference) return;
+      try {
+        await navigator.clipboard.writeText(reference);
+        toast.success("Referencia copiada al portapapeles");
+      } catch {
+        toast.error("No se ha podido copiar. Selecciónala manualmente.");
+      }
+    };
+
     return (
-      <div className="rounded-2xl border border-border bg-muted/20 p-8 text-center space-y-4">
+      <div className="rounded-2xl border border-border bg-muted/20 p-8 text-center space-y-5">
         <div className="mx-auto w-12 h-12 rounded-full bg-teal/15 flex items-center justify-center">
           <CheckCircle2 className="h-6 w-6 text-teal" aria-hidden="true" />
         </div>
         <h3 className="font-display text-2xl text-ink">Hemos recibido tu solicitud</h3>
+
+        {reference && (
+          <div
+            className="mx-auto max-w-md rounded-xl border border-border bg-background p-4 text-left space-y-2"
+            role="region"
+            aria-label="Número de referencia de la solicitud"
+          >
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Número de referencia
+            </p>
+            <div className="flex items-center justify-between gap-3">
+              <code className="font-mono text-lg text-ink select-all">{reference}</code>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={copyReference}
+                aria-label="Copiar número de referencia"
+              >
+                <Copy className="h-4 w-4 mr-1.5" aria-hidden="true" />
+                Copiar
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Conserva esta referencia para consultar el estado de tu solicitud.
+            </p>
+          </div>
+        )}
+
         <p className="text-sm text-ink-soft max-w-md mx-auto">
-          Te responderemos en el plazo máximo de <strong className="text-ink">veinte días hábiles</strong>{" "}
-          conforme al artículo 12 del RD 1112/2018, en el formato que has indicado.
+          Te responderemos en el plazo máximo de{" "}
+          <strong className="text-ink">veinte días hábiles</strong> conforme al artículo 12 del
+          RD 1112/2018, en el formato que has indicado.
         </p>
-        <Button variant="outline" onClick={() => setSuccess(false)}>
-          Enviar otra solicitud
-        </Button>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <Button asChild variant="default">
+            <a href={mailtoHref}>
+              <Mail className="h-4 w-4 mr-1.5" aria-hidden="true" />
+              Consultar el estado por email
+            </a>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSuccess(false);
+              setReference(null);
+            }}
+          >
+            Enviar otra solicitud
+          </Button>
+        </div>
       </div>
     );
   }

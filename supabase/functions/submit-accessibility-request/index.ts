@@ -104,11 +104,15 @@ Deno.serve(async (req) => {
   );
 
   const { turnstile_token: _t, ...payload } = parsed.data;
-  const { error } = await supabase.from("wg_accessibility_requests").insert({
-    ...payload,
-    consent_at: new Date().toISOString(),
-    user_agent: req.headers.get("user-agent")?.slice(0, 500) ?? null,
-  });
+  const { data: inserted, error } = await supabase
+    .from("wg_accessibility_requests")
+    .insert({
+      ...payload,
+      consent_at: new Date().toISOString(),
+      user_agent: req.headers.get("user-agent")?.slice(0, 500) ?? null,
+    })
+    .select("id")
+    .single();
 
   if (error) {
     console.error("[accessibility-request] insert error", error);
@@ -118,7 +122,10 @@ Deno.serve(async (req) => {
     });
   }
 
-  return new Response(JSON.stringify({ ok: true }), {
+  // Referencia legible: ACC-XXXXXXXX (primeros 8 chars del UUID, mayúsculas)
+  const reference = `ACC-${String(inserted.id).replace(/-/g, "").slice(0, 8).toUpperCase()}`;
+
+  return new Response(JSON.stringify({ ok: true, id: inserted.id, reference }), {
     status: 200,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
