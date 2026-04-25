@@ -14,7 +14,6 @@ import Soluciones from "./pages/Soluciones.tsx";
 import Marcas from "./pages/Marcas.tsx";
 import Modelo from "./pages/Modelo.tsx";
 import Plataforma from "./pages/Plataforma.tsx";
-import ServiceOS from "./pages/ServiceOS.tsx";
 import Industrias from "./pages/Industrias.tsx";
 import Experiencia from "./pages/Experiencia.tsx";
 import WGNetwork from "./pages/WGNetwork.tsx";
@@ -47,7 +46,6 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/modelo" element={<Modelo />} />
               <Route path="/plataforma" element={<Plataforma />} />
-              <Route path="/service-os" element={<ServiceOS />} />
               <Route path="/industrias" element={<Industrias />} />
               <Route path="/experiencia" element={<Experiencia />} />
               <Route path="/grupo" element={<Grupo />} />
