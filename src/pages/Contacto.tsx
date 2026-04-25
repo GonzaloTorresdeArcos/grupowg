@@ -1060,7 +1060,7 @@ const Field = ({
   children: React.ReactNode;
 }) => (
   <label className="block">
-    <span className="block text-sm font-medium text-ink mb-2">{label}</span>
+    <span className="block text-sm font-semibold text-teal mb-2">{label}</span>
     {children}
     {error && <span className="block text-xs text-destructive mt-1.5">{error}</span>}
   </label>
