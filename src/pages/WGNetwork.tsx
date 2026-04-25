@@ -137,15 +137,15 @@ const WGNetwork = () => {
       </section>
 
       {/* 3 compromisos */}
-      <section className="py-24 md:py-32 bg-ink text-bone">
-        <div className="container-tight">
+      <section className="relative py-24 md:py-32 bg-ink text-bone overflow-hidden">
+        <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-24 md:top-32 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
+        <div className="container-tight relative">
           <Reveal>
-            <div className="max-w-3xl mb-16 relative">
+            <div className="max-w-3xl mb-16">
               <p className="eyebrow text-teal-soft mb-4">Innegociables</p>
               <h2 className="heading-display text-bone text-4xl md:text-6xl text-balance">
                 3 compromisos innegociables.
               </h2>
-              <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute -top-4 right-0 -mr-8 lg:-mr-16 w-36 lg:w-44 h-auto opacity-90" />
             </div>
           </Reveal>
 
