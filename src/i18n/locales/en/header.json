@@ -1,0 +1,20 @@
+{
+  "logoAlt": "Grupo Warranty Global home",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "navigation": "Navigation",
+  "ctaContact": "Request information",
+  "languageLabel": "Language",
+  "nav": {
+    "/grupo": "WG Group",
+    "/modelo": "Model",
+    "/soluciones": "Solutions",
+    "/plataforma": "Platform",
+    "/experiencia": "Experience",
+    "/industrias": "Industries",
+    "/wg-network": "WG Network",
+    "/contacto": "Contact",
+    "/legal/privacidad": "Privacy",
+    "/legal/aviso-legal": "Legal notice"
+  }
+}
