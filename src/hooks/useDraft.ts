@@ -3,12 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const TOKEN_KEY = "wg_draft_token";
 
-const generateToken = () => {
-  const arr = new Uint8Array(24);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map((b) => b.toString(16).padStart(2, "0")).join("");
-};
-
 export interface DraftState {
   id: string;
   resume_token: string;
@@ -18,6 +12,16 @@ export interface DraftState {
   email_verified: boolean;
   phone_verified: boolean;
   updated_at: string;
+}
+
+async function callDrafts(payload: Record<string, unknown>): Promise<DraftState | null> {
+  const { data, error } = await supabase.functions.invoke("drafts", { body: payload });
+  if (error) {
+    console.error("[useDraft] edge fn error", error);
+    return null;
+  }
+  if (!data?.ok) return null;
+  return (data.draft as DraftState) ?? null;
 }
 
 export function useDraft() {
@@ -39,14 +43,9 @@ export function useDraft() {
     }
 
     (async () => {
-      const { data, error } = await supabase
-        .from("wg_application_drafts")
-        .select("*")
-        .eq("resume_token", token)
-        .maybeSingle();
-
-      if (!error && data) {
-        setDraft(data as DraftState);
+      const result = await callDrafts({ action: "load", resume_token: token });
+      if (result) {
+        setDraft(result);
         localStorage.setItem(TOKEN_KEY, token);
       } else {
         localStorage.removeItem(TOKEN_KEY);
@@ -57,7 +56,7 @@ export function useDraft() {
 
   /** Crea o actualiza el draft. Hace debounce de 800ms. */
   const save = useCallback(
-    async (patch: { email?: string; current_step?: number; form_data?: Record<string, any>; email_verified?: boolean; phone_verified?: boolean; }) => {
+    async (patch: { email?: string; current_step?: number; form_data?: Record<string, any> }) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       return new Promise<DraftState | null>((resolve) => {
         saveTimer.current = setTimeout(async () => {
@@ -65,49 +64,30 @@ export function useDraft() {
           try {
             if (!draft) {
               if (!patch.email) {
-                setSaving(false);
                 resolve(null);
                 return;
               }
-              const token = generateToken();
-              const { data, error } = await supabase
-                .from("wg_application_drafts")
-                .insert({
-                  email: patch.email,
-                  resume_token: token,
-                  current_step: patch.current_step ?? 1,
-                  form_data: patch.form_data ?? {},
-                  email_verified: patch.email_verified ?? false,
-                  phone_verified: patch.phone_verified ?? false,
-                })
-                .select("*")
-                .single();
-              if (!error && data) {
-                localStorage.setItem(TOKEN_KEY, token);
-                setDraft(data as DraftState);
-                resolve(data as DraftState);
-              } else {
-                resolve(null);
+              const result = await callDrafts({
+                action: "create",
+                email: patch.email,
+                current_step: patch.current_step ?? 1,
+                form_data: patch.form_data ?? {},
+              });
+              if (result) {
+                localStorage.setItem(TOKEN_KEY, result.resume_token);
+                setDraft(result);
               }
+              resolve(result);
             } else {
-              const { data, error } = await supabase
-                .from("wg_application_drafts")
-                .update({
-                  ...(patch.email !== undefined ? { email: patch.email } : {}),
-                  ...(patch.current_step !== undefined ? { current_step: patch.current_step } : {}),
-                  ...(patch.form_data !== undefined ? { form_data: patch.form_data } : {}),
-                  ...(patch.email_verified !== undefined ? { email_verified: patch.email_verified } : {}),
-                  ...(patch.phone_verified !== undefined ? { phone_verified: patch.phone_verified } : {}),
-                })
-                .eq("id", draft.id)
-                .select("*")
-                .single();
-              if (!error && data) {
-                setDraft(data as DraftState);
-                resolve(data as DraftState);
-              } else {
-                resolve(null);
-              }
+              const result = await callDrafts({
+                action: "update",
+                resume_token: draft.resume_token,
+                ...(patch.email !== undefined ? { email: patch.email } : {}),
+                ...(patch.current_step !== undefined ? { current_step: patch.current_step } : {}),
+                ...(patch.form_data !== undefined ? { form_data: patch.form_data } : {}),
+              });
+              if (result) setDraft(result);
+              resolve(result);
             }
           } finally {
             setSaving(false);
@@ -118,10 +98,18 @@ export function useDraft() {
     [draft],
   );
 
+  /** Refresh from server (e.g. after OTP verify, which flips verification flags server-side). */
+  const refresh = useCallback(async () => {
+    if (!draft) return null;
+    const result = await callDrafts({ action: "load", resume_token: draft.resume_token });
+    if (result) setDraft(result);
+    return result;
+  }, [draft]);
+
   const clear = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     setDraft(null);
   }, []);
 
-  return { draft, loading, saving, save, clear };
+  return { draft, loading, saving, save, refresh, clear };
 }
