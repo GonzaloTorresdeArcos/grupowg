@@ -2177,6 +2177,16 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "LR Rioja Media": { level1: "Resto La Rioja", level2: "Rioja Media" },
   "LR Rioja Baja": { level1: "Resto La Rioja", level2: "Rioja Baja / Oriental" },
   "LR Sierra": { level1: "Resto La Rioja", level2: "Sierra" },
+
+  // ─── Illes Balears (07) ───
+  "Palma Capital": { level1: "Mallorca", level2: "Palma (capital)" },
+  "MA Á. Metro Cercano": { level1: "Mallorca", level2: "Área metropolitana" },
+  "MA Norte": { level1: "Mallorca", level2: "Resto Mallorca · Norte" },
+  "MA Este": { level1: "Mallorca", level2: "Resto Mallorca · Este" },
+  "MA Oeste Tramuntana": { level1: "Mallorca", level2: "Resto Mallorca · Oeste / Serra de Tramuntana" },
+  "Menorca": { level1: "Menorca" },
+  "Ibiza": { level1: "Ibiza" },
+  "Formentera": { level1: "Formentera" },
 };
 
 export interface LocalitySubgroup {
