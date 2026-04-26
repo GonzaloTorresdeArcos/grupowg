@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const PortalProfile = () => {
+  const { t } = useTranslation("portal");
   const { profile, user, refreshProfile } = useAuth();
   const { isAdmin } = useUserRole();
   const [saving, setSaving] = useState(false);
@@ -53,11 +55,11 @@ const PortalProfile = () => {
   return (
     <div className="space-y-8 max-w-2xl">
       <div>
-        <p className="eyebrow mb-2">Perfil</p>
+        <p className="eyebrow mb-2">{t("profile.eyebrow")}</p>
         <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">
-          Datos del colaborador
+          {t("profile.title")}
         </h1>
-        <p className="text-muted-foreground mt-2">Información de tu cuenta y empresa</p>
+        <p className="text-muted-foreground mt-2">{t("profile.subtitle")}</p>
       </div>
 
       {/* Application link status */}

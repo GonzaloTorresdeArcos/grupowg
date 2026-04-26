@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { mockAppointments, type Appointment } from "@/lib/portal-mocks";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const startOfWeek = (d: Date) => {
 };
 
 const PortalCalendar = () => {
+  const { t } = useTranslation("portal");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [selected, setSelected] = useState<Appointment | null>(null);
 
@@ -52,9 +54,9 @@ const PortalCalendar = () => {
   return (
     <div className="space-y-8">
       <div>
-        <p className="eyebrow mb-2">Calendario</p>
-        <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">Agenda de citas</h1>
-        <p className="text-muted-foreground mt-2">Tus próximas intervenciones e instalaciones</p>
+        <p className="eyebrow mb-2">{t("calendar.eyebrow")}</p>
+        <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">{t("calendar.title")}</h1>
+        <p className="text-muted-foreground mt-2">{t("calendar.subtitle")}</p>
       </div>
 
       {/* Toolbar */}

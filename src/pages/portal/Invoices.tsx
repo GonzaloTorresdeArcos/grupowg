@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { mockInvoices, formatEUR, formatDate, type Invoice } from "@/lib/portal-mocks";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const statusCfg = {
 };
 
 const PortalInvoices = () => {
+  const { t } = useTranslation("portal");
   const [selected, setSelected] = useState<Invoice | null>(null);
 
   const totalYear = mockInvoices.reduce((sum, i) => sum + i.total, 0);
@@ -36,11 +38,11 @@ const PortalInvoices = () => {
   return (
     <div className="space-y-8">
       <div>
-        <p className="eyebrow mb-2">Facturación</p>
+        <p className="eyebrow mb-2">{t("invoices.eyebrow")}</p>
         <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">
-          Liquidaciones y facturas
+          {t("invoices.title")}
         </h1>
-        <p className="text-muted-foreground mt-2">Histórico de tus servicios facturados</p>
+        <p className="text-muted-foreground mt-2">{t("invoices.subtitle")}</p>
       </div>
 
       {/* Summary cards */}
