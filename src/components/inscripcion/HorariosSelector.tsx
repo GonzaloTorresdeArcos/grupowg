@@ -43,7 +43,7 @@ export function buildHorariosString(s: Estado): string {
     parts.push(`Sáb ${s.sabMananaDesde}-${s.sabMananaHasta} y ${s.sabTardeDesde}-${s.sabTardeHasta}`);
   }
   const urg =
-    s.urgencia === "en_el_dia" ? "Urgencias en el día (avisos <11:00)" :
+    s.urgencia === "en_el_dia" ? "Urgencias en el día (avisos <9:00)" :
     s.urgencia === "menos_48h" ? "Urgencias <48h" :
     s.urgencia === "menos_24h" ? "Urgencias <24h" :
     s.urgencia === "mismo_dia" ? "Urgencias mismo día" :
