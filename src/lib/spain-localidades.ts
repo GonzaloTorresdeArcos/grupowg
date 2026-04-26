@@ -1965,6 +1965,22 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "V Ribera Sur Litoral": { level1: "Resto provincia de Valencia", level2: "Ribera / Sur litoral" },
   "V Safor": { level1: "Resto provincia de Valencia", level2: "Safor" },
   "V Interior": { level1: "Resto provincia de Valencia", level2: "Interior" },
+
+  // ─── Cáceres (10) ───
+  "Cáceres Capital": { level1: "Cáceres capital" },
+  "CC Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CC Norte / Valle del Jerte": { level1: "Resto provincia de Cáceres", level2: "Norte / Valle del Jerte" },
+  "CC La Vera / Tiétar": { level1: "Resto provincia de Cáceres", level2: "La Vera / Tiétar" },
+  "CC Oeste / Frontera": { level1: "Resto provincia de Cáceres", level2: "Oeste / frontera" },
+  "CC Sur": { level1: "Resto provincia de Cáceres", level2: "Sur" },
+
+  // ─── Badajoz (06) ───
+  "Badajoz Capital": { level1: "Badajoz capital" },
+  "BA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "BA Tierra de Barros": { level1: "Resto provincia de Badajoz", level2: "Tierra de Barros" },
+  "BA Campiña Sur": { level1: "Resto provincia de Badajoz", level2: "Campiña Sur" },
+  "BA Vegas Altas": { level1: "Resto provincia de Badajoz", level2: "Vegas Altas / Guadiana" },
+  "BA La Siberia": { level1: "Resto provincia de Badajoz", level2: "Este / La Siberia" },
 };
 
 export interface LocalitySubgroup {
