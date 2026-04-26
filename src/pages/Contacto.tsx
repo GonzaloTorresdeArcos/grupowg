@@ -462,6 +462,49 @@ const Contacto = () => {
     "vehiculo", "matricula", "ramo", "poliza", "mensaje", "consentimiento",
   ];
 
+  // Etiquetas legibles para el resumen de errores
+  const FIELD_LABELS: Record<string, string> = {
+    nombre: "Nombre",
+    empresa: "Empresa",
+    email: "Email",
+    telefono: "Teléfono",
+    motivo: "Motivo de contacto",
+    marca: "Marca",
+    numeroSerie: "Nº de serie",
+    producto: "Producto",
+    urgencia: "Urgencia",
+    referencia: "Referencia",
+    vehiculo: "Tipo de vehículo",
+    matricula: "Matrícula",
+    ramo: "Ramo",
+    poliza: "Póliza",
+    mensaje: "Mensaje",
+    consentimiento: "Consentimiento",
+  };
+
+  const scrollToField = (field: string) => {
+    if (typeof document === "undefined") return;
+    const wrapper = document.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    if (!wrapper) return;
+    wrapper.setAttribute("data-shake", "true");
+    window.setTimeout(() => wrapper.removeAttribute("data-shake"), 500);
+    wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+    const control = wrapper.querySelector<HTMLElement>(
+      "input, select, textarea, button",
+    );
+    window.setTimeout(() => control?.focus({ preventScroll: true }), 250);
+  };
+
+  // Lista ordenada de errores visibles (para resumen en cabecera)
+  const orderedErrorList = useMemo(() => {
+    return FIELD_ORDER.filter((k) => allErrors[k as string]).map((k) => ({
+      key: k as string,
+      label: FIELD_LABELS[k as string] ?? (k as string),
+      message: allErrors[k as string],
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allErrors]);
+
   const focusFirstError = (errors: Record<string, string>) => {
     if (typeof document === "undefined") return;
     const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
@@ -504,6 +547,21 @@ const Contacto = () => {
   };
 
   const confirmSend = async () => {
+    // Defensa extra: revalidar antes del envío real por si se manipuló el estado
+    const errors = validateAll(form);
+    if (Object.keys(errors).length > 0) {
+      setErrs(errors);
+      const t: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (t[k] = true));
+      setTouched((prev) => ({ ...prev, ...t }));
+      setStep("form");
+      toast.error("Faltan datos por completar antes de enviar");
+      requestAnimationFrame(() => {
+        const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
+        if (firstKey) scrollToField(firstKey as string);
+      });
+      return;
+    }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
@@ -735,6 +793,31 @@ const Contacto = () => {
                       >
                         Descartar
                       </button>
+                    </div>
+                  )}
+                  {Object.keys(errs).length > 0 && orderedErrorList.length > 0 && (
+                    <div
+                      role="alert"
+                      aria-live="polite"
+                      className="rounded-xl border border-destructive/40 bg-destructive/5 px-4 py-3"
+                    >
+                      <p className="text-sm font-medium text-destructive">
+                        Faltan {orderedErrorList.length}{" "}
+                        {orderedErrorList.length === 1 ? "campo" : "campos"} por completar
+                      </p>
+                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                        {orderedErrorList.map((err) => (
+                          <li key={err.key}>
+                            <button
+                              type="button"
+                              onClick={() => scrollToField(err.key)}
+                              className="text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
+                            >
+                              {err.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                   <div className="grid md:grid-cols-2 gap-5">
