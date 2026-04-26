@@ -282,6 +282,7 @@ i18n
         homeExperienceGov: frHomeExperienceGov,
         grupo: frGrupo, modelo: frModelo, soluciones: frSoluciones, plataforma: frPlataforma,
         industrias: frIndustrias, experiencia: frExperiencia, marcas: frMarcas, aniversario: frAniversario,
+        wgNetwork: frWgNetwork, portal: frPortal,
         legal: frLegal,
       }),
     },
