@@ -100,26 +100,40 @@ const ALL_CONDITIONAL_FIELDS: Array<keyof FormData> = [
   "poliza",
 ];
 
+const getActiveFields = (motivos: MotivoValue[]): Set<string> => {
+  const set = new Set<string>();
+  motivos.forEach((m) => {
+    (fieldsByMotivo[m] || []).forEach((f) => set.add(f as string));
+  });
+  return set;
+};
+
+const getRequiredFields = (motivos: MotivoValue[]): Array<keyof FormData> => {
+  const out = new Set<keyof FormData>();
+  motivos.forEach((m) => {
+    (requiredByMotivo[m] || []).forEach((f) => out.add(f));
+  });
+  return Array.from(out);
+};
+
 const validateAll = (data: FormData) => {
   const r = baseSchema.safeParse(data);
   const errors: Record<string, string> = {};
-  const activeFields = new Set<string>(
-    (fieldsByMotivo[data.motivo as MotivoValue] || []) as string[],
-  );
+  const motivos = (data.motivo || []) as MotivoValue[];
+  const activeFields = getActiveFields(motivos);
 
   if (!r.success) {
     r.error.issues.forEach((i) => {
       const key = i.path[0] as string;
-      // Ignora errores de campos condicionales que no pertenecen al motivo activo
+      // Ignora errores de campos condicionales que no pertenecen a ningún motivo activo
       if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
         return;
       }
       errors[key] = i.message;
     });
   }
-  // Validación condicional: campos requeridos del motivo activo
-  const required = requiredByMotivo[data.motivo as MotivoValue] || [];
-  required.forEach((field) => {
+  // Validación condicional: campos requeridos para los motivos activos
+  getRequiredFields(motivos).forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
     if (!v || (typeof v === "string" && v.trim() === "")) {
       errors[field as string] = "Requerido para este motivo";
