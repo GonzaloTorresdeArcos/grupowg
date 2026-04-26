@@ -738,8 +738,14 @@ const Inscripcion = () => {
             <Field label="Familias de producto atendidas">
               <GamasSelector value={familiasSel} onChange={setFamiliasSel} />
             </Field>
-            <Field label="Marcas trabajadas">
-              <textarea className="input-base min-h-24" value={marcas} onChange={(e) => setMarcas(e.target.value)} placeholder="Listado libre de marcas" />
+            <Field label="Marcas trabajadas y relación SAT">
+              <MarcasSelector
+                familias={familiasSel}
+                value={marcasDetalle}
+                onChange={setMarcasDetalle}
+                otrasMarcas={marcas}
+                onOtrasChange={setMarcas}
+              />
             </Field>
             <div className="grid md:grid-cols-2 gap-5">
               <Field label="Número de técnicos">
