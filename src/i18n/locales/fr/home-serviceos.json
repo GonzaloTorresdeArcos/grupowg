@@ -1,0 +1,24 @@
+{
+  "eyebrow": "05 · WG Service OS",
+  "title": "Le système d'exploitation du service.",
+  "lead": "Une couche qui connecte tout le service : chaque interaction devient une décision structurée et chaque décision une exécution mesurable.",
+  "whatLabel": "Ce que c'est",
+  "whatText": "Une couche qui connecte personnes, processus et technologie dans un flux opérationnel unique.",
+  "doesLabel": "Ce que ça fait",
+  "doesText": "Interaction → Décision → Exécution. Dans un même système, sans friction.",
+  "panelTitle": "Avant vs maintenant",
+  "beforeLabel": "Avant",
+  "afterLabel": "Maintenant",
+  "before": [
+    "Systèmes déconnectés",
+    "Décisions manuelles",
+    "Manque de contrôle",
+    "Silos d'information"
+  ],
+  "after": [
+    "Un système unique",
+    "Décisions structurées",
+    "Contrôle total",
+    "Données intégrées en temps réel"
+  ]
+}

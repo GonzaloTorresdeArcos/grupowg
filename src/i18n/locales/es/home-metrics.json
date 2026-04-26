@@ -1,0 +1,13 @@
+{
+  "title": "Esto es lo que hacemos cada día.",
+  "lead": "Modelo aplicado en algunos de los principales retailers, fabricantes y aseguradoras de España y Europa.",
+  "tag": "wg-os :: metrics.live",
+  "items": [
+    { "v": "+150K", "l": "Incidencias gestionadas / año", "c": "Operación" },
+    { "v": "+400", "l": "Servicios técnicos en red", "c": "Cobertura" },
+    { "v": "50 años", "l": "De experiencia operativa", "c": "Trayectoria" },
+    { "v": "4 hubs", "l": "Madrid · Barcelona · Valencia · Canarias", "c": "Presencia" },
+    { "v": "Multi-país", "l": "Operación internacional", "c": "Escala" },
+    { "v": "+25 años", "l": "De relación con clientes clave", "c": "Confianza" }
+  ]
+}

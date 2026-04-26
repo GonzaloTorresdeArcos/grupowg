@@ -1,0 +1,24 @@
+{
+  "eyebrow": "05 · WG Service OS",
+  "title": "The operating system for service.",
+  "lead": "A layer that connects the entire service: turning every interaction into a structured decision and every decision into measurable execution.",
+  "whatLabel": "What it is",
+  "whatText": "A layer that connects people, processes and technology into a single operational flow.",
+  "doesLabel": "What it does",
+  "doesText": "Interaction → Decision → Execution. In one system, without friction.",
+  "panelTitle": "Before vs now",
+  "beforeLabel": "Before",
+  "afterLabel": "Now",
+  "before": [
+    "Disconnected systems",
+    "Manual decisions",
+    "Lack of control",
+    "Information silos"
+  ],
+  "after": [
+    "One single system",
+    "Structured decisions",
+    "Full control",
+    "Real-time integrated data"
+  ]
+}
