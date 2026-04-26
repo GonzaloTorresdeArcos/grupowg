@@ -1,3 +1,31 @@
 {
-  "copyright": "© {{year}} Grupo Warranty Global"
+  "tagline": "The operating system of after-sales service.",
+  "lead": "We turn after-sales service into a system that works. Under control.",
+  "copyright": "© {{year}} Grupo Warranty Global · All rights reserved",
+  "expandAll": "Expand all",
+  "collapseAll": "Collapse all",
+  "configureCookies": "Configure cookies",
+  "groups": {
+    "system": "System",
+    "company": "Company",
+    "network": "Professional network"
+  },
+  "items": {
+    "/grupo": "WG Group",
+    "/modelo": "Model",
+    "/soluciones": "Solutions",
+    "/plataforma": "Platform",
+    "/experiencia": "Experience",
+    "/industrias": "Industries",
+    "/wg-network": "WG Professional Network",
+    "/wg-network/inscripcion": "Join the network",
+    "/portal/login": "Partner access",
+    "/marcas": "Brands",
+    "/50-aniversario": "50 years",
+    "/contacto": "Contact",
+    "/legal/privacidad": "Privacy policy",
+    "/legal/aviso-legal": "Legal notice",
+    "/legal/cookies": "Cookie policy",
+    "/legal/accesibilidad": "Accessibility"
+  }
 }

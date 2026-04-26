@@ -1,0 +1,20 @@
+{
+  "eyebrow": "03 · Camadas transversais",
+  "titleA": "Experiência e governo,",
+  "titleB": "por desenho",
+  "layers": [
+    { "title": "Camada de experiência", "sub": "A experiência como resultado do sistema", "bullets": ["Captura desde o primeiro contacto", "Coerência em todo o journey", "Medição baseada em desempenho (TAT, FTF)"], "closing": "A experiência não se gere. Constrói-se a partir do sistema." },
+    { "title": "Camada de governo", "sub": "Controlo e cumprimento estrutural", "bullets": ["Homologação de rede técnica", "Controlo documental", "Cumprimento contratual", "Gestão de riscos"], "closing": "Garantimos que o sistema não só funciona. Cumpre." }
+  ],
+  "flowEyebrow": "04 · Da incidência à resolução",
+  "flowTitleA": "Quatro momentos.",
+  "flowTitleB": "Um único fluxo",
+  "flow": [
+    { "t": "Entrada", "d": "Interação" },
+    { "t": "Decisão", "d": "Sistema" },
+    { "t": "Execução", "d": "Operação" },
+    { "t": "Controlo", "d": "Seguimento" }
+  ],
+  "flowClosingA": "Cada interação não só resolve um caso.",
+  "flowClosingB": "Melhora o sistema."
+}

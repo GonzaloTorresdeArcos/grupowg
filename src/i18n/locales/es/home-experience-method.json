@@ -1,0 +1,10 @@
+{
+  "titleA": "Gestionada, medida",
+  "titleB": "y comprobada",
+  "lead": "Tres capas conectadas que convierten la experiencia en algo construido, no improvisado.",
+  "blocks": [
+    { "title": "Cómo la gestionamos", "lead": "La experiencia no se gestiona de forma aislada. Se construye a lo largo de todo el servicio.", "bullets": ["Desde el diagnóstico inicial", "Durante la ejecución", "En el cumplimiento de plazos", "En la calidad de la resolución"], "closing": "Cada punto del proceso impacta directamente en la percepción del cliente." },
+    { "title": "Cómo la medimos", "lead": "Medimos la experiencia a través del rendimiento real del sistema.", "bullets": ["Tiempo total de resolución (TAT)", "Resolución en primera intervención (FTF)", "Incidencias y reclamaciones", "Cumplimiento de compromisos"], "closing": "La experiencia no es una percepción subjetiva. Es una consecuencia medible." },
+    { "title": "Qué conseguimos", "lead": "Resultados tangibles que se sostienen en el tiempo y se notan en cada interacción.", "bullets": ["Experiencia consistente, independientemente del proveedor", "Menor fricción para el cliente", "Reducción de contactos innecesarios", "Mayor confianza en el servicio"], "closing": "Una experiencia que no depende del azar. Depende del sistema." }
+  ]
+}

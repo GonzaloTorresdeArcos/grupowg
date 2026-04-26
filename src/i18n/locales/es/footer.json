@@ -1,3 +1,31 @@
 {
-  "copyright": "© {{year}} Grupo Warranty Global"
+  "tagline": "El sistema operativo del servicio postventa.",
+  "lead": "Convertimos el servicio postventa en un sistema que funciona. Bajo control.",
+  "copyright": "© {{year}} Grupo Warranty Global · Todos los derechos reservados",
+  "expandAll": "Expandir todo",
+  "collapseAll": "Contraer todo",
+  "configureCookies": "Configurar cookies",
+  "groups": {
+    "system": "Sistema",
+    "company": "Compañía",
+    "network": "Red profesional"
+  },
+  "items": {
+    "/grupo": "Grupo WG",
+    "/modelo": "Modelo",
+    "/soluciones": "Soluciones",
+    "/plataforma": "Plataforma",
+    "/experiencia": "Experiencia",
+    "/industrias": "Industrias",
+    "/wg-network": "WG Professional Network",
+    "/wg-network/inscripcion": "Únete a la red",
+    "/portal/login": "Acceso colaboradores",
+    "/marcas": "Marcas",
+    "/50-aniversario": "50 aniversario",
+    "/contacto": "Contacto",
+    "/legal/privacidad": "Política de privacidad",
+    "/legal/aviso-legal": "Aviso legal",
+    "/legal/cookies": "Política de cookies",
+    "/legal/accesibilidad": "Accesibilidad"
+  }
 }

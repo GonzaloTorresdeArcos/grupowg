@@ -1,0 +1,56 @@
+{
+  "seo": { "title": "Solutions · WG Execute · Control Tower · Scale", "description": "Three ways to activate the service system: WG Execute (we run it for you), WG Control Tower (single view across providers) and WG Scale (international rollout under control)." },
+  "hero": { "titleA": "Three ways to", "titleB": "activate the system", "subtitle": "Execute, Control Tower and Scale. You choose the level of involvement; we make sure the service works with quality, control and consistency.", "cta": "Request information" },
+  "intro": { "titleA": "Three ways to", "titleB": "activate the service", "titleC": "system.", "lead": "Three modules. One platform. You choose the level of involvement according to your operating model." },
+  "modules": {
+    "execute": {
+      "tagline": "We do it for you",
+      "intro": "We manage after-sales service end to end. We take care of the entire operation to make sure the service runs with quality, speed and control.",
+      "bullets": ["Customer care and diagnosis", "Field-service network assignment", "Intervention management", "Logistics coordination", "Spare-part management (where applicable)", "Full service control"],
+      "closing": "You outsource the service. We operate it."
+    },
+    "controlTower": {
+      "tagline": "We control it with you",
+      "intro": "We control and improve the service when several providers are involved. We integrate all the information and deliver a single view to make decisions.",
+      "pillars": [
+        { "title": "What we do", "items": ["Integrate data from in-house operations and external networks", "Clear dashboards and cost control", "Real comparisons across providers"] },
+        { "title": "What you get", "items": ["Full visibility of the service", "Detection of issues and inefficiencies", "Identification of improvements and levers"] }
+      ],
+      "outcomes": { "from": "Manage providers", "to": "Manage service performance" },
+      "closing": "One single view for the entire service."
+    },
+    "scale": {
+      "tagline": "We support your expansion",
+      "intro": "We design the service and help it grow in an orderly way, including internationally. Same standard, same KPIs, in every market.",
+      "pillars": [
+        { "title": "Model definition", "items": ["How the service works end-to-end", "SLAs and KPIs per stage", "Organization and control"] },
+        { "title": "Service network", "items": ["Selection and onboarding of technicians", "Flows: on-site vs. workshop", "Common operating standards"] },
+        { "title": "Spare parts and logistics", "items": ["Demand planning", "Stock based on historical data", "Procurement and logistics optimization"] },
+        { "title": "International rollout", "items": ["Multi-country deployment", "Same processes and criteria", "Central control + local adaptation"] }
+      ],
+      "outcomes": { "from": "Grow without structure", "to": "Scale with control and consistency" },
+      "closing": "From designing the service to running it at scale."
+    }
+  },
+  "outcomeChange": "The shift",
+  "capabilities": {
+    "eyebrow": "02 · System capabilities",
+    "titleA": "The intelligence that",
+    "titleB": "runs through",
+    "titleC": "every solution.",
+    "lead": "Three cross-cutting capabilities, active across Execute, Control Tower and Scale.",
+    "items": [
+      { "title": "Technical intelligence", "lead": "We turn technical knowledge into practical decisions.", "bullets": ["We collect and organize incidents", "We support diagnosis", "We support complex cases", "We improve first-time fix"], "closing": "We know when something is off and how to fix it." },
+      { "title": "Product intelligence", "lead": "We turn the service into useful information for product and procurement.", "bullets": ["We detect recurring failures", "We analyze product behavior", "We measure impact on cost and quality", "We deliver clear reports"], "closing": "Every incident informs how to improve the product." },
+      { "title": "Service control and compliance", "lead": "We ensure the whole system works and complies.", "bullets": ["We validate the field-service network", "We control documentation", "We verify SLA compliance", "We reduce operating risk"], "closing": "Service does not just happen. It works as it should." }
+    ]
+  },
+  "ctaFinal": {
+    "eyebrow": "Where to start?",
+    "titleA": "Let's talk about your operation and choose the",
+    "titleB": "module",
+    "titleC": "that fits.",
+    "ctaPrimary": "Request information",
+    "ctaSecondary": "See the platform"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "titleA": "Gerida, medida",
+  "titleB": "e comprovada",
+  "lead": "Três camadas ligadas que transformam a experiência em algo construído, não improvisado.",
+  "blocks": [
+    { "title": "Como a gerimos", "lead": "A experiência não se gere de forma isolada. Constrói-se ao longo de todo o serviço.", "bullets": ["Desde o diagnóstico inicial", "Durante a execução", "No cumprimento de prazos", "Na qualidade da resolução"], "closing": "Cada ponto do processo impacta diretamente a perceção do cliente." },
+    { "title": "Como a medimos", "lead": "Medimos a experiência através do desempenho real do sistema.", "bullets": ["Tempo total de resolução (TAT)", "Resolução à primeira intervenção (FTF)", "Incidências e reclamações", "Cumprimento de compromissos"], "closing": "A experiência não é uma perceção subjetiva. É uma consequência mensurável." },
+    { "title": "O que alcançamos", "lead": "Resultados tangíveis que se sustentam no tempo e se notam em cada interação.", "bullets": ["Experiência consistente, independentemente do fornecedor", "Menor fricção para o cliente", "Redução de contactos desnecessários", "Maior confiança no serviço"], "closing": "Uma experiência que não depende do acaso. Depende do sistema." }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "eyebrow": "03 · Cross-cutting layers",
+  "titleA": "Experience and governance,",
+  "titleB": "by design",
+  "layers": [
+    { "title": "Experience layer", "sub": "Experience as the outcome of the system", "bullets": ["Capture from the first contact", "Consistency across the whole journey", "Performance-based measurement (TAT, FTF)"], "closing": "Experience is not managed. It is built from the system." },
+    { "title": "Governance layer", "sub": "Structural control and compliance", "bullets": ["Field-service network onboarding", "Documentation control", "Contractual compliance", "Risk management"], "closing": "We make sure the system not only works. It complies." }
+  ],
+  "flowEyebrow": "04 · From incident to resolution",
+  "flowTitleA": "Four moments.",
+  "flowTitleB": "One single flow",
+  "flow": [
+    { "t": "Entry", "d": "Interaction" },
+    { "t": "Decision", "d": "System" },
+    { "t": "Execution", "d": "Operation" },
+    { "t": "Control", "d": "Follow-up" }
+  ],
+  "flowClosingA": "Every interaction does not just solve a case.",
+  "flowClosingB": "It improves the system."
+}

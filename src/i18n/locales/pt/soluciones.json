@@ -1,0 +1,56 @@
+{
+  "seo": { "title": "Soluções · WG Execute · Control Tower · Scale", "description": "Três formas de ativar o sistema de serviço: WG Execute (operamos por si), WG Control Tower (visão única multi-fornecedor) e WG Scale (implementação internacional com controlo)." },
+  "hero": { "titleA": "Três formas de", "titleB": "ativar o sistema", "subtitle": "Execute, Control Tower e Scale. Escolhe o grau de envolvimento; nós garantimos que o serviço funciona com qualidade, controlo e consistência.", "cta": "Solicitar informação" },
+  "intro": { "titleA": "Três formas de", "titleB": "ativar o sistema", "titleC": "de serviço.", "lead": "Três módulos. A mesma plataforma. Escolhe o grau de envolvimento segundo o teu modelo operativo." },
+  "modules": {
+    "execute": {
+      "tagline": "Fazemo-lo por si",
+      "intro": "Gerimos o serviço pós-venda de ponta a ponta. Tratamos de toda a operação para garantir que o serviço funciona com qualidade, rapidez e controlo.",
+      "bullets": ["Atendimento e diagnóstico", "Atribuição de rede técnica", "Gestão de intervenções", "Coordenação logística", "Gestão de peças (quando aplicável)", "Controlo completo do serviço"],
+      "closing": "Externaliza o serviço. Nós operamo-lo."
+    },
+    "controlTower": {
+      "tagline": "Controlamo-lo consigo",
+      "intro": "Controlamos e melhoramos o serviço quando intervêm vários fornecedores. Integramos toda a informação e damos uma visão única para decidir.",
+      "pillars": [
+        { "title": "O que fazemos", "items": ["Integramos dados de operação própria e redes externas", "Dashboards claros e controlo de custos", "Comparações reais entre fornecedores"] },
+        { "title": "O que obtém", "items": ["Visão completa de todo o serviço", "Deteção de problemas e ineficiências", "Identificação de melhorias e alavancas"] }
+      ],
+      "outcomes": { "from": "Gerir fornecedores", "to": "Gerir o desempenho do serviço" },
+      "closing": "Uma única visão para todo o serviço."
+    },
+    "scale": {
+      "tagline": "Acompanhamo-lo na sua expansão",
+      "intro": "Desenhamos o serviço e ajudamo-lo a crescer de forma ordenada, também internacionalmente. Mesmo padrão, mesmos KPIs, em todos os mercados.",
+      "pillars": [
+        { "title": "Definição do modelo", "items": ["Como funciona o serviço end-to-end", "SLA e KPIs por etapa", "Organização e controlo"] },
+        { "title": "Rede de serviço", "items": ["Seleção e homologação de técnicos", "Fluxos: domicílio vs oficina", "Padrões operativos comuns"] },
+        { "title": "Peças e logística", "items": ["Planeamento de necessidades", "Stock baseado em histórico", "Otimização de compras e logística"] },
+        { "title": "Implementação internacional", "items": ["Implementação multi-país", "Mesmos processos e critérios", "Controlo central + adaptação local"] }
+      ],
+      "outcomes": { "from": "Crescer sem estrutura", "to": "Escalar com controlo e consistência" },
+      "closing": "De desenhar o serviço a fazê-lo funcionar à escala."
+    }
+  },
+  "outcomeChange": "A mudança",
+  "capabilities": {
+    "eyebrow": "02 · Capacidades do sistema",
+    "titleA": "A inteligência que",
+    "titleB": "atravessa",
+    "titleC": "cada solução.",
+    "lead": "Três capacidades transversais ativas em Execute, Control Tower e Scale.",
+    "items": [
+      { "title": "Inteligência técnica", "lead": "Convertemos o conhecimento técnico em decisões práticas.", "bullets": ["Recolhemos e organizamos incidências", "Apoiamos o diagnóstico", "Damos suporte em casos complexos", "Melhoramos a resolução à primeira"], "closing": "Sabemos quando algo está mal e como corrigi-lo." },
+      { "title": "Inteligência de produto", "lead": "Convertemos o serviço em informação útil para produto e compras.", "bullets": ["Detetamos falhas recorrentes", "Analisamos comportamento por produto", "Medimos impacto em custo e qualidade", "Geramos relatórios claros"], "closing": "Cada incidência traz informação para melhorar o produto." },
+      { "title": "Controlo e cumprimento do serviço", "lead": "Garantimos que todo o sistema funciona e cumpre.", "bullets": ["Validamos a rede técnica", "Controlamos a documentação", "Verificamos o cumprimento de acordos", "Reduzimos riscos operativos"], "closing": "O serviço não só acontece. Funciona como deve." }
+    ]
+  },
+  "ctaFinal": {
+    "eyebrow": "Por onde começar?",
+    "titleA": "Falamos da sua operação e escolhemos o",
+    "titleB": "módulo",
+    "titleC": "que encaixa.",
+    "ctaPrimary": "Solicitar informação",
+    "ctaSecondary": "Ver a plataforma"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Groupe WG · Là où d'autres s'arrêtent, nous commençons",
+    "description": "Le Groupe WG transforme le service après-vente en un système maîtrisé : opérations, expérience client et savoir-faire technique intégrés de bout en bout."
+  },
+  "hero": {
+    "titleA": "Là où d'autres s'arrêtent,",
+    "titleB": "nous commençons",
+    "subtitleA": "Nous transformons le service après-vente en un système qui fonctionne.",
+    "subtitleB": "Nous intégrons opérations, expérience client et savoir-faire technique pour exécuter, contrôler et optimiser le service",
+    "subtitleC": "de bout en bout",
+    "cta": "Parler à notre équipe"
+  },
+  "problem": {
+    "eyebrow": "01 · Problème",
+    "titleA": "Aujourd'hui, le service après-vente",
+    "titleB": "ne fonctionne pas comme un système",
+    "items": [
+      "Plusieurs prestataires opérant sans coordination.",
+      "Des systèmes qui ne communiquent pas entre eux.",
+      "Des décisions prises sans critère technique structuré.",
+      "Aucune visibilité réelle sur ce qui se passe vraiment."
+    ],
+    "resultLabel": "Résultat",
+    "resultA": "Plus de coûts, plus d'incidents et une",
+    "resultB": "expérience incohérente"
+  },
+  "solution": {
+    "eyebrow": "02 · Solution",
+    "titleA": "Un système unique pour",
+    "titleB": "contrôler et exécuter",
+    "titleC": "le service.",
+    "lead": "Nous connectons tous les éléments —personnes, processus et technologie— dans un flux unique, coordonné et mesurable.",
+    "quoteA": "Il ne s'agit pas de gérer des parties.",
+    "quoteB": "Il s'agit de faire fonctionner le système."
+  },
+  "differential": {
+    "eyebrow": "03 · Différenciation",
+    "titleA": "Contrôle. Savoir-faire.",
+    "titleB": "Exécution",
+    "items": [
+      { "title": "Contrôle end-to-end", "desc": "Visibilité complète du service, quel que soit l'exécutant." },
+      { "title": "Savoir-faire technique et produit", "desc": "Nous validons la qualité du service et transformons l'activité en information utile pour s'améliorer." },
+      { "title": "Exécution intégrée", "desc": "Du premier contact à la résolution, sans friction." }
+    ],
+    "ctaPrimary": "Voir le modèle",
+    "ctaSecondary": "Parler à notre équipe"
+  }
+}
