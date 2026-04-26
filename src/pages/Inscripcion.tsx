@@ -20,6 +20,7 @@ import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
 import { MarcasSelector } from "@/components/inscripcion/MarcasSelector";
 import type { MarcaDetalle } from "@/lib/marcas-taxonomy";
+import { HorariosSelector } from "@/components/inscripcion/HorariosSelector";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega", "Swap / Refurbished (sustitución y puesta a nuevo)"];
@@ -761,8 +762,8 @@ const Inscripcion = () => {
             <Field label="Instalación">
               <ChipsMulti opts={instalacionTipos} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
-            <Field label="Horarios">
-              <input className="input-base" placeholder="Ej. L-V 9:00-18:00" value={horarios} onChange={(e) => setHorarios(e.target.value)} />
+            <Field label="Horarios de atención">
+              <HorariosSelector value={horarios} onChange={setHorarios} />
             </Field>
           </div>
         )}
