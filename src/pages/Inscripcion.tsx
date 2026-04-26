@@ -217,7 +217,9 @@ const Inscripcion = () => {
     if (s1.cif_nif && !validateSpanishDoc(s1.cif_nif).valid) {
       e.cif_nif = "CIF/NIF/NIE no válido";
     }
-    if (!emailVerified) e.email = "Verifica tu email para continuar";
+    // [DEV] Verificación de email/móvil temporalmente opcional para poder
+    // recorrer el resto del flujo sin bloquear el avance entre pasos.
+    // if (!emailVerified) e.email = "Verifica tu email para continuar";
 
     // Validación cruzada CP ↔ provincia: la provincia indicada debe coincidir
     // con la inferida por los dos primeros dígitos del código postal.
