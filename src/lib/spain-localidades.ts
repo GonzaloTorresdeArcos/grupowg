@@ -1850,6 +1850,37 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "TO Norte": { level1: "Resto provincia de Toledo", level2: "Norte" },
   "TO Centro": { level1: "Resto provincia de Toledo", level2: "Centro" },
   "TO Sur": { level1: "Resto provincia de Toledo", level2: "Sur" },
+
+  // ─── Barcelona (08) ───
+  "Barcelona Capital": { level1: "Barcelona capital" },
+  "B Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "B Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "B Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "B Á. Metro Interior": { level1: "Área metropolitana", level2: "Interior" },
+  "B Vallès": { level1: "Resto provincia de Barcelona", level2: "Vallès" },
+  "B Maresme": { level1: "Resto provincia de Barcelona", level2: "Maresme" },
+  "B Penedès Garraf": { level1: "Resto provincia de Barcelona", level2: "Penedès / Garraf" },
+
+  // ─── Girona (17) ───
+  "Girona Capital": { level1: "Girona capital" },
+  "GI Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "GI Costa Brava": { level1: "Resto provincia de Girona", level2: "Costa Brava" },
+  "GI Alt Empordà": { level1: "Resto provincia de Girona", level2: "Norte / Alt Empordà" },
+  "GI Interior": { level1: "Resto provincia de Girona", level2: "Interior" },
+
+  // ─── Lleida (25) ───
+  "Lleida Capital": { level1: "Lleida capital" },
+  "L Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "L Ponent": { level1: "Resto provincia de Lleida", level2: "Ponent" },
+  "L Pirineo": { level1: "Resto provincia de Lleida", level2: "Pirineo" },
+  "L Oeste": { level1: "Resto provincia de Lleida", level2: "Oeste" },
+
+  // ─── Tarragona (43) ───
+  "Tarragona Capital": { level1: "Tarragona capital" },
+  "T Á. Metro Costa": { level1: "Área metropolitana", level2: "Costa cercana" },
+  "T Costa Sur": { level1: "Resto provincia de Tarragona", level2: "Costa sur" },
+  "T Ebro": { level1: "Resto provincia de Tarragona", level2: "Ebro" },
+  "T Interior": { level1: "Resto provincia de Tarragona", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
