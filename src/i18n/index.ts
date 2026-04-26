@@ -226,6 +226,7 @@ i18n
         homeExperienceGov: esHomeExperienceGov,
         grupo: esGrupo, modelo: esModelo, soluciones: esSoluciones, plataforma: esPlataforma,
         industrias: esIndustrias, experiencia: esExperiencia, marcas: esMarcas, aniversario: esAniversario,
+        legal: esLegal,
       }),
       en: buildBundle({
         common: enCommon, header: enHeader, footer: enFooter, breadcrumbs: enBreadcrumbs, contacto: enContacto,
@@ -239,6 +240,7 @@ i18n
         homeExperienceGov: enHomeExperienceGov,
         grupo: enGrupo, modelo: enModelo, soluciones: enSoluciones, plataforma: enPlataforma,
         industrias: enIndustrias, experiencia: enExperiencia, marcas: enMarcas, aniversario: enAniversario,
+        legal: enLegal,
       }),
       pt: buildBundle({
         common: ptCommon, header: ptHeader, footer: ptFooter, breadcrumbs: ptBreadcrumbs, contacto: ptContacto,
@@ -252,6 +254,7 @@ i18n
         homeExperienceGov: ptHomeExperienceGov,
         grupo: ptGrupo, modelo: ptModelo, soluciones: ptSoluciones, plataforma: ptPlataforma,
         industrias: ptIndustrias, experiencia: ptExperiencia, marcas: ptMarcas, aniversario: ptAniversario,
+        legal: ptLegal,
       }),
       fr: buildBundle({
         common: frCommon, header: frHeader, footer: frFooter, breadcrumbs: frBreadcrumbs, contacto: frContacto,
@@ -265,6 +268,7 @@ i18n
         homeExperienceGov: frHomeExperienceGov,
         grupo: frGrupo, modelo: frModelo, soluciones: frSoluciones, plataforma: frPlataforma,
         industrias: frIndustrias, experiencia: frExperiencia, marcas: frMarcas, aniversario: frAniversario,
+        legal: frLegal,
       }),
     },
     fallbackLng: "es",
