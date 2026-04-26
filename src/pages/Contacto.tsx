@@ -304,6 +304,7 @@ const Contacto = () => {
   // Defaults sensatos al marcar un motivo (solo se aplican si el campo está vacío)
   const defaultsByMotivo: Partial<Record<MotivoValue, Partial<FormData>>> = {
     reparaciones: { urgencia: "Estándar" },
+    instalaciones: { urgencia: "Estándar" },
     movilidad: { vehiculo: "Turismo" },
     seguros: { ramo: "Hogar" },
   };
