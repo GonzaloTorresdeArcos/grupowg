@@ -162,8 +162,8 @@ export function MarcasSelector({
         />
       </div>
 
-      {/* Grid de marcas de la gama activa */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      {/* Lista de marcas — orden vertical por columnas (A→Z bajando, luego siguiente col) */}
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-2 [column-fill:balance]">
         {filteredMarcas.map((label) => {
           const sel = isSelected(currentGama.gama, label);
           return (
@@ -172,7 +172,7 @@ export function MarcasSelector({
               type="button"
               onClick={() => toggleMarca(currentGama.gama, label)}
               className={cn(
-                "flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition",
+                "mb-2 w-full break-inside-avoid flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition",
                 sel
                   ? "border-teal-deep bg-teal-deep text-white"
                   : "border-border bg-card hover:border-teal-deep/50",
@@ -184,7 +184,7 @@ export function MarcasSelector({
           );
         })}
         {filteredMarcas.length === 0 && (
-          <p className="col-span-full text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Sin resultados en esta gama.
           </p>
         )}
