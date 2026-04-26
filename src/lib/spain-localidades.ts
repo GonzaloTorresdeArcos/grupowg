@@ -1395,24 +1395,52 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
   ],
 
   // ============= LA RIOJA =============
-  "26": [
-    { name: "Logroño", cp: "26001" },
-    { name: "Calahorra", cp: "26500" },
-    { name: "Arnedo", cp: "26580" },
-    { name: "Haro", cp: "26200" },
-    { name: "Lardero", cp: "26140" },
-    { name: "Nájera", cp: "26300" },
-    { name: "Alfaro", cp: "26540" },
-    { name: "Santo Domingo de la Calzada", cp: "26250" },
-    { name: "Villamediana de Iregua", cp: "26142" },
-    { name: "Cenicero", cp: "26350" },
-    { name: "Autol", cp: "26560" },
-    { name: "Rincón de Soto", cp: "26550" },
-    { name: "Pradejón", cp: "26510" },
-    { name: "Navarrete", cp: "26370" },
-    { name: "Ezcaray", cp: "26280" },
-    { name: "Quel", cp: "26570" },
-    { name: "Cervera del Río Alhama", cp: "26520" },
+  "26": [ // La Rioja
+    // ───── 1) Logroño capital ─────
+    { name: "Logroño Capital · Centro", cp: "26001" },
+    { name: "Logroño Capital · Cascajos", cp: "26006" },
+    { name: "Logroño Capital · La Guindalera", cp: "26006" },
+    { name: "Logroño Capital · Yagüe", cp: "26005" },
+    { name: "Logroño Capital · Varea", cp: "26009" },
+    { name: "Logroño Capital · El Cubo", cp: "26004" },
+    { name: "Logroño Capital · Valdegastea", cp: "26006" },
+    { name: "Logroño Capital · Los Lirios", cp: "26006" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "LR Á. Metro Cercano · Lardero", cp: "26140" },
+    { name: "LR Á. Metro Cercano · Villamediana de Iregua", cp: "26142" },
+    { name: "LR Á. Metro Cercano · Oyón-Oion", cp: "01320" },
+    { name: "LR Á. Metro Cercano · Alberite", cp: "26141" },
+    { name: "LR Á. Metro Cercano · Entrena", cp: "26375" },
+    { name: "LR Á. Metro Cercano · Fuenmayor", cp: "26360" },
+    { name: "LR Á. Metro Cercano · Navarrete", cp: "26370" },
+
+    // ───── 3) Resto La Rioja ─────
+    // 3.1 Rioja Alta
+    { name: "LR Rioja Alta · Haro", cp: "26200" },
+    { name: "LR Rioja Alta · Santo Domingo de la Calzada", cp: "26250" },
+    { name: "LR Rioja Alta · Nájera", cp: "26300" },
+    { name: "LR Rioja Alta · San Asensio", cp: "26340" },
+    { name: "LR Rioja Alta · Baños de Río Tobía", cp: "26320" },
+    { name: "LR Rioja Alta · Cuzcurrita de Río Tirón", cp: "26214" },
+    // 3.2 Rioja Media
+    { name: "LR Rioja Media · Cenicero", cp: "26350" },
+    { name: "LR Rioja Media · San Vicente de la Sonsierra", cp: "26338" },
+    { name: "LR Rioja Media · Briones", cp: "26330" },
+    { name: "LR Rioja Media · Ábalos", cp: "26339" },
+    // 3.3 Rioja Baja / Oriental
+    { name: "LR Rioja Baja · Calahorra", cp: "26500" },
+    { name: "LR Rioja Baja · Arnedo", cp: "26580" },
+    { name: "LR Rioja Baja · Alfaro", cp: "26540" },
+    { name: "LR Rioja Baja · Rincón de Soto", cp: "26550" },
+    { name: "LR Rioja Baja · Autol", cp: "26560" },
+    { name: "LR Rioja Baja · Aldeanueva de Ebro", cp: "26559" },
+    // 3.4 Sierra
+    { name: "LR Sierra · Ezcaray", cp: "26280" },
+    { name: "LR Sierra · Torrecilla en Cameros", cp: "26100" },
+    { name: "LR Sierra · Villoslada de Cameros", cp: "26125" },
+    { name: "LR Sierra · Ortigosa de Cameros", cp: "26124" },
+    { name: "LR Sierra · San Román de Cameros", cp: "26133" },
   ],
 
   // ============= MADRID =============
