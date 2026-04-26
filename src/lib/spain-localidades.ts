@@ -192,26 +192,33 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "HU Sierra · Jabugo", cp: "21290" },
   ],
   "23": [ // Jaén
-    { name: "Jaén", cp: "23001" },
-    { name: "Linares", cp: "23700" },
-    { name: "Andújar", cp: "23740" },
-    { name: "Úbeda", cp: "23400" },
-    { name: "Martos", cp: "23600" },
-    { name: "Alcalá la Real", cp: "23680" },
-    { name: "Bailén", cp: "23710" },
-    { name: "Mengíbar", cp: "23620" },
-    { name: "Torredelcampo", cp: "23640" },
-    { name: "Torredonjimeno", cp: "23650" },
-    { name: "Villacarrillo", cp: "23300" },
-    { name: "Baeza", cp: "23440" },
-    { name: "La Carolina", cp: "23200" },
-    { name: "Mancha Real", cp: "23100" },
-    { name: "Cazorla", cp: "23470" },
-    { name: "Jódar", cp: "23500" },
-    { name: "Beas de Segura", cp: "23280" },
-    { name: "Quesada", cp: "23480" },
-    { name: "Porcuna", cp: "23790" },
-    { name: "Marmolejo", cp: "23770" },
+    // ───── 1.1 Jaén capital (barrios) ─────
+    { name: "Jaén Capital · Centro", cp: "23001" },
+    { name: "Jaén Capital · Peñamefécit", cp: "23004" },
+    { name: "Jaén Capital · San Ildefonso", cp: "23007" },
+    { name: "Jaén Capital · La Magdalena", cp: "23004" },
+    { name: "Jaén Capital · Expansión Norte", cp: "23009" },
+    { name: "Jaén Capital · Polígono del Valle", cp: "23009" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "JA Á. Metro Cercano · La Guardia de Jaén", cp: "23170" },
+    { name: "JA Á. Metro Cercano · Mancha Real", cp: "23100" },
+    { name: "JA Á. Metro Cercano · Torredelcampo", cp: "23640" },
+    { name: "JA Á. Metro Cercano · Torredonjimeno", cp: "23650" },
+    { name: "JA Á. Metro Cercano · Martos", cp: "23600" },
+
+    // ───── 1.3 Resto provincia de Jaén ─────
+    // 1.3.1 Corredor central
+    { name: "JA Corredor Central · Linares", cp: "23700" },
+    { name: "JA Corredor Central · Andújar", cp: "23740" },
+    { name: "JA Corredor Central · Bailén", cp: "23710" },
+    // 1.3.2 La Loma
+    { name: "JA La Loma · Úbeda", cp: "23400" },
+    { name: "JA La Loma · Baeza", cp: "23440" },
+    // 1.3.3 Sierra
+    { name: "JA Sierra · La Carolina", cp: "23200" },
+    { name: "JA Sierra · Cazorla", cp: "23470" },
   ],
   "29": [ // Málaga
     // — Málaga capital: distritos centrales —
@@ -1488,6 +1495,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "HU Costa": { level1: "Resto provincia de Huelva", level2: "Costa" },
   "HU Condado": { level1: "Resto provincia de Huelva", level2: "Condado" },
   "HU Sierra": { level1: "Resto provincia de Huelva", level2: "Sierra" },
+
+  // ─── Jaén (23) ───
+  "Jaén Capital": { level1: "Jaén capital" },
+  "JA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "JA Corredor Central": { level1: "Resto provincia de Jaén", level2: "Corredor central" },
+  "JA La Loma": { level1: "Resto provincia de Jaén", level2: "La Loma" },
+  "JA Sierra": { level1: "Resto provincia de Jaén", level2: "Sierra" },
 };
 
 export interface LocalitySubgroup {
