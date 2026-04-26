@@ -98,6 +98,7 @@ const Inscripcion = () => {
   const [serviciosSel, setServiciosSel] = useState<string[]>([]);
   const [horarios, setHorarios] = useState("");
   const [capacidad, setCapacidad] = useState("");
+  const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
