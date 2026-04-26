@@ -345,7 +345,7 @@ const Inscripcion = () => {
               zona_cobertura: provinciasText,
               familias_producto: familiasSel,
               marcas_trabajadas: marcas,
-              marcas_codes: marcasDetalle.map((d) => d.code),
+              marcas_codes: Array.from(new Set(marcasDetalle.map((d) => d.code.split(":")[1]))),
               numero_tecnicos: tecnicos ? parseInt(tecnicos) : null,
               servicios_ofrecidos: serviciosSel,
               horarios,
@@ -740,7 +740,7 @@ const Inscripcion = () => {
             </Field>
             <Field label="Marcas trabajadas y relación SAT">
               <MarcasSelector
-                familias={familiasSel}
+                gamasActivas={Array.from(new Set(familiasSel.map((f) => f.split(".")[0])))}
                 value={marcasDetalle}
                 onChange={setMarcasDetalle}
                 otrasMarcas={marcas}
