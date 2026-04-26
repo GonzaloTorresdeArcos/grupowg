@@ -101,6 +101,7 @@ const Inscripcion = () => {
   const [provinciaCodes, setProvinciaCodes] = useState<string[]>([]);
   const [familiasSel, setFamiliasSel] = useState<string[]>([]);
   const [marcas, setMarcas] = useState("");
+  const [marcasDetalle, setMarcasDetalle] = useState<MarcaDetalle[]>([]);
   const [tecnicos, setTecnicos] = useState<string>("");
   const [serviciosSel, setServiciosSel] = useState<string[]>([]);
   const [horarios, setHorarios] = useState("");
