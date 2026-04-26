@@ -221,45 +221,42 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "JA Sierra · Cazorla", cp: "23470" },
   ],
   "29": [ // Málaga
-    // — Málaga capital: distritos centrales —
-    { name: "Málaga · Centro", cp: "29001" },
-    { name: "Málaga · Ensanche-Soho", cp: "29005" },
-    { name: "Málaga · La Malagueta", cp: "29016" },
-    // — Málaga capital: distritos periféricos —
-    { name: "Málaga · Este (Pedregalejo, El Palo)", cp: "29017" },
-    { name: "Málaga · Ciudad Jardín", cp: "29014" },
-    { name: "Málaga · Bailén-Miraflores", cp: "29009" },
-    { name: "Málaga · Palma-Palmilla", cp: "29011" },
-    { name: "Málaga · Cruz de Humilladero", cp: "29004" },
-    { name: "Málaga · Carretera de Cádiz", cp: "29006" },
-    { name: "Málaga · Churriana", cp: "29140" },
-    { name: "Málaga · Campanillas", cp: "29590" },
-    { name: "Málaga · Puerto de la Torre", cp: "29190" },
-    { name: "Málaga · Teatinos-Universidad", cp: "29010" },
-    { name: "Marbella", cp: "29600" },
-    { name: "Mijas", cp: "29650" },
-    { name: "Fuengirola", cp: "29640" },
-    { name: "Torremolinos", cp: "29620" },
-    { name: "Vélez-Málaga", cp: "29700" },
-    { name: "Estepona", cp: "29680" },
-    { name: "Benalmádena", cp: "29630" },
-    { name: "Antequera", cp: "29200" },
-    { name: "Ronda", cp: "29400" },
-    { name: "Rincón de la Victoria", cp: "29730" },
-    { name: "Alhaurín de la Torre", cp: "29130" },
-    { name: "Alhaurín el Grande", cp: "29120" },
-    { name: "Coín", cp: "29100" },
-    { name: "Cártama", cp: "29570" },
-    { name: "Nerja", cp: "29780" },
-    { name: "Torrox", cp: "29770" },
-    { name: "Manilva", cp: "29691" },
-    { name: "Álora", cp: "29500" },
-    { name: "Archidona", cp: "29300" },
-    { name: "Pizarra", cp: "29560" },
-    { name: "Casares", cp: "29690" },
-    { name: "San Pedro de Alcántara", cp: "29670" },
-    { name: "Algarrobo", cp: "29750" },
-    { name: "Benahavís", cp: "29679" },
+    // ───── 1.1 Málaga capital (distritos) ─────
+    { name: "Málaga Capital · Centro", cp: "29001" },
+    { name: "Málaga Capital · Este", cp: "29017" },
+    { name: "Málaga Capital · Ciudad Jardín", cp: "29014" },
+    { name: "Málaga Capital · Bailén-Miraflores", cp: "29009" },
+    { name: "Málaga Capital · Palma-Palmilla", cp: "29011" },
+    { name: "Málaga Capital · Cruz de Humilladero", cp: "29004" },
+    { name: "Málaga Capital · Carretera de Cádiz", cp: "29006" },
+    { name: "Málaga Capital · Churriana", cp: "29140" },
+    { name: "Málaga Capital · Campanillas", cp: "29590" },
+    { name: "Málaga Capital · Puerto de la Torre", cp: "29190" },
+    { name: "Málaga Capital · Teatinos-Universidad", cp: "29010" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Costa occidental cercana
+    { name: "MA Á. Metro Costa Occ · Torremolinos", cp: "29620" },
+    { name: "MA Á. Metro Costa Occ · Benalmádena", cp: "29630" },
+    // 1.2.2 Valle del Guadalhorce
+    { name: "MA Á. Metro Guadalhorce · Alhaurín de la Torre", cp: "29130" },
+    { name: "MA Á. Metro Guadalhorce · Alhaurín el Grande", cp: "29120" },
+    { name: "MA Á. Metro Guadalhorce · Cártama", cp: "29570" },
+    // 1.2.3 Costa oriental cercana
+    { name: "MA Á. Metro Costa Or · Rincón de la Victoria", cp: "29730" },
+
+    // ───── 1.3 Resto provincia de Málaga ─────
+    // 1.3.1 Costa del Sol occidental
+    { name: "MA Costa del Sol Occ · Fuengirola", cp: "29640" },
+    { name: "MA Costa del Sol Occ · Marbella", cp: "29600" },
+    { name: "MA Costa del Sol Occ · Estepona", cp: "29680" },
+    // 1.3.2 Costa oriental / Axarquía
+    { name: "MA Axarquía · Vélez-Málaga", cp: "29700" },
+    { name: "MA Axarquía · Nerja", cp: "29780" },
+    { name: "MA Axarquía · Torrox", cp: "29770" },
+    // 1.3.3 Interior
+    { name: "MA Interior · Antequera", cp: "29200" },
+    { name: "MA Interior · Ronda", cp: "29400" },
   ],
   "41": [ // Sevilla
     // ───── 1) Sevilla Capital · 11 distritos ─────
