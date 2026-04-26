@@ -462,6 +462,49 @@ const Contacto = () => {
     "vehiculo", "matricula", "ramo", "poliza", "mensaje", "consentimiento",
   ];
 
+  // Etiquetas legibles para el resumen de errores
+  const FIELD_LABELS: Record<string, string> = {
+    nombre: "Nombre",
+    empresa: "Empresa",
+    email: "Email",
+    telefono: "Teléfono",
+    motivo: "Motivo de contacto",
+    marca: "Marca",
+    numeroSerie: "Nº de serie",
+    producto: "Producto",
+    urgencia: "Urgencia",
+    referencia: "Referencia",
+    vehiculo: "Tipo de vehículo",
+    matricula: "Matrícula",
+    ramo: "Ramo",
+    poliza: "Póliza",
+    mensaje: "Mensaje",
+    consentimiento: "Consentimiento",
+  };
+
+  const scrollToField = (field: string) => {
+    if (typeof document === "undefined") return;
+    const wrapper = document.querySelector<HTMLElement>(`[data-field="${field}"]`);
+    if (!wrapper) return;
+    wrapper.setAttribute("data-shake", "true");
+    window.setTimeout(() => wrapper.removeAttribute("data-shake"), 500);
+    wrapper.scrollIntoView({ behavior: "smooth", block: "center" });
+    const control = wrapper.querySelector<HTMLElement>(
+      "input, select, textarea, button",
+    );
+    window.setTimeout(() => control?.focus({ preventScroll: true }), 250);
+  };
+
+  // Lista ordenada de errores visibles (para resumen en cabecera)
+  const orderedErrorList = useMemo(() => {
+    return FIELD_ORDER.filter((k) => allErrors[k as string]).map((k) => ({
+      key: k as string,
+      label: FIELD_LABELS[k as string] ?? (k as string),
+      message: allErrors[k as string],
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allErrors]);
+
   const focusFirstError = (errors: Record<string, string>) => {
     if (typeof document === "undefined") return;
     const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
