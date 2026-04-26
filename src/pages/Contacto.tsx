@@ -280,24 +280,41 @@ const Contacto = () => {
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  // Cambio de motivo: limpia touched/errs de campos condicionales que ya no aplican
-  const selectMotivo = (value: MotivoValue) => {
-    const activeFields = new Set<string>(
-      (fieldsByMotivo[value] || []) as string[],
-    );
-    setForm((f) => ({ ...f, motivo: value }));
+  // Toggle de motivo (multi-selección): añade/quita y limpia campos condicionales huérfanos
+  const toggleMotivo = (value: MotivoValue) => {
+    setForm((f) => {
+      const current = (f.motivo || []) as MotivoValue[];
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      const activeFields = getActiveFields(next);
+      // Limpia valores de campos condicionales que ya no aplican
+      const cleaned: Partial<FormData> = {};
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) {
+          (cleaned as Record<string, unknown>)[field as string] =
+            field === "urgencia" || field === "vehiculo" || field === "ramo" ? undefined : "";
+        }
+      });
+      return { ...f, ...cleaned, motivo: next };
+    });
     markTouched("motivo");
+    const nextActive = getActiveFields(
+      ((form.motivo || []) as MotivoValue[]).includes(value)
+        ? ((form.motivo || []) as MotivoValue[]).filter((v) => v !== value)
+        : [...((form.motivo || []) as MotivoValue[]), value],
+    );
     setTouched((t) => {
       const next = { ...t };
       ALL_CONDITIONAL_FIELDS.forEach((field) => {
-        if (!activeFields.has(field as string)) delete next[field as string];
+        if (!nextActive.has(field as string)) delete next[field as string];
       });
       return next;
     });
     setErrs((e) => {
       const next = { ...e };
       ALL_CONDITIONAL_FIELDS.forEach((field) => {
-        if (!activeFields.has(field as string)) delete next[field as string];
+        if (!nextActive.has(field as string)) delete next[field as string];
       });
       return next;
     });
