@@ -973,6 +973,9 @@ const Inscripcion = () => {
                 </button>
               </div>
 
+              <div className="text-xs text-muted-foreground">
+                Versión del acuerdo: <span className="font-mono text-ink">{AGREEMENT_VERSION}</span> · hash <span className="font-mono text-ink">{AGREEMENT_HASH}</span>
+              </div>
               <label className="flex items-start gap-3 text-sm text-ink-soft cursor-pointer">
                 <input
                   type="checkbox"
