@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const dayNames = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+const localeFor = (lng?: string) =>
+  lng?.startsWith("es") ? "es-ES" : lng?.startsWith("pt") ? "pt-PT" : lng?.startsWith("fr") ? "fr-FR" : "en-GB";
 
 const startOfWeek = (d: Date) => {
   const date = new Date(d);
@@ -23,7 +24,9 @@ const startOfWeek = (d: Date) => {
 };
 
 const PortalCalendar = () => {
-  const { t } = useTranslation("portal");
+  const { t, i18n } = useTranslation("portal");
+  const locale = localeFor(i18n.language);
+  const dayNames = t("calendar.days", { returnObjects: true }) as string[];
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [selected, setSelected] = useState<Appointment | null>(null);
 
@@ -49,7 +52,7 @@ const PortalCalendar = () => {
 
   const isToday = (d: Date) => d.toDateString() === new Date().toDateString();
 
-  const monthLabel = weekStart.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
+  const monthLabel = weekStart.toLocaleDateString(locale, { month: "long", year: "numeric" });
 
   return (
     <div className="space-y-8">
@@ -73,14 +76,14 @@ const PortalCalendar = () => {
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setWeekStart(startOfWeek(new Date()))}>
-            Hoy
+            {t("calendar.today")}
           </Button>
           <p className="font-display text-lg text-ink ml-2 capitalize">{monthLabel}</p>
         </div>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-teal" />Programada</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-500" />En curso</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" />Completada</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-teal" />{t("calendar.legend.scheduled")}</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-500" />{t("calendar.legend.inProgress")}</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" />{t("calendar.legend.completed")}</span>
         </div>
       </div>
 
@@ -131,7 +134,7 @@ const PortalCalendar = () => {
                           a.status === "completed" && "bg-emerald-500",
                         )} />
                         <p className="text-[11px] font-mono text-muted-foreground">
-                          {new Date(a.scheduledAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                          {new Date(a.scheduledAt).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
                         </p>
                       </div>
                       <p className="text-xs font-medium text-ink line-clamp-1">{a.title}</p>
@@ -149,7 +152,7 @@ const PortalCalendar = () => {
       <div>
         <h2 className="font-display text-xl text-ink mb-4 flex items-center gap-2">
           <CalendarDays className="h-5 w-5 text-teal" />
-          Próximas citas
+          {t("calendar.upcoming")}
         </h2>
         <div className="space-y-2">
           {mockAppointments.slice(0, 6).map((a) => (
@@ -163,7 +166,7 @@ const PortalCalendar = () => {
                   {new Date(a.scheduledAt).getDate()}
                 </p>
                 <p className="text-[11px] font-mono uppercase text-muted-foreground mt-1">
-                  {new Date(a.scheduledAt).toLocaleDateString("es-ES", { month: "short" })}
+                  {new Date(a.scheduledAt).toLocaleDateString(locale, { month: "short" })}
                 </p>
               </div>
               <div className="flex-1 min-w-0">
@@ -177,7 +180,7 @@ const PortalCalendar = () => {
               <div className="hidden sm:block text-right text-xs text-muted-foreground">
                 <p className="flex items-center gap-1 justify-end">
                   <Clock className="h-3 w-3" />
-                  {new Date(a.scheduledAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                  {new Date(a.scheduledAt).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
                 </p>
                 <p className="flex items-center gap-1 justify-end mt-0.5">
                   <MapPin className="h-3 w-3" />
@@ -198,22 +201,22 @@ const PortalCalendar = () => {
                 <p className="text-xs font-mono text-muted-foreground">{selected.caseRef}</p>
                 <DialogTitle className="font-display text-xl">{selected.title}</DialogTitle>
                 <DialogDescription>
-                  {new Date(selected.scheduledAt).toLocaleDateString("es-ES", {
+                  {new Date(selected.scheduledAt).toLocaleDateString(locale, {
                     weekday: "long", day: "numeric", month: "long", year: "numeric",
-                  })} · {new Date(selected.scheduledAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                  })} · {new Date(selected.scheduledAt).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-3 mt-2">
-                <DetailRow icon={User} label="Cliente" value={selected.customer} />
-                <DetailRow icon={MapPin} label="Dirección" value={`${selected.address}, ${selected.city}`} />
-                <DetailRow icon={Package} label="Producto" value={`${selected.brand} · ${selected.family}`} />
-                <DetailRow icon={Clock} label="Duración estimada" value={`${selected.durationMin} min`} />
+                <DetailRow icon={User} label={t("calendar.detail.customer")} value={selected.customer} />
+                <DetailRow icon={MapPin} label={t("calendar.detail.address")} value={`${selected.address}, ${selected.city}`} />
+                <DetailRow icon={Package} label={t("calendar.detail.product")} value={`${selected.brand} · ${selected.family}`} />
+                <DetailRow icon={Clock} label={t("calendar.detail.duration")} value={`${selected.durationMin} ${t("calendar.detail.minutes")}`} />
               </div>
 
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1">Ver caso</Button>
-                <Button className="flex-1">Confirmar llegada</Button>
+                <Button variant="outline" className="flex-1">{t("calendar.detail.viewCase")}</Button>
+                <Button className="flex-1">{t("calendar.detail.confirmArrival")}</Button>
               </div>
             </>
           )}

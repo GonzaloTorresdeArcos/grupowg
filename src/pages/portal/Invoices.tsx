@@ -17,9 +17,9 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const statusCfg = {
-  paid: { label: "Pagada", color: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20", icon: CheckCircle2 },
-  pending: { label: "Pendiente", color: "bg-amber-500/10 text-amber-700 border-amber-500/20", icon: Clock },
-  overdue: { label: "Vencida", color: "bg-red-500/10 text-red-700 border-red-500/20", icon: AlertCircle },
+  paid: { color: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20", icon: CheckCircle2 },
+  pending: { color: "bg-amber-500/10 text-amber-700 border-amber-500/20", icon: Clock },
+  overdue: { color: "bg-red-500/10 text-red-700 border-red-500/20", icon: AlertCircle },
 };
 
 const PortalInvoices = () => {
@@ -32,7 +32,7 @@ const PortalInvoices = () => {
   const avgPerService = totalYear / mockInvoices.reduce((s, i) => s + i.serviceCount, 0);
 
   const handleDownload = (inv: Invoice) => {
-    toast.success("Descarga iniciada", { description: `${inv.number}.pdf` });
+    toast.success(t("invoices.toasts.downloadStarted"), { description: `${inv.number}.pdf` });
   };
 
   return (
@@ -54,7 +54,7 @@ const PortalInvoices = () => {
             </div>
           </div>
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">
-            Total facturado
+            {t("invoices.summary.total")}
           </p>
           <p className="font-display text-2xl text-ink leading-none">{formatEUR(totalYear)}</p>
         </Card>
@@ -66,7 +66,7 @@ const PortalInvoices = () => {
             </div>
           </div>
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">
-            Cobrado
+            {t("invoices.summary.paid")}
           </p>
           <p className="font-display text-2xl text-ink leading-none">{formatEUR(totalPaid)}</p>
         </Card>
@@ -78,7 +78,7 @@ const PortalInvoices = () => {
             </div>
           </div>
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">
-            Pendiente
+            {t("invoices.summary.pending")}
           </p>
           <p className="font-display text-2xl text-ink leading-none">{formatEUR(totalPending)}</p>
         </Card>
@@ -90,7 +90,7 @@ const PortalInvoices = () => {
             </div>
           </div>
           <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">
-            Media / servicio
+            {t("invoices.summary.average")}
           </p>
           <p className="font-display text-2xl text-ink leading-none">{formatEUR(avgPerService)}</p>
         </Card>
@@ -99,17 +99,17 @@ const PortalInvoices = () => {
       {/* Invoice table */}
       <Card>
         <div className="p-6 border-b border-border">
-          <h2 className="font-display text-xl text-ink">Histórico de liquidaciones</h2>
+          <h2 className="font-display text-xl text-ink">{t("invoices.tableTitle")}</h2>
         </div>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Número</TableHead>
-              <TableHead>Periodo</TableHead>
-              <TableHead className="text-right">Servicios</TableHead>
-              <TableHead className="text-right">Importe</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
+              <TableHead>{t("invoices.columns.number")}</TableHead>
+              <TableHead>{t("invoices.columns.period")}</TableHead>
+              <TableHead className="text-right">{t("invoices.columns.services")}</TableHead>
+              <TableHead className="text-right">{t("invoices.columns.amount")}</TableHead>
+              <TableHead>{t("invoices.columns.status")}</TableHead>
+              <TableHead className="text-right">{t("invoices.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -125,7 +125,7 @@ const PortalInvoices = () => {
                   <TableCell>
                     <Badge variant="outline" className={cn("gap-1", cfg.color)}>
                       <StatusIcon className="h-3 w-3" />
-                      {cfg.label}
+                      {t(`invoices.status.${inv.status}`)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -152,33 +152,33 @@ const PortalInvoices = () => {
             <>
               <DialogHeader>
                 <p className="text-xs font-mono text-muted-foreground">{selected.number}</p>
-                <DialogTitle className="font-display text-2xl">Liquidación {selected.period}</DialogTitle>
+                <DialogTitle className="font-display text-2xl">{t("invoices.detail.title")} {selected.period}</DialogTitle>
                 <DialogDescription>
-                  Emitida el {formatDate(selected.issuedAt)}
-                  {selected.paidAt && ` · Pagada el ${formatDate(selected.paidAt)}`}
-                  {selected.dueAt && !selected.paidAt && ` · Vence el ${formatDate(selected.dueAt)}`}
+                  {t("invoices.detail.issuedOn")} {formatDate(selected.issuedAt)}
+                  {selected.paidAt && ` · ${t("invoices.detail.paidOn")} ${formatDate(selected.paidAt)}`}
+                  {selected.dueAt && !selected.paidAt && ` · ${t("invoices.detail.dueOn")} ${formatDate(selected.dueAt)}`}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4 mt-2">
                 <div className="rounded-lg bg-muted/40 p-4 space-y-2">
-                  <Row label="Servicios facturados" value={selected.serviceCount.toString()} />
-                  <Row label="Base imponible" value={formatEUR(selected.amountNet)} />
-                  <Row label="IVA (21%)" value={formatEUR(selected.vat)} />
+                  <Row label={t("invoices.detail.servicesBilled")} value={selected.serviceCount.toString()} />
+                  <Row label={t("invoices.detail.net")} value={formatEUR(selected.amountNet)} />
+                  <Row label={t("invoices.detail.vat")} value={formatEUR(selected.vat)} />
                   <div className="pt-2 mt-2 border-t border-border">
-                    <Row label="Total" value={formatEUR(selected.total)} bold />
+                    <Row label={t("invoices.detail.total")} value={formatEUR(selected.total)} bold />
                   </div>
                 </div>
 
                 <Badge variant="outline" className={cn("gap-1", statusCfg[selected.status].color)}>
-                  {statusCfg[selected.status].label}
+                  {t(`invoices.status.${selected.status}`)}
                 </Badge>
 
                 <div className="flex gap-2 pt-2">
-                  <Button variant="outline" className="flex-1">Ver detalle servicios</Button>
+                  <Button variant="outline" className="flex-1">{t("invoices.detail.viewServices")}</Button>
                   <Button className="flex-1 gap-2" onClick={() => handleDownload(selected)}>
                     <Download className="h-4 w-4" />
-                    Descargar PDF
+                    {t("invoices.detail.downloadPdf")}
                   </Button>
                 </div>
               </div>

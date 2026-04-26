@@ -106,27 +106,110 @@
   "calendar": {
     "eyebrow": "Agenda",
     "title": "Appointment calendar",
-    "subtitle": "Upcoming visits and installations."
+    "subtitle": "Upcoming visits and installations.",
+    "today": "Today",
+    "legend": { "scheduled": "Scheduled", "inProgress": "In progress", "completed": "Completed" },
+    "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "upcoming": "Upcoming appointments",
+    "detail": {
+      "customer": "Customer",
+      "address": "Address",
+      "product": "Product",
+      "duration": "Estimated duration",
+      "minutes": "min",
+      "viewCase": "View case",
+      "confirmArrival": "Confirm arrival"
+    }
   },
   "documents": {
     "eyebrow": "Documentation",
-    "title": "Your documents",
-    "subtitle": "Keep your documentation up to date to keep receiving assignments."
+    "title": "Document renewals",
+    "subtitle": "Keep your documentation up to date to keep operating in the network.",
+    "filters": { "valid": "Valid", "expiring": "Expiring", "expired": "Expired", "missing": "Pending", "viewAll": "← View all documents" },
+    "status": { "valid": "Valid", "expiring": "Expiring soon", "expired": "Expired", "missing": "Pending" },
+    "actions": { "download": "Download", "upload": "Upload", "renew": "Renew", "cancel": "Cancel" },
+    "fields": {
+      "issued": "Issued",
+      "expires": "Expires",
+      "file": "File (PDF, max 10 MB)",
+      "expiresLabel": "Expiration date",
+      "expiresHelp": "We will notify you 60, 30 and 7 days before expiration."
+    },
+    "dialog": { "uploadTitle": "Upload document", "renewTitle": "Renew document" },
+    "toasts": { "updated": "Document updated", "updatedDesc": "{{name}} has been renewed successfully." }
   },
   "invoices": {
     "eyebrow": "Billing",
     "title": "Settlements and invoices",
-    "subtitle": "Summary of your monthly settlements."
+    "subtitle": "History of your billed services",
+    "summary": { "total": "Total billed", "paid": "Paid", "pending": "Pending", "average": "Avg. / service" },
+    "tableTitle": "Settlement history",
+    "columns": { "number": "Number", "period": "Period", "services": "Services", "amount": "Amount", "status": "Status", "actions": "Actions" },
+    "status": { "paid": "Paid", "pending": "Pending", "overdue": "Overdue" },
+    "detail": {
+      "title": "Settlement",
+      "issuedOn": "Issued on",
+      "paidOn": "Paid on",
+      "dueOn": "Due on",
+      "servicesBilled": "Services billed",
+      "net": "Net amount",
+      "vat": "VAT (21%)",
+      "total": "Total",
+      "viewServices": "View service detail",
+      "downloadPdf": "Download PDF"
+    },
+    "toasts": { "downloadStarted": "Download started" }
   },
   "profile": {
     "eyebrow": "Account",
-    "title": "Your profile",
-    "subtitle": "Manage your data and preferences."
+    "title": "Collaborator details",
+    "subtitle": "Your account and company information",
+    "fields": { "email": "Email", "emailHelp": "Email is managed from sign-in.", "fullName": "Full name", "company": "Company", "phone": "Phone", "save": "Save changes" },
+    "link": {
+      "title": "Link with WG Network",
+      "linked": "Linked",
+      "unlinked": "Not linked",
+      "linkedDesc": "Your account is linked to an approved application in the network.",
+      "unlinkedDesc": "We could not find an active application with your email. Contact our team or join the network."
+    },
+    "admin": {
+      "title": "Administrator access",
+      "active": "You have administrator role. You will see the <1>Operations</1> section in the menu.",
+      "inactive": "If you are the first user of the system, you can promote yourself to administrator to manage cases and assignments.",
+      "cta": "Make me administrator",
+      "loading": "Activating…"
+    },
+    "toasts": { "saveError": "Could not save", "saved": "Profile updated", "adminOk": "You are now an administrator. Reload the page." }
   },
   "incidences": {
     "eyebrow": "Operations",
-    "title": "Cases inbox",
-    "subtitle": "Manage, assign and close cases.",
-    "detailTitle": "Case detail"
+    "title": "Cases",
+    "subtitle": "Register cases and auto-assign the best collaborator.",
+    "detailTitle": "Case detail",
+    "newButton": "New case",
+    "filters": { "all": "All" },
+    "loading": "Loading…",
+    "loadingList": "Loading cases…",
+    "empty": { "title": "No cases", "subtitle": "Create a new one to test the matching engine." },
+    "restricted": { "title": "Restricted access", "subtitle": "Case management is reserved for the operations team." },
+    "form": {
+      "title": "New case",
+      "customer": "Customer *",
+      "phone": "Phone",
+      "postalCode": "Postal code",
+      "address": "Address",
+      "city": "City",
+      "province": "Province *",
+      "family": "Family *",
+      "brand": "Brand",
+      "brandPlaceholder": "(optional)",
+      "urgency": "Urgency",
+      "description": "Description",
+      "select": "Select",
+      "cancel": "Cancel",
+      "submit": "Create and find match",
+      "submitting": "Creating..."
+    },
+    "toasts": { "required": "Customer, province and family are required", "created": "Case created" }
   }
 }

@@ -106,27 +106,110 @@
   "calendar": {
     "eyebrow": "Agenda",
     "title": "Calendário de marcações",
-    "subtitle": "Próximas visitas e instalações."
+    "subtitle": "Próximas visitas e instalações.",
+    "today": "Hoje",
+    "legend": { "scheduled": "Agendada", "inProgress": "Em curso", "completed": "Concluída" },
+    "days": ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
+    "upcoming": "Próximas marcações",
+    "detail": {
+      "customer": "Cliente",
+      "address": "Morada",
+      "product": "Produto",
+      "duration": "Duração estimada",
+      "minutes": "min",
+      "viewCase": "Ver caso",
+      "confirmArrival": "Confirmar chegada"
+    }
   },
   "documents": {
     "eyebrow": "Documentação",
-    "title": "Os seus documentos",
-    "subtitle": "Mantenha a sua documentação em dia para continuar a receber atribuições."
+    "title": "Renovação documental",
+    "subtitle": "Mantenha a sua documentação em dia para continuar a operar na rede.",
+    "filters": { "valid": "Válidos", "expiring": "Próximos", "expired": "Vencidos", "missing": "Pendentes", "viewAll": "← Ver todos os documentos" },
+    "status": { "valid": "Válido", "expiring": "Próximo de vencer", "expired": "Vencido", "missing": "Pendente" },
+    "actions": { "download": "Descarregar", "upload": "Carregar", "renew": "Renovar", "cancel": "Cancelar" },
+    "fields": {
+      "issued": "Emitido",
+      "expires": "Vence",
+      "file": "Ficheiro (PDF, máx. 10 MB)",
+      "expiresLabel": "Data de vencimento",
+      "expiresHelp": "Avisaremos 60, 30 e 7 dias antes do vencimento."
+    },
+    "dialog": { "uploadTitle": "Carregar documento", "renewTitle": "Renovar documento" },
+    "toasts": { "updated": "Documento atualizado", "updatedDesc": "{{name}} foi renovado com sucesso." }
   },
   "invoices": {
     "eyebrow": "Faturação",
     "title": "Liquidações e faturas",
-    "subtitle": "Resumo das suas liquidações mensais."
+    "subtitle": "Histórico dos seus serviços faturados",
+    "summary": { "total": "Total faturado", "paid": "Cobrado", "pending": "Pendente", "average": "Média / serviço" },
+    "tableTitle": "Histórico de liquidações",
+    "columns": { "number": "Número", "period": "Período", "services": "Serviços", "amount": "Valor", "status": "Estado", "actions": "Ações" },
+    "status": { "paid": "Paga", "pending": "Pendente", "overdue": "Vencida" },
+    "detail": {
+      "title": "Liquidação",
+      "issuedOn": "Emitida a",
+      "paidOn": "Paga a",
+      "dueOn": "Vence a",
+      "servicesBilled": "Serviços faturados",
+      "net": "Base tributável",
+      "vat": "IVA (21%)",
+      "total": "Total",
+      "viewServices": "Ver detalhe de serviços",
+      "downloadPdf": "Descarregar PDF"
+    },
+    "toasts": { "downloadStarted": "Transferência iniciada" }
   },
   "profile": {
     "eyebrow": "Conta",
-    "title": "O seu perfil",
-    "subtitle": "Gira os seus dados e preferências."
+    "title": "Dados do colaborador",
+    "subtitle": "Informação da sua conta e empresa",
+    "fields": { "email": "Email", "emailHelp": "O email é gerido a partir do início de sessão.", "fullName": "Nome completo", "company": "Empresa", "phone": "Telefone", "save": "Guardar alterações" },
+    "link": {
+      "title": "Vínculo com a WG Network",
+      "linked": "Vinculado",
+      "unlinked": "Sem vínculo",
+      "linkedDesc": "A sua conta está vinculada a uma candidatura aprovada na rede.",
+      "unlinkedDesc": "Não encontrámos uma candidatura ativa com o seu email. Contacte a nossa equipa ou inscreva-se na rede."
+    },
+    "admin": {
+      "title": "Acesso administrador",
+      "active": "Tem o papel de administrador. Verá a secção <1>Operações</1> no menu.",
+      "inactive": "Se for o primeiro utilizador do sistema, pode promover-se a administrador para gerir incidências e atribuições.",
+      "cta": "Tornar-me administrador",
+      "loading": "A ativar…"
+    },
+    "toasts": { "saveError": "Não foi possível guardar", "saved": "Perfil atualizado", "adminOk": "Agora é administrador. Recarregue a página." }
   },
   "incidences": {
     "eyebrow": "Operações",
-    "title": "Caixa de incidências",
-    "subtitle": "Gira, atribua e feche incidências.",
-    "detailTitle": "Detalhe da incidência"
+    "title": "Incidências",
+    "subtitle": "Registe avisos e atribua automaticamente ao colaborador ideal.",
+    "detailTitle": "Detalhe da incidência",
+    "newButton": "Nova incidência",
+    "filters": { "all": "Todas" },
+    "loading": "A carregar…",
+    "loadingList": "A carregar incidências…",
+    "empty": { "title": "Sem incidências", "subtitle": "Crie uma nova para testar o motor de matching." },
+    "restricted": { "title": "Acesso restrito", "subtitle": "A gestão de incidências está reservada à equipa de operações." },
+    "form": {
+      "title": "Nova incidência",
+      "customer": "Cliente *",
+      "phone": "Telefone",
+      "postalCode": "Código postal",
+      "address": "Morada",
+      "city": "Cidade",
+      "province": "Província *",
+      "family": "Família *",
+      "brand": "Marca",
+      "brandPlaceholder": "(opcional)",
+      "urgency": "Urgência",
+      "description": "Descrição",
+      "select": "Selecionar",
+      "cancel": "Cancelar",
+      "submit": "Criar e procurar match",
+      "submitting": "A criar..."
+    },
+    "toasts": { "required": "Cliente, província e família são obrigatórios", "created": "Incidência criada" }
   }
 }
