@@ -1271,7 +1271,17 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Soraluze", cp: "20590" },
   ],
   "48": [ // Bizkaia
-    { name: "Bilbao", cp: "48001" },
+    // — Bilbao capital: distritos centrales —
+    { name: "Bilbao · Abando", cp: "48001" },
+    { name: "Bilbao · Casco Viejo (Ibaiondo)", cp: "48005" },
+    { name: "Bilbao · Indautxu", cp: "48010" },
+    { name: "Bilbao · Begoña", cp: "48006" },
+    // — Bilbao capital: distritos periféricos —
+    { name: "Bilbao · Deusto", cp: "48014" },
+    { name: "Bilbao · Uribarri", cp: "48007" },
+    { name: "Bilbao · Errekalde", cp: "48012" },
+    { name: "Bilbao · Basurto-Zorroza", cp: "48013" },
+    { name: "Bilbao · Otxarkoaga-Txurdinaga", cp: "48004" },
     { name: "Barakaldo", cp: "48901" },
     { name: "Getxo", cp: "48930" },
     { name: "Portugalete", cp: "48920" },
