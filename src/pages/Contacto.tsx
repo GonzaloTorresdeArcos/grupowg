@@ -11,6 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
+import { PresenceMap } from "@/components/site/PresenceMap";
 import { toast } from "sonner";
 
 const MOTIVOS = [
@@ -1169,14 +1170,22 @@ const Contacto = () => {
           </Reveal>
 
           <Reveal delay={120}>
-            <div className="mt-10 rounded-3xl overflow-hidden border border-border shadow-sm aspect-[16/9] md:aspect-[21/9] bg-muted">
-              <iframe
-                title="Mapa Grupo WG"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-9.5%2C35.8%2C4.5%2C44.0&layer=mapnik"
-                className="w-full h-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+            <div className="mt-10 relative rounded-3xl overflow-hidden border border-border shadow-sm aspect-[16/9] md:aspect-[21/9] bg-muted">
+              <PresenceMap />
+              <div className="absolute bottom-3 left-3 z-[400] bg-card/95 backdrop-blur rounded-lg border border-border px-3 py-2 text-xs text-ink-soft pointer-events-none space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-deep ring-2 ring-teal/40" />
+                  <span>Sede central · Madrid</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2 w-2 rounded-full bg-teal" />
+                  <span>Sedes operativas · Barcelona, Valencia, Canarias</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-2.5 w-3.5 rounded-sm bg-teal/20 border border-teal-deep/60" />
+                  <span>Cobertura España y Portugal</span>
+                </div>
+              </div>
             </div>
           </Reveal>
         </div>
