@@ -1,43 +1,65 @@
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
-const DIAS = [
-  { id: "L", label: "Lun" },
-  { id: "M", label: "Mar" },
-  { id: "X", label: "Mié" },
-  { id: "J", label: "Jue" },
-  { id: "V", label: "Vie" },
-  { id: "S", label: "Sáb" },
-  { id: "D", label: "Dom" },
-];
-
 const HORAS = Array.from({ length: 25 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
 
-const PRESETS = [
-  { id: "lv", label: "L-V 9:00-18:00", dias: ["L", "M", "X", "J", "V"], desde: "09:00", hasta: "18:00", urgencias: false },
-  { id: "lvs", label: "L-S 9:00-14:00", dias: ["L", "M", "X", "J", "V", "S"], desde: "09:00", hasta: "14:00", urgencias: false },
-  { id: "247", label: "24/7 urgencias", dias: ["L", "M", "X", "J", "V", "S", "D"], desde: "00:00", hasta: "24:00", urgencias: true },
-];
+type SabadoModo = "no" | "manana" | "manana_tarde";
+type UrgenciaModo = "no" | "menos_24h" | "mismo_dia";
 
-export type HorariosValue = string; // string codificado
-
-export function buildHorariosString(dias: string[], desde: string, hasta: string, urgencias: boolean): string {
-  if (dias.length === 0 || !desde || !hasta) return "";
-  const orden = ["L", "M", "X", "J", "V", "S", "D"];
-  const ds = [...dias].sort((a, b) => orden.indexOf(a) - orden.indexOf(b));
-  const diasStr = ds.join("");
-  const base = `${diasStr} ${desde}-${hasta}`;
-  return urgencias ? `${base} | 24/7 urgencias` : base;
+interface Estado {
+  lvDesde: string;
+  lvHasta: string;
+  sabadoModo: SabadoModo;
+  sabMananaDesde: string;
+  sabMananaHasta: string;
+  sabTardeDesde: string;
+  sabTardeHasta: string;
+  urgencia: UrgenciaModo;
 }
 
-function parseHorariosString(v: string): { dias: string[]; desde: string; hasta: string; urgencias: boolean } {
-  const def = { dias: [] as string[], desde: "09:00", hasta: "18:00", urgencias: false };
-  if (!v) return def;
-  const urgencias = /24\/7\s*urgencias/i.test(v);
-  const main = v.split("|")[0].trim();
-  const m = main.match(/^([LMXJVSD]+)\s+(\d{2}:\d{2})-(\d{2}:\d{2})$/);
-  if (!m) return { ...def, urgencias };
-  return { dias: m[1].split(""), desde: m[2], hasta: m[3], urgencias };
+const DEFAULT: Estado = {
+  lvDesde: "09:00",
+  lvHasta: "18:00",
+  sabadoModo: "no",
+  sabMananaDesde: "09:00",
+  sabMananaHasta: "14:00",
+  sabTardeDesde: "16:00",
+  sabTardeHasta: "20:00",
+  urgencia: "no",
+};
+
+export function buildHorariosString(s: Estado): string {
+  const parts: string[] = [];
+  if (s.lvDesde && s.lvHasta) parts.push(`L-V ${s.lvDesde}-${s.lvHasta}`);
+  if (s.sabadoModo === "manana") parts.push(`Sáb ${s.sabMananaDesde}-${s.sabMananaHasta}`);
+  if (s.sabadoModo === "manana_tarde") {
+    parts.push(`Sáb ${s.sabMananaDesde}-${s.sabMananaHasta} y ${s.sabTardeDesde}-${s.sabTardeHasta}`);
+  }
+  const urg =
+    s.urgencia === "menos_24h" ? "Urgencias <24h" :
+    s.urgencia === "mismo_dia" ? "Urgencias mismo día" : "";
+  if (urg) parts.push(urg);
+  return parts.join(" | ");
+}
+
+function parse(v: string): Estado {
+  if (!v) return DEFAULT;
+  const out: Estado = { ...DEFAULT };
+  const lv = v.match(/L-V\s+(\d{2}:\d{2})-(\d{2}:\d{2})/);
+  if (lv) { out.lvDesde = lv[1]; out.lvHasta = lv[2]; }
+  const sabMT = v.match(/Sáb\s+(\d{2}:\d{2})-(\d{2}:\d{2})\s+y\s+(\d{2}:\d{2})-(\d{2}:\d{2})/);
+  const sabM = !sabMT && v.match(/Sáb\s+(\d{2}:\d{2})-(\d{2}:\d{2})/);
+  if (sabMT) {
+    out.sabadoModo = "manana_tarde";
+    out.sabMananaDesde = sabMT[1]; out.sabMananaHasta = sabMT[2];
+    out.sabTardeDesde = sabMT[3]; out.sabTardeHasta = sabMT[4];
+  } else if (sabM) {
+    out.sabadoModo = "manana";
+    out.sabMananaDesde = sabM[1]; out.sabMananaHasta = sabM[2];
+  }
+  if (/Urgencias\s+<24h/.test(v)) out.urgencia = "menos_24h";
+  else if (/Urgencias\s+mismo d[íi]a/.test(v)) out.urgencia = "mismo_dia";
+  return out;
 }
 
 interface Props {
@@ -45,102 +67,119 @@ interface Props {
   onChange: (v: string) => void;
 }
 
+function HoraSelect({ value, onChange, min }: { value: string; onChange: (v: string) => void; min?: string }) {
+  const opts = min ? HORAS.filter((h) => h > min) : HORAS;
+  return (
+    <select className="input-base" value={value} onChange={(e) => onChange(e.target.value)}>
+      {opts.map((h) => <option key={h} value={h}>{h}</option>)}
+    </select>
+  );
+}
+
+function RadioGroup<T extends string>({
+  value, onChange, options,
+}: { value: T; onChange: (v: T) => void; options: { id: T; label: string }[] }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          onClick={() => onChange(o.id)}
+          className={cn(
+            "px-3 py-1.5 rounded-full border text-sm font-medium transition",
+            value === o.id
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-card border-border hover:bg-secondary"
+          )}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function HorariosSelector({ value, onChange }: Props) {
-  const initial = useMemo(() => parseHorariosString(value), []);
-  const [dias, setDias] = useState<string[]>(initial.dias);
-  const [desde, setDesde] = useState(initial.desde);
-  const [hasta, setHasta] = useState(initial.hasta);
-  const [urgencias, setUrgencias] = useState(initial.urgencias);
+  const initial = useMemo(() => parse(value), []);
+  const [s, setS] = useState<Estado>(initial);
 
   useEffect(() => {
-    onChange(buildHorariosString(dias, desde, hasta, urgencias));
+    onChange(buildHorariosString(s));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dias, desde, hasta, urgencias]);
+  }, [s]);
 
-  const toggleDia = (id: string) => {
-    setDias((prev) => (prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]));
-  };
-
-  const applyPreset = (p: typeof PRESETS[number]) => {
-    setDias(p.dias);
-    setDesde(p.desde);
-    setHasta(p.hasta);
-    setUrgencias(p.urgencias);
-  };
-
-  const horasHasta = HORAS.filter((h) => h > desde);
+  const upd = <K extends keyof Estado>(k: K, v: Estado[K]) => setS((p) => ({ ...p, [k]: v }));
+  const resumen = buildHorariosString(s);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        {PRESETS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => applyPreset(p)}
-            className="px-3 py-1.5 rounded-full border border-border bg-card text-sm hover:bg-secondary transition"
-          >
-            {p.label}
-          </button>
-        ))}
-      </div>
-
+    <div className="space-y-5">
+      {/* L-V */}
       <div>
-        <div className="text-xs text-muted-foreground mb-2">Días laborables</div>
-        <div className="flex flex-wrap gap-2">
-          {DIAS.map((d) => {
-            const active = dias.includes(d.id);
-            return (
-              <button
-                key={d.id}
-                type="button"
-                onClick={() => toggleDia(d.id)}
-                className={cn(
-                  "w-12 h-10 rounded-lg border text-sm font-medium transition",
-                  active
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-card border-border hover:bg-secondary"
-                )}
-              >
-                {d.label}
-              </button>
-            );
-          })}
+        <div className="text-sm font-medium text-ink mb-2">Lunes a Viernes</div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <div className="text-xs text-muted-foreground mb-1">Inicio</div>
+            <HoraSelect value={s.lvDesde} onChange={(v) => upd("lvDesde", v)} />
+          </div>
+          <div>
+            <div className="text-xs text-muted-foreground mb-1">Fin</div>
+            <HoraSelect value={s.lvHasta} onChange={(v) => upd("lvHasta", v)} min={s.lvDesde} />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <div className="text-xs text-muted-foreground mb-1">Desde</div>
-          <select className="input-base" value={desde} onChange={(e) => setDesde(e.target.value)}>
-            {HORAS.slice(0, -1).map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <div className="text-xs text-muted-foreground mb-1">Hasta</div>
-          <select className="input-base" value={hasta} onChange={(e) => setHasta(e.target.value)}>
-            {horasHasta.map((h) => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <label className="flex items-center gap-2 text-sm cursor-pointer">
-        <input
-          type="checkbox"
-          checked={urgencias}
-          onChange={(e) => setUrgencias(e.target.checked)}
-          className="h-4 w-4"
+      {/* Sábados */}
+      <div>
+        <div className="text-sm font-medium text-ink mb-2">Sábados</div>
+        <RadioGroup
+          value={s.sabadoModo}
+          onChange={(v) => upd("sabadoModo", v)}
+          options={[
+            { id: "no", label: "No" },
+            { id: "manana", label: "Mañana" },
+            { id: "manana_tarde", label: "Mañana y tarde" },
+          ]}
         />
-        Disponibilidad 24/7 para urgencias
-      </label>
+        {s.sabadoModo !== "no" && (
+          <div className="mt-3 space-y-3">
+            <div>
+              <div className="text-xs text-muted-foreground mb-1">Mañana — Inicio / Fin</div>
+              <div className="grid grid-cols-2 gap-3">
+                <HoraSelect value={s.sabMananaDesde} onChange={(v) => upd("sabMananaDesde", v)} />
+                <HoraSelect value={s.sabMananaHasta} onChange={(v) => upd("sabMananaHasta", v)} min={s.sabMananaDesde} />
+              </div>
+            </div>
+            {s.sabadoModo === "manana_tarde" && (
+              <div>
+                <div className="text-xs text-muted-foreground mb-1">Tarde — Inicio / Fin</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <HoraSelect value={s.sabTardeDesde} onChange={(v) => upd("sabTardeDesde", v)} min={s.sabMananaHasta} />
+                  <HoraSelect value={s.sabTardeHasta} onChange={(v) => upd("sabTardeHasta", v)} min={s.sabTardeDesde} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-      {value && (
+      {/* Urgencias */}
+      <div>
+        <div className="text-sm font-medium text-ink mb-2">Servicio urgente</div>
+        <RadioGroup
+          value={s.urgencia}
+          onChange={(v) => upd("urgencia", v)}
+          options={[
+            { id: "no", label: "No" },
+            { id: "menos_24h", label: "<24h" },
+            { id: "mismo_dia", label: "Mismo día" },
+          ]}
+        />
+      </div>
+
+      {resumen && (
         <div className="text-xs text-muted-foreground rounded-lg bg-secondary px-3 py-2">
-          Resumen: <span className="font-medium text-ink">{value}</span>
+          Resumen: <span className="font-medium text-ink">{resumen}</span>
         </div>
       )}
     </div>
