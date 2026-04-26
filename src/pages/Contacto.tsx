@@ -133,11 +133,21 @@ const validateAll = (data: FormData) => {
     });
   }
   // Validación condicional: campos requeridos para los motivos activos
+  // El mensaje indica claramente para qué motivo(s) se necesita ese campo.
   getRequiredFields(motivos).forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
-    if (!v || (typeof v === "string" && v.trim() === "")) {
-      errors[field as string] = "Requerido para este motivo";
-    }
+    const isEmpty = !v || (typeof v === "string" && v.trim() === "");
+    if (!isEmpty) return;
+    // Motivos activos que requieren este campo
+    const motivosForField = motivos.filter((m) =>
+      (requiredByMotivo[m] || []).includes(field),
+    );
+    const motivoLabels = motivosForField
+      .map((m) => MOTIVOS.find((o) => o.value === m)?.label ?? m)
+      .join(" y ");
+    errors[field as string] = motivoLabels
+      ? `Requerido para ${motivoLabels}`
+      : "Requerido para este motivo";
   });
   return errors;
 };
