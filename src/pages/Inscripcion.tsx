@@ -20,6 +20,8 @@ import {
   AGREEMENT_INTRO,
   AGREEMENT_CLAUSES,
   AGREEMENT_CLOSING,
+  AGREEMENT_VERSION,
+  AGREEMENT_HASH,
 } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
@@ -133,6 +135,7 @@ const Inscripcion = () => {
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [agreementRead, setAgreementRead] = useState(false);
+  const [agreementReadAt, setAgreementReadAt] = useState<Date | null>(null);
   const [agreementOpen, setAgreementOpen] = useState(false);
 
   const downloadDraftAgreement = () => {
