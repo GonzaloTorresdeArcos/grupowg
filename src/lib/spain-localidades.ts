@@ -84,26 +84,41 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "CA Campo de Gibraltar · Los Barrios", cp: "11370" },
   ],
   "14": [ // Córdoba
-    { name: "Córdoba", cp: "14001" },
-    { name: "Lucena", cp: "14900" },
-    { name: "Puente Genil", cp: "14500" },
-    { name: "Montilla", cp: "14550" },
-    { name: "Priego de Córdoba", cp: "14800" },
-    { name: "Cabra", cp: "14940" },
-    { name: "Baena", cp: "14850" },
-    { name: "Palma del Río", cp: "14700" },
-    { name: "Pozoblanco", cp: "14400" },
-    { name: "Aguilar de la Frontera", cp: "14920" },
-    { name: "Peñarroya-Pueblonuevo", cp: "14200" },
-    { name: "Montoro", cp: "14600" },
-    { name: "La Carlota", cp: "14100" },
-    { name: "Hinojosa del Duque", cp: "14270" },
-    { name: "Bujalance", cp: "14650" },
-    { name: "Castro del Río", cp: "14840" },
-    { name: "Fernán-Núñez", cp: "14520" },
-    { name: "Rute", cp: "14960" },
-    { name: "Villa del Río", cp: "14640" },
-    { name: "Posadas", cp: "14730" },
+    // ───── 1.1 Córdoba capital (distritos) ─────
+    { name: "Córdoba Capital · Centro", cp: "14002" },
+    { name: "Córdoba Capital · Poniente Norte", cp: "14011" },
+    { name: "Córdoba Capital · Poniente Sur", cp: "14013" },
+    { name: "Córdoba Capital · Norte-Sierra", cp: "14012" },
+    { name: "Córdoba Capital · Sureste", cp: "14014" },
+    { name: "Córdoba Capital · Sur", cp: "14010" },
+    { name: "Córdoba Capital · Levante", cp: "14006" },
+    { name: "Córdoba Capital · Noroeste", cp: "14011" },
+    { name: "Córdoba Capital · Fuensanta", cp: "14010" },
+    { name: "Córdoba Capital · El Brillante", cp: "14012" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Oeste / Valle del Guadalquivir
+    { name: "CO Á. Metro Oeste · Almodóvar del Río", cp: "14720" },
+    { name: "CO Á. Metro Oeste · Posadas", cp: "14730" },
+    // 1.2.2 Sur cercano
+    { name: "CO Á. Metro Sur · La Carlota", cp: "14100" },
+    { name: "CO Á. Metro Sur · Guadalcázar", cp: "14112" },
+    // 1.2.3 Este cercano
+    { name: "CO Á. Metro Este · El Carpio", cp: "14620" },
+    { name: "CO Á. Metro Este · Villafranca de Córdoba", cp: "14420" },
+
+    // ───── 1.3 Resto provincia de Córdoba ─────
+    // 1.3.1 Sur (Subbética)
+    { name: "CO Subbética · Lucena", cp: "14900" },
+    { name: "CO Subbética · Cabra", cp: "14940" },
+    { name: "CO Subbética · Priego de Córdoba", cp: "14800" },
+    // 1.3.2 Campiña
+    { name: "CO Campiña · Puente Genil", cp: "14500" },
+    { name: "CO Campiña · Montilla", cp: "14550" },
+    { name: "CO Campiña · Aguilar de la Frontera", cp: "14920" },
+    // 1.3.3 Norte (Los Pedroches / Valle del Guadiato)
+    { name: "CO Norte · Pozoblanco", cp: "14400" },
+    { name: "CO Norte · Peñarroya-Pueblonuevo", cp: "14200" },
   ],
   "18": [ // Granada
     { name: "Granada", cp: "18001" },
@@ -1421,6 +1436,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "CA Jerez": { level1: "Resto provincia de Cádiz", level2: "Jerez" },
   "CA Costa Noroeste": { level1: "Resto provincia de Cádiz", level2: "Costa noroeste" },
   "CA Campo de Gibraltar": { level1: "Resto provincia de Cádiz", level2: "Campo de Gibraltar" },
+
+  // ─── Córdoba (14) ───
+  "Córdoba Capital": { level1: "Córdoba capital" },
+  "CO Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste / Valle del Guadalquivir" },
+  "CO Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur cercano" },
+  "CO Á. Metro Este": { level1: "Área metropolitana", level2: "Este cercano" },
+  "CO Subbética": { level1: "Resto provincia de Córdoba", level2: "Sur (Subbética)" },
+  "CO Campiña": { level1: "Resto provincia de Córdoba", level2: "Campiña" },
+  "CO Norte": { level1: "Resto provincia de Córdoba", level2: "Norte (Los Pedroches / Valle del Guadiato)" },
 };
 
 export interface LocalitySubgroup {
