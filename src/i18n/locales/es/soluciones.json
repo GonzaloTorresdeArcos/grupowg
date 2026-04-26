@@ -1,0 +1,56 @@
+{
+  "seo": { "title": "Soluciones · WG Execute · Control Tower · Scale", "description": "Tres formas de activar el sistema de servicio: WG Execute (lo operamos por ti), WG Control Tower (visión única multi-proveedor) y WG Scale (despliegue internacional con control)." },
+  "hero": { "titleA": "Tres formas de", "titleB": "activar el sistema", "subtitle": "Execute, Control Tower y Scale. Eliges el grado de implicación; nosotros aseguramos que el servicio funcione con calidad, control y consistencia.", "cta": "Solicitar información" },
+  "intro": { "titleA": "Tres formas de", "titleB": "activar el sistema", "titleC": "de servicio.", "lead": "Tres módulos. Una misma plataforma. Eliges el grado de implicación según tu modelo operativo." },
+  "modules": {
+    "execute": {
+      "tagline": "Lo hacemos por ti",
+      "intro": "Gestionamos el servicio postventa de principio a fin. Nos encargamos de toda la operación para asegurar que el servicio funcione con calidad, rapidez y control.",
+      "bullets": ["Atención y diagnóstico", "Asignación de red técnica", "Gestión de intervenciones", "Coordinación logística", "Gestión de repuestos (cuando aplica)", "Control completo del servicio"],
+      "closing": "Externalizas el servicio. Nosotros lo operamos."
+    },
+    "controlTower": {
+      "tagline": "Lo controlamos contigo",
+      "intro": "Controlamos y mejoramos el servicio cuando intervienen varios proveedores. Integramos toda la información y damos una visión única para tomar decisiones.",
+      "pillars": [
+        { "title": "Qué hacemos", "items": ["Integramos datos de operación propia y redes externas", "Dashboards claros y control de costes", "Comparativas reales entre proveedores"] },
+        { "title": "Qué obtienes", "items": ["Visión completa de todo el servicio", "Detección de problemas e ineficiencias", "Identificación de mejoras y palancas"] }
+      ],
+      "outcomes": { "from": "Gestionar proveedores", "to": "Gestionar el rendimiento del servicio" },
+      "closing": "Una única visión para todo el servicio."
+    },
+    "scale": {
+      "tagline": "Te acompañamos en tu expansión",
+      "intro": "Diseñamos el servicio y lo ayudamos a crecer de forma ordenada, también internacionalmente. Mismo estándar, mismos KPIs, en todos los mercados.",
+      "pillars": [
+        { "title": "Definición del modelo", "items": ["Cómo funciona el servicio end-to-end", "SLA y KPIs por etapa", "Organización y control"] },
+        { "title": "Red de servicio", "items": ["Selección y homologación de técnicos", "Flujos: domicilio vs taller", "Estándares operativos comunes"] },
+        { "title": "Repuestos y logística", "items": ["Planificación de necesidades", "Stock basado en histórico", "Optimización de compras y logística"] },
+        { "title": "Despliegue internacional", "items": ["Implantación multi-país", "Mismos procesos y criterios", "Control central + adaptación local"] }
+      ],
+      "outcomes": { "from": "Crecer sin estructura", "to": "Escalar con control y consistencia" },
+      "closing": "De diseñar el servicio a hacerlo funcionar a escala."
+    }
+  },
+  "outcomeChange": "El cambio",
+  "capabilities": {
+    "eyebrow": "02 · Capacidades del sistema",
+    "titleA": "La inteligencia que",
+    "titleB": "recorre",
+    "titleC": "cada solución.",
+    "lead": "Tres capacidades transversales activas en Execute, Control Tower y Scale.",
+    "items": [
+      { "title": "Inteligencia técnica", "lead": "Convertimos el conocimiento técnico en decisiones prácticas.", "bullets": ["Recogemos y organizamos incidencias", "Apoyamos el diagnóstico", "Damos soporte en casos complejos", "Mejoramos la resolución a la primera"], "closing": "Sabemos cuándo algo está mal y cómo corregirlo." },
+      { "title": "Inteligencia de producto", "lead": "Convertimos el servicio en información útil para producto y compras.", "bullets": ["Detectamos fallos recurrentes", "Analizamos comportamiento por producto", "Medimos impacto en coste y calidad", "Generamos informes claros"], "closing": "Cada incidencia aporta información para mejorar el producto." },
+      { "title": "Control y cumplimiento del servicio", "lead": "Aseguramos que todo el sistema funciona y cumple.", "bullets": ["Validamos la red técnica", "Controlamos la documentación", "Verificamos el cumplimiento de acuerdos", "Reducimos riesgos operativos"], "closing": "No solo ocurre el servicio. Funciona como debe." }
+    ]
+  },
+  "ctaFinal": {
+    "eyebrow": "¿Por dónde empezar?",
+    "titleA": "Hablamos de tu operación y elegimos el",
+    "titleB": "módulo",
+    "titleC": "que encaja.",
+    "ctaPrimary": "Solicitar información",
+    "ctaSecondary": "Ver la plataforma"
+  }
+}
