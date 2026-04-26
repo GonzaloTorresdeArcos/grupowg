@@ -150,12 +150,16 @@ const Inscripcion = () => {
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
-  // Localidad se intenta obtener vía Zippopotam.us (gratuito, sin API key).
+  // Localidades se obtienen vía Zippopotam.us (gratuito, sin API key).
+  // No autoseleccionamos: dejamos que el usuario elija de la lista devuelta.
   const [cpLookup, setCpLookup] = useState<"idle" | "loading" | "ok" | "notfound">("idle");
+  const [cpLocalidades, setCpLocalidades] = useState<string[]>([]);
+
   useEffect(() => {
     const cp = s1.codigo_postal;
     if (!/^\d{5}$/.test(cp)) {
       setCpLookup("idle");
+      setCpLocalidades([]);
       return;
     }
 
@@ -166,27 +170,31 @@ const Inscripcion = () => {
       setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
     }
 
-    // Localidad: solo si el campo está vacío, no pisamos lo escrito por el usuario
-    if (s1.localidad.trim()) {
-      setCpLookup("ok");
-      return;
-    }
-
     const ctrl = new AbortController();
     setCpLookup("loading");
     fetch(`https://api.zippopotam.us/es/${cp}`, { signal: ctrl.signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        const place = data?.places?.[0]?.["place name"];
-        if (place) {
-          setS1((p) => (p.localidad ? p : { ...p, localidad: place }));
+        const places: string[] = Array.isArray(data?.places)
+          ? Array.from(new Set(data.places.map((p: any) => p["place name"]).filter(Boolean)))
+          : [];
+        if (places.length > 0) {
+          setCpLocalidades(places);
           setCpLookup("ok");
+          // Si solo hay una y el usuario aún no escribió nada, la sugerimos automáticamente.
+          if (places.length === 1) {
+            setS1((p) => (p.localidad ? p : { ...p, localidad: places[0] }));
+          }
         } else {
+          setCpLocalidades([]);
           setCpLookup("notfound");
         }
       })
       .catch((err) => {
-        if (err?.name !== "AbortError") setCpLookup("notfound");
+        if (err?.name !== "AbortError") {
+          setCpLocalidades([]);
+          setCpLookup("notfound");
+        }
       });
 
     return () => ctrl.abort();
