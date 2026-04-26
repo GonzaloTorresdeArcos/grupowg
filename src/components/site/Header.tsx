@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Logo } from "./Logo";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { cn } from "@/lib/utils";
 import { primaryNav, secondaryNav } from "@/config/navigation";
 
@@ -14,6 +16,12 @@ export const Header = ({ dark = true }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation("header");
+
+  // Traduce el label de un item de nav usando su `to` como clave.
+  // Si no hay traducción, cae al label original (por compatibilidad).
+  const navLabel = (item: { to: string; label: string }) =>
+    t(`nav.${item.to}`, { defaultValue: item.label });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -67,7 +75,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
       )}
     >
       <div className="container-tight flex items-center justify-between gap-4 py-3 md:py-4">
-        <Link to="/" aria-label="Inicio Grupo Warranty Global" className="relative z-10 shrink-0">
+        <Link to="/" aria-label={t("logoAlt")} className="relative z-10 shrink-0">
           <Logo className={cn("h-10 sm:h-12 md:h-14", dark && "brightness-0 invert")} />
         </Link>
 
@@ -84,14 +92,15 @@ export const Header = ({ dark = true }: HeaderProps) => {
                 )
               }
             >
-              {item.label}
+              {navLabel(item)}
             </NavLink>
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:flex items-center gap-2">
+          <LanguageSwitcher variant={dark ? "header-dark" : "header-light"} />
           <Link to="/contacto" className={buttonClass}>
-            Solicitar información
+            {t("ctaContact")}
             <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
@@ -99,7 +108,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
         <button
           className={cn("lg:hidden p-2 -mr-2 relative z-10", burgerColor)}
           onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          aria-label={open ? t("closeMenu") : t("openMenu")}
           aria-expanded={open}
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -117,7 +126,9 @@ export const Header = ({ dark = true }: HeaderProps) => {
       >
         <div className="container-tight py-8 pb-32 flex flex-col gap-10">
           <nav>
-            <p className={cn("text-[10px] uppercase tracking-[0.25em] mb-4", drawerSub)}>Navegación</p>
+            <p className={cn("text-[10px] uppercase tracking-[0.25em] mb-4", drawerSub)}>
+              {t("navigation")}
+            </p>
             <div className="flex flex-col">
               {primaryNav.map((item) => (
                 <NavLink
@@ -131,7 +142,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
                     )
                   }
                 >
-                  <span className="font-display text-2xl">{item.label}</span>
+                  <span className="font-display text-2xl">{navLabel(item)}</span>
                   <ArrowUpRight className={cn("h-5 w-5", drawerSub, "group-hover:opacity-100")} />
                 </NavLink>
               ))}
@@ -141,13 +152,17 @@ export const Header = ({ dark = true }: HeaderProps) => {
           <nav className="flex flex-wrap gap-x-6 gap-y-2">
             {secondaryNav.map((l) => (
               <Link key={l.to} to={l.to} className={cn("text-xs", drawerSub, "hover:opacity-100")}>
-                {l.label}
+                {navLabel(l)}
               </Link>
             ))}
           </nav>
 
+          <div className="flex justify-start">
+            <LanguageSwitcher variant="drawer" />
+          </div>
+
           <Link to="/contacto" className={cn(buttonClass, "w-full justify-center text-base py-4")}>
-            Solicitar información
+            {t("ctaContact")}
             <ArrowUpRight className="h-4 w-4" />
           </Link>
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
   ArrowRight,
@@ -32,42 +33,63 @@ const URGENCIAS = ["Estándar", "Alta", "Crítica"] as const;
 const RAMOS = ["Hogar", "Decesos", "Salud", "Auto", "Comercio", "Otro"] as const;
 const VEHICULOS = ["Turismo", "Furgoneta", "Industrial", "Moto", "Otro"] as const;
 
-const optionalString = (max: number) =>
-  z.string().trim().max(max, `Máximo ${max} caracteres`).optional().or(z.literal(""));
+type TFunc = (key: string, options?: Record<string, unknown>) => string;
 
-const baseSchema = z.object({
-  nombre: z.string().trim().min(1, "Requerido").max(120, "Máximo 120 caracteres"),
-  empresa: optionalString(200),
-  email: z.string().trim().email("Email no válido").max(255, "Máximo 255 caracteres"),
-  telefono: z
+const buildOptionalString = (max: number, t: TFunc) =>
+  z
     .string()
     .trim()
-    .max(20, "Máximo 20 caracteres")
-    .regex(/^[+\d\s().-]*$/, "Sólo dígitos y símbolos válidos")
+    .max(max, t("form.errors.max", { n: max }))
     .optional()
-    .or(z.literal("")),
-  motivo: z
-    .array(z.enum(motivoValues))
-    .min(1, "Selecciona al menos un motivo"),
-  // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
-  marca: optionalString(80),
-  numeroSerie: optionalString(60),
-  producto: optionalString(120),
-  urgencia: z.enum(URGENCIAS).optional(),
-  referencia: optionalString(80),
-  vehiculo: z.enum(VEHICULOS).optional(),
-  matricula: optionalString(15),
-  ramo: z.enum(RAMOS).optional(),
-  poliza: optionalString(60),
-  mensaje: z
-    .string()
-    .trim()
-    .min(10, "Cuéntanos un poco más")
-    .max(2000, "Máximo 2000 caracteres"),
-  consentimiento: z.literal(true, {
-    errorMap: () => ({ message: "Debes aceptar el tratamiento de datos para continuar" }),
-  }),
-});
+    .or(z.literal(""));
+
+const buildSchema = (t: TFunc) =>
+  z.object({
+    nombre: z
+      .string()
+      .trim()
+      .min(1, t("form.errors.required"))
+      .max(120, t("form.errors.max", { n: 120 })),
+    empresa: buildOptionalString(200, t),
+    email: z
+      .string()
+      .trim()
+      .email(t("form.errors.email"))
+      .max(255, t("form.errors.max", { n: 255 })),
+    telefono: z
+      .string()
+      .trim()
+      .max(20, t("form.errors.max", { n: 20 }))
+      .regex(/^[+\d\s().-]*$/, t("form.errors.phone"))
+      .optional()
+      .or(z.literal("")),
+    motivo: z.array(z.enum(motivoValues)).min(1, t("form.errors.motivoMin")),
+    // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
+    marca: buildOptionalString(80, t),
+    numeroSerie: buildOptionalString(60, t),
+    producto: buildOptionalString(120, t),
+    urgencia: z.enum(URGENCIAS).optional(),
+    referencia: buildOptionalString(80, t),
+    vehiculo: z.enum(VEHICULOS).optional(),
+    matricula: buildOptionalString(15, t),
+    ramo: z.enum(RAMOS).optional(),
+    poliza: buildOptionalString(60, t),
+    mensaje: z
+      .string()
+      .trim()
+      .min(10, t("form.errors.min"))
+      .max(2000, t("form.errors.max", { n: 2000 })),
+    consentimiento: z.literal(true, {
+      errorMap: () => ({ message: t("form.errors.consent") }),
+    }),
+  });
+
+// Schema "neutral" (en español) usado solo para inferir el tipo `FormData`.
+// Las validaciones reales pasan por `buildSchema(t)` dentro del componente.
+const baseSchema = buildSchema(((k: string, o?: Record<string, unknown>) => {
+  // Identidad: devuelve la clave para no romper inferencia
+  return o ? `${k}` : k;
+}) as TFunc);
 
 type FormData = z.infer<typeof baseSchema>;
 
@@ -120,40 +142,39 @@ const getRequiredFields = (motivos: MotivoValue[]): Array<keyof FormData> => {
   return Array.from(out);
 };
 
-const validateAll = (data: FormData) => {
-  const r = baseSchema.safeParse(data);
-  const errors: Record<string, string> = {};
-  const motivos = (data.motivo || []) as MotivoValue[];
-  const activeFields = getActiveFields(motivos);
+const buildValidator = (t: TFunc) => {
+  const schema = buildSchema(t);
+  return (data: FormData) => {
+    const r = schema.safeParse(data);
+    const errors: Record<string, string> = {};
+    const motivos = (data.motivo || []) as MotivoValue[];
+    const activeFields = getActiveFields(motivos);
 
-  if (!r.success) {
-    r.error.issues.forEach((i) => {
-      const key = i.path[0] as string;
-      // Ignora errores de campos condicionales que no pertenecen a ningún motivo activo
-      if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
-        return;
-      }
-      errors[key] = i.message;
+    if (!r.success) {
+      r.error.issues.forEach((i) => {
+        const key = i.path[0] as string;
+        if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
+          return;
+        }
+        errors[key] = i.message;
+      });
+    }
+    getRequiredFields(motivos).forEach((field) => {
+      const v = (data as Record<string, unknown>)[field];
+      const isEmpty = !v || (typeof v === "string" && v.trim() === "");
+      if (!isEmpty) return;
+      const motivosForField = motivos.filter((m) =>
+        (requiredByMotivo[m] || []).includes(field),
+      );
+      const motivoLabels = motivosForField
+        .map((m) => t(`form.motivos.${m}`, { defaultValue: m }))
+        .join(" / ");
+      errors[field as string] = motivoLabels
+        ? t("form.errors.requiredForMotivo", { motivos: motivoLabels })
+        : t("form.errors.required");
     });
-  }
-  // Validación condicional: campos requeridos para los motivos activos
-  // El mensaje indica claramente para qué motivo(s) se necesita ese campo.
-  getRequiredFields(motivos).forEach((field) => {
-    const v = (data as Record<string, unknown>)[field];
-    const isEmpty = !v || (typeof v === "string" && v.trim() === "");
-    if (!isEmpty) return;
-    // Motivos activos que requieren este campo
-    const motivosForField = motivos.filter((m) =>
-      (requiredByMotivo[m] || []).includes(field),
-    );
-    const motivoLabels = motivosForField
-      .map((m) => MOTIVOS.find((o) => o.value === m)?.label ?? m)
-      .join(" y ");
-    errors[field as string] = motivoLabels
-      ? `Requerido para ${motivoLabels}`
-      : "Requerido para este motivo";
-  });
-  return errors;
+    return errors;
+  };
 };
 
 const initialForm: FormData = {
@@ -328,6 +349,13 @@ const isDraftMeaningful = (f: FormData) =>
   );
 
 const Contacto = () => {
+  const { t, i18n } = useTranslation("contacto");
+  const validateAll = useMemo(
+    () => buildValidator(t as TFunc),
+    // re-crea el validador cuando cambia el idioma
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [i18n.language],
+  );
   const [form, setForm] = useState<FormData>(initialForm);
   const [errs, setErrs] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -337,7 +365,9 @@ const Contacto = () => {
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState<Date | null>(null);
   const [consentAt, setConsentAt] = useState<Date | null>(null);
-  const [previewLang, setPreviewLang] = useState<PreviewLang>("es");
+  const [previewLang, setPreviewLang] = useState<PreviewLang>(
+    (i18n.resolvedLanguage?.split("-")[0] as PreviewLang) || "es",
+  );
 
   // Hidratar borrador desde localStorage al montar
   useEffect(() => {
@@ -396,7 +426,7 @@ const Contacto = () => {
     setTouched({});
     setStep("form");
     setConsentAt(null);
-    toast.success("Borrador descartado");
+    toast.success(t("form.discardDraft"));
   };
 
   const allErrors = useMemo(() => validateAll(form), [form]);
@@ -477,9 +507,8 @@ const Contacto = () => {
   };
 
   useEffect(() => {
-    const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
-    const DESC =
-      "Contacta con Grupo WG. Convertimos el servicio postventa en un sistema bajo control: garantías, reparaciones, repuestos, movilidad y seguros.";
+    const TITLE = t("seo.title");
+    const DESC = t("seo.description");
     const ORIGIN =
       typeof window !== "undefined" ? window.location.origin : "https://grupowg.lovable.app";
     const URL = `${ORIGIN}/contacto`;
@@ -585,7 +614,7 @@ const Contacto = () => {
     return () => {
       document.getElementById(ldId)?.remove();
     };
-  }, []);
+  }, [t]);
 
   // Orden visual de los campos para focus al primer error
   const FIELD_ORDER: Array<keyof FormData> = [
@@ -666,10 +695,10 @@ const Contacto = () => {
     if (Object.keys(errors).length > 0) {
       setErrs(errors);
       // marca todos como touched para mostrar errores
-      const t: Record<string, boolean> = {};
-      Object.keys(errors).forEach((k) => (t[k] = true));
-      setTouched((prev) => ({ ...prev, ...t }));
-      toast.error("Revisa los campos marcados");
+      const tk: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (tk[k] = true));
+      setTouched((prev) => ({ ...prev, ...tk }));
+      toast.error(t("form.errors.reviewToast"));
       focusFirstError(errors);
       return;
     }
@@ -683,11 +712,11 @@ const Contacto = () => {
     const errors = validateAll(form);
     if (Object.keys(errors).length > 0) {
       setErrs(errors);
-      const t: Record<string, boolean> = {};
-      Object.keys(errors).forEach((k) => (t[k] = true));
-      setTouched((prev) => ({ ...prev, ...t }));
+      const tk: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (tk[k] = true));
+      setTouched((prev) => ({ ...prev, ...tk }));
       setStep("form");
-      toast.error("Faltan datos por completar antes de enviar");
+      toast.error(t("form.errors.sendToast"));
       requestAnimationFrame(() => {
         const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
         if (firstKey) scrollToField(firstKey as string);
@@ -699,14 +728,14 @@ const Contacto = () => {
     setLoading(false);
     setSent(true);
     clearDraft();
-    toast.success("Mensaje recibido");
+    toast.success(t("form.success.title"));
   };
 
   const motivoLabel =
     (form.motivo || []).length === 0
       ? "—"
-      : MOTIVOS.filter((m) => (form.motivo || []).includes(m.value))
-          .map((m) => m.label)
+      : (form.motivo || [])
+          .map((m) => t(`form.motivos.${m}`, { defaultValue: m }))
           .join(", ");
 
   return (
@@ -720,13 +749,12 @@ const Contacto = () => {
           {/* LEFT */}
           <div className="md:col-span-5">
             <Reveal>
-              <p className="eyebrow-mono mb-4">Contacto</p>
+              <p className="eyebrow-mono mb-4">{t("hero.eyebrow")}</p>
               <h1 className="heading-display text-ink text-4xl sm:text-5xl md:text-7xl text-balance leading-[1.05] md:leading-[1.02] tracking-tight">
-                Hablemos.
+                {t("hero.title")}
               </h1>
               <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-md text-pretty">
-                Si eres fabricante, distribuidor, ecommerce, aseguradora, SAT o instalador,
-                cuéntanos qué necesitas resolver.
+                {t("hero.lead")}
               </p>
             </Reveal>
 
@@ -741,7 +769,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Email
+                      {t("sidebar.email")}
                     </span>
                     <span className="block text-sm font-medium text-ink truncate">
                       info@grupowg.com
@@ -758,7 +786,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Teléfono
+                      {t("sidebar.phone")}
                     </span>
                     <span className="block text-sm font-medium text-ink">
                       +34 900 000 000
@@ -772,10 +800,10 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Oficinas
+                      {t("sidebar.offices")}
                     </span>
                     <span className="block text-sm font-medium text-ink">
-                      Grupo Warranty Global · España
+                      {t("sidebar.officesValue")}
                     </span>
                   </span>
                 </div>
@@ -786,7 +814,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Horario
+                      {t("sidebar.hours", { defaultValue: "Horario" })}
                     </span>
                     <span className="block text-sm font-medium text-ink">
                       L-V · 09:00 – 18:00
@@ -808,10 +836,10 @@ const Contacto = () => {
                       <Check className="h-5 w-5 text-ink" />
                     </div>
                     <h2 className="font-display text-3xl md:text-4xl mb-4">
-                      Mensaje recibido.
+                      {t("form.success.title")}.
                     </h2>
                     <p className="text-bone/70 text-base md:text-lg max-w-md">
-                      Te contestaremos lo antes posible. Gracias por confiar en Grupo WG.
+                      {t("form.success.description")}
                     </p>
                   </div>
                 </div>
@@ -819,37 +847,37 @@ const Contacto = () => {
             ) : step === "review" ? (
               <Reveal>
                 <div className="rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm">
-                  <p className="eyebrow-mono mb-3">Paso 2 de 2 · Revisión</p>
+                  <p className="eyebrow-mono mb-3">{t("form.stepReviewTitle")}</p>
                   <h2 className="font-display text-2xl md:text-3xl text-ink mb-6">
-                    Revisa antes de enviar
+                    {t("form.review.title")}
                   </h2>
                   <dl className="divide-y divide-border text-sm">
-                    <ReviewRow label="Nombre" value={form.nombre} />
-                    {form.empresa && <ReviewRow label="Empresa" value={form.empresa} />}
-                    <ReviewRow label="Email" value={form.email} />
-                    {form.telefono && <ReviewRow label="Teléfono" value={form.telefono} />}
-                    <ReviewRow label="Motivo" value={motivoLabel} />
-                    {form.marca && <ReviewRow label="Marca" value={form.marca} />}
+                    <ReviewRow label={t("form.fields.nombre")} value={form.nombre} />
+                    {form.empresa && <ReviewRow label={t("form.fields.empresa")} value={form.empresa} />}
+                    <ReviewRow label={t("form.fields.email")} value={form.email} />
+                    {form.telefono && <ReviewRow label={t("form.fields.telefono")} value={form.telefono} />}
+                    <ReviewRow label={t("form.fields.motivo")} value={motivoLabel} />
+                    {form.marca && <ReviewRow label={t("form.fields.marca")} value={form.marca} />}
                     {form.numeroSerie && (
-                      <ReviewRow label="Nº de serie" value={form.numeroSerie} />
+                      <ReviewRow label={t("form.fields.numeroSerie")} value={form.numeroSerie} />
                     )}
-                    {form.producto && <ReviewRow label="Producto" value={form.producto} />}
-                    {form.urgencia && <ReviewRow label="Urgencia" value={form.urgencia} />}
+                    {form.producto && <ReviewRow label={t("form.fields.producto")} value={form.producto} />}
+                    {form.urgencia && <ReviewRow label={t("form.fields.urgencia")} value={form.urgencia} />}
                     {form.referencia && (
-                      <ReviewRow label="Referencia" value={form.referencia} />
+                      <ReviewRow label={t("form.fields.referencia")} value={form.referencia} />
                     )}
-                    {form.vehiculo && <ReviewRow label="Vehículo" value={form.vehiculo} />}
-                    {form.matricula && <ReviewRow label="Matrícula" value={form.matricula} />}
-                    {form.ramo && <ReviewRow label="Ramo" value={form.ramo} />}
-                    {form.poliza && <ReviewRow label="Póliza" value={form.poliza} />}
-                    <ReviewRow label="Mensaje" value={form.mensaje} multiline />
+                    {form.vehiculo && <ReviewRow label={t("form.fields.vehiculo")} value={form.vehiculo} />}
+                    {form.matricula && <ReviewRow label={t("form.fields.matricula")} value={form.matricula} />}
+                    {form.ramo && <ReviewRow label={t("form.fields.ramo")} value={form.ramo} />}
+                    {form.poliza && <ReviewRow label={t("form.fields.poliza")} value={form.poliza} />}
+                    <ReviewRow label={t("form.fields.mensaje")} value={form.mensaje} multiline />
                   </dl>
 
                   <div className="mt-6 rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
                     <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0 text-xs">
                       <p className="font-medium text-ink">
-                        Consentimiento aceptado
+                        {t("form.fields.consentimiento")}
                       </p>
                       <p className="mt-0.5 text-muted-foreground leading-relaxed">
                         Aceptaste el tratamiento de datos conforme a la{" "}
@@ -879,7 +907,7 @@ const Contacto = () => {
                       className="btn-on-light w-full sm:w-auto justify-center"
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Volver y editar
+                      {t("form.back")}
                     </button>
                     <button
                       type="button"
@@ -888,7 +916,7 @@ const Contacto = () => {
                       className="btn-primary disabled:opacity-50 w-full sm:flex-1 justify-center"
                     >
                       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                      Confirmar y enviar
+                      {loading ? t("form.sending") : t("form.confirmSend")}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -901,12 +929,12 @@ const Contacto = () => {
                   className="space-y-5 rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm"
                   noValidate
                 >
-                  <p className="eyebrow-mono">Paso 1 de 2 · Datos</p>
+                  <p className="eyebrow-mono">{t("form.stepDataTitle")}</p>
                   {restored && (
                     <div className="rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
                       <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0 text-xs text-ink/80">
-                        <p className="font-medium text-ink">Borrador restaurado</p>
+                        <p className="font-medium text-ink">{t("form.draftRestored")}</p>
                         <p className="mt-0.5 text-muted-foreground">
                           Recuperamos tus datos guardados el{" "}
                           {restored.toLocaleString("es-ES", {
