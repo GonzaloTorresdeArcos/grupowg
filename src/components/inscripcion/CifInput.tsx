@@ -1,36 +1,33 @@
 import { useEffect, useState } from "react";
 import { Check, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { mockCompanyName, validateSpanishDoc } from "@/lib/cif-validation";
+import { validateSpanishDoc } from "@/lib/cif-validation";
 
 interface Props {
   value: string;
   onChange: (value: string) => void;
+  /**
+   * Reservado para integración futura con un proveedor real (eInforma, Axesor,
+   * registro mercantil…). Se mantiene en la API por compatibilidad pero
+   * actualmente NO se autocompleta nada: la razón social la introduce el
+   * usuario para evitar sugerencias erróneas.
+   */
   onCompanyDetected?: (name: string) => void;
   error?: string;
 }
 
-export const CifInput = ({ value, onChange, onCompanyDetected, error }: Props) => {
+export const CifInput = ({ value, onChange, error }: Props) => {
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<ReturnType<typeof validateSpanishDoc> | null>(null);
-  const [suggestedName, setSuggestedName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!value.trim()) {
       setResult(null);
-      setSuggestedName(null);
       return;
     }
     setChecking(true);
     const t = setTimeout(() => {
-      const r = validateSpanishDoc(value);
-      setResult(r);
-      if (r.valid) {
-        const name = mockCompanyName(value);
-        setSuggestedName(name);
-      } else {
-        setSuggestedName(null);
-      }
+      setResult(validateSpanishDoc(value));
       setChecking(false);
     }, 350);
     return () => clearTimeout(t);
@@ -64,22 +61,6 @@ export const CifInput = ({ value, onChange, onCompanyDetected, error }: Props) =
         <div className="mt-2 flex items-center gap-2 text-xs text-teal-deep">
           <Check className="h-3 w-3" />
           <span>{result.type} válido</span>
-        </div>
-      )}
-
-      {suggestedName && onCompanyDetected && (
-        <div className="mt-2 rounded-lg border border-border bg-secondary/40 p-2.5 text-xs flex items-center justify-between gap-2">
-          <span className="text-ink-soft truncate">
-            <span className="text-muted-foreground">Sugerido:</span>{" "}
-            <span className="font-medium text-ink">{suggestedName}</span>
-          </span>
-          <button
-            type="button"
-            onClick={() => onCompanyDetected(suggestedName)}
-            className="text-teal-deep hover:underline shrink-0"
-          >
-            Usar
-          </button>
         </div>
       )}
 

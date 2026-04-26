@@ -81,23 +81,11 @@ export function validateSpanishDoc(raw: string): CifValidationResult {
 }
 
 /**
- * Mock de razón social a partir del CIF (modo demo).
- * En producción se llamaría a una API externa (eInforma, Axesor…).
+ * Reservado para integración futura con un proveedor real de datos
+ * empresariales (eInforma, Axesor, INE, registro mercantil…).
+ * Devuelve siempre `null` hasta que se conecte una fuente verificable:
+ * preferimos no sugerir nada antes que sugerir un nombre incorrecto.
  */
-export function mockCompanyName(doc: string): string | null {
-  const value = cleanInput(doc);
-  if (!validateSpanishDoc(value).valid) return null;
-  // Pseudo-deterministico: usamos el documento como semilla
-  const samples = [
-    "Servicios Técnicos del Sur, S.L.",
-    "Asistencia Integral Norte, S.A.",
-    "Reparaciones Levante, S.L.U.",
-    "Soluciones Postventa Ibérica, S.L.",
-    "Grupo Técnico Atlántico, S.L.",
-    "Tecnología y Servicio, S.L.",
-    "Profesionales Asociados Centro, S.L.",
-  ];
-  let hash = 0;
-  for (const ch of value) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
-  return samples[hash % samples.length];
+export function lookupCompanyName(_doc: string): string | null {
+  return null;
 }
