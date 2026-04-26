@@ -1481,6 +1481,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "GR Costa Tropical": { level1: "Resto provincia de Granada", level2: "Costa Tropical" },
   "GR Norte Interior": { level1: "Resto provincia de Granada", level2: "Norte / interior" },
   "GR Alpujarra": { level1: "Resto provincia de Granada", level2: "Alpujarra" },
+
+  // ─── Huelva (21) ───
+  "Huelva Capital": { level1: "Huelva capital" },
+  "HU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "HU Costa": { level1: "Resto provincia de Huelva", level2: "Costa" },
+  "HU Condado": { level1: "Resto provincia de Huelva", level2: "Condado" },
+  "HU Sierra": { level1: "Resto provincia de Huelva", level2: "Sierra" },
 };
 
 export interface LocalitySubgroup {
