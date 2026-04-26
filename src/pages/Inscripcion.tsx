@@ -17,10 +17,9 @@ import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
+import { GamasSelector } from "@/components/inscripcion/GamasSelector";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
-const familias = ["Gama blanca", "Gama marrón", "PAE", "Confort", "Movilidad", "Electrónica", "Repuestos", "Otros"];
 const servicios = ["Reparación en domicilio", "Reparación en taller", "Instalación", "Recogida / entrega", "Diagnóstico técnico"];
 const tipos = ["SAT", "Instalador", "Autónomo", "Empresa", "Proveedor técnico"];
 
