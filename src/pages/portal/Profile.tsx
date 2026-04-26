@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, AlertCircle, Loader2, Building2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
+import { Trans } from "react-i18next";
 
 const PortalProfile = () => {
   const { t } = useTranslation("portal");
@@ -26,7 +27,7 @@ const PortalProfile = () => {
       toast.error(data?.error || error?.message || "Error");
       return;
     }
-    toast.success("Ahora eres administrador. Recarga la página.");
+    toast.success(t("profile.toasts.adminOk"));
     setTimeout(() => window.location.reload(), 1200);
   };
 
@@ -45,11 +46,11 @@ const PortalProfile = () => {
       .eq("user_id", profile.user_id);
     setSaving(false);
     if (error) {
-      toast.error("No se pudo guardar", { description: error.message });
+      toast.error(t("profile.toasts.saveError"), { description: error.message });
       return;
     }
     await refreshProfile();
-    toast.success("Perfil actualizado");
+    toast.success(t("profile.toasts.saved"));
   };
 
   return (
@@ -72,21 +73,21 @@ const PortalProfile = () => {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-medium text-ink">Vinculación con WG Network</p>
+              <p className="font-medium text-ink">{t("profile.link.title")}</p>
               {profile?.application_id ? (
                 <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20">
-                  Vinculado
+                  {t("profile.link.linked")}
                 </Badge>
               ) : (
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-700 border-amber-500/20">
-                  Sin vincular
+                  {t("profile.link.unlinked")}
                 </Badge>
               )}
             </div>
             <p className="text-sm text-muted-foreground mt-1">
               {profile?.application_id
-                ? "Tu cuenta está vinculada a una solicitud aprobada en la red."
-                : "No encontramos una solicitud activa con tu email. Contacta con nuestro equipo o inscríbete en la red."}
+                ? t("profile.link.linkedDesc")
+                : t("profile.link.unlinkedDesc")}
             </p>
           </div>
         </div>
@@ -96,18 +97,18 @@ const PortalProfile = () => {
       <Card className="p-6 md:p-8">
         <form onSubmit={handleSave} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("profile.fields.email")}</Label>
             <Input id="email" value={user?.email || ""} disabled />
-            <p className="text-xs text-muted-foreground">El email se gestiona desde el inicio de sesión.</p>
+            <p className="text-xs text-muted-foreground">{t("profile.fields.emailHelp")}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="display_name">Nombre completo</Label>
+            <Label htmlFor="display_name">{t("profile.fields.fullName")}</Label>
             <Input id="display_name" name="display_name" defaultValue={profile?.display_name || ""} required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company_name">Empresa</Label>
+            <Label htmlFor="company_name">{t("profile.fields.company")}</Label>
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -120,14 +121,14 @@ const PortalProfile = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Teléfono</Label>
+            <Label htmlFor="phone">{t("profile.fields.phone")}</Label>
             <Input id="phone" name="phone" type="tel" defaultValue={profile?.phone || ""} />
           </div>
 
           <div className="pt-2 flex justify-end">
             <Button type="submit" disabled={saving} className="gap-2">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Guardar cambios
+              {t("profile.fields.save")}
             </Button>
           </div>
         </form>
@@ -140,18 +141,18 @@ const PortalProfile = () => {
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <p className="font-medium text-ink mb-1">Acceso administrador</p>
+            <p className="font-medium text-ink mb-1">{t("profile.admin.title")}</p>
             {isAdmin ? (
               <p className="text-sm text-muted-foreground">
-                Tienes rol de administrador. Verás la sección <strong>Operaciones</strong> en el menú.
+                <Trans t={t} i18nKey="profile.admin.active" components={{ 1: <strong /> }} />
               </p>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Si eres el primer usuario del sistema, puedes promocionarte a administrador para gestionar incidencias y asignaciones.
+                  {t("profile.admin.inactive")}
                 </p>
                 <Button size="sm" variant="outline" onClick={handleBootstrapAdmin} disabled={bootstrapping}>
-                  {bootstrapping ? "Activando…" : "Convertirme en administrador"}
+                  {bootstrapping ? t("profile.admin.loading") : t("profile.admin.cta")}
                 </Button>
               </>
             )}
