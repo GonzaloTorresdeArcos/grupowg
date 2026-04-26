@@ -121,28 +121,42 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "CO Norte · Peñarroya-Pueblonuevo", cp: "14200" },
   ],
   "18": [ // Granada
-    { name: "Granada", cp: "18001" },
-    { name: "Motril", cp: "18600" },
-    { name: "Almuñécar", cp: "18690" },
-    { name: "Baza", cp: "18800" },
-    { name: "Loja", cp: "18300" },
-    { name: "Maracena", cp: "18200" },
-    { name: "Armilla", cp: "18100" },
-    { name: "Las Gabias", cp: "18110" },
-    { name: "Atarfe", cp: "18230" },
-    { name: "Albolote", cp: "18220" },
-    { name: "Pinos Puente", cp: "18240" },
-    { name: "Santa Fe", cp: "18320" },
-    { name: "Salobreña", cp: "18680" },
-    { name: "Guadix", cp: "18500" },
-    { name: "Huéscar", cp: "18830" },
-    { name: "Órgiva", cp: "18400" },
-    { name: "Alhama de Granada", cp: "18120" },
-    { name: "Cúllar Vega", cp: "18195" },
-    { name: "Ogíjares", cp: "18151" },
-    { name: "Peligros", cp: "18210" },
-    { name: "Churriana de la Vega", cp: "18194" },
-    { name: "Padul", cp: "18640" },
+    // ───── 1.1 Granada capital (distritos) ─────
+    { name: "Granada Capital · Centro", cp: "18001" },
+    { name: "Granada Capital · Albaicín", cp: "18010" },
+    { name: "Granada Capital · Sacromonte", cp: "18010" },
+    { name: "Granada Capital · Realejo", cp: "18009" },
+    { name: "Granada Capital · Zaidín", cp: "18007" },
+    { name: "Granada Capital · Chana", cp: "18015" },
+    { name: "Granada Capital · Norte", cp: "18013" },
+    { name: "Granada Capital · Genil", cp: "18006" },
+    { name: "Granada Capital · Ronda", cp: "18004" },
+    { name: "Granada Capital · Beiro", cp: "18011" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón Oeste
+    { name: "GR Á. Metro Oeste · Santa Fe", cp: "18320" },
+    { name: "GR Á. Metro Oeste · Atarfe", cp: "18230" },
+    // 1.2.2 Cinturón Sur
+    { name: "GR Á. Metro Sur · Armilla", cp: "18100" },
+    { name: "GR Á. Metro Sur · Ogíjares", cp: "18151" },
+    { name: "GR Á. Metro Sur · La Zubia", cp: "18140" },
+    // 1.2.3 Cinturón Norte
+    { name: "GR Á. Metro Norte · Maracena", cp: "18200" },
+    { name: "GR Á. Metro Norte · Albolote", cp: "18220" },
+    { name: "GR Á. Metro Norte · Peligros", cp: "18210" },
+
+    // ───── 1.3 Resto provincia de Granada ─────
+    // 1.3.1 Costa Tropical
+    { name: "GR Costa Tropical · Motril", cp: "18600" },
+    { name: "GR Costa Tropical · Salobreña", cp: "18680" },
+    { name: "GR Costa Tropical · Almuñécar", cp: "18690" },
+    // 1.3.2 Norte / interior
+    { name: "GR Norte Interior · Guadix", cp: "18500" },
+    { name: "GR Norte Interior · Baza", cp: "18800" },
+    // 1.3.3 Alpujarra
+    { name: "GR Alpujarra · Órgiva", cp: "18400" },
+    { name: "GR Alpujarra · Lanjarón", cp: "18420" },
   ],
   "21": [ // Huelva
     { name: "Huelva", cp: "21001" },
