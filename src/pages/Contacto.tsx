@@ -733,8 +733,8 @@ const Contacto = () => {
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone " +
                               (active
-                                ? "bg-ink text-bone border-ink shadow-sm"
-                                : "bg-bone text-ink border-ink/15 hover:border-ink/40 hover:bg-ink/5")
+                                ? "bg-ink text-bone border-ink shadow-sm hover:bg-ink/90"
+                                : "bg-bone text-ink border-ink/20 hover:border-teal hover:bg-teal/10 hover:text-ink")
                             }
                             aria-pressed={active}
                           >
