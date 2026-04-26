@@ -906,6 +906,52 @@ const Contacto = () => {
                     </div>
                   </Field>
 
+                  {/* Vista previa: campos que se activan según los motivos seleccionados */}
+                  {(form.motivo || []).length > 0 && (() => {
+                    const selected = (form.motivo || []) as MotivoValue[];
+                    const groups = selected
+                      .map((m) => {
+                        const fields = fieldsByMotivo[m] || [];
+                        const required = new Set<string>(
+                          (requiredByMotivo[m] || []).map((f) => f as string),
+                        );
+                        if (fields.length === 0) return null;
+                        const label = MOTIVOS.find((o) => o.value === m)?.label ?? m;
+                        return { motivo: m, label, fields, required };
+                      })
+                      .filter((g): g is NonNullable<typeof g> => g !== null);
+
+                    if (groups.length === 0) return null;
+
+                    return (
+                      <div className="rounded-2xl border border-teal/30 bg-teal/5 px-4 py-3.5">
+                        <p className="text-xs font-medium text-ink mb-2 flex items-center gap-2">
+                          <Check className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
+                          Información adicional que te pediremos
+                        </p>
+                        <ul className="space-y-1.5 text-xs text-ink/80">
+                          {groups.map((g) => (
+                            <li key={g.motivo} className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                              <span className="font-medium text-ink">{g.label}:</span>
+                              <span className="flex flex-wrap gap-1">
+                                {g.fields.map((f, i) => (
+                                  <span key={f as string}>
+                                    {FIELD_LABELS[f as string] ?? (f as string)}
+                                    {g.required.has(f as string) && <span className="text-teal"> *</span>}
+                                    {i < g.fields.length - 1 && <span className="text-ink/40">,</span>}
+                                  </span>
+                                ))}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-[11px] text-muted-foreground mt-2">
+                          <span className="text-teal">*</span> Campos obligatorios
+                        </p>
+                      </div>
+                    );
+                  })()}
+
                   {/* Campos por motivo */}
                   {(form.motivo || []).includes("garantias") && (
                     <div className="grid md:grid-cols-2 gap-5">
