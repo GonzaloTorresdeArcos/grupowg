@@ -129,6 +129,7 @@ const Inscripcion = () => {
     if (d.serviciosSel) setServiciosSel(d.serviciosSel);
     if (d.horarios) setHorarios(d.horarios);
     if (d.capacidad) setCapacidad(d.capacidad);
+    if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
