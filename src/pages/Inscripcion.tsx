@@ -20,7 +20,13 @@ import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-const servicios = ["Reparación en domicilio", "Reparación en taller", "Instalación", "Recogida / entrega", "Diagnóstico técnico"];
+const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega"];
+const instalacionTipos = [
+  "Instalación · Aire Acondicionado",
+  "Instalación · Encastre / Integración",
+  "Instalación · Profesional / Industrial",
+  "Instalación · Estándar / Puesta en Marcha",
+];
 const tipos = ["SAT", "Instalador", "Autónomo", "Empresa", "Proveedor técnico"];
 
 const coberturasOpts = [
