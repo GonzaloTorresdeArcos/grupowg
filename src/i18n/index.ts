@@ -51,6 +51,8 @@ import esIndustrias from "./locales/es/industrias.json";
 import esExperiencia from "./locales/es/experiencia.json";
 import esMarcas from "./locales/es/marcas.json";
 import esAniversario from "./locales/es/aniversario.json";
+import esWgNetwork from "./locales/es/wg-network.json";
+import esPortal from "./locales/es/portal.json";
 
 // ---------- EN ----------
 import enCommon from "./locales/en/common.json";
@@ -85,6 +87,8 @@ import enIndustrias from "./locales/en/industrias.json";
 import enExperiencia from "./locales/en/experiencia.json";
 import enMarcas from "./locales/en/marcas.json";
 import enAniversario from "./locales/en/aniversario.json";
+import enWgNetwork from "./locales/en/wg-network.json";
+import enPortal from "./locales/en/portal.json";
 
 // ---------- PT ----------
 import ptCommon from "./locales/pt/common.json";
@@ -119,6 +123,8 @@ import ptIndustrias from "./locales/pt/industrias.json";
 import ptExperiencia from "./locales/pt/experiencia.json";
 import ptMarcas from "./locales/pt/marcas.json";
 import ptAniversario from "./locales/pt/aniversario.json";
+import ptWgNetwork from "./locales/pt/wg-network.json";
+import ptPortal from "./locales/pt/portal.json";
 
 // ---------- FR ----------
 import frCommon from "./locales/fr/common.json";
@@ -153,6 +159,8 @@ import frIndustrias from "./locales/fr/industrias.json";
 import frExperiencia from "./locales/fr/experiencia.json";
 import frMarcas from "./locales/fr/marcas.json";
 import frAniversario from "./locales/fr/aniversario.json";
+import frWgNetwork from "./locales/fr/wg-network.json";
+import frPortal from "./locales/fr/portal.json";
 
 export const SUPPORTED_LANGS = ["es", "en", "pt", "fr"] as const;
 export type AppLang = (typeof SUPPORTED_LANGS)[number];
@@ -173,6 +181,7 @@ const buildBundle = (b: {
   homeExperienceMethod: unknown; homeExperienceGov: unknown;
   grupo: unknown; modelo: unknown; soluciones: unknown; plataforma: unknown;
   industrias: unknown; experiencia: unknown; marcas: unknown; aniversario: unknown;
+  wgNetwork: unknown; portal: unknown;
   legal: unknown;
 }) => ({
   common: b.common,
@@ -206,6 +215,8 @@ const buildBundle = (b: {
   experiencia: b.experiencia,
   marcas: b.marcas,
   aniversario: b.aniversario,
+  "wg-network": b.wgNetwork,
+  portal: b.portal,
   legal: b.legal,
 });
 
