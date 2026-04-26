@@ -116,10 +116,10 @@ const PortalDashboard = () => {
 
       {/* KPI Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard icon={Wrench} label="Activas" value={mockKpis.active} suffix="casos" tone="amber" />
-        <KpiCard icon={CheckCircle2} label="Cerradas (mes)" value={mockKpis.closed_month} suffix="casos" tone="emerald" delta="+12%" />
-        <KpiCard icon={Timer} label="TAT medio" value={mockKpis.tat_avg_days} suffix="días" tone="ink" delta="-0.4d" />
-        <KpiCard icon={Star} label="Valoración" value={mockKpis.rating} suffix="/ 5" tone="teal" delta="+0.2" />
+        <KpiCard icon={Wrench} label={t("dashboard.kpis.active")} value={mockKpis.active} suffix={t("dashboard.kpis.activeSuffix")} tone="amber" />
+        <KpiCard icon={CheckCircle2} label={t("dashboard.kpis.closed")} value={mockKpis.closed_month} suffix={t("dashboard.kpis.closedSuffix")} tone="emerald" delta="+12%" />
+        <KpiCard icon={Timer} label={t("dashboard.kpis.tat")} value={mockKpis.tat_avg_days} suffix={t("dashboard.kpis.tatSuffix")} tone="ink" delta="-0.4d" />
+        <KpiCard icon={Star} label={t("dashboard.kpis.rating")} value={mockKpis.rating} suffix={t("dashboard.kpis.ratingSuffix")} tone="teal" delta="+0.2" />
       </div>
 
       <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
@@ -127,8 +127,8 @@ const PortalDashboard = () => {
         <Card className="p-6 md:p-8">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <p className="eyebrow mb-2">Actividad</p>
-              <h2 className="font-display text-xl text-ink">Incidencias y FTF · 12 meses</h2>
+              <p className="eyebrow mb-2">{t("dashboard.trend.eyebrow")}</p>
+              <h2 className="font-display text-xl text-ink">{t("dashboard.trend.title")}</h2>
             </div>
             <Badge variant="outline" className="gap-1">
               <TrendingUp className="h-3 w-3 text-emerald-600" />
@@ -161,7 +161,7 @@ const PortalDashboard = () => {
                   stroke="hsl(var(--teal))"
                   strokeWidth={2}
                   fill="url(#g1)"
-                  name="Incidencias"
+                  name={t("dashboard.kpis.active")}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -170,19 +170,19 @@ const PortalDashboard = () => {
 
         {/* Earnings */}
         <Card className="p-6 md:p-8 bg-ink text-bone border-ink">
-          <p className="text-xs font-mono uppercase tracking-widest text-teal mb-3">Liquidación en curso</p>
+          <p className="text-xs font-mono uppercase tracking-widest text-teal mb-3">{t("dashboard.earnings.eyebrow")}</p>
           <p className="font-display text-4xl md:text-5xl mb-1">{formatEUR(mockKpis.earnings_month)}</p>
-          <p className="text-sm text-bone/60">Abril 2025 · {mockKpis.closed_month} servicios</p>
+          <p className="text-sm text-bone/60">{t("dashboard.earnings.subtitle", { count: mockKpis.closed_month })}</p>
 
           <div className="mt-8 pt-6 border-t border-bone/10 space-y-3">
-            <Row label="Pendiente cobro" value={formatEUR(mockKpis.pending_settlement)} />
-            <Row label="Casos YTD" value={mockKpis.cases_ytd.toString()} />
-            <Row label="FTF medio" value={`${mockKpis.ftf_pct}%`} />
+            <Row label={t("dashboard.earnings.pending")} value={formatEUR(mockKpis.pending_settlement)} />
+            <Row label={t("dashboard.earnings.ytd")} value={mockKpis.cases_ytd.toString()} />
+            <Row label={t("dashboard.earnings.ftf")} value={`${mockKpis.ftf_pct}%`} />
           </div>
 
           <Button asChild variant="secondary" className="w-full mt-8 gap-2 bg-teal text-ink hover:bg-teal/90">
             <Link to="/portal/facturacion">
-              Ver facturación
+              {t("dashboard.earnings.cta")}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -194,27 +194,27 @@ const PortalDashboard = () => {
         <Card className="p-6 md:p-8">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="eyebrow mb-1">Hoy</p>
-              <h2 className="font-display text-xl text-ink">Citas programadas</h2>
+              <p className="eyebrow mb-1">{t("dashboard.today.eyebrow")}</p>
+              <h2 className="font-display text-xl text-ink">{t("dashboard.today.title")}</h2>
             </div>
             <Button asChild variant="ghost" size="sm" className="gap-1">
               <Link to="/portal/calendario">
-                Ver agenda
+                {t("dashboard.today.viewAgenda")}
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Button>
           </div>
           {todayAppts.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">Sin citas programadas hoy</p>
+            <p className="text-sm text-muted-foreground py-8 text-center">{t("dashboard.today.empty")}</p>
           ) : (
             <ul className="space-y-3">
               {todayAppts.map((a) => (
                 <li key={a.id} className="flex items-start gap-4 p-3 rounded-lg border border-border hover:bg-muted/30 transition-colors">
                   <div className="text-center shrink-0 w-14">
                     <p className="font-display text-lg text-ink leading-none">
-                      {new Date(a.scheduledAt).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(a.scheduledAt).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" })}
                     </p>
-                    <p className="text-[10px] font-mono text-muted-foreground mt-1">{a.durationMin} min</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-1">{a.durationMin} {t("dashboard.today.min")}</p>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-ink truncate">{a.title}</p>
@@ -233,8 +233,8 @@ const PortalDashboard = () => {
         <Card className="p-6 md:p-8">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="eyebrow mb-1">Backlog</p>
-              <h2 className="font-display text-xl text-ink">Incidencias activas</h2>
+              <p className="eyebrow mb-1">{t("dashboard.backlog.eyebrow")}</p>
+              <h2 className="font-display text-xl text-ink">{t("dashboard.backlog.title")}</h2>
             </div>
             <Badge variant="outline">{mockIncidences.length}</Badge>
           </div>
@@ -247,7 +247,7 @@ const PortalDashboard = () => {
                 </div>
                 <div className="text-right shrink-0">
                   <Badge variant="outline" className={statusColor[i.status]}>
-                    {statusLabel[i.status]}
+                    {t(`dashboard.status.${i.status}`)}
                   </Badge>
                   <p className="text-[10px] font-mono text-muted-foreground mt-1">
                     {i.tat_h < 48 ? `${i.tat_h}h` : `${Math.round(i.tat_h / 24)}d`}
@@ -266,13 +266,13 @@ const PortalDashboard = () => {
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <p className="font-medium text-ink">Tienes 1 documento próximo a vencer y 1 vencido</p>
+            <p className="font-medium text-ink">{t("dashboard.docAlert.title")}</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Mantén tu documentación al día para seguir recibiendo asignaciones.
+              {t("dashboard.docAlert.subtitle")}
             </p>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link to="/portal/documentos">Revisar</Link>
+            <Link to="/portal/documentos">{t("dashboard.docAlert.cta")}</Link>
           </Button>
         </div>
       </Card>
