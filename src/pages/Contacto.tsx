@@ -784,7 +784,7 @@ const Contacto = () => {
                   </Field>
 
                   {/* Campos por motivo */}
-                  {form.motivo === "garantias" && (
+                  {(form.motivo || []).includes("garantias") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="marca" label="Marca *" error={visibleErrs.marca}>
                         <input
@@ -807,7 +807,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "reparaciones" && (
+                  {(form.motivo || []).includes("reparaciones") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
@@ -838,7 +838,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "repuestos" && (
+                  {(form.motivo || []).includes("repuestos") && (
                     <Field name="referencia" label="Referencia o código de pieza *" error={visibleErrs.referencia}>
                       <input
                         className="input-base"
@@ -850,7 +850,7 @@ const Contacto = () => {
                     </Field>
                   )}
 
-                  {form.motivo === "movilidad" && (
+                  {(form.motivo || []).includes("movilidad") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="vehiculo" label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
                         <select
@@ -881,7 +881,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "seguros" && (
+                  {(form.motivo || []).includes("seguros") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="ramo" label="Ramo *" error={visibleErrs.ramo}>
                         <select
