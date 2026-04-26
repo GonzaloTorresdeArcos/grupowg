@@ -1258,7 +1258,7 @@ const Contacto = () => {
             </Reveal>
 
             <Reveal delay={200}>
-              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+              <article className="rounded-2xl border border-border bg-card text-card-foreground shadow-sm p-7 h-full">
                 <h3 className="font-display text-xl text-ink mb-4">Áreas de servicio</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Cobertura nacional en España (Península, Baleares y Canarias) y proyectos
