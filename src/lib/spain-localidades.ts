@@ -1821,6 +1821,41 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "ZA Norte": { level1: "Resto provincia de Zamora", level2: "Norte" },
   "ZA Oeste": { level1: "Resto provincia de Zamora", level2: "Oeste" },
   "ZA Sur": { level1: "Resto provincia de Zamora", level2: "Sur" },
+
+  // ─── Albacete (02) ───
+  "Albacete Capital": { level1: "Albacete capital" },
+  "AB Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "AB Este": { level1: "Resto provincia de Albacete", level2: "Este" },
+  "AB Sur": { level1: "Resto provincia de Albacete", level2: "Sur" },
+  "AB Oeste": { level1: "Resto provincia de Albacete", level2: "Oeste" },
+
+  // ─── Ciudad Real (13) ───
+  "Ciudad Real Capital": { level1: "Ciudad Real capital" },
+  "CR Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CR Centro": { level1: "Resto provincia de Ciudad Real", level2: "Centro" },
+  "CR Este": { level1: "Resto provincia de Ciudad Real", level2: "Este" },
+  "CR Norte": { level1: "Resto provincia de Ciudad Real", level2: "Norte" },
+
+  // ─── Cuenca (16) ───
+  "Cuenca Capital": { level1: "Cuenca capital" },
+  "CU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CU Oeste": { level1: "Resto provincia de Cuenca", level2: "Oeste" },
+  "CU Sur": { level1: "Resto provincia de Cuenca", level2: "Sur" },
+  "CU Este": { level1: "Resto provincia de Cuenca", level2: "Este" },
+
+  // ─── Guadalajara (19) ───
+  "Guadalajara Capital": { level1: "Guadalajara capital" },
+  "GU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "GU Corredor Henares": { level1: "Resto provincia de Guadalajara", level2: "Corredor del Henares ampliado" },
+  "GU Norte": { level1: "Resto provincia de Guadalajara", level2: "Norte" },
+  "GU Oeste": { level1: "Resto provincia de Guadalajara", level2: "Oeste" },
+
+  // ─── Toledo (45) ───
+  "Toledo Capital": { level1: "Toledo capital" },
+  "TO Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "TO Norte": { level1: "Resto provincia de Toledo", level2: "Norte" },
+  "TO Centro": { level1: "Resto provincia de Toledo", level2: "Centro" },
+  "TO Sur": { level1: "Resto provincia de Toledo", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
