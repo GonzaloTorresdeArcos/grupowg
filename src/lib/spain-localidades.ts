@@ -588,98 +588,121 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CASTILLA-LA MANCHA =============
   "02": [ // Albacete
-    { name: "Albacete", cp: "02001" },
-    { name: "Hellín", cp: "02400" },
-    { name: "Villarrobledo", cp: "02600" },
-    { name: "Almansa", cp: "02640" },
-    { name: "La Roda", cp: "02630" },
-    { name: "Caudete", cp: "02660" },
-    { name: "Tobarra", cp: "02500" },
-    { name: "Madrigueras", cp: "02230" },
-    { name: "Casas Ibáñez", cp: "02200" },
-    { name: "Tarazona de la Mancha", cp: "02100" },
-    { name: "Villamalea", cp: "02270" },
-    { name: "Chinchilla de Monte-Aragón", cp: "02520" },
-    { name: "Yeste", cp: "02480" },
-    { name: "Elche de la Sierra", cp: "02430" },
+    // ───── 1.1 Albacete capital ─────
+    { name: "Albacete Capital · Centro", cp: "02001" },
+    { name: "Albacete Capital · Ensanche", cp: "02002" },
+    { name: "Albacete Capital · Industria", cp: "02006" },
+    { name: "Albacete Capital · Hospital", cp: "02006" },
+    { name: "Albacete Capital · Santa Teresa", cp: "02003" },
+    { name: "Albacete Capital · Parque Sur", cp: "02006" },
+    { name: "Albacete Capital · Carretas", cp: "02004" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "AB Á. Metro Cercano · La Roda", cp: "02630" },
+    { name: "AB Á. Metro Cercano · Madrigueras", cp: "02230" },
+    { name: "AB Á. Metro Cercano · Balazote", cp: "02320" },
+
+    // ───── 1.3 Resto provincia de Albacete ─────
+    // 1.3.1 Este
+    { name: "AB Este · Almansa", cp: "02640" },
+    // 1.3.2 Sur
+    { name: "AB Sur · Hellín", cp: "02400" },
+    // 1.3.3 Oeste
+    { name: "AB Oeste · Villarrobledo", cp: "02600" },
   ],
   "13": [ // Ciudad Real
-    { name: "Ciudad Real", cp: "13001" },
-    { name: "Puertollano", cp: "13500" },
-    { name: "Tomelloso", cp: "13700" },
-    { name: "Alcázar de San Juan", cp: "13600" },
-    { name: "Valdepeñas", cp: "13300" },
-    { name: "Manzanares", cp: "13200" },
-    { name: "Daimiel", cp: "13250" },
-    { name: "La Solana", cp: "13240" },
-    { name: "Miguelturra", cp: "13170" },
-    { name: "Bolaños de Calatrava", cp: "13260" },
-    { name: "Campo de Criptana", cp: "13610" },
-    { name: "Socuéllamos", cp: "13630" },
-    { name: "Villarrubia de los Ojos", cp: "13670" },
-    { name: "Argamasilla de Calatrava", cp: "13440" },
-    { name: "Almagro", cp: "13270" },
-    { name: "Pedro Muñoz", cp: "13620" },
-    { name: "Membrilla", cp: "13230" },
-    { name: "Calzada de Calatrava", cp: "13370" },
-    { name: "Almodóvar del Campo", cp: "13580" },
-    { name: "Herencia", cp: "13640" },
+    // ───── 2.1 Ciudad Real capital ─────
+    { name: "Ciudad Real Capital · Centro", cp: "13001" },
+    { name: "Ciudad Real Capital · Larache", cp: "13003" },
+    { name: "Ciudad Real Capital · Pío XII", cp: "13004" },
+    { name: "Ciudad Real Capital · Los Ángeles", cp: "13005" },
+    { name: "Ciudad Real Capital · Nuevo Parque", cp: "13002" },
+
+    // ───── 2.2 Área metropolitana ─────
+    // 2.2.1 Cinturón cercano
+    { name: "CR Á. Metro Cercano · Miguelturra", cp: "13170" },
+    { name: "CR Á. Metro Cercano · Poblete", cp: "13179" },
+    { name: "CR Á. Metro Cercano · Carrión de Calatrava", cp: "13150" },
+
+    // ───── 2.3 Resto provincia de Ciudad Real ─────
+    // 2.3.1 Centro
+    { name: "CR Centro · Puertollano", cp: "13500" },
+    // 2.3.2 Este
+    { name: "CR Este · Valdepeñas", cp: "13300" },
+    { name: "CR Este · Manzanares", cp: "13200" },
+    // 2.3.3 Norte
+    { name: "CR Norte · Alcázar de San Juan", cp: "13600" },
+    { name: "CR Norte · Tomelloso", cp: "13700" },
   ],
   "16": [ // Cuenca
-    { name: "Cuenca", cp: "16001" },
-    { name: "Tarancón", cp: "16400" },
-    { name: "San Clemente", cp: "16600" },
-    { name: "Motilla del Palancar", cp: "16200" },
-    { name: "Quintanar del Rey", cp: "16220" },
-    { name: "Iniesta", cp: "16235" },
-    { name: "Las Pedroñeras", cp: "16660" },
-    { name: "Mota del Cuervo", cp: "16630" },
-    { name: "Cañete", cp: "16300" },
-    { name: "Sisante", cp: "16630" },
-    { name: "Belmonte", cp: "16640" },
-    { name: "Horcajo de Santiago", cp: "16410" },
+    // ───── 3.1 Cuenca capital ─────
+    { name: "Cuenca Capital · Centro", cp: "16001" },
+    { name: "Cuenca Capital · San Antón", cp: "16002" },
+    { name: "Cuenca Capital · Fuente del Oro", cp: "16004" },
+    { name: "Cuenca Capital · Tiradores", cp: "16003" },
+    { name: "Cuenca Capital · Villa Román", cp: "16005" },
+
+    // ───── 3.2 Área metropolitana ─────
+    // 3.2.1 Cinturón cercano
+    { name: "CU Á. Metro Cercano · Arcas", cp: "16195" },
+    { name: "CU Á. Metro Cercano · Chillarón de Cuenca", cp: "16190" },
+    { name: "CU Á. Metro Cercano · Villar de Olalla", cp: "16191" },
+
+    // ───── 3.3 Resto provincia de Cuenca ─────
+    // 3.3.1 Oeste
+    { name: "CU Oeste · Tarancón", cp: "16400" },
+    // 3.3.2 Sur
+    { name: "CU Sur · San Clemente", cp: "16600" },
+    // 3.3.3 Este
+    { name: "CU Este · Motilla del Palancar", cp: "16200" },
   ],
   "19": [ // Guadalajara
-    { name: "Guadalajara", cp: "19001" },
-    { name: "Azuqueca de Henares", cp: "19200" },
-    { name: "Alovera", cp: "19208" },
-    { name: "Cabanillas del Campo", cp: "19171" },
-    { name: "Sigüenza", cp: "19250" },
-    { name: "Marchamalo", cp: "19180" },
-    { name: "Yunquera de Henares", cp: "19210" },
-    { name: "El Casar", cp: "19170" },
-    { name: "Villanueva de la Torre", cp: "19209" },
-    { name: "Molina de Aragón", cp: "19300" },
-    { name: "Pastrana", cp: "19100" },
-    { name: "Brihuega", cp: "19400" },
-    { name: "Sacedón", cp: "19120" },
-    { name: "Chiloeches", cp: "19160" },
+    // ───── 4.1 Guadalajara capital ─────
+    { name: "Guadalajara Capital · Centro", cp: "19001" },
+    { name: "Guadalajara Capital · Aguas Vivas", cp: "19005" },
+    { name: "Guadalajara Capital · El Balconcillo", cp: "19004" },
+    { name: "Guadalajara Capital · La Chopera", cp: "19003" },
+    { name: "Guadalajara Capital · Manantiales", cp: "19002" },
+
+    // ───── 4.2 Área metropolitana ─────
+    // 4.2.1 Cinturón cercano
+    { name: "GU Á. Metro Cercano · Azuqueca de Henares", cp: "19200" },
+    { name: "GU Á. Metro Cercano · Cabanillas del Campo", cp: "19171" },
+    { name: "GU Á. Metro Cercano · Marchamalo", cp: "19180" },
+
+    // ───── 4.3 Resto provincia de Guadalajara ─────
+    // 4.3.1 Corredor del Henares ampliado
+    { name: "GU Corredor Henares · Alovera", cp: "19208" },
+    // 4.3.2 Norte
+    { name: "GU Norte · Sigüenza", cp: "19250" },
+    // 4.3.3 Oeste
+    { name: "GU Oeste · Molina de Aragón", cp: "19300" },
   ],
   "45": [ // Toledo
-    { name: "Toledo", cp: "45001" },
-    { name: "Talavera de la Reina", cp: "45600" },
-    { name: "Illescas", cp: "45200" },
-    { name: "Seseña", cp: "45223" },
-    { name: "Torrijos", cp: "45500" },
-    { name: "Yuncos", cp: "45210" },
-    { name: "Ocaña", cp: "45300" },
-    { name: "Consuegra", cp: "45700" },
-    { name: "Mora", cp: "45400" },
-    { name: "Madridejos", cp: "45710" },
-    { name: "Sonseca", cp: "45100" },
-    { name: "Quintanar de la Orden", cp: "45800" },
-    { name: "La Puebla de Montalbán", cp: "45516" },
-    { name: "Ugena", cp: "45217" },
-    { name: "Numancia de la Sagra", cp: "45230" },
-    { name: "Bargas", cp: "45593" },
-    { name: "Olías del Rey", cp: "45280" },
-    { name: "Cobeja", cp: "45222" },
-    { name: "Esquivias", cp: "45221" },
-    { name: "Yepes", cp: "45313" },
-    { name: "Villacañas", cp: "45860" },
-    { name: "Camarena", cp: "45180" },
-    { name: "Fuensalida", cp: "45510" },
-    { name: "Méntrida", cp: "45930" },
+    // ───── 5.1 Toledo capital ─────
+    { name: "Toledo Capital · Casco Histórico", cp: "45001" },
+    { name: "Toledo Capital · Santa Bárbara", cp: "45006" },
+    { name: "Toledo Capital · Buenavista", cp: "45005" },
+    { name: "Toledo Capital · Santa Teresa", cp: "45004" },
+    { name: "Toledo Capital · Polígono", cp: "45007" },
+
+    // ───── 5.2 Área metropolitana ─────
+    // 5.2.1 Cinturón cercano
+    { name: "TO Á. Metro Cercano · Bargas", cp: "45593" },
+    { name: "TO Á. Metro Cercano · Olías del Rey", cp: "45280" },
+    { name: "TO Á. Metro Cercano · Mocejón", cp: "45270" },
+    { name: "TO Á. Metro Cercano · Nambroca", cp: "45190" },
+
+    // ───── 5.3 Resto provincia de Toledo ─────
+    // 5.3.1 Norte
+    { name: "TO Norte · Talavera de la Reina", cp: "45600" },
+    // 5.3.2 Centro
+    { name: "TO Centro · Illescas", cp: "45200" },
+    { name: "TO Centro · Seseña", cp: "45223" },
+    // 5.3.3 Sur
+    { name: "TO Sur · Ocaña", cp: "45300" },
+    { name: "TO Sur · Madridejos", cp: "45710" },
   ],
 
   // ============= CASTILLA Y LEÓN =============
@@ -1798,6 +1821,41 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "ZA Norte": { level1: "Resto provincia de Zamora", level2: "Norte" },
   "ZA Oeste": { level1: "Resto provincia de Zamora", level2: "Oeste" },
   "ZA Sur": { level1: "Resto provincia de Zamora", level2: "Sur" },
+
+  // ─── Albacete (02) ───
+  "Albacete Capital": { level1: "Albacete capital" },
+  "AB Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "AB Este": { level1: "Resto provincia de Albacete", level2: "Este" },
+  "AB Sur": { level1: "Resto provincia de Albacete", level2: "Sur" },
+  "AB Oeste": { level1: "Resto provincia de Albacete", level2: "Oeste" },
+
+  // ─── Ciudad Real (13) ───
+  "Ciudad Real Capital": { level1: "Ciudad Real capital" },
+  "CR Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CR Centro": { level1: "Resto provincia de Ciudad Real", level2: "Centro" },
+  "CR Este": { level1: "Resto provincia de Ciudad Real", level2: "Este" },
+  "CR Norte": { level1: "Resto provincia de Ciudad Real", level2: "Norte" },
+
+  // ─── Cuenca (16) ───
+  "Cuenca Capital": { level1: "Cuenca capital" },
+  "CU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CU Oeste": { level1: "Resto provincia de Cuenca", level2: "Oeste" },
+  "CU Sur": { level1: "Resto provincia de Cuenca", level2: "Sur" },
+  "CU Este": { level1: "Resto provincia de Cuenca", level2: "Este" },
+
+  // ─── Guadalajara (19) ───
+  "Guadalajara Capital": { level1: "Guadalajara capital" },
+  "GU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "GU Corredor Henares": { level1: "Resto provincia de Guadalajara", level2: "Corredor del Henares ampliado" },
+  "GU Norte": { level1: "Resto provincia de Guadalajara", level2: "Norte" },
+  "GU Oeste": { level1: "Resto provincia de Guadalajara", level2: "Oeste" },
+
+  // ─── Toledo (45) ───
+  "Toledo Capital": { level1: "Toledo capital" },
+  "TO Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "TO Norte": { level1: "Resto provincia de Toledo", level2: "Norte" },
+  "TO Centro": { level1: "Resto provincia de Toledo", level2: "Centro" },
+  "TO Sur": { level1: "Resto provincia de Toledo", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
