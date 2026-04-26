@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ const generateRef = () => {
 };
 
 const Incidencias = () => {
+  const { t } = useTranslation("portal");
   const { isAdmin, loading: roleLoading } = useUserRole();
   const navigate = useNavigate();
   const [items, setItems] = useState<Incidence[]>([]);
@@ -148,10 +150,10 @@ const Incidencias = () => {
     <div className="space-y-6">
       <header className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <p className="eyebrow mb-2">Operaciones</p>
-          <h1 className="font-display text-3xl md:text-4xl text-ink">Incidencias</h1>
+          <p className="eyebrow mb-2">{t("incidences.eyebrow")}</p>
+          <h1 className="font-display text-3xl md:text-4xl text-ink">{t("incidences.title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Registra avisos y asigna automáticamente al colaborador idóneo.
+            {t("incidences.subtitle")}
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>

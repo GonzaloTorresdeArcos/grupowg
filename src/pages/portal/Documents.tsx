@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { mockDocuments, formatDate, type CollabDocument } from "@/lib/portal-mocks";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ const statusConfig = {
 };
 
 const PortalDocuments = () => {
+  const { t } = useTranslation("portal");
   const [docs, setDocs] = useState<CollabDocument[]>(mockDocuments);
   const [uploading, setUploading] = useState<CollabDocument | null>(null);
   const [filter, setFilter] = useState<"all" | "valid" | "expiring" | "expired" | "missing">("all");
@@ -72,12 +74,12 @@ const PortalDocuments = () => {
   return (
     <div className="space-y-8">
       <div>
-        <p className="eyebrow mb-2">Documentos</p>
+        <p className="eyebrow mb-2">{t("documents.eyebrow")}</p>
         <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">
-          Renovación documental
+          {t("documents.title")}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Mantén tu documentación al día para seguir operando en la red.
+          {t("documents.subtitle")}
         </p>
       </div>
 
