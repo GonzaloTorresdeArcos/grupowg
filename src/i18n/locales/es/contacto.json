@@ -12,7 +12,8 @@
     "email": "Email",
     "phone": "Teléfono",
     "offices": "Oficinas",
-    "officesValue": "Grupo Warranty Global · España"
+    "officesValue": "Grupo Warranty Global · España",
+    "hours": "Horario"
   },
   "form": {
     "stepDataTitle": "Paso 1 de 2 · Datos",
