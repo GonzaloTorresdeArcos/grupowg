@@ -515,31 +515,40 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Otras Islas Fuerteventura · Pájara", cp: "35625" },
   ],
   "38": [ // S.C. Tenerife
-    { name: "Santa Cruz de Tenerife", cp: "38001" },
-    { name: "San Cristóbal de La Laguna", cp: "38201" },
-    { name: "Arona", cp: "38640" },
-    { name: "Adeje", cp: "38670" },
-    { name: "Granadilla de Abona", cp: "38600" },
-    { name: "La Orotava", cp: "38300" },
-    { name: "Los Realejos", cp: "38410" },
-    { name: "Puerto de la Cruz", cp: "38400" },
-    { name: "Santa Cruz de La Palma", cp: "38700" },
-    { name: "Icod de los Vinos", cp: "38430" },
-    { name: "Candelaria", cp: "38530" },
-    { name: "Tacoronte", cp: "38350" },
-    { name: "Güímar", cp: "38500" },
-    { name: "Los Llanos de Aridane", cp: "38760" },
-    { name: "El Rosario", cp: "38108" },
-    { name: "La Victoria de Acentejo", cp: "38380" },
-    { name: "La Matanza de Acentejo", cp: "38379" },
-    { name: "El Sauzal", cp: "38360" },
-    { name: "Buenavista del Norte", cp: "38480" },
-    { name: "Garachico", cp: "38450" },
-    { name: "San Miguel de Abona", cp: "38620" },
-    { name: "Valverde (El Hierro)", cp: "38900" },
-    { name: "San Sebastián de la Gomera", cp: "38800" },
-    { name: "Breña Alta", cp: "38710" },
-    { name: "Los Silos", cp: "38470" },
+    // ───── 1.1 S.C. Tenerife (capital) ─────
+    { name: "S.C. Tenerife · Centro-Ifara", cp: "38004" },
+    { name: "S.C. Tenerife · Salud-La Salle", cp: "38008" },
+    { name: "S.C. Tenerife · Ofra-Costa Sur", cp: "38320" },
+    { name: "S.C. Tenerife · Anaga", cp: "38120" },
+    { name: "S.C. Tenerife · Suroeste", cp: "38107" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Área metropolitana Santa Cruz – La Laguna
+    { name: "TF Á. Metro SC-LL · San Cristóbal de La Laguna", cp: "38201" },
+    { name: "TF Á. Metro SC-LL · El Rosario", cp: "38108" },
+
+    // ───── 1.3 Resto isla de Tenerife ─────
+    // 1.3.1 Norte
+    { name: "TF Norte · Puerto de la Cruz", cp: "38400" },
+    { name: "TF Norte · La Orotava", cp: "38300" },
+    { name: "TF Norte · Los Realejos", cp: "38410" },
+    // 1.3.2 Sur turístico
+    { name: "TF Sur Turístico · Arona", cp: "38640" },
+    { name: "TF Sur Turístico · Adeje", cp: "38670" },
+    { name: "TF Sur Turístico · Granadilla de Abona", cp: "38600" },
+    // 1.3.3 Oeste / noroeste
+    { name: "TF Oeste · Icod de los Vinos", cp: "38430" },
+    { name: "TF Oeste · Garachico", cp: "38450" },
+    { name: "TF Oeste · Buenavista del Norte", cp: "38480" },
+
+    // ───── 1.4 Otras islas de la provincia ─────
+    // 1.4.1 La Palma
+    { name: "TF Otras Islas La Palma · Santa Cruz de La Palma", cp: "38700" },
+    { name: "TF Otras Islas La Palma · Los Llanos de Aridane", cp: "38760" },
+    // 1.4.2 La Gomera
+    { name: "TF Otras Islas La Gomera · San Sebastián de La Gomera", cp: "38800" },
+    // 1.4.3 El Hierro
+    { name: "TF Otras Islas El Hierro · Valverde", cp: "38900" },
   ],
 
   // ============= CANTABRIA =============
