@@ -1,24 +1,19 @@
 import { useMemo, useState } from "react";
 import {
-  MARCAS,
-  marcasForFamilias,
-  matchingFamilias,
+  MARCAS_BY_GAMA,
   SAT_RELACIONES,
-  type MarcaDef,
+  marcaCode,
   type MarcaDetalle,
   type SatRelacion,
 } from "@/lib/marcas-taxonomy";
-import { familiaLabelByCode } from "@/lib/gamas-taxonomy";
-import { Check, Search, ShieldCheck, Sparkles, X } from "lucide-react";
+import { Check, Search, ShieldCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MarcasSelectorProps {
-  /** Códigos de familias seleccionados (gamas-taxonomy). */
-  familias: string[];
-  /** Detalles por marca (relación SAT + familias atendidas). */
+  /** Códigos de gamas activas (derivados de las familias seleccionadas). */
+  gamasActivas: string[];
   value: MarcaDetalle[];
   onChange: (next: MarcaDetalle[]) => void;
-  /** Marcas libres añadidas a mano (texto). */
   otrasMarcas: string;
   onOtrasChange: (s: string) => void;
 }
@@ -30,7 +25,7 @@ const RELACION_STYLES: Record<SatRelacion, string> = {
 };
 
 export function MarcasSelector({
-  familias,
+  gamasActivas,
   value,
   onChange,
   otrasMarcas,
@@ -39,100 +34,137 @@ export function MarcasSelector({
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
 
-  const filteredByFamilia = useMemo(() => marcasForFamilias(familias), [familias]);
-  const baseList = showAll || familias.length === 0 ? MARCAS : filteredByFamilia;
+  const gamasVisibles = useMemo(() => {
+    if (showAll || gamasActivas.length === 0) return MARCAS_BY_GAMA;
+    return MARCAS_BY_GAMA.filter((g) => gamasActivas.includes(g.gama));
+  }, [gamasActivas, showAll]);
 
-  const list = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return baseList;
-    return baseList.filter((m) => m.label.toLowerCase().includes(q));
-  }, [baseList, query]);
+  const [activeGama, setActiveGama] = useState<string>(
+    () => gamasVisibles[0]?.gama ?? MARCAS_BY_GAMA[0].gama,
+  );
 
-  const byCode = useMemo(() => {
-    const map = new Map<string, MarcaDetalle>();
-    value.forEach((d) => map.set(d.code, d));
-    return map;
+  // Mantener tab activo válido
+  const effectiveActive = gamasVisibles.find((g) => g.gama === activeGama)
+    ? activeGama
+    : gamasVisibles[0]?.gama ?? MARCAS_BY_GAMA[0].gama;
+
+  const currentGama = MARCAS_BY_GAMA.find((g) => g.gama === effectiveActive)!;
+
+  const codeMap = useMemo(() => {
+    const m = new Map<string, MarcaDetalle>();
+    value.forEach((d) => m.set(d.code, d));
+    return m;
   }, [value]);
 
-  const isSelected = (code: string) => byCode.has(code);
+  const isSelected = (gama: string, label: string) =>
+    codeMap.has(marcaCode(gama, label));
 
-  const toggleMarca = (m: MarcaDef) => {
-    if (isSelected(m.code)) {
-      onChange(value.filter((d) => d.code !== m.code));
+  const toggleMarca = (gama: string, label: string) => {
+    const code = marcaCode(gama, label);
+    if (codeMap.has(code)) {
+      onChange(value.filter((d) => d.code !== code));
       return;
     }
-    const familiasAtendidas = matchingFamilias(m, familias);
-    onChange([
-      ...value,
-      {
-        code: m.code,
-        relacion: "autorizado",
-        familias: familiasAtendidas.length ? familiasAtendidas : m.familias,
-      },
-    ]);
+    onChange([...value, { code, gama, label, relacion: "autorizado" }]);
   };
 
   const setRelacion = (code: string, relacion: SatRelacion) => {
     onChange(value.map((d) => (d.code === code ? { ...d, relacion } : d)));
   };
 
-  const toggleFamilia = (code: string, famCode: string) => {
-    onChange(
-      value.map((d) => {
-        if (d.code !== code) return d;
-        const has = d.familias.includes(famCode);
-        return {
-          ...d,
-          familias: has
-            ? d.familias.filter((f) => f !== famCode)
-            : [...d.familias, famCode],
-        };
-      }),
-    );
-  };
+  const filteredMarcas = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return currentGama.marcas;
+    return currentGama.marcas.filter((m) => m.toLowerCase().includes(q));
+  }, [currentGama, query]);
 
-  const filteredCount = filteredByFamilia.length;
+  // Contador por gama
+  const countByGama = useMemo(() => {
+    const m = new Map<string, number>();
+    value.forEach((d) => m.set(d.gama, (m.get(d.gama) ?? 0) + 1));
+    return m;
+  }, [value]);
+
+  // Agrupar selección para resumen
+  const groupedSelection = useMemo(() => {
+    const groups = new Map<string, MarcaDetalle[]>();
+    value.forEach((d) => {
+      if (!groups.has(d.gama)) groups.set(d.gama, []);
+      groups.get(d.gama)!.push(d);
+    });
+    return groups;
+  }, [value]);
 
   return (
     <div className="space-y-4">
-      {/* Hint contexto */}
-      {familias.length > 0 && (
-        <div className="rounded-xl border border-border bg-secondary/50 p-3 text-sm text-ink flex items-start gap-2">
-          <Sparkles className="h-4 w-4 mt-0.5 text-teal-deep shrink-0" />
-          <span>
-            Mostrando <strong>{filteredCount}</strong> marcas compatibles con las
-            familias que has seleccionado.{" "}
-            <button
-              type="button"
-              className="underline text-teal-deep hover:text-teal-900"
-              onClick={() => setShowAll((v) => !v)}
-            >
-              {showAll ? "Ver solo compatibles" : "Ver catálogo completo"}
-            </button>
-          </span>
+      {gamasActivas.length > 0 && (
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <p className="text-sm text-muted-foreground">
+            Mostrando marcas de las gamas que has seleccionado en familias.
+          </p>
+          <button
+            type="button"
+            className="text-xs underline text-teal-deep hover:text-teal-900"
+            onClick={() => setShowAll((v) => !v)}
+          >
+            {showAll ? "Ver solo mis gamas" : "Ver todas las gamas"}
+          </button>
         </div>
       )}
+
+      {/* Tabs por gama */}
+      <div className="flex flex-wrap gap-2 border-b border-border pb-2">
+        {gamasVisibles.map((g) => {
+          const n = countByGama.get(g.gama) ?? 0;
+          const active = g.gama === effectiveActive;
+          return (
+            <button
+              key={g.gama}
+              type="button"
+              onClick={() => setActiveGama(g.gama)}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-sm border transition flex items-center gap-1.5",
+                active
+                  ? "bg-teal-deep text-white border-teal-deep"
+                  : "bg-card text-ink border-border hover:border-teal-deep/50",
+              )}
+            >
+              <span>{g.label}</span>
+              {n > 0 && (
+                <span
+                  className={cn(
+                    "text-xs rounded-full px-1.5 py-0.5",
+                    active ? "bg-white/20" : "bg-teal-deep/10 text-teal-deep",
+                  )}
+                >
+                  {n}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
 
       {/* Buscador */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
           className="input-base pl-10 w-full"
-          placeholder="Buscar marca…"
+          placeholder={`Buscar marca en ${currentGama.label}…`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
-      {/* Lista */}
+      {/* Grid de marcas de la gama activa */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
-        {list.map((m) => {
-          const sel = isSelected(m.code);
+        {filteredMarcas.map((label) => {
+          const sel = isSelected(currentGama.gama, label);
           return (
             <button
-              key={m.code}
+              key={label}
               type="button"
-              onClick={() => toggleMarca(m)}
+              onClick={() => toggleMarca(currentGama.gama, label)}
               className={cn(
                 "flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition",
                 sel
@@ -140,113 +172,73 @@ export function MarcasSelector({
                   : "border-border bg-card hover:border-teal-deep/50",
               )}
             >
-              <span className="font-medium">{m.label}</span>
+              <span className="font-medium">{label}</span>
               {sel && <Check className="h-4 w-4 shrink-0" />}
             </button>
           );
         })}
-        {list.length === 0 && (
+        {filteredMarcas.length === 0 && (
           <p className="col-span-full text-sm text-muted-foreground">
-            Sin resultados. Prueba con otra búsqueda o añade la marca abajo.
+            Sin resultados en esta gama.
           </p>
         )}
       </div>
 
-      {/* Detalle de marcas seleccionadas */}
+      {/* Resumen + relación SAT */}
       {value.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-3 pt-2">
           <h4 className="font-display text-lg text-ink flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-teal-deep" />
-            Relación con cada marca ({value.length})
+            Relación SAT por marca ({value.length})
           </h4>
 
-          <div className="space-y-3">
-            {value.map((d) => {
-              const m = MARCAS.find((x) => x.code === d.code);
-              if (!m) return null;
-              const familiasMarca = familias.length
-                ? matchingFamilias(m, familias)
-                : m.familias;
-
-              return (
-                <div
-                  key={d.code}
-                  className="rounded-xl border border-border bg-card p-3 space-y-3"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-display text-base text-ink">{m.label}</span>
-                      <span
-                        className={cn(
-                          "text-xs px-2 py-0.5 rounded-full border",
-                          RELACION_STYLES[d.relacion],
-                        )}
-                      >
-                        {SAT_RELACIONES.find((r) => r.code === d.relacion)?.label}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onChange(value.filter((x) => x.code !== d.code))}
-                      className="text-muted-foreground hover:text-red-600 p-1"
-                      aria-label={`Quitar ${m.label}`}
+          {Array.from(groupedSelection.entries()).map(([gamaCode, items]) => {
+            const gama = MARCAS_BY_GAMA.find((g) => g.gama === gamaCode);
+            return (
+              <div key={gamaCode} className="rounded-xl border border-border bg-card p-3 space-y-2">
+                <p className="text-sm font-medium text-ink">
+                  {gama?.label ?? gamaCode}
+                </p>
+                <div className="space-y-2">
+                  {items.map((d) => (
+                    <div
+                      key={d.code}
+                      className="flex items-center justify-between flex-wrap gap-2 border-t border-border pt-2 first:border-t-0 first:pt-0"
                     >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  {/* Selector de relación SAT */}
-                  <div className="flex flex-wrap gap-2">
-                    {SAT_RELACIONES.map((r) => (
-                      <button
-                        key={r.code}
-                        type="button"
-                        onClick={() => setRelacion(d.code, r.code)}
-                        title={r.hint}
-                        className={cn(
-                          "text-xs px-3 py-1 rounded-full border transition",
-                          d.relacion === r.code
-                            ? RELACION_STYLES[r.code] + " ring-2 ring-offset-1 ring-teal-deep/40"
-                            : "border-border bg-background text-muted-foreground hover:border-teal-deep/40",
-                        )}
-                      >
-                        {r.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Familias atendidas para esta marca */}
-                  {familiasMarca.length > 0 && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">
-                        Familias que atiendes para esta marca:
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {familiasMarca.map((fc) => {
-                          const on = d.familias.includes(fc);
-                          return (
-                            <button
-                              key={fc}
-                              type="button"
-                              onClick={() => toggleFamilia(d.code, fc)}
-                              className={cn(
-                                "text-xs px-2 py-1 rounded-md border transition",
-                                on
-                                  ? "border-teal-deep bg-teal-deep text-white"
-                                  : "border-border bg-background hover:border-teal-deep/40",
-                              )}
-                            >
-                              {familiaLabelByCode(fc)}
-                            </button>
-                          );
-                        })}
+                      <span className="font-medium text-ink">{d.label}</span>
+                      <div className="flex items-center gap-1.5">
+                        {SAT_RELACIONES.map((r) => (
+                          <button
+                            key={r.code}
+                            type="button"
+                            onClick={() => setRelacion(d.code, r.code)}
+                            title={r.hint}
+                            className={cn(
+                              "text-xs px-2.5 py-1 rounded-full border transition",
+                              d.relacion === r.code
+                                ? RELACION_STYLES[r.code] +
+                                    " ring-2 ring-offset-1 ring-teal-deep/40"
+                                : "border-border bg-background text-muted-foreground hover:border-teal-deep/40",
+                            )}
+                          >
+                            {r.label}
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => onChange(value.filter((x) => x.code !== d.code))}
+                          className="text-muted-foreground hover:text-red-600 p-1"
+                          aria-label={`Quitar ${d.label}`}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -257,7 +249,7 @@ export function MarcasSelector({
         </label>
         <textarea
           className="input-base min-h-20 w-full"
-          placeholder="Ej. marcas locales, OEM o trabajos puntuales separados por coma"
+          placeholder="Marcas locales, OEM o trabajos puntuales separados por coma"
           value={otrasMarcas}
           onChange={(e) => onOtrasChange(e.target.value)}
           maxLength={500}
