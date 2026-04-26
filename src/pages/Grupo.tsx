@@ -1,70 +1,51 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation, Trans } from "react-i18next";
 import { ArrowUpRight, AlertTriangle, Workflow, Eye, Brain, Cog } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 
-
-const problemas = [
-  "Múltiples proveedores operando sin coordinación.",
-  "Sistemas que no se comunican entre sí.",
-  "Decisiones sin criterio técnico estructurado.",
-  "Falta de visibilidad sobre lo que realmente ocurre.",
-];
-
-const diferenciales = [
-  {
-    icon: Eye,
-    title: "Control end-to-end",
-    desc: "Visión completa del servicio, independientemente de quién lo ejecute.",
-  },
-  {
-    icon: Brain,
-    title: "Conocimiento técnico y de producto",
-    desc: "Validamos la calidad del servicio y transformamos la actividad en información útil para mejorar.",
-  },
-  {
-    icon: Cog,
-    title: "Ejecución integrada",
-    desc: "Desde el primer contacto hasta la resolución, sin fricción.",
-  },
-];
+const ICONS = [Eye, Brain, Cog] as const;
 
 const Grupo = () => {
+  const { t } = useTranslation("grupo");
+
   useEffect(() => {
-    document.title = "Grupo WG · Donde otros terminan, nosotros empezamos";
+    document.title = t("seo.title");
     let m = document.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");
       m.setAttribute("name", "description");
       document.head.appendChild(m);
     }
-    m.setAttribute(
-      "content",
-      "Grupo WG convierte el servicio postventa en un sistema bajo control: operación, experiencia y conocimiento técnico integrados de principio a fin.",
-    );
-  }, []);
+    m.setAttribute("content", t("seo.description"));
+  }, [t]);
+
+  const problemas = t("problem.items", { returnObjects: true }) as string[];
+  const diferenciales = t("differential.items", { returnObjects: true }) as Array<{
+    title: string;
+    desc: string;
+  }>;
 
   return (
     <>
       <PageHero
         title={
           <>
-            Donde otros terminan,{" "}
-            <span className="text-teal italic">nosotros empezamos</span>.
+            {t("hero.titleA")}{" "}
+            <span className="text-teal italic">{t("hero.titleB")}</span>.
           </>
         }
         subtitle={
           <>
-            Convertimos el servicio postventa en un sistema que funciona.
+            {t("hero.subtitleA")}
             <br />
             <br />
-            Integramos operación, experiencia de cliente y conocimiento técnico para
-            ejecutar, controlar y optimizar el servicio{" "}
-            <span className="whitespace-nowrap">de principio a fin</span>.
+            {t("hero.subtitleB")}{" "}
+            <span className="whitespace-nowrap">{t("hero.subtitleC")}</span>.
           </>
         }
-        cta={{ label: "Hablar con nuestro equipo", to: "/contacto" }}
+        cta={{ label: t("hero.cta"), to: "/contacto" }}
       />
 
       {/* PROBLEMA */}
@@ -72,10 +53,10 @@ const Grupo = () => {
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-15 pointer-events-none" />
         <div className="container-tight relative">
           <Reveal>
-            <p className="eyebrow-mono mb-4">01 · Problema</p>
+            <p className="eyebrow-mono mb-4">{t("problem.eyebrow")}</p>
             <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
-              Hoy el servicio postventa{" "}
-              <span className="text-teal italic">no funciona como un sistema</span>.
+              {t("problem.titleA")}{" "}
+              <span className="text-teal italic">{t("problem.titleB")}</span>.
             </h2>
           </Reveal>
 
@@ -97,10 +78,10 @@ const Grupo = () => {
             <Reveal delay={150}>
               <div className="card-os p-8 h-full flex flex-col justify-center">
                 <AlertTriangle className="h-6 w-6 text-teal mb-4" />
-                <p className="eyebrow-mono mb-3 text-foreground/60">Resultado</p>
+                <p className="eyebrow-mono mb-3 text-foreground/60">{t("problem.resultLabel")}</p>
                 <p className="font-display text-2xl md:text-3xl text-foreground/90 leading-snug text-balance">
-                  Más coste, más incidencias y una{" "}
-                  <span className="text-teal italic">experiencia inconsistente</span>.
+                  {t("problem.resultA")}{" "}
+                  <span className="text-teal italic">{t("problem.resultB")}</span>.
                 </p>
               </div>
             </Reveal>
@@ -114,14 +95,13 @@ const Grupo = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,hsl(var(--teal)/0.12),transparent_60%)]" />
         <div className="container-tight relative">
           <Reveal>
-            <p className="eyebrow-mono mb-4 text-bone/60">02 · Solución</p>
+            <p className="eyebrow-mono mb-4 text-bone/60">{t("solution.eyebrow")}</p>
             <h2 className="heading-display text-bone text-4xl md:text-6xl max-w-4xl text-balance">
-              Un único sistema de{" "}
-              <span className="text-teal italic">control y ejecución</span> del servicio.
+              {t("solution.titleA")}{" "}
+              <span className="text-teal italic">{t("solution.titleB")}</span> {t("solution.titleC")}
             </h2>
             <p className="mt-8 max-w-2xl text-bone/70 text-lg leading-relaxed">
-              Conectamos todos los elementos —personas, procesos y tecnología— en un flujo
-              único, coordinado y medible.
+              {t("solution.lead")}
             </p>
           </Reveal>
 
@@ -129,10 +109,8 @@ const Grupo = () => {
             <div className="mt-14 flex items-center gap-5 max-w-3xl">
               <Workflow className="h-8 w-8 text-teal flex-shrink-0" />
               <p className="font-display text-2xl md:text-3xl text-bone/90 leading-snug text-balance">
-                No se trata de gestionar partes.{" "}
-                <span className="text-teal italic">
-                  Se trata de hacer que el sistema funcione.
-                </span>
+                {t("solution.quoteA")}{" "}
+                <span className="text-teal italic">{t("solution.quoteB")}</span>
               </p>
             </div>
           </Reveal>
@@ -143,16 +121,16 @@ const Grupo = () => {
       <section className="section-padding bg-background relative overflow-hidden">
         <div className="container-tight relative">
           <Reveal>
-            <p className="eyebrow-mono mb-4">03 · Diferencial</p>
+            <p className="eyebrow-mono mb-4">{t("differential.eyebrow")}</p>
             <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
-              Control. Conocimiento.{" "}
-              <span className="text-teal italic">Ejecución</span>.
+              {t("differential.titleA")}{" "}
+              <span className="text-teal italic">{t("differential.titleB")}</span>.
             </h2>
           </Reveal>
 
           <div className="mt-14 grid md:grid-cols-3 gap-5">
             {diferenciales.map((d, i) => {
-              const Icon = d.icon;
+              const Icon = ICONS[i] ?? Eye;
               return (
                 <Reveal key={d.title} delay={i * 100}>
                   <div className="card-os h-full p-7">
@@ -168,18 +146,16 @@ const Grupo = () => {
           <Reveal delay={350}>
             <div className="mt-16 flex flex-wrap gap-3">
               <Link to="/modelo" className="btn-teal">
-                Ver el modelo
+                {t("differential.ctaPrimary")}
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link to="/contacto" className="btn-on-light">
-                Hablar con nuestro equipo
+                {t("differential.ctaSecondary")}
               </Link>
             </div>
           </Reveal>
         </div>
       </section>
-
-      
     </>
   );
 };
