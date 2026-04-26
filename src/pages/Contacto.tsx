@@ -1192,7 +1192,7 @@ const Contacto = () => {
       </section>
 
       {/* SEO CONTENT — direcciones, horarios, áreas de servicio */}
-      <section className="bg-bone border-t border-foreground/5">
+      <section className="theme-light bg-bone border-t border-foreground/5">
         <div className="container-tight py-16 md:py-24">
           <Reveal>
             <p className="eyebrow-mono mb-3">Información de contacto</p>
