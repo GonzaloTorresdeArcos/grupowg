@@ -193,7 +193,7 @@ const isDraftMeaningful = (f: FormData) =>
     f.empresa?.trim() ||
     f.email?.trim() ||
     f.telefono?.trim() ||
-    f.motivo ||
+    (f.motivo && f.motivo.length > 0) ||
     f.mensaje?.trim()
   );
 
