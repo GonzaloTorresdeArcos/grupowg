@@ -85,6 +85,10 @@ const Inscripcion = () => {
   const [errs1, setErrs1] = useState<Record<string, string>>({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  // País telefónico (prefijo internacional). Se infiere automáticamente del CP
+  // cuando es posible; el usuario puede cambiarlo manualmente.
+  const [phoneCountry, setPhoneCountry] = useState<CountryPhone>(COUNTRIES.ES);
+  const [phoneCountryAuto, setPhoneCountryAuto] = useState(true);
 
   // Step 2
   const [provinciaCodes, setProvinciaCodes] = useState<string[]>([]);
