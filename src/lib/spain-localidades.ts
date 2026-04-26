@@ -332,18 +332,32 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "HSC La Litera · Fraga", cp: "22520" },
   ],
   "44": [ // Teruel
-    { name: "Teruel", cp: "44001" },
-    { name: "Alcañiz", cp: "44600" },
-    { name: "Andorra", cp: "44500" },
-    { name: "Calanda", cp: "44570" },
-    { name: "Utrillas", cp: "44760" },
-    { name: "Calamocha", cp: "44200" },
-    { name: "Monreal del Campo", cp: "44300" },
-    { name: "Híjar", cp: "44530" },
-    { name: "Mora de Rubielos", cp: "44400" },
-    { name: "Cella", cp: "44370" },
-    { name: "Albarracín", cp: "44100" },
-    { name: "Valderrobres", cp: "44580" },
+    // ───── 1.1 Teruel capital (barrios) ─────
+    { name: "Teruel Capital · Centro", cp: "44001" },
+    { name: "Teruel Capital · Ensanche", cp: "44002" },
+    { name: "Teruel Capital · San León", cp: "44003" },
+    { name: "Teruel Capital · Arrabal", cp: "44004" },
+    { name: "Teruel Capital · Carrel", cp: "44002" },
+    { name: "Teruel Capital · Fuenfresca", cp: "44002" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "TE Á. Metro Cercano · Villastar", cp: "44141" },
+    { name: "TE Á. Metro Cercano · San Blas", cp: "44195" },
+    { name: "TE Á. Metro Cercano · Caudé", cp: "44193" },
+    { name: "TE Á. Metro Cercano · Cella", cp: "44370" },
+
+    // ───── 1.3 Resto provincia de Teruel ─────
+    // 1.3.1 Bajo Aragón
+    { name: "TE Bajo Aragón · Alcañiz", cp: "44600" },
+    { name: "TE Bajo Aragón · Andorra", cp: "44500" },
+    { name: "TE Bajo Aragón · Calanda", cp: "44570" },
+    // 1.3.2 Comunidad de Calatayud / Cuencas Mineras
+    { name: "TE Cuencas Mineras · Utrillas", cp: "44760" },
+    { name: "TE Cuencas Mineras · Montalbán", cp: "44770" },
+    // 1.3.3 Maestrazgo / Este
+    { name: "TE Maestrazgo · Alcorisa", cp: "44550" },
+    { name: "TE Maestrazgo · Cantavieja", cp: "44140" },
   ],
   "50": [ // Zaragoza
     // — Zaragoza capital: distritos centrales —
@@ -1525,6 +1539,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "HSC Somontano": { level1: "Resto provincia de Huesca", level2: "Somontano / centro" },
   "HSC Pirineo": { level1: "Resto provincia de Huesca", level2: "Pirineo" },
   "HSC La Litera": { level1: "Resto provincia de Huesca", level2: "Este / La Litera" },
+
+  // ─── Teruel (44) ───
+  "Teruel Capital": { level1: "Teruel capital" },
+  "TE Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "TE Bajo Aragón": { level1: "Resto provincia de Teruel", level2: "Bajo Aragón" },
+  "TE Cuencas Mineras": { level1: "Resto provincia de Teruel", level2: "Comunidad de Calatayud / Cuencas Mineras" },
+  "TE Maestrazgo": { level1: "Resto provincia de Teruel", level2: "Maestrazgo / Este" },
 };
 
 export interface LocalitySubgroup {
