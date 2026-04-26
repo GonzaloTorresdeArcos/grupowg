@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "WG Group · Where others stop, we begin",
+    "description": "WG Group turns after-sales service into a system under control: operations, customer experience and technical knowledge integrated end-to-end."
+  },
+  "hero": {
+    "titleA": "Where others stop,",
+    "titleB": "we begin",
+    "subtitleA": "We turn after-sales service into a system that works.",
+    "subtitleB": "We integrate operations, customer experience and technical knowledge to execute, control and optimize the service",
+    "subtitleC": "end to end",
+    "cta": "Talk to our team"
+  },
+  "problem": {
+    "eyebrow": "01 · Problem",
+    "titleA": "Today, after-sales service",
+    "titleB": "does not work as a system",
+    "items": [
+      "Multiple providers operating without coordination.",
+      "Systems that do not talk to each other.",
+      "Decisions without structured technical criteria.",
+      "No real visibility of what is actually happening."
+    ],
+    "resultLabel": "Outcome",
+    "resultA": "More cost, more incidents and an",
+    "resultB": "inconsistent experience"
+  },
+  "solution": {
+    "eyebrow": "02 · Solution",
+    "titleA": "A single system to",
+    "titleB": "control and execute",
+    "titleC": "the service.",
+    "lead": "We connect every element —people, processes and technology— in a single, coordinated and measurable flow.",
+    "quoteA": "It is not about managing parts.",
+    "quoteB": "It is about making the system work."
+  },
+  "differential": {
+    "eyebrow": "03 · Differentiator",
+    "titleA": "Control. Knowledge.",
+    "titleB": "Execution",
+    "items": [
+      { "title": "End-to-end control", "desc": "Full visibility of the service, regardless of who executes it." },
+      { "title": "Technical and product knowledge", "desc": "We validate service quality and turn activity into useful information to improve." },
+      { "title": "Integrated execution", "desc": "From the first contact to resolution, with no friction." }
+    ],
+    "ctaPrimary": "See the model",
+    "ctaSecondary": "Talk to our team"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Grupo WG · Donde otros terminan, nosotros empezamos",
+    "description": "Grupo WG convierte el servicio postventa en un sistema bajo control: operación, experiencia y conocimiento técnico integrados de principio a fin."
+  },
+  "hero": {
+    "titleA": "Donde otros terminan,",
+    "titleB": "nosotros empezamos",
+    "subtitleA": "Convertimos el servicio postventa en un sistema que funciona.",
+    "subtitleB": "Integramos operación, experiencia de cliente y conocimiento técnico para ejecutar, controlar y optimizar el servicio",
+    "subtitleC": "de principio a fin",
+    "cta": "Hablar con nuestro equipo"
+  },
+  "problem": {
+    "eyebrow": "01 · Problema",
+    "titleA": "Hoy el servicio postventa",
+    "titleB": "no funciona como un sistema",
+    "items": [
+      "Múltiples proveedores operando sin coordinación.",
+      "Sistemas que no se comunican entre sí.",
+      "Decisiones sin criterio técnico estructurado.",
+      "Falta de visibilidad sobre lo que realmente ocurre."
+    ],
+    "resultLabel": "Resultado",
+    "resultA": "Más coste, más incidencias y una",
+    "resultB": "experiencia inconsistente"
+  },
+  "solution": {
+    "eyebrow": "02 · Solución",
+    "titleA": "Un único sistema de",
+    "titleB": "control y ejecución",
+    "titleC": "del servicio.",
+    "lead": "Conectamos todos los elementos —personas, procesos y tecnología— en un flujo único, coordinado y medible.",
+    "quoteA": "No se trata de gestionar partes.",
+    "quoteB": "Se trata de hacer que el sistema funcione."
+  },
+  "differential": {
+    "eyebrow": "03 · Diferencial",
+    "titleA": "Control. Conocimiento.",
+    "titleB": "Ejecución",
+    "items": [
+      { "title": "Control end-to-end", "desc": "Visión completa del servicio, independientemente de quién lo ejecute." },
+      { "title": "Conocimiento técnico y de producto", "desc": "Validamos la calidad del servicio y transformamos la actividad en información útil para mejorar." },
+      { "title": "Ejecución integrada", "desc": "Desde el primer contacto hasta la resolución, sin fricción." }
+    ],
+    "ctaPrimary": "Ver el modelo",
+    "ctaSecondary": "Hablar con nuestro equipo"
+  }
+}

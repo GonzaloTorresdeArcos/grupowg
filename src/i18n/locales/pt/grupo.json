@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Grupo WG · Onde outros terminam, nós começamos",
+    "description": "O Grupo WG transforma o serviço pós-venda num sistema sob controlo: operação, experiência e conhecimento técnico integrados de ponta a ponta."
+  },
+  "hero": {
+    "titleA": "Onde outros terminam,",
+    "titleB": "nós começamos",
+    "subtitleA": "Transformamos o serviço pós-venda num sistema que funciona.",
+    "subtitleB": "Integramos operação, experiência do cliente e conhecimento técnico para executar, controlar e otimizar o serviço",
+    "subtitleC": "de ponta a ponta",
+    "cta": "Falar com a nossa equipa"
+  },
+  "problem": {
+    "eyebrow": "01 · Problema",
+    "titleA": "Hoje o serviço pós-venda",
+    "titleB": "não funciona como um sistema",
+    "items": [
+      "Vários fornecedores a operar sem coordenação.",
+      "Sistemas que não comunicam entre si.",
+      "Decisões sem critério técnico estruturado.",
+      "Falta de visibilidade sobre o que realmente acontece."
+    ],
+    "resultLabel": "Resultado",
+    "resultA": "Mais custo, mais incidências e uma",
+    "resultB": "experiência inconsistente"
+  },
+  "solution": {
+    "eyebrow": "02 · Solução",
+    "titleA": "Um único sistema de",
+    "titleB": "controlo e execução",
+    "titleC": "do serviço.",
+    "lead": "Ligamos todos os elementos —pessoas, processos e tecnologia— num fluxo único, coordenado e mensurável.",
+    "quoteA": "Não se trata de gerir partes.",
+    "quoteB": "Trata-se de fazer com que o sistema funcione."
+  },
+  "differential": {
+    "eyebrow": "03 · Diferencial",
+    "titleA": "Controlo. Conhecimento.",
+    "titleB": "Execução",
+    "items": [
+      { "title": "Controlo end-to-end", "desc": "Visão completa do serviço, independentemente de quem o executa." },
+      { "title": "Conhecimento técnico e de produto", "desc": "Validamos a qualidade do serviço e transformamos a atividade em informação útil para melhorar." },
+      { "title": "Execução integrada", "desc": "Desde o primeiro contacto até à resolução, sem fricção." }
+    ],
+    "ctaPrimary": "Ver o modelo",
+    "ctaSecondary": "Falar com a nossa equipa"
+  }
+}
