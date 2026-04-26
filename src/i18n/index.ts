@@ -22,6 +22,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import esCommon from "./locales/es/common.json";
 import esHeader from "./locales/es/header.json";
 import esFooter from "./locales/es/footer.json";
+import esBreadcrumbs from "./locales/es/breadcrumbs.json";
 import esContacto from "./locales/es/contacto.json";
 import esHomeHero from "./locales/es/home-hero.json";
 import esHomeProblem from "./locales/es/home-problem.json";
