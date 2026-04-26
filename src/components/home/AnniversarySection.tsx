@@ -17,18 +17,18 @@ export const AnniversarySection = () => (
       </Reveal>
 
       <Reveal delay={120} className="md:col-span-7">
-        <p className="eyebrow text-teal-soft mb-3 md:mb-4">50 aniversario</p>
-        <h2 className="heading-display text-bone text-4xl md:text-5xl lg:text-6xl text-balance">
+        <p className="eyebrow text-teal-soft mb-3 md:mb-4 leading-none">50 aniversario</p>
+        <h2 className="heading-display text-bone text-4xl md:text-5xl lg:text-6xl text-balance leading-[1.05] md:leading-[1.02]">
           50 años resolviendo.
         </h2>
-        <div className="mt-6 md:mt-8 space-y-4 text-bone/70 leading-relaxed text-base md:text-lg max-w-xl">
+        <div className="mt-6 md:mt-8 space-y-4 text-bone/70 text-base md:text-lg leading-[1.65] md:leading-[1.6] max-w-xl">
           <p>Este aniversario no es solo una cifra. Es una seña de identidad.</p>
           <p>
             50 años de oficio, relaciones duraderas, equipo estable, clientes que siguen confiando
             y decenas de miles de incidencias resueltas cada año.
           </p>
         </div>
-        <p className="mt-8 md:mt-10 font-display italic text-2xl md:text-3xl text-teal text-balance max-w-xl">
+        <p className="mt-8 md:mt-10 font-display italic text-2xl md:text-3xl text-teal text-balance leading-[1.2] md:leading-[1.15] max-w-xl">
           La mejor forma de celebrar 50 años es seguir respondiendo.
         </p>
       </Reveal>
