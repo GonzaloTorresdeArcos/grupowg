@@ -94,29 +94,41 @@ Deno.serve(async (req) => {
         return json({ error: "invalid_code" }, 400);
       }
 
-      const codeHash = await sha256(code);
-      const { data, error } = await supabase
-        .from("wg_otp_codes")
-        .select("id")
-        .eq("channel", channel)
-        .eq("destination", dest)
-        .eq("code_hash", codeHash)
-        .is("consumed_at", null)
-        .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // [DEV] Código maestro de pruebas. Permite avanzar el flujo sin
+      // entrega real de email/SMS mientras se valida el resto.
+      // ⚠️ Quitar antes de producción.
+      const DEV_MASTER_CODE = "123456";
+      const isDevBypass = code === DEV_MASTER_CODE;
 
-      if (error) {
-        console.error("[send-otp][verify] query error", error);
-        return json({ error: "internal_error" }, 500);
+      let matchedId: string | null = null;
+      if (!isDevBypass) {
+        const codeHash = await sha256(code);
+        const { data, error } = await supabase
+          .from("wg_otp_codes")
+          .select("id")
+          .eq("channel", channel)
+          .eq("destination", dest)
+          .eq("code_hash", codeHash)
+          .is("consumed_at", null)
+          .gt("expires_at", new Date().toISOString())
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          console.error("[send-otp][verify] query error", error);
+          return json({ error: "internal_error" }, 500);
+        }
+        if (!data) return json({ ok: false, error: "invalid_or_expired" }, 400);
+        matchedId = data.id;
       }
-      if (!data) return json({ ok: false, error: "invalid_or_expired" }, 400);
 
-      await supabase
-        .from("wg_otp_codes")
-        .update({ consumed_at: new Date().toISOString() })
-        .eq("id", data.id);
+      if (matchedId) {
+        await supabase
+          .from("wg_otp_codes")
+          .update({ consumed_at: new Date().toISOString() })
+          .eq("id", matchedId);
+      }
 
       // If a resume_token was provided, flip the verification flag on the draft (server-only).
       if (typeof resume_token === "string" && resume_token.length >= 16 && resume_token.length <= 128) {
