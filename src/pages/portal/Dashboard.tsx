@@ -34,12 +34,8 @@ const statusColor: Record<string, string> = {
   cerrada: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
 };
 
-const statusLabel: Record<string, string> = {
-  abierta: "Abierta",
-  en_curso: "En curso",
-  esperando_repuesto: "Esperando repuesto",
-  cerrada: "Cerrada",
-};
+// statusLabel se obtiene desde i18n en runtime
+
 
 const PortalDashboard = () => {
   const { t, i18n } = useTranslation("portal");
@@ -69,12 +65,12 @@ const PortalDashboard = () => {
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <p className="eyebrow mb-2">Resumen</p>
+        <p className="eyebrow mb-2">{t("dashboard.eyebrow")}</p>
         <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">
-          Hola{profile?.display_name ? `, ${profile.display_name.split(" ")[0]}` : ""}
+          {t("dashboard.greeting")}{profile?.display_name ? `, ${profile.display_name.split(" ")[0]}` : ""}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Tu actividad en WG Network · Últimos 30 días
+          {t("dashboard.subtitle")}
         </p>
       </div>
 
@@ -87,8 +83,8 @@ const PortalDashboard = () => {
                 <Inbox className="h-5 w-5" strokeWidth={1.75} />
               </div>
               <div>
-                <p className="eyebrow mb-0.5">Asignadas a ti</p>
-                <h2 className="font-display text-xl text-ink">Incidencias en curso</h2>
+                <p className="eyebrow mb-0.5">{t("dashboard.assigned.eyebrow")}</p>
+                <h2 className="font-display text-xl text-ink">{t("dashboard.assigned.title")}</h2>
               </div>
             </div>
             <Badge variant="outline">{assigned.length}</Badge>
