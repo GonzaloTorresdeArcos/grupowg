@@ -141,40 +141,39 @@ const getRequiredFields = (motivos: MotivoValue[]): Array<keyof FormData> => {
   return Array.from(out);
 };
 
-const validateAll = (data: FormData) => {
-  const r = baseSchema.safeParse(data);
-  const errors: Record<string, string> = {};
-  const motivos = (data.motivo || []) as MotivoValue[];
-  const activeFields = getActiveFields(motivos);
+const buildValidator = (t: TFunc) => {
+  const schema = buildSchema(t);
+  return (data: FormData) => {
+    const r = schema.safeParse(data);
+    const errors: Record<string, string> = {};
+    const motivos = (data.motivo || []) as MotivoValue[];
+    const activeFields = getActiveFields(motivos);
 
-  if (!r.success) {
-    r.error.issues.forEach((i) => {
-      const key = i.path[0] as string;
-      // Ignora errores de campos condicionales que no pertenecen a ningún motivo activo
-      if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
-        return;
-      }
-      errors[key] = i.message;
+    if (!r.success) {
+      r.error.issues.forEach((i) => {
+        const key = i.path[0] as string;
+        if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
+          return;
+        }
+        errors[key] = i.message;
+      });
+    }
+    getRequiredFields(motivos).forEach((field) => {
+      const v = (data as Record<string, unknown>)[field];
+      const isEmpty = !v || (typeof v === "string" && v.trim() === "");
+      if (!isEmpty) return;
+      const motivosForField = motivos.filter((m) =>
+        (requiredByMotivo[m] || []).includes(field),
+      );
+      const motivoLabels = motivosForField
+        .map((m) => t(`form.motivos.${m}`, { defaultValue: m }))
+        .join(" / ");
+      errors[field as string] = motivoLabels
+        ? t("form.errors.requiredForMotivo", { motivos: motivoLabels })
+        : t("form.errors.required");
     });
-  }
-  // Validación condicional: campos requeridos para los motivos activos
-  // El mensaje indica claramente para qué motivo(s) se necesita ese campo.
-  getRequiredFields(motivos).forEach((field) => {
-    const v = (data as Record<string, unknown>)[field];
-    const isEmpty = !v || (typeof v === "string" && v.trim() === "");
-    if (!isEmpty) return;
-    // Motivos activos que requieren este campo
-    const motivosForField = motivos.filter((m) =>
-      (requiredByMotivo[m] || []).includes(field),
-    );
-    const motivoLabels = motivosForField
-      .map((m) => MOTIVOS.find((o) => o.value === m)?.label ?? m)
-      .join(" y ");
-    errors[field as string] = motivoLabels
-      ? `Requerido para ${motivoLabels}`
-      : "Requerido para este motivo";
-  });
-  return errors;
+    return errors;
+  };
 };
 
 const initialForm: FormData = {
