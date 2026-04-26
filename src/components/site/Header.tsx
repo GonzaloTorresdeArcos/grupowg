@@ -76,7 +76,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
     >
       <div className="container-tight flex items-center justify-between gap-4 py-3 md:py-4">
         <Link to="/grupo" aria-label={t("logoAlt")} className="relative z-10 shrink-0">
-          <Logo className={cn("h-10 sm:h-12 md:h-14", dark && "brightness-0 invert")} />
+          <Logo className={cn("h-10 sm:h-12 md:h-14", (dark || location.pathname.startsWith("/wg-network")) && "brightness-0 invert")} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-0.5">
