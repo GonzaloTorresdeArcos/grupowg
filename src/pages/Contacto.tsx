@@ -734,8 +734,8 @@ const Contacto = () => {
   const motivoLabel =
     (form.motivo || []).length === 0
       ? "—"
-      : MOTIVOS.filter((m) => (form.motivo || []).includes(m.value))
-          .map((m) => m.label)
+      : (form.motivo || [])
+          .map((m) => t(`form.motivos.${m}`, { defaultValue: m }))
           .join(", ");
 
   return (
