@@ -133,11 +133,21 @@ const validateAll = (data: FormData) => {
     });
   }
   // Validación condicional: campos requeridos para los motivos activos
+  // El mensaje indica claramente para qué motivo(s) se necesita ese campo.
   getRequiredFields(motivos).forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
-    if (!v || (typeof v === "string" && v.trim() === "")) {
-      errors[field as string] = "Requerido para este motivo";
-    }
+    const isEmpty = !v || (typeof v === "string" && v.trim() === "");
+    if (!isEmpty) return;
+    // Motivos activos que requieren este campo
+    const motivosForField = motivos.filter((m) =>
+      (requiredByMotivo[m] || []).includes(field),
+    );
+    const motivoLabels = motivosForField
+      .map((m) => MOTIVOS.find((o) => o.value === m)?.label ?? m)
+      .join(" y ");
+    errors[field as string] = motivoLabels
+      ? `Requerido para ${motivoLabels}`
+      : "Requerido para este motivo";
   });
   return errors;
 };
@@ -805,16 +815,17 @@ const Contacto = () => {
                         Faltan {orderedErrorList.length}{" "}
                         {orderedErrorList.length === 1 ? "campo" : "campos"} por completar
                       </p>
-                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      <ul className="mt-2 space-y-1 text-xs">
                         {orderedErrorList.map((err) => (
-                          <li key={err.key}>
+                          <li key={err.key} className="text-ink/80">
                             <button
                               type="button"
                               onClick={() => scrollToField(err.key)}
-                              className="text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
+                              className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
                             >
                               {err.label}
                             </button>
+                            <span className="text-muted-foreground"> — {err.message}</span>
                           </li>
                         ))}
                       </ul>
