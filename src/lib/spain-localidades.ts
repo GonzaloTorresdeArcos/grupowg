@@ -52,30 +52,36 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "AL Interior · Albox", cp: "04800" },
   ],
   "11": [ // Cádiz
-    { name: "Cádiz", cp: "11001" },
-    { name: "Jerez de la Frontera", cp: "11401" },
-    { name: "Algeciras", cp: "11201" },
-    { name: "San Fernando", cp: "11100" },
-    { name: "El Puerto de Santa María", cp: "11500" },
-    { name: "Chiclana de la Frontera", cp: "11130" },
-    { name: "La Línea de la Concepción", cp: "11300" },
-    { name: "Puerto Real", cp: "11510" },
-    { name: "Sanlúcar de Barrameda", cp: "11540" },
-    { name: "Rota", cp: "11520" },
-    { name: "Barbate", cp: "11160" },
-    { name: "Conil de la Frontera", cp: "11140" },
-    { name: "Los Barrios", cp: "11370" },
-    { name: "Tarifa", cp: "11380" },
-    { name: "Arcos de la Frontera", cp: "11630" },
-    { name: "Ubrique", cp: "11600" },
-    { name: "Medina-Sidonia", cp: "11170" },
-    { name: "Vejer de la Frontera", cp: "11150" },
-    { name: "Olvera", cp: "11690" },
-    { name: "San Roque", cp: "11360" },
-    { name: "Jimena de la Frontera", cp: "11330" },
-    { name: "Villamartín", cp: "11650" },
-    { name: "Trebujena", cp: "11560" },
-    { name: "Chipiona", cp: "11550" },
+    // ───── 1.1 Cádiz capital (barrios) ─────
+    { name: "Cádiz Capital · Centro", cp: "11001" },
+    { name: "Cádiz Capital · Extramuros", cp: "11008" },
+    { name: "Cádiz Capital · La Viña", cp: "11002" },
+    { name: "Cádiz Capital · El Mentidero", cp: "11001" },
+    { name: "Cádiz Capital · Santa María", cp: "11005" },
+    { name: "Cádiz Capital · Puntales", cp: "11011" },
+    { name: "Cádiz Capital · Loreto", cp: "11010" },
+    { name: "Cádiz Capital · Cerro del Moro", cp: "11012" },
+    { name: "Cádiz Capital · Guillén Moreno", cp: "11008" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Bahía de Cádiz
+    { name: "CA Á. Metro Bahía · San Fernando", cp: "11100" },
+    { name: "CA Á. Metro Bahía · Puerto Real", cp: "11510" },
+    { name: "CA Á. Metro Bahía · El Puerto de Santa María", cp: "11500" },
+    { name: "CA Á. Metro Bahía · Chiclana de la Frontera", cp: "11130" },
+
+    // ───── 1.3 Resto provincia de Cádiz ─────
+    // 1.3.1 Jerez
+    { name: "CA Jerez · Jerez de la Frontera", cp: "11401" },
+    // 1.3.2 Costa noroeste
+    { name: "CA Costa Noroeste · Sanlúcar de Barrameda", cp: "11540" },
+    { name: "CA Costa Noroeste · Rota", cp: "11520" },
+    { name: "CA Costa Noroeste · Chipiona", cp: "11550" },
+    // 1.3.3 Campo de Gibraltar
+    { name: "CA Campo de Gibraltar · Algeciras", cp: "11201" },
+    { name: "CA Campo de Gibraltar · La Línea de la Concepción", cp: "11300" },
+    { name: "CA Campo de Gibraltar · San Roque", cp: "11360" },
+    { name: "CA Campo de Gibraltar · Los Barrios", cp: "11370" },
   ],
   "14": [ // Córdoba
     { name: "Córdoba", cp: "14001" },
@@ -1408,6 +1414,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "AL Poniente Ampliado": { level1: "Resto provincia de Almería", level2: "Poniente ampliado (25–40 km)" },
   "AL Levante": { level1: "Resto provincia de Almería", level2: "Levante" },
   "AL Interior": { level1: "Resto provincia de Almería", level2: "Interior" },
+
+  // ─── Cádiz (11) ───
+  "Cádiz Capital": { level1: "Cádiz capital" },
+  "CA Á. Metro Bahía": { level1: "Área metropolitana", level2: "Bahía de Cádiz" },
+  "CA Jerez": { level1: "Resto provincia de Cádiz", level2: "Jerez" },
+  "CA Costa Noroeste": { level1: "Resto provincia de Cádiz", level2: "Costa noroeste" },
+  "CA Campo de Gibraltar": { level1: "Resto provincia de Cádiz", level2: "Campo de Gibraltar" },
 };
 
 export interface LocalitySubgroup {
