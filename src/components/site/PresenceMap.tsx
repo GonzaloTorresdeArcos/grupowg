@@ -58,7 +58,6 @@ export const PresenceMap = () => {
       dragging={!isMobile}
       doubleClickZoom={!isMobile}
       touchZoom={!isMobile}
-      tap={false}
       zoomControl={!isMobile}
       className="h-full w-full"
       aria-label="Mapa de presencia de Grupo WG en España y Portugal"
