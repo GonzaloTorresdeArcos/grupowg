@@ -888,10 +888,10 @@ const Contacto = () => {
                             type="button"
                             onClick={() => toggleMotivo(m.value)}
                             className={
-                              "px-3.5 py-2 rounded-full text-xs font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone " +
+                              "px-3.5 py-2 rounded-full text-xs font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card " +
                               (active
                                 ? "bg-ink text-bone border-ink shadow-sm hover:bg-ink/90"
-                                : "bg-bone text-ink border-ink/20 hover:border-teal hover:bg-teal/10 hover:text-ink")
+                                : "bg-card text-card-foreground border-border hover:border-teal hover:bg-teal/10")
                             }
                             aria-pressed={active}
                           >
