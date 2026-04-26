@@ -178,6 +178,70 @@ const initialForm: FormData = {
 const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
+// ============= i18n para la vista previa de campos =============
+type PreviewLang = "es" | "en";
+
+const PREVIEW_I18N: Record<PreviewLang, {
+  title: string;
+  required: string;
+  langLabel: string;
+  motivoLabels: Partial<Record<MotivoValue, string>>;
+  fieldLabels: Record<string, string>;
+}> = {
+  es: {
+    title: "Información adicional que te pediremos",
+    required: "Campos obligatorios",
+    langLabel: "Idioma",
+    motivoLabels: {
+      reparaciones: "Reparaciones",
+      instalaciones: "Instalaciones",
+      repuestos: "Repuestos",
+      movilidad: "Equipos",
+      garantias: "Garantías",
+      seguros: "Seguros",
+      "wg-network": "Formulario WG Network",
+      otro: "Otro",
+    },
+    fieldLabels: {
+      marca: "Marca",
+      numeroSerie: "Nº de serie",
+      producto: "Producto",
+      urgencia: "Urgencia",
+      referencia: "Referencia",
+      vehiculo: "Tipo de equipo",
+      matricula: "Identificador",
+      ramo: "Ramo",
+      poliza: "Póliza",
+    },
+  },
+  en: {
+    title: "Additional information we'll ask for",
+    required: "Required fields",
+    langLabel: "Language",
+    motivoLabels: {
+      reparaciones: "Repairs",
+      instalaciones: "Installations",
+      repuestos: "Spare parts",
+      movilidad: "Equipment",
+      garantias: "Warranties",
+      seguros: "Insurance",
+      "wg-network": "WG Network form",
+      otro: "Other",
+    },
+    fieldLabels: {
+      marca: "Brand",
+      numeroSerie: "Serial number",
+      producto: "Product",
+      urgencia: "Urgency",
+      referencia: "Reference",
+      vehiculo: "Equipment type",
+      matricula: "Identifier",
+      ramo: "Insurance line",
+      poliza: "Policy",
+    },
+  },
+};
+
 type DraftPayload = {
   form: FormData;
   step: "form" | "review";
