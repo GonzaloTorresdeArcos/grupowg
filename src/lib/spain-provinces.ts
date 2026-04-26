@@ -39,7 +39,7 @@ export const PROVINCIAS: Provincia[] = [
   { code: "25", name: "Lleida", ccaa: "Cataluña", lat: 41.62, lng: 0.62 },
   { code: "26", name: "La Rioja", ccaa: "La Rioja", lat: 42.46, lng: -2.45 },
   { code: "27", name: "Lugo", ccaa: "Galicia", lat: 43.01, lng: -7.56 },
-  { code: "28", name: "Madrid", ccaa: "Madrid", lat: 40.42, lng: -3.7 },
+  { code: "28", name: "Madrid", ccaa: "Comunidad de Madrid", lat: 40.42, lng: -3.7 },
   { code: "29", name: "Málaga", ccaa: "Andalucía", lat: 36.72, lng: -4.42 },
   { code: "30", name: "Murcia", ccaa: "Murcia", lat: 37.99, lng: -1.13 },
   { code: "31", name: "Navarra", ccaa: "Navarra", lat: 42.81, lng: -1.65 },
