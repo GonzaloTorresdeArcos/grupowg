@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { SimplePage } from "@/components/site/SimplePage";
 import { AccessibilityRequestForm } from "@/components/site/AccessibilityRequestForm";
 
 const Accesibilidad = () => {
+  const { t, i18n } = useTranslation("legal");
   useEffect(() => {
-    document.title = "Declaración de accesibilidad · Grupo Warranty Global";
-    const desc =
-      "Declaración de accesibilidad de grupowg.com conforme al Real Decreto 1112/2018 y a la norma UNE-EN 301 549 (WCAG 2.1 nivel AA).";
+    document.title = t("accessibility.seoTitle");
+    const desc = t("accessibility.seoDesc");
     let m = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!m) {
       m = document.createElement("meta");
@@ -15,16 +16,18 @@ const Accesibilidad = () => {
       document.head.appendChild(m);
     }
     m.setAttribute("content", desc);
-  }, []);
+  }, [t]);
 
   const today = new Date().toLocaleDateString("es-ES", { dateStyle: "long" });
+  const isEs = i18n.language.startsWith("es");
 
   return (
-    <SimplePage
-      eyebrow="Legal"
-      title="Declaración de accesibilidad"
-      intro="Grupo Warranty Global se compromete a hacer accesible su sitio web grupowg.com, de conformidad con el Real Decreto 1112/2018, de 7 de septiembre, por el que se transpone al ordenamiento jurídico español la Directiva (UE) 2016/2102."
-    >
+    <SimplePage eyebrow={t("eyebrow")} title={t("accessibility.title")} intro={t("accessibility.intro")}>
+      {!isEs && (
+        <div className="max-w-3xl mb-8 rounded-lg border-l-4 border-teal bg-teal/5 px-4 py-3 text-sm text-ink-soft">
+          {t("officialNotice")}
+        </div>
+      )}
       <div className="max-w-3xl space-y-8 text-ink-soft leading-relaxed">
         <p className="text-sm text-muted-foreground">
           Última revisión: {today}

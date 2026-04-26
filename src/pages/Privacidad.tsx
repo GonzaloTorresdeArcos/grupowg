@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { SimplePage } from "@/components/site/SimplePage";
 
 const Privacidad = () => {
+  const { t, i18n } = useTranslation("legal");
   useEffect(() => {
-    document.title = "Política de privacidad · Grupo Warranty Global";
-    const desc =
-      "Información sobre el tratamiento de datos personales en Grupo Warranty Global, conforme al RGPD y la LOPDGDD: responsable, finalidades, base legítima, destinatarios, conservación y derechos.";
+    document.title = t("privacy.seoTitle");
+    const desc = t("privacy.seoDesc");
     let m = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!m) {
       m = document.createElement("meta");
@@ -14,14 +15,17 @@ const Privacidad = () => {
       document.head.appendChild(m);
     }
     m.setAttribute("content", desc);
-  }, []);
+  }, [t]);
+
+  const isEs = i18n.language.startsWith("es");
 
   return (
-    <SimplePage
-      eyebrow="Legal"
-      title="Política de privacidad"
-      intro="Información sobre el tratamiento de datos personales en Grupo Warranty Global, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD)."
-    >
+    <SimplePage eyebrow={t("eyebrow")} title={t("privacy.title")} intro={t("privacy.intro")}>
+      {!isEs && (
+        <div className="max-w-3xl mb-8 rounded-lg border-l-4 border-teal bg-teal/5 px-4 py-3 text-sm text-ink-soft">
+          {t("officialNotice")}
+        </div>
+      )}
       <div className="max-w-3xl space-y-8 text-ink-soft leading-relaxed">
         <p className="text-sm text-muted-foreground">
           Última actualización: {new Date().toLocaleDateString("es-ES", { dateStyle: "long" })}

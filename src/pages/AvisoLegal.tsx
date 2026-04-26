@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { SimplePage } from "@/components/site/SimplePage";
 
 const AvisoLegal = () => {
+  const { t, i18n } = useTranslation("legal");
   useEffect(() => {
-    document.title = "Aviso legal · Grupo Warranty Global";
-    const desc =
-      "Aviso legal de grupowg.com conforme a la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE).";
+    document.title = t("legalNotice.seoTitle");
+    const desc = t("legalNotice.seoDesc");
     let m = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!m) {
       m = document.createElement("meta");
@@ -14,14 +15,17 @@ const AvisoLegal = () => {
       document.head.appendChild(m);
     }
     m.setAttribute("content", desc);
-  }, []);
+  }, [t]);
+
+  const isEs = i18n.language.startsWith("es");
 
   return (
-    <SimplePage
-      eyebrow="Legal"
-      title="Aviso legal"
-      intro="Condiciones generales de uso del sitio web grupowg.com, conforme al artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE)."
-    >
+    <SimplePage eyebrow={t("eyebrow")} title={t("legalNotice.title")} intro={t("legalNotice.intro")}>
+      {!isEs && (
+        <div className="max-w-3xl mb-8 rounded-lg border-l-4 border-teal bg-teal/5 px-4 py-3 text-sm text-ink-soft">
+          {t("officialNotice")}
+        </div>
+      )}
       <div className="max-w-3xl space-y-8 text-ink-soft leading-relaxed">
         <p className="text-sm text-muted-foreground">
           Última actualización: {new Date().toLocaleDateString("es-ES", { dateStyle: "long" })}
