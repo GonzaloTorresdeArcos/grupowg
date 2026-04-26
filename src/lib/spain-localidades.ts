@@ -1697,6 +1697,12 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "LE Ponferrada": { level1: "Resto provincia de León", level2: "Ponferrada" },
   "LE Norte Montaña": { level1: "Resto provincia de León", level2: "Norte / Montaña" },
   "LE Sur": { level1: "Resto provincia de León", level2: "Sur" },
+
+  // ─── Palencia (34) ───
+  "Palencia Capital": { level1: "Palencia capital" },
+  "P Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "P Norte Montaña": { level1: "Resto provincia de Palencia", level2: "Norte (Montaña Palentina)" },
+  "P Sur": { level1: "Resto provincia de Palencia", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
