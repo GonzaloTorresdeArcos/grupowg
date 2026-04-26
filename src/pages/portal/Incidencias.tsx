@@ -93,7 +93,7 @@ const Incidencias = () => {
 
   const handleCreate = async () => {
     if (!form.customer_name || !form.province_code || !form.product_family) {
-      toast.error("Cliente, provincia y familia son obligatorios");
+      toast.error(t("incidences.toasts.required"));
       return;
     }
     setSubmitting(true);
@@ -121,7 +121,7 @@ const Incidencias = () => {
       toast.error(error.message);
       return;
     }
-    toast.success("Incidencia creada");
+    toast.success(t("incidences.toasts.created"));
     setOpen(false);
     setForm({
       customer_name: "", customer_phone: "", address: "", postal_code: "", city: "",
@@ -131,16 +131,16 @@ const Incidencias = () => {
   };
 
   if (roleLoading) {
-    return <p className="text-muted-foreground">Cargando…</p>;
+    return <p className="text-muted-foreground">{t("incidences.loading")}</p>;
   }
 
   if (!isAdmin) {
     return (
       <div className="rounded-2xl border border-border bg-card p-8 text-center">
         <AlertCircle className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
-        <p className="font-display text-xl text-ink mb-2">Acceso restringido</p>
+        <p className="font-display text-xl text-ink mb-2">{t("incidences.restricted.title")}</p>
         <p className="text-sm text-muted-foreground">
-          La gestión de incidencias está reservada al equipo de operaciones.
+          {t("incidences.restricted.subtitle")}
         </p>
       </div>
     );
@@ -254,18 +254,18 @@ const Incidencias = () => {
             variant={filter === s ? "default" : "outline"}
             onClick={() => setFilter(s)}
           >
-            {s === "all" ? "Todas" : STATUS_LABELS[s]}
+            {s === "all" ? t("incidences.filters.all") : STATUS_LABELS[s]}
           </Button>
         ))}
       </div>
 
       {loading ? (
-        <p className="text-muted-foreground">Cargando incidencias…</p>
+        <p className="text-muted-foreground">{t("incidences.loadingList")}</p>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border p-10 text-center">
           <Search className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
-          <p className="text-ink font-medium mb-1">Sin incidencias</p>
-          <p className="text-sm text-muted-foreground">Crea una nueva para probar el motor de matching.</p>
+          <p className="text-ink font-medium mb-1">{t("incidences.empty.title")}</p>
+          <p className="text-sm text-muted-foreground">{t("incidences.empty.subtitle")}</p>
         </div>
       ) : (
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
