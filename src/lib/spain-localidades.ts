@@ -734,20 +734,28 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "BU Merindades · Medina de Pomar", cp: "09500" },
   ],
   "24": [ // León
-    { name: "León", cp: "24001" },
-    { name: "Ponferrada", cp: "24400" },
-    { name: "San Andrés del Rabanedo", cp: "24010" },
-    { name: "Astorga", cp: "24700" },
-    { name: "La Bañeza", cp: "24750" },
-    { name: "Villaquilambre", cp: "24193" },
-    { name: "Bembibre", cp: "24300" },
-    { name: "Villablino", cp: "24100" },
-    { name: "Cistierna", cp: "24800" },
-    { name: "Valencia de Don Juan", cp: "24200" },
-    { name: "Sahagún", cp: "24320" },
-    { name: "Carrizo", cp: "24270" },
-    { name: "Toral de los Vados", cp: "24560" },
-    { name: "Sariegos", cp: "24121" },
+    // ───── 2.1 León capital ─────
+    { name: "León Capital · Centro", cp: "24003" },
+    { name: "León Capital · Eras de Renueva", cp: "24008" },
+    { name: "León Capital · La Palomera", cp: "24007" },
+    { name: "León Capital · El Ejido", cp: "24006" },
+    { name: "León Capital · La Chantría", cp: "24005" },
+    { name: "León Capital · Puente Castro", cp: "24009" },
+
+    // ───── 2.2 Área metropolitana ─────
+    // 2.2.1 Cinturón cercano
+    { name: "LE Á. Metro Cercano · San Andrés del Rabanedo", cp: "24010" },
+    { name: "LE Á. Metro Cercano · Villaquilambre", cp: "24193" },
+    { name: "LE Á. Metro Cercano · Valverde de la Virgen", cp: "24391" },
+
+    // ───── 2.3 Resto provincia de León ─────
+    // 2.3.1 Ponferrada
+    { name: "LE Ponferrada · Ponferrada", cp: "24400" },
+    // 2.3.2 Norte / Montaña
+    { name: "LE Norte Montaña · Villablino", cp: "24100" },
+    // 2.3.3 Sur
+    { name: "LE Sur · La Bañeza", cp: "24750" },
+    { name: "LE Sur · Astorga", cp: "24700" },
   ],
   "34": [ // Palencia
     { name: "Palencia", cp: "34001" },
@@ -1673,6 +1681,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "BU Eje Miranda de Ebro": { level1: "Resto provincia de Burgos", level2: "Eje Miranda de Ebro" },
   "BU Eje Aranda de Duero": { level1: "Resto provincia de Burgos", level2: "Eje Aranda de Duero" },
   "BU Merindades": { level1: "Resto provincia de Burgos", level2: "Norte / Merindades" },
+
+  // ─── León (24) ───
+  "León Capital": { level1: "León capital" },
+  "LE Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "LE Ponferrada": { level1: "Resto provincia de León", level2: "Ponferrada" },
+  "LE Norte Montaña": { level1: "Resto provincia de León", level2: "Norte / Montaña" },
+  "LE Sur": { level1: "Resto provincia de León", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
