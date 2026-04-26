@@ -15,7 +15,8 @@ import { PresenceMap } from "@/components/site/PresenceMap";
 import { toast } from "sonner";
 
 const MOTIVOS = [
-  { value: "reparaciones", label: "Instalaciones" },
+  { value: "reparaciones", label: "Reparaciones" },
+  { value: "instalaciones", label: "Instalaciones" },
   { value: "repuestos", label: "Repuestos" },
   { value: "movilidad", label: "Equipos" },
   { value: "garantias", label: "Garantías" },
@@ -74,6 +75,7 @@ type FormData = z.infer<typeof baseSchema>;
 const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca"],
   reparaciones: ["producto", "urgencia"],
+  instalaciones: ["producto", "urgencia"],
   repuestos: ["referencia"],
   movilidad: ["vehiculo"],
   seguros: ["ramo"],
@@ -83,6 +85,7 @@ const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
 const fieldsByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca", "numeroSerie"],
   reparaciones: ["producto", "urgencia"],
+  instalaciones: ["producto", "urgencia"],
   repuestos: ["referencia"],
   movilidad: ["vehiculo", "matricula"],
   seguros: ["ramo", "poliza"],
@@ -301,6 +304,7 @@ const Contacto = () => {
   // Defaults sensatos al marcar un motivo (solo se aplican si el campo está vacío)
   const defaultsByMotivo: Partial<Record<MotivoValue, Partial<FormData>>> = {
     reparaciones: { urgencia: "Estándar" },
+    instalaciones: { urgencia: "Estándar" },
     movilidad: { vehiculo: "Turismo" },
     seguros: { ramo: "Hogar" },
   };
@@ -926,7 +930,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {(form.motivo || []).includes("reparaciones") && (
+                  {((form.motivo || []).includes("reparaciones") || (form.motivo || []).includes("instalaciones")) && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
