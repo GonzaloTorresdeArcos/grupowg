@@ -65,7 +65,9 @@ export function useDraft() {
           setSaving(true);
           try {
             if (!draft) {
-              if (!patch.email) {
+              // No podemos crear un draft sin email VÁLIDO: el edge function lo rechaza
+              // con `invalid_email`. Esperamos a que el usuario termine de escribirlo.
+              if (!isValidEmail(patch.email)) {
                 resolve(null);
                 return;
               }
@@ -81,10 +83,16 @@ export function useDraft() {
               }
               resolve(result);
             } else {
+              // Si se incluye email en el patch, sólo lo enviamos cuando es válido;
+              // de lo contrario lo omitimos para no romper el guardado del resto del form.
+              const emailPatch =
+                patch.email !== undefined && isValidEmail(patch.email)
+                  ? { email: patch.email }
+                  : {};
               const result = await callDrafts({
                 action: "update",
                 resume_token: draft.resume_token,
-                ...(patch.email !== undefined ? { email: patch.email } : {}),
+                ...emailPatch,
                 ...(patch.current_step !== undefined ? { current_step: patch.current_step } : {}),
                 ...(patch.form_data !== undefined ? { form_data: patch.form_data } : {}),
               });
