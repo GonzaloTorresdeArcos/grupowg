@@ -12,7 +12,15 @@ import { CoverageMap } from "@/components/inscripcion/CoverageMap";
 import { SignaturePad } from "@/components/inscripcion/SignaturePad";
 import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
-import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
+import {
+  generateAndUploadAgreement,
+  generateDraftAgreementPdf,
+  AGREEMENT_TITLE,
+  AGREEMENT_SUBTITLE,
+  AGREEMENT_INTRO,
+  AGREEMENT_CLAUSES,
+  AGREEMENT_CLOSING,
+} from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
@@ -124,6 +132,26 @@ const Inscripcion = () => {
   const [signerDni, setSignerDni] = useState("");
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [agreementRead, setAgreementRead] = useState(false);
+  const [agreementOpen, setAgreementOpen] = useState(false);
+
+  const downloadDraftAgreement = () => {
+    const blob = generateDraftAgreementPdf({
+      signerName: signerName || s1.razon_social,
+      signerDni,
+      signerEmail: s1.email,
+      companyName: s1.razon_social,
+      cif: s1.cif_nif,
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "acuerdo-colaboracion-borrador.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   // Hidratar desde draft
   const hydrated = useRef(false);
@@ -311,6 +339,10 @@ const Inscripcion = () => {
     }
     if (!signerName.trim()) {
       toast.error("Indica el nombre del firmante");
+      return;
+    }
+    if (!agreementRead) {
+      toast.error("Debes leer y aceptar el acuerdo de colaboración");
       return;
     }
     if (!acceptTerms) {
@@ -911,8 +943,39 @@ const Inscripcion = () => {
             <div>
               <h2 className="font-display text-3xl text-ink mt-8">Acuerdo de colaboración</h2>
               <p className="text-muted-foreground mt-2 text-sm max-w-2xl">
-                Firma manuscrita del compromiso inicial de incorporación a WG Professional Network. Generaremos un PDF firmado que quedará registrado.
+                Antes de firmar, lee el acuerdo completo. Puedes consultarlo aquí mismo o descargarlo en PDF para revisarlo con calma.
               </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card/60 p-4 sm:p-5 space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAgreementOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary text-sm font-medium text-ink transition"
+                >
+                  <Eye className="h-4 w-4" /> Ver acuerdo
+                </button>
+                <button
+                  type="button"
+                  onClick={downloadDraftAgreement}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary text-sm font-medium text-ink transition"
+                >
+                  <FileText className="h-4 w-4" /> Descargar PDF
+                </button>
+              </div>
+
+              <label className="flex items-start gap-3 text-sm text-ink-soft cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 rounded border-border accent-teal"
+                  checked={agreementRead}
+                  onChange={(e) => setAgreementRead(e.target.checked)}
+                />
+                <span>
+                  He leído y acepto el contenido del <span className="font-medium text-ink">acuerdo de colaboración</span>.
+                </span>
+              </label>
             </div>
 
             <SignaturePad
@@ -939,6 +1002,60 @@ const Inscripcion = () => {
           </div>
         )}
 
+        {/* Modal de vista previa del acuerdo */}
+        {agreementOpen && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Acuerdo de colaboración"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4 animate-fade-in"
+            onClick={() => setAgreementOpen(false)}
+          >
+            <div
+              className="bg-card border border-border rounded-2xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 p-5 border-b border-border">
+                <div>
+                  <h3 className="font-display text-xl text-ink">{AGREEMENT_TITLE}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{AGREEMENT_SUBTITLE}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAgreementOpen(false)}
+                  className="text-muted-foreground hover:text-ink p-1 rounded-lg hover:bg-secondary"
+                  aria-label="Cerrar"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="overflow-y-auto p-5 space-y-4 text-sm text-ink-soft leading-relaxed">
+                <p>{AGREEMENT_INTRO}</p>
+                <ol className="list-decimal pl-5 space-y-2">
+                  {AGREEMENT_CLAUSES.map((c, i) => <li key={i}>{c}</li>)}
+                </ol>
+                <p className="pt-2 border-t border-border">{AGREEMENT_CLOSING}</p>
+              </div>
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 p-5 border-t border-border bg-secondary/40">
+                <button
+                  type="button"
+                  onClick={downloadDraftAgreement}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary text-sm font-medium text-ink transition"
+                >
+                  <FileText className="h-4 w-4" /> Descargar PDF
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAgreementRead(true); setAgreementOpen(false); }}
+                  className="btn-primary"
+                >
+                  <Check className="h-4 w-4" /> He leído el acuerdo
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Nav */}
         <div className="mt-12 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
           <button onClick={prev} disabled={step === 1 || submitting} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-ink disabled:opacity-30 disabled:pointer-events-none">
@@ -946,7 +1063,7 @@ const Inscripcion = () => {
           </button>
 
           {step === 6 ? (
-            <button onClick={submit} disabled={submitting || !signatureData || !acceptTerms} className="btn-primary disabled:opacity-50">
+            <button onClick={submit} disabled={submitting || !signatureData || !acceptTerms || !agreementRead} className="btn-primary disabled:opacity-50">
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               Firmar y enviar
               {!submitting && <ArrowRight className="h-4 w-4" />}
