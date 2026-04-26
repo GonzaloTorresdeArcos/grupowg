@@ -198,6 +198,50 @@ export default function PortalI18nDebug() {
           </h2>
         </section>
 
+        <section className="rounded-lg border border-border p-4">
+          <h2 className="font-display text-xl mb-3">Summary by language</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-muted-foreground">
+                  <th className="py-2 pr-4 font-medium">Lang</th>
+                  <th className="py-2 pr-4 font-medium text-right">Missing</th>
+                  <th className="py-2 pr-4 font-medium text-right">Extra</th>
+                  <th className="py-2 pr-4 font-medium text-right">Type</th>
+                  <th className="py-2 pr-4 font-medium text-right">Total</th>
+                  <th className="py-2 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {report.map(({ lang, issues }) => {
+                  const missing = issues.filter((i) => i.kind === "missing").length;
+                  const extra = issues.filter((i) => i.kind === "extra").length;
+                  const typeMismatch = issues.filter((i) => i.kind === "type").length;
+                  const total = issues.length;
+                  return (
+                    <tr key={lang} className="border-b border-border/50 last:border-0">
+                      <td className="py-2 pr-4">
+                        <code className="font-mono">{lang}</code>
+                      </td>
+                      <td className="py-2 pr-4 text-right font-mono">{missing}</td>
+                      <td className="py-2 pr-4 text-right font-mono">{extra}</td>
+                      <td className="py-2 pr-4 text-right font-mono">{typeMismatch}</td>
+                      <td className="py-2 pr-4 text-right font-mono font-medium">{total}</td>
+                      <td className="py-2">
+                        {total === 0 ? (
+                          <span className="text-emerald-500">✅ OK</span>
+                        ) : (
+                          <span className="text-amber-500">⚠️ Review</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         {report.map(({ lang, issues }) => (
           <section key={lang} className="rounded-lg border border-border p-4">
             <div className="flex items-baseline justify-between mb-3">
