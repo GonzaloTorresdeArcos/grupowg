@@ -974,6 +974,7 @@ const Contacto = () => {
                   {/* Vista previa: campos que se activan según los motivos seleccionados */}
                   {(form.motivo || []).length > 0 && (() => {
                     const selected = (form.motivo || []) as MotivoValue[];
+                    const t = PREVIEW_I18N[previewLang];
                     const groups = selected
                       .map((m) => {
                         const fields = fieldsByMotivo[m] || [];
@@ -981,7 +982,10 @@ const Contacto = () => {
                           (requiredByMotivo[m] || []).map((f) => f as string),
                         );
                         if (fields.length === 0) return null;
-                        const label = MOTIVOS.find((o) => o.value === m)?.label ?? m;
+                        const label =
+                          t.motivoLabels[m] ??
+                          MOTIVOS.find((o) => o.value === m)?.label ??
+                          m;
                         return { motivo: m, label, fields, required };
                       })
                       .filter((g): g is NonNullable<typeof g> => g !== null);
@@ -989,11 +993,41 @@ const Contacto = () => {
                     if (groups.length === 0) return null;
 
                     return (
-                      <div className="rounded-2xl border border-teal/30 bg-teal/5 px-4 py-3.5">
-                        <p className="text-xs font-medium text-ink mb-2 flex items-center gap-2">
-                          <Check className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
-                          Información adicional que te pediremos
-                        </p>
+                      <div
+                        className="rounded-2xl border border-teal/30 bg-teal/5 px-4 py-3.5"
+                        lang={previewLang}
+                      >
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <p className="text-xs font-medium text-ink flex items-center gap-2">
+                            <Check className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
+                            {t.title}
+                          </p>
+                          <div
+                            className="inline-flex rounded-full border border-border bg-card p-0.5"
+                            role="group"
+                            aria-label={t.langLabel}
+                          >
+                            {(["es", "en"] as const).map((lng) => {
+                              const active = previewLang === lng;
+                              return (
+                                <button
+                                  key={lng}
+                                  type="button"
+                                  onClick={() => setPreviewLang(lng)}
+                                  aria-pressed={active}
+                                  className={
+                                    "px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wide transition-colors " +
+                                    (active
+                                      ? "bg-ink text-bone"
+                                      : "text-ink/60 hover:text-ink")
+                                  }
+                                >
+                                  {lng}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
                         <ul className="space-y-1.5 text-xs text-ink/80">
                           {groups.map((g) => (
                             <li key={g.motivo} className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
@@ -1001,7 +1035,9 @@ const Contacto = () => {
                               <span className="flex flex-wrap gap-1">
                                 {g.fields.map((f, i) => (
                                   <span key={f as string}>
-                                    {FIELD_LABELS[f as string] ?? (f as string)}
+                                    {t.fieldLabels[f as string] ??
+                                      FIELD_LABELS[f as string] ??
+                                      (f as string)}
                                     {g.required.has(f as string) && <span className="text-teal"> *</span>}
                                     {i < g.fields.length - 1 && <span className="text-ink/40">,</span>}
                                   </span>
@@ -1011,7 +1047,7 @@ const Contacto = () => {
                           ))}
                         </ul>
                         <p className="text-[11px] text-muted-foreground mt-2">
-                          <span className="text-teal">*</span> Campos obligatorios
+                          <span className="text-teal">*</span> {t.required}
                         </p>
                       </div>
                     );
