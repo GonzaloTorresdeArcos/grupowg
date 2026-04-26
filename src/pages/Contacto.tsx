@@ -147,7 +147,7 @@ const initialForm: FormData = {
   empresa: "",
   email: "",
   telefono: "",
-  motivo: "" as MotivoValue,
+  motivo: [] as MotivoValue[],
   marca: "",
   numeroSerie: "",
   producto: "",
