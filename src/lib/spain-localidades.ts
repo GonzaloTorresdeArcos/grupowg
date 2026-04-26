@@ -1499,6 +1499,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "JA Corredor Central": { level1: "Resto provincia de Jaén", level2: "Corredor central" },
   "JA La Loma": { level1: "Resto provincia de Jaén", level2: "La Loma" },
   "JA Sierra": { level1: "Resto provincia de Jaén", level2: "Sierra" },
+
+  // ─── Málaga (29) ───
+  "Málaga Capital": { level1: "Málaga capital" },
+  "MA Á. Metro Costa Occ": { level1: "Área metropolitana", level2: "Costa occidental cercana" },
+  "MA Á. Metro Guadalhorce": { level1: "Área metropolitana", level2: "Valle del Guadalhorce" },
+  "MA Á. Metro Costa Or": { level1: "Área metropolitana", level2: "Costa oriental cercana" },
+  "MA Costa del Sol Occ": { level1: "Resto provincia de Málaga", level2: "Costa del Sol occidental" },
+  "MA Axarquía": { level1: "Resto provincia de Málaga", level2: "Costa oriental / Axarquía" },
+  "MA Interior": { level1: "Resto provincia de Málaga", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
