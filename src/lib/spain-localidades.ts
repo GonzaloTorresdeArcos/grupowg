@@ -1588,6 +1588,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Z Valdejalón": { level1: "Resto provincia de Zaragoza", level2: "Eje sur (Valdejalón)" },
   "Z Eje Este": { level1: "Resto provincia de Zaragoza", level2: "Eje este (Bajo Ebro / Caspe)" },
   "Z Cinco Villas": { level1: "Resto provincia de Zaragoza", level2: "Norte / Cinco Villas ampliado" },
+
+  // ─── Las Palmas (35) ───
+  "Las Palmas de GC": { level1: "Las Palmas de Gran Canaria" },
+  "GC Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte cercano" },
+  "GC Á. Metro Este": { level1: "Área metropolitana", level2: "Este cercano" },
+  "GC Sur Turístico": { level1: "Resto isla de Gran Canaria", level2: "Sur turístico" },
+  "GC Oeste Interior": { level1: "Resto isla de Gran Canaria", level2: "Oeste / interior" },
+  "Otras Islas Lanzarote": { level1: "Otras islas de la provincia", level2: "Lanzarote" },
+  "Otras Islas Fuerteventura": { level1: "Otras islas de la provincia", level2: "Fuerteventura" },
 };
 
 export interface LocalitySubgroup {
