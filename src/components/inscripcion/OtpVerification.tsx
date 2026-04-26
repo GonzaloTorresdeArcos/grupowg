@@ -105,27 +105,43 @@ export const OtpVerification = ({ channel, destination, verified, onVerified, re
       </div>
 
       {sent && (
-        <div className="flex gap-2">
-          <input
-            className={cn(
-              "input-base font-mono tracking-widest text-center text-lg",
-            )}
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-            placeholder="000000"
-            maxLength={6}
-            inputMode="numeric"
-          />
-          <button
-            type="button"
-            onClick={verify}
-            disabled={verifying || code.length !== 6}
-            className="btn-primary text-sm whitespace-nowrap disabled:opacity-50"
-          >
-            {verifying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            Verificar
-          </button>
-        </div>
+        <>
+          <div className="flex gap-2">
+            <input
+              className={cn(
+                "input-base font-mono tracking-widest text-center text-lg",
+              )}
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="000000"
+              maxLength={6}
+              inputMode="numeric"
+            />
+            <button
+              type="button"
+              onClick={verify}
+              disabled={verifying || code.length !== 6}
+              className="btn-primary text-sm whitespace-nowrap disabled:opacity-50"
+            >
+              {verifying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              Verificar
+            </button>
+          </div>
+          {/* [DEV] Aviso visible del código maestro de pruebas. Quitar en producción. */}
+          <div className="flex items-center justify-between gap-2 rounded-md border border-dashed border-teal-deep/40 bg-teal/10 px-3 py-2 text-xs text-ink">
+            <span>
+              <span className="font-semibold text-teal-deep">Modo simulación:</span>{" "}
+              usa el código <span className="font-mono font-bold tracking-widest">123456</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setCode("123456")}
+              className="text-xs font-medium text-teal-deep hover:underline whitespace-nowrap"
+            >
+              Rellenar
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
