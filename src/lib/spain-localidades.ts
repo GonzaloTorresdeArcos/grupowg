@@ -4,6 +4,11 @@
  * cada provincia (≈ 1.500 entradas) para que el colaborador pueda excluir
  * localidades concretas dentro de su zona de cobertura.
  *
+ * Para las grandes capitales (Madrid, Barcelona, Valencia, Sevilla, Málaga,
+ * Zaragoza, Bilbao) se desglosa el municipio capital en distritos / zonas
+ * (centro y periferia) para permitir exclusiones más finas (p.ej. atender
+ * "Madrid Centro" pero no "Vallecas").
+ *
  * Nota: España tiene >8.000 municipios. Esta lista no es exhaustiva, pero
  * incluye prácticamente todos los >5.000 habitantes y todas las cabeceras
  * comarcales relevantes para servicios técnicos / SAT.
@@ -153,7 +158,21 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Marmolejo", cp: "23770" },
   ],
   "29": [ // Málaga
-    { name: "Málaga", cp: "29001" },
+    // — Málaga capital: distritos centrales —
+    { name: "Málaga · Centro", cp: "29001" },
+    { name: "Málaga · Ensanche-Soho", cp: "29005" },
+    { name: "Málaga · La Malagueta", cp: "29016" },
+    // — Málaga capital: distritos periféricos —
+    { name: "Málaga · Este (Pedregalejo, El Palo)", cp: "29017" },
+    { name: "Málaga · Ciudad Jardín", cp: "29014" },
+    { name: "Málaga · Bailén-Miraflores", cp: "29009" },
+    { name: "Málaga · Palma-Palmilla", cp: "29011" },
+    { name: "Málaga · Cruz de Humilladero", cp: "29004" },
+    { name: "Málaga · Carretera de Cádiz", cp: "29006" },
+    { name: "Málaga · Churriana", cp: "29140" },
+    { name: "Málaga · Campanillas", cp: "29590" },
+    { name: "Málaga · Puerto de la Torre", cp: "29190" },
+    { name: "Málaga · Teatinos-Universidad", cp: "29010" },
     { name: "Marbella", cp: "29600" },
     { name: "Mijas", cp: "29650" },
     { name: "Fuengirola", cp: "29640" },
@@ -180,7 +199,19 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Benahavís", cp: "29679" },
   ],
   "41": [ // Sevilla
-    { name: "Sevilla", cp: "41001" },
+    // — Sevilla capital: distritos centrales —
+    { name: "Sevilla · Casco Antiguo", cp: "41004" },
+    { name: "Sevilla · Triana", cp: "41010" },
+    { name: "Sevilla · Los Remedios", cp: "41011" },
+    { name: "Sevilla · Nervión", cp: "41005" },
+    { name: "Sevilla · Macarena", cp: "41008" },
+    // — Sevilla capital: distritos periféricos —
+    { name: "Sevilla · Este-Alcosa-Torreblanca", cp: "41020" },
+    { name: "Sevilla · Cerro-Amate", cp: "41006" },
+    { name: "Sevilla · Sur", cp: "41012" },
+    { name: "Sevilla · Bellavista-La Palmera", cp: "41013" },
+    { name: "Sevilla · Norte (Pino Montano)", cp: "41015" },
+    { name: "Sevilla · San Pablo-Santa Justa", cp: "41007" },
     { name: "Dos Hermanas", cp: "41700" },
     { name: "Alcalá de Guadaíra", cp: "41500" },
     { name: "Utrera", cp: "41710" },
@@ -244,7 +275,21 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Valderrobres", cp: "44580" },
   ],
   "50": [ // Zaragoza
-    { name: "Zaragoza", cp: "50001" },
+    // — Zaragoza capital: distritos centrales —
+    { name: "Zaragoza · Centro", cp: "50001" },
+    { name: "Zaragoza · Casco Histórico", cp: "50003" },
+    { name: "Zaragoza · Universidad", cp: "50009" },
+    { name: "Zaragoza · La Magdalena-San Pablo", cp: "50002" },
+    // — Zaragoza capital: distritos periféricos —
+    { name: "Zaragoza · Delicias", cp: "50010" },
+    { name: "Zaragoza · Las Fuentes", cp: "50013" },
+    { name: "Zaragoza · La Almozara", cp: "50003" },
+    { name: "Zaragoza · Oliver-Valdefierro", cp: "50011" },
+    { name: "Zaragoza · Torrero-La Paz", cp: "50007" },
+    { name: "Zaragoza · El Rabal (Actur)", cp: "50015" },
+    { name: "Zaragoza · Santa Isabel", cp: "50016" },
+    { name: "Zaragoza · Casablanca", cp: "50012" },
+    { name: "Zaragoza · Miralbueno", cp: "50011" },
     { name: "Calatayud", cp: "50300" },
     { name: "Utebo", cp: "50180" },
     { name: "Ejea de los Caballeros", cp: "50600" },
@@ -626,7 +671,18 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CATALUÑA =============
   "08": [ // Barcelona
-    { name: "Barcelona", cp: "08001" },
+    // — Barcelona capital: distritos centrales —
+    { name: "Barcelona · Ciutat Vella", cp: "08001" },
+    { name: "Barcelona · L'Eixample", cp: "08010" },
+    { name: "Barcelona · Gràcia", cp: "08012" },
+    { name: "Barcelona · Sants-Montjuïc", cp: "08014" },
+    { name: "Barcelona · Sant Martí", cp: "08018" },
+    { name: "Barcelona · Sarrià-Sant Gervasi", cp: "08017" },
+    { name: "Barcelona · Les Corts", cp: "08028" },
+    // — Barcelona capital: distritos periféricos —
+    { name: "Barcelona · Horta-Guinardó", cp: "08035" },
+    { name: "Barcelona · Nou Barris", cp: "08016" },
+    { name: "Barcelona · Sant Andreu", cp: "08030" },
     { name: "L'Hospitalet de Llobregat", cp: "08901" },
     { name: "Badalona", cp: "08911" },
     { name: "Terrassa", cp: "08221" },
@@ -806,7 +862,27 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Alcalà de Xivert", cp: "12570" },
   ],
   "46": [ // Valencia
-    { name: "Valencia", cp: "46001" },
+    // — Valencia capital: distritos centrales (Ciutat Vella y ensanche) —
+    { name: "Valencia · Ciutat Vella", cp: "46001" },
+    { name: "Valencia · L'Eixample", cp: "46004" },
+    { name: "Valencia · Extramurs", cp: "46008" },
+    { name: "Valencia · Pla del Real", cp: "46021" },
+    { name: "Valencia · El Pla del Remei", cp: "46004" },
+    // — Valencia capital: distritos periféricos —
+    { name: "Valencia · Campanar", cp: "46015" },
+    { name: "Valencia · La Saïdia", cp: "46009" },
+    { name: "Valencia · Jesús", cp: "46017" },
+    { name: "Valencia · Quatre Carreres", cp: "46006" },
+    { name: "Valencia · Poblats Marítims", cp: "46011" },
+    { name: "Valencia · Camins al Grau", cp: "46023" },
+    { name: "Valencia · Algirós", cp: "46022" },
+    { name: "Valencia · Benimaclet", cp: "46020" },
+    { name: "Valencia · Rascanya", cp: "46019" },
+    { name: "Valencia · Benicalap", cp: "46025" },
+    { name: "Valencia · L'Olivereta", cp: "46018" },
+    { name: "Valencia · Patraix", cp: "46014" },
+    { name: "Valencia · Pobles del Nord", cp: "46016" },
+    { name: "Valencia · Pobles del Sud", cp: "46012" },
     { name: "Gandía", cp: "46700" },
     { name: "Torrent", cp: "46900" },
     { name: "Paterna", cp: "46980" },
@@ -1007,7 +1083,30 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= MADRID =============
   "28": [
-    { name: "Madrid", cp: "28001" },
+    // — Madrid capital: distritos dentro de la M-30 (almendra central) —
+    { name: "Madrid · Centro", cp: "28013" },
+    { name: "Madrid · Salamanca", cp: "28001" },
+    { name: "Madrid · Chamberí", cp: "28010" },
+    { name: "Madrid · Retiro", cp: "28009" },
+    { name: "Madrid · Arganzuela", cp: "28005" },
+    { name: "Madrid · Chamartín", cp: "28036" },
+    { name: "Madrid · Tetuán", cp: "28020" },
+    { name: "Madrid · Moncloa-Aravaca", cp: "28008" },
+    // — Madrid capital: distritos fuera de la M-30 (periferia) —
+    { name: "Madrid · Carabanchel", cp: "28019" },
+    { name: "Madrid · Latina", cp: "28011" },
+    { name: "Madrid · Usera", cp: "28026" },
+    { name: "Madrid · Villaverde", cp: "28021" },
+    { name: "Madrid · Puente de Vallecas", cp: "28038" },
+    { name: "Madrid · Villa de Vallecas", cp: "28031" },
+    { name: "Madrid · Moratalaz", cp: "28030" },
+    { name: "Madrid · Ciudad Lineal", cp: "28017" },
+    { name: "Madrid · Hortaleza", cp: "28043" },
+    { name: "Madrid · San Blas-Canillejas", cp: "28022" },
+    { name: "Madrid · Vicálvaro", cp: "28032" },
+    { name: "Madrid · Barajas", cp: "28042" },
+    { name: "Madrid · Fuencarral-El Pardo", cp: "28034" },
+    // — Área metropolitana / municipios de la Comunidad —
     { name: "Móstoles", cp: "28931" },
     { name: "Alcalá de Henares", cp: "28801" },
     { name: "Fuenlabrada", cp: "28940" },
@@ -1172,7 +1271,17 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Soraluze", cp: "20590" },
   ],
   "48": [ // Bizkaia
-    { name: "Bilbao", cp: "48001" },
+    // — Bilbao capital: distritos centrales —
+    { name: "Bilbao · Abando", cp: "48001" },
+    { name: "Bilbao · Casco Viejo (Ibaiondo)", cp: "48005" },
+    { name: "Bilbao · Indautxu", cp: "48010" },
+    { name: "Bilbao · Begoña", cp: "48006" },
+    // — Bilbao capital: distritos periféricos —
+    { name: "Bilbao · Deusto", cp: "48014" },
+    { name: "Bilbao · Uribarri", cp: "48007" },
+    { name: "Bilbao · Errekalde", cp: "48012" },
+    { name: "Bilbao · Basurto-Zorroza", cp: "48013" },
+    { name: "Bilbao · Otxarkoaga-Txurdinaga", cp: "48004" },
     { name: "Barakaldo", cp: "48901" },
     { name: "Getxo", cp: "48930" },
     { name: "Portugalete", cp: "48920" },
