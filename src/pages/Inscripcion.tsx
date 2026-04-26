@@ -20,6 +20,8 @@ import {
   AGREEMENT_INTRO,
   AGREEMENT_CLAUSES,
   AGREEMENT_CLOSING,
+  AGREEMENT_VERSION,
+  AGREEMENT_HASH,
 } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
@@ -133,6 +135,7 @@ const Inscripcion = () => {
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [agreementRead, setAgreementRead] = useState(false);
+  const [agreementReadAt, setAgreementReadAt] = useState<Date | null>(null);
   const [agreementOpen, setAgreementOpen] = useState(false);
 
   const downloadDraftAgreement = () => {
@@ -438,6 +441,7 @@ const Inscripcion = () => {
 
       // Generar PDF firmado y registrar la firma vía edge function (acción register_agreement)
       try {
+        const readAt = agreementReadAt ?? new Date();
         const { path: pdfPath } = await generateAndUploadAgreement({
           signerName,
           signerDni,
@@ -448,6 +452,7 @@ const Inscripcion = () => {
           signedAt: new Date(),
           applicationId: appId,
           draftId: draft?.id,
+          agreementReadAt: readAt,
         });
 
         await supabase.functions.invoke("submit-application", {
@@ -461,6 +466,9 @@ const Inscripcion = () => {
               signature_data_url: signatureData,
               pdf_path: pdfPath,
               user_agent: navigator.userAgent.slice(0, 500),
+              agreement_version: AGREEMENT_VERSION,
+              agreement_hash: AGREEMENT_HASH,
+              agreement_read_at: readAt.toISOString(),
             },
           },
         });
@@ -965,17 +973,30 @@ const Inscripcion = () => {
                 </button>
               </div>
 
+              <div className="text-xs text-muted-foreground">
+                Versión del acuerdo: <span className="font-mono text-ink">{AGREEMENT_VERSION}</span> · hash <span className="font-mono text-ink">{AGREEMENT_HASH}</span>
+              </div>
               <label className="flex items-start gap-3 text-sm text-ink-soft cursor-pointer">
                 <input
                   type="checkbox"
                   className="mt-1 h-4 w-4 rounded border-border accent-teal"
                   checked={agreementRead}
-                  onChange={(e) => setAgreementRead(e.target.checked)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setAgreementRead(checked);
+                    setAgreementReadAt(checked ? new Date() : null);
+                  }}
                 />
                 <span>
                   He leído y acepto el contenido del <span className="font-medium text-ink">acuerdo de colaboración</span>.
                 </span>
               </label>
+
+              {agreementRead && agreementReadAt && (
+                <div className="text-xs text-teal-deep">
+                  Lectura aceptada el {agreementReadAt.toLocaleString("es-ES")} (registrado para trazabilidad).
+                </div>
+              )}
             </div>
 
             <SignaturePad
@@ -1046,7 +1067,11 @@ const Inscripcion = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setAgreementRead(true); setAgreementOpen(false); }}
+                  onClick={() => {
+                    setAgreementRead(true);
+                    setAgreementReadAt(new Date());
+                    setAgreementOpen(false);
+                  }}
                   className="btn-primary"
                 >
                   <Check className="h-4 w-4" /> He leído el acuerdo

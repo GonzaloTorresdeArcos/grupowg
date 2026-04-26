@@ -11,11 +11,24 @@ export interface AgreementData {
   signedAt: Date;
   applicationId?: string;
   draftId?: string;
+  /** Momento exacto en que el firmante marcó "He leído el acuerdo". */
+  agreementReadAt?: Date;
 }
 
 /** Cláusulas del acuerdo, reutilizables en pantalla y en PDF. */
 export const AGREEMENT_TITLE = "Acuerdo de colaboración";
 export const AGREEMENT_SUBTITLE = "WG Professional Network";
+export const AGREEMENT_VERSION = "v1.0.0";
+
+/** Hash determinista (FNV-1a 32 bits, hex) del texto del acuerdo para trazabilidad. */
+function fnv1aHex(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
 
 export const AGREEMENT_INTRO =
   "El firmante declara, como representante legal o autorizado de la empresa indicada, que:";
@@ -29,6 +42,11 @@ export const AGREEMENT_CLAUSES: string[] = [
 
 export const AGREEMENT_CLOSING =
   "El presente acuerdo manifiesta la voluntad inicial de incorporación a la red. La formalización contractual definitiva se realizará tras la validación documental y la firma del contrato mercantil correspondiente.";
+
+/** Hash del contenido textual del acuerdo (versión + intro + cláusulas + cierre). */
+export const AGREEMENT_HASH = fnv1aHex(
+  [AGREEMENT_VERSION, AGREEMENT_INTRO, ...AGREEMENT_CLAUSES, AGREEMENT_CLOSING].join("\n"),
+);
 
 interface DraftPdfData {
   signerName?: string;
@@ -140,8 +158,16 @@ function buildAgreementDoc(d: AgreementData & { isDraft?: boolean }): jsPDF {
   doc.setTextColor(120, 130, 140);
   if (!d.isDraft) {
     doc.text(`Firmado: ${d.signedAt.toLocaleString("es-ES")}`, margin, y);
+    y += 12;
+    if (d.agreementReadAt) {
+      doc.text(`Lectura aceptada: ${d.agreementReadAt.toLocaleString("es-ES")}`, margin, y);
+      y += 12;
+    }
+    doc.text(`Versión del acuerdo: ${AGREEMENT_VERSION} · hash ${AGREEMENT_HASH}`, margin, y);
   } else {
     doc.text("Pendiente de firma", margin, y);
+    y += 12;
+    doc.text(`Versión del acuerdo: ${AGREEMENT_VERSION} · hash ${AGREEMENT_HASH}`, margin, y);
   }
 
   doc.setFontSize(8);
