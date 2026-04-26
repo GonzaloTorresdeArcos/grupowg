@@ -930,7 +930,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {(form.motivo || []).includes("reparaciones") && (
+                  {((form.motivo || []).includes("reparaciones") || (form.motivo || []).includes("instalaciones")) && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
