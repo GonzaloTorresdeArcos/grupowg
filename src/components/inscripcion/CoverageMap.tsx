@@ -56,6 +56,10 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
       n.has(code) ? n.delete(code) : n.add(code);
       return n;
     });
+    // Auto-seleccionar la provincia al expandirla para habilitar la exclusión
+    if (!openProv.has(code) && !selected.includes(code)) {
+      onChange([...selected, code]);
+    }
   };
 
   // Agrupar por CCAA con filtro
