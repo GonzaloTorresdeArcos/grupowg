@@ -341,6 +341,10 @@ const Inscripcion = () => {
       toast.error("Indica el nombre del firmante");
       return;
     }
+    if (!agreementRead) {
+      toast.error("Debes leer y aceptar el acuerdo de colaboración");
+      return;
+    }
     if (!acceptTerms) {
       toast.error("Debes aceptar las condiciones");
       return;
@@ -1059,7 +1063,7 @@ const Inscripcion = () => {
           </button>
 
           {step === 6 ? (
-            <button onClick={submit} disabled={submitting || !signatureData || !acceptTerms} className="btn-primary disabled:opacity-50">
+            <button onClick={submit} disabled={submitting || !signatureData || !acceptTerms || !agreementRead} className="btn-primary disabled:opacity-50">
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               Firmar y enviar
               {!submitting && <ArrowRight className="h-4 w-4" />}
