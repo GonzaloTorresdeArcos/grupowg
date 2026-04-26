@@ -1495,6 +1495,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "HU Costa": { level1: "Resto provincia de Huelva", level2: "Costa" },
   "HU Condado": { level1: "Resto provincia de Huelva", level2: "Condado" },
   "HU Sierra": { level1: "Resto provincia de Huelva", level2: "Sierra" },
+
+  // ─── Jaén (23) ───
+  "Jaén Capital": { level1: "Jaén capital" },
+  "JA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "JA Corredor Central": { level1: "Resto provincia de Jaén", level2: "Corredor central" },
+  "JA La Loma": { level1: "Resto provincia de Jaén", level2: "La Loma" },
+  "JA Sierra": { level1: "Resto provincia de Jaén", level2: "Sierra" },
 };
 
 export interface LocalitySubgroup {
