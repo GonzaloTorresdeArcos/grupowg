@@ -44,7 +44,9 @@ const baseSchema = z.object({
     .regex(/^[+\d\s().-]*$/, "Sólo dígitos y símbolos válidos")
     .optional()
     .or(z.literal("")),
-  motivo: z.enum(motivoValues, { message: "Selecciona un motivo" }),
+  motivo: z
+    .array(z.enum(motivoValues))
+    .min(1, "Selecciona al menos un motivo"),
   // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
   marca: optionalString(80),
   numeroSerie: optionalString(60),
