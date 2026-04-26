@@ -125,12 +125,17 @@ Deno.serve(async (req) => {
       }
       if (clientVersion !== AGREEMENT_VERSION || clientHash !== AGREEMENT_HASH) {
         console.warn("[submit-application][register_agreement] agreement hash mismatch", {
-          clientVersion, clientHash, expected: { AGREEMENT_VERSION, AGREEMENT_HASH },
+          clientVersion,
+          clientHash,
+          agreement_version_canon: AGREEMENT_VERSION,
+          agreement_hash_canon: AGREEMENT_HASH,
         });
         return json({
           error: "agreement_hash_mismatch",
           expected_version: AGREEMENT_VERSION,
           expected_hash: AGREEMENT_HASH,
+          agreement_version_canon: AGREEMENT_VERSION,
+          agreement_hash_canon: AGREEMENT_HASH,
         }, 400);
       }
 
