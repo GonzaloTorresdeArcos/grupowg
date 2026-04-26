@@ -740,7 +740,7 @@ const Inscripcion = () => {
             </Field>
             <Field label="Marcas trabajadas y relación SAT">
               <MarcasSelector
-                familias={familiasSel}
+                gamasActivas={Array.from(new Set(familiasSel.map((f) => f.split(".")[0])))}
                 value={marcasDetalle}
                 onChange={setMarcasDetalle}
                 otrasMarcas={marcas}
