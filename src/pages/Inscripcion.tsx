@@ -20,7 +20,13 @@ import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-const servicios = ["Reparación en domicilio", "Reparación en taller", "Instalación", "Recogida / entrega", "Diagnóstico técnico"];
+const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega"];
+const instalacionTipos = [
+  "Instalación · Aire Acondicionado",
+  "Instalación · Encastre / Integración",
+  "Instalación · Profesional / Industrial",
+  "Instalación · Estándar / Puesta en Marcha",
+];
 const tipos = ["SAT", "Instalador", "Autónomo", "Empresa", "Proveedor técnico"];
 
 const coberturasOpts = [
@@ -740,6 +746,9 @@ const Inscripcion = () => {
             </div>
             <Field label="Servicios ofrecidos">
               <ChipsMulti opts={servicios} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
+            </Field>
+            <Field label="Instalación — tipos">
+              <ChipsMulti opts={instalacionTipos} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
             <Field label="Horarios">
               <input className="input-base" placeholder="Ej. L-V 9:00-18:00" value={horarios} onChange={(e) => setHorarios(e.target.value)} />
