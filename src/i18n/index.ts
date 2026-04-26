@@ -173,6 +173,7 @@ const buildBundle = (b: {
   homeExperienceMethod: unknown; homeExperienceGov: unknown;
   grupo: unknown; modelo: unknown; soluciones: unknown; plataforma: unknown;
   industrias: unknown; experiencia: unknown; marcas: unknown; aniversario: unknown;
+  legal: unknown;
 }) => ({
   common: b.common,
   header: b.header,
@@ -205,6 +206,7 @@ const buildBundle = (b: {
   experiencia: b.experiencia,
   marcas: b.marcas,
   aniversario: b.aniversario,
+  legal: b.legal,
 });
 
 i18n
