@@ -348,6 +348,13 @@ const isDraftMeaningful = (f: FormData) =>
   );
 
 const Contacto = () => {
+  const { t, i18n } = useTranslation("contacto");
+  const validateAll = useMemo(
+    () => buildValidator(t as TFunc),
+    // re-crea el validador cuando cambia el idioma
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [i18n.language],
+  );
   const [form, setForm] = useState<FormData>(initialForm);
   const [errs, setErrs] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -357,7 +364,9 @@ const Contacto = () => {
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState<Date | null>(null);
   const [consentAt, setConsentAt] = useState<Date | null>(null);
-  const [previewLang, setPreviewLang] = useState<PreviewLang>("es");
+  const [previewLang, setPreviewLang] = useState<PreviewLang>(
+    (i18n.resolvedLanguage?.split("-")[0] as PreviewLang) || "es",
+  );
 
   // Hidratar borrador desde localStorage al montar
   useEffect(() => {
