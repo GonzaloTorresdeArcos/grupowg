@@ -2260,6 +2260,14 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "AS Oriente": { level1: "Resto Asturias", level2: "Oriente" },
   "AS Occidente": { level1: "Resto Asturias", level2: "Occidente" },
   "AS Interior": { level1: "Resto Asturias", level2: "Interior" },
+
+  // ─── Murcia (30) ───
+  "Murcia Capital": { level1: "Murcia (capital)" },
+  "MU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "MU Cartagena": { level1: "Resto Región de Murcia", level2: "Área Cartagena" },
+  "MU Guadalentín": { level1: "Resto Región de Murcia", level2: "Guadalentín / interior sur" },
+  "MU Noroeste": { level1: "Resto Región de Murcia", level2: "Noroeste" },
+  "MU Altiplano": { level1: "Resto Región de Murcia", level2: "Altiplano" },
 };
 
 export interface LocalitySubgroup {
