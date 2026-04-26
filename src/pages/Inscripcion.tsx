@@ -747,7 +747,7 @@ const Inscripcion = () => {
             <Field label="Servicios ofrecidos">
               <ChipsMulti opts={servicios} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
-            <Field label="Instalación — tipos">
+            <Field label="Instalación">
               <ChipsMulti opts={instalacionTipos} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
             <Field label="Horarios">
