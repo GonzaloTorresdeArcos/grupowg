@@ -928,127 +928,121 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CATALUÑA =============
   "08": [ // Barcelona
-    // — Barcelona capital: distritos centrales —
-    { name: "Barcelona · Ciutat Vella", cp: "08001" },
-    { name: "Barcelona · L'Eixample", cp: "08010" },
-    { name: "Barcelona · Gràcia", cp: "08012" },
-    { name: "Barcelona · Sants-Montjuïc", cp: "08014" },
-    { name: "Barcelona · Sant Martí", cp: "08018" },
-    { name: "Barcelona · Sarrià-Sant Gervasi", cp: "08017" },
-    { name: "Barcelona · Les Corts", cp: "08028" },
-    // — Barcelona capital: distritos periféricos —
-    { name: "Barcelona · Horta-Guinardó", cp: "08035" },
-    { name: "Barcelona · Nou Barris", cp: "08016" },
-    { name: "Barcelona · Sant Andreu", cp: "08030" },
-    { name: "L'Hospitalet de Llobregat", cp: "08901" },
-    { name: "Badalona", cp: "08911" },
-    { name: "Terrassa", cp: "08221" },
-    { name: "Sabadell", cp: "08201" },
-    { name: "Mataró", cp: "08301" },
-    { name: "Santa Coloma de Gramenet", cp: "08921" },
-    { name: "Cornellà de Llobregat", cp: "08940" },
-    { name: "Sant Boi de Llobregat", cp: "08830" },
-    { name: "Granollers", cp: "08400" },
-    { name: "Vilanova i la Geltrú", cp: "08800" },
-    { name: "Manresa", cp: "08240" },
-    { name: "Rubí", cp: "08191" },
-    { name: "Castelldefels", cp: "08860" },
-    { name: "El Prat de Llobregat", cp: "08820" },
-    { name: "Vic", cp: "08500" },
-    { name: "Igualada", cp: "08700" },
-    { name: "Viladecans", cp: "08840" },
-    { name: "Sant Cugat del Vallès", cp: "08172" },
-    { name: "Cerdanyola del Vallès", cp: "08290" },
-    { name: "Mollet del Vallès", cp: "08100" },
-    { name: "Esplugues de Llobregat", cp: "08950" },
-    { name: "Gavà", cp: "08850" },
-    { name: "Sant Adrià de Besòs", cp: "08930" },
-    { name: "Sant Feliu de Llobregat", cp: "08980" },
-    { name: "Barberà del Vallès", cp: "08210" },
-    { name: "Ripollet", cp: "08291" },
-    { name: "Montcada i Reixac", cp: "08110" },
-    { name: "Sant Joan Despí", cp: "08970" },
-    { name: "Pineda de Mar", cp: "08397" },
-    { name: "Sitges", cp: "08870" },
-    { name: "Calella", cp: "08370" },
-    { name: "Premià de Mar", cp: "08330" },
-    { name: "Vilafranca del Penedès", cp: "08720" },
-    { name: "Olesa de Montserrat", cp: "08640" },
-    { name: "Esparreguera", cp: "08292" },
-    { name: "Martorell", cp: "08760" },
-    { name: "Santa Perpètua de Mogoda", cp: "08130" },
-    { name: "Sant Vicenç dels Horts", cp: "08620" },
-    { name: "Molins de Rei", cp: "08750" },
-    { name: "Berga", cp: "08600" },
-    { name: "Malgrat de Mar", cp: "08380" },
-    { name: "El Masnou", cp: "08320" },
-    { name: "Tordera", cp: "08490" },
-    { name: "Parets del Vallès", cp: "08150" },
-    { name: "Caldes de Montbui", cp: "08140" },
-    { name: "Canovelles", cp: "08420" },
-    { name: "La Garriga", cp: "08530" },
-    { name: "Cardedeu", cp: "08440" },
-    { name: "Sant Pere de Ribes", cp: "08810" },
+    // ───── 1.1 Barcelona capital ─────
+    { name: "Barcelona Capital · Ciutat Vella", cp: "08001" },
+    { name: "Barcelona Capital · Eixample", cp: "08010" },
+    { name: "Barcelona Capital · Sants-Montjuïc", cp: "08014" },
+    { name: "Barcelona Capital · Les Corts", cp: "08028" },
+    { name: "Barcelona Capital · Sarrià-Sant Gervasi", cp: "08017" },
+    { name: "Barcelona Capital · Gràcia", cp: "08012" },
+    { name: "Barcelona Capital · Horta-Guinardó", cp: "08035" },
+    { name: "Barcelona Capital · Nou Barris", cp: "08016" },
+    { name: "Barcelona Capital · Sant Andreu", cp: "08030" },
+    { name: "Barcelona Capital · Sant Martí", cp: "08018" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Norte
+    { name: "B Á. Metro Norte · Santa Coloma de Gramenet", cp: "08921" },
+    { name: "B Á. Metro Norte · Badalona", cp: "08911" },
+    { name: "B Á. Metro Norte · Montcada i Reixac", cp: "08110" },
+    // 1.2.2 Oeste
+    { name: "B Á. Metro Oeste · L'Hospitalet de Llobregat", cp: "08901" },
+    { name: "B Á. Metro Oeste · Cornellà de Llobregat", cp: "08940" },
+    { name: "B Á. Metro Oeste · Esplugues de Llobregat", cp: "08950" },
+    { name: "B Á. Metro Oeste · Sant Just Desvern", cp: "08960" },
+    // 1.2.3 Sur
+    { name: "B Á. Metro Sur · El Prat de Llobregat", cp: "08820" },
+    { name: "B Á. Metro Sur · Viladecans", cp: "08840" },
+    { name: "B Á. Metro Sur · Gavà", cp: "08850" },
+    { name: "B Á. Metro Sur · Castelldefels", cp: "08860" },
+    // 1.2.4 Interior
+    { name: "B Á. Metro Interior · Sant Cugat del Vallès", cp: "08172" },
+    { name: "B Á. Metro Interior · Cerdanyola del Vallès", cp: "08290" },
+    { name: "B Á. Metro Interior · Rubí", cp: "08191" },
+
+    // ───── 1.3 Resto provincia de Barcelona ─────
+    // 1.3.1 Vallès
+    { name: "B Vallès · Sabadell", cp: "08201" },
+    { name: "B Vallès · Terrassa", cp: "08221" },
+    // 1.3.2 Maresme
+    { name: "B Maresme · Mataró", cp: "08301" },
+    // 1.3.3 Penedès / Garraf
+    { name: "B Penedès Garraf · Vilanova i la Geltrú", cp: "08800" },
+    { name: "B Penedès Garraf · Vilafranca del Penedès", cp: "08720" },
   ],
   "17": [ // Girona
-    { name: "Girona", cp: "17001" },
-    { name: "Figueres", cp: "17600" },
-    { name: "Blanes", cp: "17300" },
-    { name: "Lloret de Mar", cp: "17310" },
-    { name: "Olot", cp: "17800" },
-    { name: "Salt", cp: "17190" },
-    { name: "Palafrugell", cp: "17200" },
-    { name: "Sant Feliu de Guíxols", cp: "17220" },
-    { name: "Banyoles", cp: "17820" },
-    { name: "Roses", cp: "17480" },
-    { name: "Palamós", cp: "17230" },
-    { name: "Castell-Platja d'Aro", cp: "17250" },
-    { name: "Ripoll", cp: "17500" },
-    { name: "La Bisbal d'Empordà", cp: "17100" },
-    { name: "Cassà de la Selva", cp: "17244" },
-    { name: "Sant Joan de les Abadesses", cp: "17860" },
-    { name: "Puigcerdà", cp: "17520" },
-    { name: "Torroella de Montgrí", cp: "17257" },
-    { name: "L'Escala", cp: "17130" },
+    // ───── 2.1 Girona capital ─────
+    { name: "Girona Capital · Barri Vell", cp: "17004" },
+    { name: "Girona Capital · Eixample", cp: "17001" },
+    { name: "Girona Capital · Montilivi", cp: "17003" },
+    { name: "Girona Capital · Santa Eugènia", cp: "17006" },
+    { name: "Girona Capital · Palau", cp: "17003" },
+
+    // ───── 2.2 Área metropolitana ─────
+    // 2.2.1 Cinturón cercano
+    { name: "GI Á. Metro Cercano · Salt", cp: "17190" },
+    { name: "GI Á. Metro Cercano · Sarrià de Ter", cp: "17840" },
+    { name: "GI Á. Metro Cercano · Fornells de la Selva", cp: "17458" },
+
+    // ───── 2.3 Resto provincia de Girona ─────
+    // 2.3.1 Costa Brava
+    { name: "GI Costa Brava · Blanes", cp: "17300" },
+    { name: "GI Costa Brava · Lloret de Mar", cp: "17310" },
+    { name: "GI Costa Brava · Sant Feliu de Guíxols", cp: "17220" },
+    // 2.3.2 Norte / Alt Empordà
+    { name: "GI Alt Empordà · Figueres", cp: "17600" },
+    // 2.3.3 Interior
+    { name: "GI Interior · Olot", cp: "17800" },
+    { name: "GI Interior · Banyoles", cp: "17820" },
   ],
   "25": [ // Lleida
-    { name: "Lleida", cp: "25001" },
-    { name: "Balaguer", cp: "25600" },
-    { name: "Tàrrega", cp: "25300" },
-    { name: "Mollerussa", cp: "25230" },
-    { name: "La Seu d'Urgell", cp: "25700" },
-    { name: "Cervera", cp: "25200" },
-    { name: "Solsona", cp: "25280" },
-    { name: "Tremp", cp: "25620" },
-    { name: "Les Borges Blanques", cp: "25400" },
-    { name: "Almacelles", cp: "25100" },
-    { name: "Alcarràs", cp: "25180" },
-    { name: "Vielha e Mijaran", cp: "25530" },
-    { name: "Pont de Suert", cp: "25520" },
-    { name: "Sort", cp: "25560" },
-    { name: "Agramunt", cp: "25310" },
+    // ───── 3.1 Lleida capital ─────
+    { name: "Lleida Capital · Centre Històric", cp: "25002" },
+    { name: "Lleida Capital · Cappont", cp: "25001" },
+    { name: "Lleida Capital · Balàfia", cp: "25005" },
+    { name: "Lleida Capital · Pardinyes", cp: "25005" },
+    { name: "Lleida Capital · Secà de Sant Pere", cp: "25005" },
+
+    // ───── 3.2 Área metropolitana ─────
+    // 3.2.1 Cinturón cercano
+    { name: "L Á. Metro Cercano · Alpicat", cp: "25110" },
+    { name: "L Á. Metro Cercano · Alcarràs", cp: "25180" },
+    { name: "L Á. Metro Cercano · Torrefarrera", cp: "25123" },
+
+    // ───── 3.3 Resto provincia de Lleida ─────
+    // 3.3.1 Ponent
+    { name: "L Ponent · Mollerussa", cp: "25230" },
+    { name: "L Ponent · Tàrrega", cp: "25300" },
+    // 3.3.2 Pirineo
+    { name: "L Pirineo · La Seu d'Urgell", cp: "25700" },
+    { name: "L Pirineo · Tremp", cp: "25620" },
+    // 3.3.3 Oeste
+    { name: "L Oeste · Fraga", cp: "22520" },
   ],
   "43": [ // Tarragona
-    { name: "Tarragona", cp: "43001" },
-    { name: "Reus", cp: "43201" },
-    { name: "Tortosa", cp: "43500" },
-    { name: "El Vendrell", cp: "43700" },
-    { name: "Cambrils", cp: "43850" },
-    { name: "Salou", cp: "43840" },
-    { name: "Valls", cp: "43800" },
-    { name: "Amposta", cp: "43870" },
-    { name: "Calafell", cp: "43820" },
-    { name: "Vila-seca", cp: "43480" },
-    { name: "Sant Carles de la Ràpita", cp: "43540" },
-    { name: "Deltebre", cp: "43580" },
-    { name: "Ulldecona", cp: "43550" },
-    { name: "Móra d'Ebre", cp: "43740" },
-    { name: "Falset", cp: "43730" },
-    { name: "Montblanc", cp: "43400" },
-    { name: "Torredembarra", cp: "43830" },
-    { name: "L'Hospitalet de l'Infant", cp: "43890" },
-    { name: "Constantí", cp: "43120" },
-    { name: "L'Aldea", cp: "43896" },
+    // ───── 4.1 Tarragona capital ─────
+    { name: "Tarragona Capital · Centre", cp: "43001" },
+    { name: "Tarragona Capital · Part Alta", cp: "43003" },
+    { name: "Tarragona Capital · Sant Pere i Sant Pau", cp: "43007" },
+    { name: "Tarragona Capital · Torreforta", cp: "43006" },
+    { name: "Tarragona Capital · Bonavista", cp: "43008" },
+
+    // ───── 4.2 Área metropolitana ─────
+    // 4.2.1 Costa cercana
+    { name: "T Á. Metro Costa · Reus", cp: "43201" },
+    { name: "T Á. Metro Costa · Salou", cp: "43840" },
+    { name: "T Á. Metro Costa · Vila-seca", cp: "43480" },
+
+    // ───── 4.3 Resto provincia de Tarragona ─────
+    // 4.3.1 Costa sur
+    { name: "T Costa Sur · Cambrils", cp: "43850" },
+    { name: "T Costa Sur · L'Hospitalet de l'Infant", cp: "43890" },
+    // 4.3.2 Ebro
+    { name: "T Ebro · Tortosa", cp: "43500" },
+    { name: "T Ebro · Amposta", cp: "43870" },
+    // 4.3.3 Interior
+    { name: "T Interior · Valls", cp: "43800" },
+    { name: "T Interior · Montblanc", cp: "43400" },
   ],
 
   // ============= C. VALENCIANA =============
@@ -1856,6 +1850,37 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "TO Norte": { level1: "Resto provincia de Toledo", level2: "Norte" },
   "TO Centro": { level1: "Resto provincia de Toledo", level2: "Centro" },
   "TO Sur": { level1: "Resto provincia de Toledo", level2: "Sur" },
+
+  // ─── Barcelona (08) ───
+  "Barcelona Capital": { level1: "Barcelona capital" },
+  "B Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "B Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "B Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "B Á. Metro Interior": { level1: "Área metropolitana", level2: "Interior" },
+  "B Vallès": { level1: "Resto provincia de Barcelona", level2: "Vallès" },
+  "B Maresme": { level1: "Resto provincia de Barcelona", level2: "Maresme" },
+  "B Penedès Garraf": { level1: "Resto provincia de Barcelona", level2: "Penedès / Garraf" },
+
+  // ─── Girona (17) ───
+  "Girona Capital": { level1: "Girona capital" },
+  "GI Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "GI Costa Brava": { level1: "Resto provincia de Girona", level2: "Costa Brava" },
+  "GI Alt Empordà": { level1: "Resto provincia de Girona", level2: "Norte / Alt Empordà" },
+  "GI Interior": { level1: "Resto provincia de Girona", level2: "Interior" },
+
+  // ─── Lleida (25) ───
+  "Lleida Capital": { level1: "Lleida capital" },
+  "L Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "L Ponent": { level1: "Resto provincia de Lleida", level2: "Ponent" },
+  "L Pirineo": { level1: "Resto provincia de Lleida", level2: "Pirineo" },
+  "L Oeste": { level1: "Resto provincia de Lleida", level2: "Oeste" },
+
+  // ─── Tarragona (43) ───
+  "Tarragona Capital": { level1: "Tarragona capital" },
+  "T Á. Metro Costa": { level1: "Área metropolitana", level2: "Costa cercana" },
+  "T Costa Sur": { level1: "Resto provincia de Tarragona", level2: "Costa sur" },
+  "T Ebro": { level1: "Resto provincia de Tarragona", level2: "Ebro" },
+  "T Interior": { level1: "Resto provincia de Tarragona", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
