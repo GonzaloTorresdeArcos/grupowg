@@ -725,7 +725,7 @@ const Inscripcion = () => {
             </div>
 
             <Field label="Familias de producto atendidas">
-              <ChipsMulti opts={familias} value={familiasSel} onChange={(v) => toggle(familiasSel, v, setFamiliasSel)} />
+              <GamasSelector value={familiasSel} onChange={setFamiliasSel} />
             </Field>
             <Field label="Marcas trabajadas">
               <textarea className="input-base min-h-24" value={marcas} onChange={(e) => setMarcas(e.target.value)} placeholder="Listado libre de marcas" />
