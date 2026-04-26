@@ -22,26 +22,34 @@ export interface Localidad {
 export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
   // ============= ANDALUCÍA =============
   "04": [ // Almería
-    { name: "Almería", cp: "04001" },
-    { name: "Roquetas de Mar", cp: "04740" },
-    { name: "El Ejido", cp: "04700" },
-    { name: "Níjar", cp: "04100" },
-    { name: "Vícar", cp: "04738" },
-    { name: "Adra", cp: "04770" },
-    { name: "Huércal-Overa", cp: "04600" },
-    { name: "Huércal de Almería", cp: "04230" },
-    { name: "Cuevas del Almanzora", cp: "04610" },
-    { name: "Berja", cp: "04760" },
-    { name: "Mojácar", cp: "04638" },
-    { name: "Vera", cp: "04620" },
-    { name: "Garrucha", cp: "04630" },
-    { name: "Pulpí", cp: "04640" },
-    { name: "Carboneras", cp: "04140" },
-    { name: "Tabernas", cp: "04200" },
-    { name: "Albox", cp: "04800" },
-    { name: "Macael", cp: "04867" },
-    { name: "Olula del Río", cp: "04860" },
-    { name: "Pechina", cp: "04259" },
+    // ───── 1) Almería capital ─────
+    { name: "Almería Capital · Centro", cp: "04001" },
+    { name: "Almería Capital · Nueva Andalucía", cp: "04007" },
+    { name: "Almería Capital · Zapillo", cp: "04007" },
+    { name: "Almería Capital · Ciudad Jardín", cp: "04006" },
+    { name: "Almería Capital · El Alquián", cp: "04130" },
+    { name: "Almería Capital · Retamar", cp: "04131" },
+
+    // ───── 2) Área metropolitana (≤20–25 km) ─────
+    // 2.1 Poniente cercano
+    { name: "AL Á. Metro Poniente · Roquetas de Mar", cp: "04740" },
+    { name: "AL Á. Metro Poniente · Vícar", cp: "04738" },
+    { name: "AL Á. Metro Poniente · La Mojonera", cp: "04745" },
+    // 2.2 Norte / área cercana
+    { name: "AL Á. Metro Norte · Huércal de Almería", cp: "04230" },
+    { name: "AL Á. Metro Norte · Viator", cp: "04240" },
+
+    // ───── 3) Resto provincia de Almería ─────
+    // 3.1 Poniente ampliado (25–40 km)
+    { name: "AL Poniente Ampliado · El Ejido", cp: "04700" },
+    { name: "AL Poniente Ampliado · Adra", cp: "04770" },
+    // 3.2 Levante
+    { name: "AL Levante · Vera", cp: "04620" },
+    { name: "AL Levante · Mojácar", cp: "04638" },
+    { name: "AL Levante · Garrucha", cp: "04630" },
+    // 3.3 Interior
+    { name: "AL Interior · Huércal-Overa", cp: "04600" },
+    { name: "AL Interior · Albox", cp: "04800" },
   ],
   "11": [ // Cádiz
     { name: "Cádiz", cp: "11001" },
