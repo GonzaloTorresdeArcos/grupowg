@@ -852,25 +852,25 @@ const Contacto = () => {
                     {t("form.review.title")}
                   </h2>
                   <dl className="divide-y divide-border text-sm">
-                    <ReviewRow label="Nombre" value={form.nombre} />
-                    {form.empresa && <ReviewRow label="Empresa" value={form.empresa} />}
-                    <ReviewRow label="Email" value={form.email} />
-                    {form.telefono && <ReviewRow label="Teléfono" value={form.telefono} />}
-                    <ReviewRow label="Motivo" value={motivoLabel} />
-                    {form.marca && <ReviewRow label="Marca" value={form.marca} />}
+                    <ReviewRow label={t("form.fields.nombre")} value={form.nombre} />
+                    {form.empresa && <ReviewRow label={t("form.fields.empresa")} value={form.empresa} />}
+                    <ReviewRow label={t("form.fields.email")} value={form.email} />
+                    {form.telefono && <ReviewRow label={t("form.fields.telefono")} value={form.telefono} />}
+                    <ReviewRow label={t("form.fields.motivo")} value={motivoLabel} />
+                    {form.marca && <ReviewRow label={t("form.fields.marca")} value={form.marca} />}
                     {form.numeroSerie && (
-                      <ReviewRow label="Nº de serie" value={form.numeroSerie} />
+                      <ReviewRow label={t("form.fields.numeroSerie")} value={form.numeroSerie} />
                     )}
-                    {form.producto && <ReviewRow label="Producto" value={form.producto} />}
-                    {form.urgencia && <ReviewRow label="Urgencia" value={form.urgencia} />}
+                    {form.producto && <ReviewRow label={t("form.fields.producto")} value={form.producto} />}
+                    {form.urgencia && <ReviewRow label={t("form.fields.urgencia")} value={form.urgencia} />}
                     {form.referencia && (
-                      <ReviewRow label="Referencia" value={form.referencia} />
+                      <ReviewRow label={t("form.fields.referencia")} value={form.referencia} />
                     )}
-                    {form.vehiculo && <ReviewRow label="Vehículo" value={form.vehiculo} />}
-                    {form.matricula && <ReviewRow label="Matrícula" value={form.matricula} />}
-                    {form.ramo && <ReviewRow label="Ramo" value={form.ramo} />}
-                    {form.poliza && <ReviewRow label="Póliza" value={form.poliza} />}
-                    <ReviewRow label="Mensaje" value={form.mensaje} multiline />
+                    {form.vehiculo && <ReviewRow label={t("form.fields.vehiculo")} value={form.vehiculo} />}
+                    {form.matricula && <ReviewRow label={t("form.fields.matricula")} value={form.matricula} />}
+                    {form.ramo && <ReviewRow label={t("form.fields.ramo")} value={form.ramo} />}
+                    {form.poliza && <ReviewRow label={t("form.fields.poliza")} value={form.poliza} />}
+                    <ReviewRow label={t("form.fields.mensaje")} value={form.mensaje} multiline />
                   </dl>
 
                   <div className="mt-6 rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
