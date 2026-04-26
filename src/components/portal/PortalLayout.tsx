@@ -44,8 +44,8 @@ export const PortalLayout = () => {
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card sticky top-0 h-screen">
         <div className="px-6 py-6 border-b border-border">
-          <p className="eyebrow mb-1">WG Network</p>
-          <p className="font-display text-xl text-ink leading-tight">Portal SAT</p>
+          <p className="eyebrow mb-1">{t("nav.section")}</p>
+          <p className="font-display text-xl text-ink leading-tight">{t("nav.title")}</p>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -71,7 +71,7 @@ export const PortalLayout = () => {
           {isAdmin && (
             <>
               <p className="px-3 pt-4 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                Operaciones
+                {t("nav.ops")}
               </p>
               {adminNav.map((item) => (
                 <NavLink
@@ -101,14 +101,14 @@ export const PortalLayout = () => {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-ink truncate font-medium">
-                {profile?.company_name || profile?.display_name || "Colaborador"}
+                {profile?.company_name || profile?.display_name || t("nav.fallbackName")}
               </p>
               <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
             </div>
           </div>
           <Button variant="ghost" className="w-full justify-start gap-2 h-9" onClick={handleSignOut}>
             <LogOut className="h-4 w-4" />
-            Cerrar sesión
+            {t("nav.signOut")}
           </Button>
         </div>
       </aside>
@@ -116,8 +116,8 @@ export const PortalLayout = () => {
       {/* Mobile header */}
       <div className="lg:hidden fixed top-0 inset-x-0 z-40 bg-card border-b border-border h-14 px-4 flex items-center justify-between">
         <div>
-          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">WG Network</p>
-          <p className="font-display text-base text-ink leading-none">Portal SAT</p>
+          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{t("nav.section")}</p>
+          <p className="font-display text-base text-ink leading-none">{t("nav.title")}</p>
         </div>
         <Button size="icon" variant="ghost" onClick={() => setOpen((o) => !o)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -157,7 +157,7 @@ export const PortalLayout = () => {
             <div className="pt-2 mt-2 border-t border-border">
               <Button variant="ghost" className="w-full justify-start gap-2" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4" />
-                Cerrar sesión
+                {t("nav.signOut")}
               </Button>
             </div>
           </nav>
