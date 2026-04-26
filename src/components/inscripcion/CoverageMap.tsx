@@ -32,6 +32,15 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
   const [search, setSearch] = useState("");
   const [openCcaa, setOpenCcaa] = useState<Set<string>>(new Set());
   const [openProv, setOpenProv] = useState<Set<string>>(new Set());
+  // Subgrupos abiertos por provincia. Clave: `${provCode}::${groupKey}` o `${provCode}::${groupKey}::${subKey}`
+  const [openSubs, setOpenSubs] = useState<Set<string>>(new Set());
+
+  const toggleSub = (k: string) =>
+    setOpenSubs((prev) => {
+      const n = new Set(prev);
+      n.has(k) ? n.delete(k) : n.add(k);
+      return n;
+    });
 
   const toggleProv = (code: string) => {
     onChange(selected.includes(code) ? selected.filter((c) => c !== code) : [...selected, code]);
