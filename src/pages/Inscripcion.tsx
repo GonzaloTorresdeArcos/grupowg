@@ -14,7 +14,7 @@ import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
 import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
-import { provinciaByCode } from "@/lib/spain-provinces";
+import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -465,6 +465,35 @@ const Inscripcion = () => {
               </Field>
               <Field label="Dirección fiscal">
                 <input className="input-base" value={s1.direccion_fiscal} onChange={(e) => setS1({ ...s1, direccion_fiscal: e.target.value })} />
+              </Field>
+              <Field label="Código postal" error={errs1.codigo_postal}>
+                <input
+                  className="input-base"
+                  inputMode="numeric"
+                  maxLength={5}
+                  placeholder="28001"
+                  value={s1.codigo_postal}
+                  onChange={(e) => setS1({ ...s1, codigo_postal: e.target.value.replace(/\D/g, "").slice(0, 5) })}
+                />
+              </Field>
+              <Field label="Localidad" error={errs1.localidad}>
+                <input
+                  className="input-base"
+                  value={s1.localidad}
+                  onChange={(e) => setS1({ ...s1, localidad: e.target.value })}
+                />
+              </Field>
+              <Field label="Provincia" error={errs1.provincia_fiscal}>
+                <select
+                  className="input-base"
+                  value={s1.provincia_fiscal}
+                  onChange={(e) => setS1({ ...s1, provincia_fiscal: e.target.value })}
+                >
+                  <option value="">Selecciona</option>
+                  {PROVINCIAS.map((p) => (
+                    <option key={p.code} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
               </Field>
               <Field label="Email *" error={errs1.email}>
                 <input
