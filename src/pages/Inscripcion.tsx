@@ -219,6 +219,15 @@ const Inscripcion = () => {
     }
     if (!emailVerified) e.email = "Verifica tu email para continuar";
 
+    // Validación cruzada CP ↔ provincia: la provincia indicada debe coincidir
+    // con la inferida por los dos primeros dígitos del código postal.
+    if (/^\d{5}$/.test(s1.codigo_postal) && s1.provincia_fiscal.trim()) {
+      const inferred = provinciaByCode(s1.codigo_postal.slice(0, 2));
+      if (inferred && inferred.name !== s1.provincia_fiscal) {
+        e.provincia_fiscal = `La provincia no coincide con el código postal (esperado: ${inferred.name})`;
+      }
+    }
+
     setErrs1(e);
     return Object.keys(e).length === 0;
   };
