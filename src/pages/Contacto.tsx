@@ -285,6 +285,7 @@ const Contacto = () => {
   const [hydrated, setHydrated] = useState(false);
   const [restored, setRestored] = useState<Date | null>(null);
   const [consentAt, setConsentAt] = useState<Date | null>(null);
+  const [previewLang, setPreviewLang] = useState<PreviewLang>("es");
 
   // Hidratar borrador desde localStorage al montar
   useEffect(() => {
