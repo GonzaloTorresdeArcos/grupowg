@@ -802,56 +802,105 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "SA Oeste Frontera · Vitigudino", cp: "37210" },
   ],
   "40": [ // Segovia
-    { name: "Segovia", cp: "40001" },
-    { name: "Cuéllar", cp: "40200" },
-    { name: "El Espinar", cp: "40400" },
-    { name: "San Ildefonso", cp: "40100" },
-    { name: "Cantalejo", cp: "40320" },
-    { name: "Nava de la Asunción", cp: "40450" },
-    { name: "Riaza", cp: "40500" },
-    { name: "Sepúlveda", cp: "40300" },
-    { name: "Carbonero el Mayor", cp: "40270" },
-    { name: "Coca", cp: "40480" },
+    // ───── 1.1 Segovia capital ─────
+    { name: "Segovia Capital · Centro", cp: "40001" },
+    { name: "Segovia Capital · San Lorenzo", cp: "40003" },
+    { name: "Segovia Capital · Nueva Segovia", cp: "40006" },
+    { name: "Segovia Capital · El Carmen", cp: "40004" },
+    { name: "Segovia Capital · San José", cp: "40002" },
+    { name: "Segovia Capital · La Albuera", cp: "40005" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "SG Á. Metro Cercano · La Lastrilla", cp: "40196" },
+    { name: "SG Á. Metro Cercano · Palazuelos de Eresma", cp: "40194" },
+    { name: "SG Á. Metro Cercano · San Cristóbal de Segovia", cp: "40197" },
+    { name: "SG Á. Metro Cercano · Hontoria", cp: "40195" },
+
+    // ───── 1.3 Resto provincia de Segovia ─────
+    // 1.3.1 Noroeste
+    { name: "SG Noroeste · Cuéllar", cp: "40200" },
+    // 1.3.2 Norte
+    { name: "SG Norte · Cantalejo", cp: "40320" },
+    // 1.3.3 Este
+    { name: "SG Este · Riaza", cp: "40500" },
+    { name: "SG Este · Ayllón", cp: "40520" },
   ],
   "42": [ // Soria
-    { name: "Soria", cp: "42001" },
-    { name: "Almazán", cp: "42200" },
-    { name: "El Burgo de Osma", cp: "42300" },
-    { name: "Ólvega", cp: "42110" },
-    { name: "Ágreda", cp: "42100" },
-    { name: "San Esteban de Gormaz", cp: "42330" },
-    { name: "Covaleda", cp: "42157" },
-    { name: "Vinuesa", cp: "42150" },
-    { name: "Berlanga de Duero", cp: "42360" },
+    // ───── 2.1 Soria capital ─────
+    { name: "Soria Capital · Centro", cp: "42001" },
+    { name: "Soria Capital · Santa Bárbara", cp: "42003" },
+    { name: "Soria Capital · El Calaverón", cp: "42004" },
+    { name: "Soria Capital · Los Pajaritos", cp: "42002" },
+    { name: "Soria Capital · San Pedro", cp: "42005" },
+
+    // ───── 2.2 Área metropolitana ─────
+    // 2.2.1 Cinturón cercano
+    { name: "SO Á. Metro Cercano · Golmayo", cp: "42190" },
+    { name: "SO Á. Metro Cercano · Los Rábanos", cp: "42191" },
+
+    // ───── 2.3 Resto provincia de Soria ─────
+    // 2.3.1 Oeste
+    { name: "SO Oeste · Almazán", cp: "42200" },
+    // 2.3.2 Norte
+    { name: "SO Norte · Ólvega", cp: "42110" },
+    { name: "SO Norte · Ágreda", cp: "42100" },
+    // 2.3.3 Sur
+    { name: "SO Sur · El Burgo de Osma", cp: "42300" },
   ],
   "47": [ // Valladolid
-    { name: "Valladolid", cp: "47001" },
-    { name: "Medina del Campo", cp: "47400" },
-    { name: "Laguna de Duero", cp: "47140" },
-    { name: "Arroyo de la Encomienda", cp: "47195" },
-    { name: "Tordesillas", cp: "47100" },
-    { name: "Íscar", cp: "47420" },
-    { name: "Peñafiel", cp: "47300" },
-    { name: "Medina de Rioseco", cp: "47800" },
-    { name: "Cigales", cp: "47270" },
-    { name: "Tudela de Duero", cp: "47320" },
-    { name: "Boecillo", cp: "47151" },
-    { name: "Simancas", cp: "47130" },
-    { name: "Zaratán", cp: "47610" },
-    { name: "La Cistérniga", cp: "47193" },
-    { name: "Olmedo", cp: "47410" },
-    { name: "Valoria la Buena", cp: "47200" },
+    // ───── 3.1 Valladolid capital ─────
+    { name: "Valladolid Capital · Centro", cp: "47001" },
+    { name: "Valladolid Capital · Delicias", cp: "47013" },
+    { name: "Valladolid Capital · Parquesol", cp: "47014" },
+    { name: "Valladolid Capital · Huerta del Rey", cp: "47007" },
+    { name: "Valladolid Capital · Rondilla", cp: "47010" },
+    { name: "Valladolid Capital · Pilarica", cp: "47011" },
+    { name: "Valladolid Capital · Pajarillos", cp: "47012" },
+    { name: "Valladolid Capital · La Victoria", cp: "47009" },
+
+    // ───── 3.2 Área metropolitana ─────
+    // 3.2.1 Norte
+    { name: "VA Á. Metro Norte · Zaratán", cp: "47610" },
+    { name: "VA Á. Metro Norte · Cigales", cp: "47270" },
+    // 3.2.2 Oeste
+    { name: "VA Á. Metro Oeste · Arroyo de la Encomienda", cp: "47195" },
+    // 3.2.3 Sur
+    { name: "VA Á. Metro Sur · Laguna de Duero", cp: "47140" },
+    { name: "VA Á. Metro Sur · Boecillo", cp: "47151" },
+    // 3.2.4 Este
+    { name: "VA Á. Metro Este · Cabezón de Pisuerga", cp: "47260" },
+    { name: "VA Á. Metro Este · Santovenia de Pisuerga", cp: "47185" },
+
+    // ───── 3.3 Resto provincia de Valladolid ─────
+    // 3.3.1 Sur
+    { name: "VA Sur · Medina del Campo", cp: "47400" },
+    // 3.3.2 Oeste
+    { name: "VA Oeste · Tordesillas", cp: "47100" },
+    // 3.3.3 Norte
+    { name: "VA Norte · Medina de Rioseco", cp: "47800" },
   ],
   "49": [ // Zamora
-    { name: "Zamora", cp: "49001" },
-    { name: "Benavente", cp: "49600" },
-    { name: "Toro", cp: "49800" },
-    { name: "Morales del Vino", cp: "49700" },
-    { name: "Fuentesaúco", cp: "49400" },
-    { name: "Villaralbo", cp: "49159" },
-    { name: "Puebla de Sanabria", cp: "49300" },
-    { name: "Alcañices", cp: "49500" },
-    { name: "Coreses", cp: "49530" },
+    // ───── 4.1 Zamora capital ─────
+    { name: "Zamora Capital · Centro", cp: "49001" },
+    { name: "Zamora Capital · La Lana", cp: "49004" },
+    { name: "Zamora Capital · San José Obrero", cp: "49005" },
+    { name: "Zamora Capital · Los Bloques", cp: "49006" },
+    { name: "Zamora Capital · Vista Alegre", cp: "49007" },
+
+    // ───── 4.2 Área metropolitana ─────
+    // 4.2.1 Cinturón cercano
+    { name: "ZA Á. Metro Cercano · Morales del Vino", cp: "49700" },
+    { name: "ZA Á. Metro Cercano · Villaralbo", cp: "49159" },
+    { name: "ZA Á. Metro Cercano · Roales", cp: "49160" },
+
+    // ───── 4.3 Resto provincia de Zamora ─────
+    // 4.3.1 Norte
+    { name: "ZA Norte · Benavente", cp: "49600" },
+    // 4.3.2 Oeste
+    { name: "ZA Oeste · Alcañices", cp: "49500" },
+    // 4.3.3 Sur
+    { name: "ZA Sur · Toro", cp: "49800" },
   ],
 
   // ============= CATALUÑA =============
