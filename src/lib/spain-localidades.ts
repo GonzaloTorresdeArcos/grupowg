@@ -413,32 +413,70 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
   ],
 
   // ============= ASTURIAS =============
-  "33": [
-    { name: "Oviedo", cp: "33001" },
-    { name: "Gijón", cp: "33201" },
-    { name: "Avilés", cp: "33400" },
-    { name: "Siero", cp: "33510" },
-    { name: "Langreo", cp: "33930" },
-    { name: "Mieres", cp: "33600" },
-    { name: "Castrillón", cp: "33450" },
-    { name: "Llanera", cp: "33420" },
-    { name: "San Martín del Rey Aurelio", cp: "33936" },
-    { name: "Villaviciosa", cp: "33300" },
-    { name: "Cangas del Narcea", cp: "33800" },
-    { name: "Cangas de Onís", cp: "33550" },
-    { name: "Llanes", cp: "33500" },
-    { name: "Tineo", cp: "33870" },
-    { name: "Pravia", cp: "33120" },
-    { name: "Grado", cp: "33820" },
-    { name: "Lena", cp: "33630" },
-    { name: "Navia", cp: "33710" },
-    { name: "Luarca (Valdés)", cp: "33700" },
-    { name: "Corvera de Asturias", cp: "33416" },
-    { name: "Carreño (Candás)", cp: "33430" },
-    { name: "Nava", cp: "33520" },
-    { name: "Pola de Laviana", cp: "33980" },
-    { name: "Piloña (Infiesto)", cp: "33530" },
-    { name: "Ribadesella", cp: "33560" },
+  "33": [ // Asturias
+    // ───── 1) Oviedo capital ─────
+    { name: "Oviedo Capital · Centro", cp: "33001" },
+    { name: "Oviedo Capital · Buenavista", cp: "33006" },
+    { name: "Oviedo Capital · La Florida", cp: "33012" },
+    { name: "Oviedo Capital · Pumarín", cp: "33010" },
+    { name: "Oviedo Capital · Teatinos", cp: "33013" },
+    { name: "Oviedo Capital · Vallobín", cp: "33012" },
+    { name: "Oviedo Capital · El Cristo", cp: "33006" },
+    { name: "Oviedo Capital · Ciudad Naranco", cp: "33012" },
+    { name: "Oviedo Capital · Ventanielles", cp: "33010" },
+    { name: "Oviedo Capital · La Corredoria", cp: "33011" },
+    { name: "Oviedo Capital · Otero", cp: "33008" },
+    { name: "Oviedo Capital · Colloto", cp: "33010" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "AS Á. Metro Cercano · Siero (Lugones)", cp: "33420" },
+    { name: "AS Á. Metro Cercano · Siero (Pola de Siero)", cp: "33510" },
+    { name: "AS Á. Metro Cercano · Llanera (Posada)", cp: "33424" },
+    { name: "AS Á. Metro Cercano · Llanera (Lugo de Llanera)", cp: "33690" },
+    { name: "AS Á. Metro Cercano · Noreña", cp: "33180" },
+    { name: "AS Á. Metro Cercano · Ribera de Arriba", cp: "33170" },
+    { name: "AS Á. Metro Cercano · Las Regueras", cp: "33190" },
+
+    // ───── 3) Resto Asturias ─────
+    // 3.1 Área central ampliada (eje industrial)
+    { name: "AS Eje Industrial · Gijón", cp: "33201" },
+    { name: "AS Eje Industrial · Avilés", cp: "33400" },
+    { name: "AS Eje Industrial · Carreño (Candás)", cp: "33430" },
+    { name: "AS Eje Industrial · Corvera (Las Vegas)", cp: "33416" },
+    { name: "AS Eje Industrial · Castrillón (Piedras Blancas)", cp: "33450" },
+    { name: "AS Eje Industrial · Castrillón (Salinas)", cp: "33405" },
+    { name: "AS Eje Industrial · Gozón (Luanco)", cp: "33440" },
+    { name: "AS Eje Industrial · Villaviciosa", cp: "33300" },
+    // 3.2 Cuencas mineras
+    { name: "AS Cuencas Mineras · Langreo (La Felguera)", cp: "33930" },
+    { name: "AS Cuencas Mineras · Langreo (Sama)", cp: "33900" },
+    { name: "AS Cuencas Mineras · Mieres", cp: "33600" },
+    { name: "AS Cuencas Mineras · San Martín del Rey Aurelio (El Entrego)", cp: "33940" },
+    { name: "AS Cuencas Mineras · San Martín del Rey Aurelio (Sotrondio)", cp: "33950" },
+    { name: "AS Cuencas Mineras · Laviana (Pola de Laviana)", cp: "33980" },
+    { name: "AS Cuencas Mineras · Aller (Cabañaquinta)", cp: "33686" },
+    // 3.3 Oriente
+    { name: "AS Oriente · Llanes", cp: "33500" },
+    { name: "AS Oriente · Ribadesella", cp: "33560" },
+    { name: "AS Oriente · Arriondas (Parres)", cp: "33540" },
+    { name: "AS Oriente · Cangas de Onís", cp: "33550" },
+    { name: "AS Oriente · Colunga", cp: "33320" },
+    { name: "AS Oriente · Infiesto (Piloña)", cp: "33530" },
+    // 3.4 Occidente
+    { name: "AS Occidente · Luarca (Valdés)", cp: "33700" },
+    { name: "AS Occidente · Navia", cp: "33710" },
+    { name: "AS Occidente · Tapia de Casariego", cp: "33740" },
+    { name: "AS Occidente · Vegadeo", cp: "33770" },
+    { name: "AS Occidente · Cudillero", cp: "33150" },
+    { name: "AS Occidente · Castropol", cp: "33760" },
+    { name: "AS Occidente · El Franco", cp: "33750" },
+    // 3.5 Interior
+    { name: "AS Interior · Grado", cp: "33820" },
+    { name: "AS Interior · Tineo", cp: "33870" },
+    { name: "AS Interior · Salas", cp: "33860" },
+    { name: "AS Interior · Pravia", cp: "33120" },
+    { name: "AS Interior · Belmonte de Miranda", cp: "33830" },
+    { name: "AS Interior · Somiedo", cp: "33840" },
   ],
 
   // ============= ISLAS BALEARES =============
@@ -2187,6 +2225,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Menorca": { level1: "Menorca" },
   "Ibiza": { level1: "Ibiza" },
   "Formentera": { level1: "Formentera" },
+
+  // ─── Asturias (33) ───
+  "Oviedo Capital": { level1: "Oviedo (capital)" },
+  "AS Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón central" },
+  "AS Eje Industrial": { level1: "Resto Asturias", level2: "Área central ampliada (eje industrial)" },
+  "AS Cuencas Mineras": { level1: "Resto Asturias", level2: "Cuencas mineras" },
+  "AS Oriente": { level1: "Resto Asturias", level2: "Oriente" },
+  "AS Occidente": { level1: "Resto Asturias", level2: "Occidente" },
+  "AS Interior": { level1: "Resto Asturias", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
