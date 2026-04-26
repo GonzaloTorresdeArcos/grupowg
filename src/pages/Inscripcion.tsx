@@ -485,9 +485,10 @@ const Inscripcion = () => {
                   channel="email"
                   destination={s1.email}
                   verified={emailVerified}
-                  onVerified={() => {
-                    console.info("[Inscripcion] email onVerified");
+                  resumeToken={draft?.resume_token}
+                  onVerified={async () => {
                     setEmailVerified(true);
+                    await refreshDraft();
                   }}
                 />
               </ErrorLogger>
@@ -496,9 +497,10 @@ const Inscripcion = () => {
                   channel="sms"
                   destination={s1.telefono}
                   verified={phoneVerified}
-                  onVerified={() => {
-                    console.info("[Inscripcion] phone onVerified");
+                  resumeToken={draft?.resume_token}
+                  onVerified={async () => {
                     setPhoneVerified(true);
+                    await refreshDraft();
                   }}
                 />
               </ErrorLogger>
