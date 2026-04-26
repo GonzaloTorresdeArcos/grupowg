@@ -1627,6 +1627,14 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "TF Otras Islas La Palma": { level1: "Otras islas de la provincia", level2: "La Palma" },
   "TF Otras Islas La Gomera": { level1: "Otras islas de la provincia", level2: "La Gomera" },
   "TF Otras Islas El Hierro": { level1: "Otras islas de la provincia", level2: "El Hierro" },
+
+  // ─── Cantabria (39) ───
+  "Santander Capital": { level1: "Santander (capital)" },
+  "S Á. Metro Bahía": { level1: "Área metropolitana", level2: "Arco de la Bahía" },
+  "S Eje Torrelavega": { level1: "Resto Cantabria", level2: "Eje Torrelavega (hub clave)" },
+  "S Occidente": { level1: "Resto Cantabria", level2: "Occidente" },
+  "S Oriente": { level1: "Resto Cantabria", level2: "Oriente" },
+  "S Interior": { level1: "Resto Cantabria", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
