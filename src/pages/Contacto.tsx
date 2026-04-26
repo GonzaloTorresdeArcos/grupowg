@@ -695,9 +695,9 @@ const Contacto = () => {
     if (Object.keys(errors).length > 0) {
       setErrs(errors);
       // marca todos como touched para mostrar errores
-      const t: Record<string, boolean> = {};
-      Object.keys(errors).forEach((k) => (t[k] = true));
-      setTouched((prev) => ({ ...prev, ...t }));
+      const tk: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (tk[k] = true));
+      setTouched((prev) => ({ ...prev, ...tk }));
       toast.error(t("form.errors.reviewToast"));
       focusFirstError(errors);
       return;
@@ -712,9 +712,9 @@ const Contacto = () => {
     const errors = validateAll(form);
     if (Object.keys(errors).length > 0) {
       setErrs(errors);
-      const t: Record<string, boolean> = {};
-      Object.keys(errors).forEach((k) => (t[k] = true));
-      setTouched((prev) => ({ ...prev, ...t }));
+      const tk: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (tk[k] = true));
+      setTouched((prev) => ({ ...prev, ...tk }));
       setStep("form");
       toast.error(t("form.errors.sendToast"));
       requestAnimationFrame(() => {
