@@ -1400,6 +1400,14 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "SE Sierra Norte": { level1: "Resto provincia Sevilla", level2: "Sierra Norte" },
   "SE Campiña Este": { level1: "Resto provincia Sevilla", level2: "Campiña / Este" },
   "SE Sur Profundo": { level1: "Resto provincia Sevilla", level2: "Sur profundo" },
+
+  // ─── Almería (04) ───
+  "Almería Capital": { level1: "Almería capital" },
+  "AL Á. Metro Poniente": { level1: "Área metropolitana", level2: "Poniente cercano" },
+  "AL Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte / área cercana" },
+  "AL Poniente Ampliado": { level1: "Resto provincia de Almería", level2: "Poniente ampliado (25–40 km)" },
+  "AL Levante": { level1: "Resto provincia de Almería", level2: "Levante" },
+  "AL Interior": { level1: "Resto provincia de Almería", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
