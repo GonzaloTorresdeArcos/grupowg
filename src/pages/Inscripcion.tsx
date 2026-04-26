@@ -991,6 +991,12 @@ const Inscripcion = () => {
                   He leído y acepto el contenido del <span className="font-medium text-ink">acuerdo de colaboración</span>.
                 </span>
               </label>
+
+              {agreementRead && agreementReadAt && (
+                <div className="text-xs text-teal-deep">
+                  Lectura aceptada el {agreementReadAt.toLocaleString("es-ES")} (registrado para trazabilidad).
+                </div>
+              )}
             </div>
 
             <SignaturePad
