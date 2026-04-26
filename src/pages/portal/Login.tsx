@@ -9,8 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const PortalLogin = () => {
+  const { t } = useTranslation("portal");
   const navigate = useNavigate();
   const location = useLocation();
   const { user, loading: authLoading } = useAuth();
@@ -23,6 +25,12 @@ const PortalLogin = () => {
     if (!authLoading && user) navigate(from, { replace: true });
   }, [user, authLoading, navigate, from]);
 
+  useEffect(() => {
+    document.title = t("seo.loginTitle");
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", t("seo.loginDescription"));
+  }, [t]);
+
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -33,10 +41,10 @@ const PortalLogin = () => {
     });
     setLoading(false);
     if (error) {
-      toast.error("No se pudo iniciar sesión", { description: error.message });
+      toast.error(t("login.toasts.signinError"), { description: error.message });
       return;
     }
-    toast.success("Bienvenido de nuevo");
+    toast.success(t("login.toasts.signinOk"));
     navigate(from, { replace: true });
   };
 
