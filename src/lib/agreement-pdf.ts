@@ -11,11 +11,23 @@ export interface AgreementData {
   signedAt: Date;
   applicationId?: string;
   draftId?: string;
+  /** Momento exacto en que el firmante marcó "He leído el acuerdo". */
+  agreementReadAt?: Date;
 }
 
 /** Cláusulas del acuerdo, reutilizables en pantalla y en PDF. */
 export const AGREEMENT_TITLE = "Acuerdo de colaboración";
-export const AGREEMENT_SUBTITLE = "WG Professional Network";
+export const AGREEMENT_VERSION = "v1.0.0";
+
+/** Hash determinista (FNV-1a 32 bits, hex) del texto del acuerdo para trazabilidad. */
+function fnv1aHex(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
 
 export const AGREEMENT_INTRO =
   "El firmante declara, como representante legal o autorizado de la empresa indicada, que:";
