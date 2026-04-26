@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
 
     if (error) {
       console.error("RPC error", error);
-      return new Response(JSON.stringify({ error: error.message }), {
+      return new Response(JSON.stringify({ error: "internal_error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error("Unhandled error", err);
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }),
+      JSON.stringify({ error: "internal_error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

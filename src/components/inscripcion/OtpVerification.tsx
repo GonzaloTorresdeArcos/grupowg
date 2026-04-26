@@ -9,14 +9,16 @@ interface Props {
   destination: string;
   verified: boolean;
   onVerified: () => void;
+  /** When provided, the server flips the draft's verification flag for this channel
+   * after a successful OTP verify. This keeps trust on the server, not the client. */
+  resumeToken?: string;
 }
 
-export const OtpVerification = ({ channel, destination, verified, onVerified }: Props) => {
+export const OtpVerification = ({ channel, destination, verified, onVerified, resumeToken }: Props) => {
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
-  const [demoCode, setDemoCode] = useState<string | null>(null);
 
   const Icon = channel === "email" ? Mail : MessageSquare;
   const label = channel === "email" ? "email" : "móvil";
@@ -26,26 +28,22 @@ export const OtpVerification = ({ channel, destination, verified, onVerified }: 
       toast.error(`Introduce primero tu ${label}`);
       return;
     }
-    console.info("[OTP][send] start", { channel, destination });
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-otp", {
         body: { action: "send", channel, destination },
       });
-      console.info("[OTP][send] response", { data, error });
       if (error) throw error;
+      if (data?.error === "rate_limited") {
+        toast.error("Demasiados intentos. Espera unos minutos.");
+        return;
+      }
       setSent(true);
-      if (data?.demo_code) setDemoCode(data.demo_code);
-      toast.success(channel === "email" ? "Código enviado al email" : "Código (modo demo) generado");
+      toast.success(channel === "email"
+        ? "Te hemos enviado un código a tu email"
+        : "Te hemos enviado un código por SMS");
     } catch (e: any) {
-      console.error("[OTP][send] error", {
-        channel,
-        destination,
-        message: e?.message,
-        name: e?.name,
-        stack: e?.stack,
-        raw: e,
-      });
+      console.error("[OTP][send] error", e);
       toast.error("No hemos podido enviar el código");
     } finally {
       setSending(false);
@@ -57,41 +55,20 @@ export const OtpVerification = ({ channel, destination, verified, onVerified }: 
       toast.error("El código debe tener 6 dígitos");
       return;
     }
-    console.info("[OTP][verify] start", { channel, destination, codeLen: code.length });
     setVerifying(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-otp", {
-        body: { action: "verify", channel, destination, code },
+        body: { action: "verify", channel, destination, code, resume_token: resumeToken },
       });
-      console.info("[OTP][verify] response", { data, error });
       if (error) throw error;
       if (data?.ok) {
         toast.success(`${channel === "email" ? "Email" : "Teléfono"} verificado`);
-        try {
-          console.info("[OTP][verify] calling onVerified", { hasCallback: typeof onVerified });
-          onVerified();
-          console.info("[OTP][verify] onVerified finished OK");
-        } catch (cbErr: any) {
-          console.error("[OTP][verify] onVerified threw", {
-            message: cbErr?.message,
-            name: cbErr?.name,
-            stack: cbErr?.stack,
-            raw: cbErr,
-          });
-          throw cbErr;
-        }
+        onVerified();
       } else {
-        toast.error(data?.error || "Código incorrecto");
+        toast.error("Código incorrecto o expirado");
       }
     } catch (e: any) {
-      console.error("[OTP][verify] error", {
-        channel,
-        destination,
-        message: e?.message,
-        name: e?.name,
-        stack: e?.stack,
-        raw: e,
-      });
+      console.error("[OTP][verify] error", e);
       toast.error("Error al verificar el código");
     } finally {
       setVerifying(false);
@@ -128,43 +105,27 @@ export const OtpVerification = ({ channel, destination, verified, onVerified }: 
       </div>
 
       {sent && (
-        <>
-          {channel === "sms" && demoCode && (
-            <div className="text-xs text-muted-foreground bg-card border border-border rounded-md p-2">
-              <span className="text-ink-soft">Modo demo SMS:</span>{" "}
-              <span className="font-mono font-bold text-ink">{demoCode}</span>{" "}
-              <span className="text-muted-foreground">(en producción se enviaría por Twilio)</span>
-            </div>
-          )}
-          {channel === "email" && demoCode && (
-            <div className="text-xs text-muted-foreground bg-card border border-border rounded-md p-2">
-              <span className="text-ink-soft">Tu código:</span>{" "}
-              <span className="font-mono font-bold text-ink">{demoCode}</span>{" "}
-              <span className="text-muted-foreground">(simulación de envío)</span>
-            </div>
-          )}
-          <div className="flex gap-2">
-            <input
-              className={cn(
-                "input-base font-mono tracking-widest text-center text-lg",
-              )}
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="000000"
-              maxLength={6}
-              inputMode="numeric"
-            />
-            <button
-              type="button"
-              onClick={verify}
-              disabled={verifying || code.length !== 6}
-              className="btn-primary text-sm whitespace-nowrap disabled:opacity-50"
-            >
-              {verifying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              Verificar
-            </button>
-          </div>
-        </>
+        <div className="flex gap-2">
+          <input
+            className={cn(
+              "input-base font-mono tracking-widest text-center text-lg",
+            )}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="000000"
+            maxLength={6}
+            inputMode="numeric"
+          />
+          <button
+            type="button"
+            onClick={verify}
+            disabled={verifying || code.length !== 6}
+            className="btn-primary text-sm whitespace-nowrap disabled:opacity-50"
+          >
+            {verifying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            Verificar
+          </button>
+        </div>
       )}
     </div>
   );

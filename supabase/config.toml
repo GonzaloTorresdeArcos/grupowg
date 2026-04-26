@@ -2,3 +2,12 @@ project_id = "ceefisrtzptheqdvduhc"
 
 [functions.submit-accessibility-request]
 verify_jwt = false
+
+[functions.send-otp]
+verify_jwt = false
+
+[functions.drafts]
+verify_jwt = false
+
+[functions.submit-application]
+verify_jwt = false
