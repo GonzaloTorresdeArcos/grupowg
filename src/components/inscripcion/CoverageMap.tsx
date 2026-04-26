@@ -305,43 +305,202 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                             </button>
                           </div>
 
-                          {/* LOCALIDADES (excluibles) */}
-                          {provOpen && localidades.length > 0 && (
-                            <div className="ml-6 mt-1 mb-2 pl-2 border-l border-border space-y-0.5">
-                              <p className="text-[10px] uppercase text-muted-foreground py-1">
-                                Marca las localidades que <strong>NO</strong> quieres atender
-                              </p>
-                              {localidades.map((l) => {
-                                const k = localidadKey(p.code, l.name);
-                                const isExcl = excluded.includes(k);
-                                return (
-                                  <button
-                                    key={k}
-                                    type="button"
-                                    onClick={() => toggleExcl(p.code, l.name)}
-                                    className={cn(
-                                      "w-full flex items-center justify-between text-xs px-2 py-1 rounded transition",
-                                      isExcl
-                                        ? "bg-destructive/10 text-destructive line-through"
-                                        : "text-ink-soft hover:bg-secondary",
-                                    )}
-                                  >
-                                    <span className="flex items-center gap-2">
-                                      {isExcl ? (
-                                        <X className="h-3 w-3" />
-                                      ) : (
-                                        <span className="w-3" />
+                          {/* LOCALIDADES AGRUPADAS (excluibles por nivel) */}
+                          {provOpen && localidades.length > 0 && (() => {
+                            const groups = getGroupedLocalidades(p.code);
+                            // Si solo hay un grupo plano sin subgrupos, render directo (mismo comportamiento previo)
+                            const flat =
+                              groups.length === 1 && !groups[0].hasSubgroups;
+                            return (
+                              <div className="ml-6 mt-1 mb-2 pl-2 border-l border-border space-y-1">
+                                <p className="text-[10px] uppercase text-muted-foreground py-1">
+                                  Marca las zonas o localidades que <strong>NO</strong> quieres atender
+                                </p>
+                                {groups.map((g) => {
+                                  const groupKey = `${p.code}::${g.key}`;
+                                  const groupOpen = flat || openSubs.has(groupKey);
+                                  const groupExclCount = g.localidades.filter((l) =>
+                                    excluded.includes(localidadKey(p.code, l.name)),
+                                  ).length;
+                                  const groupAllExcl =
+                                    groupExclCount === g.localidades.length && g.localidades.length > 0;
+                                  return (
+                                    <div key={groupKey}>
+                                      {!flat && (
+                                        <div className="flex items-center gap-1">
+                                          <button
+                                            type="button"
+                                            onClick={() => toggleSub(groupKey)}
+                                            className="p-0.5 text-muted-foreground hover:text-ink"
+                                            aria-label={groupOpen ? "Colapsar" : "Expandir"}
+                                          >
+                                            {groupOpen ? (
+                                              <ChevronDown className="h-3 w-3" />
+                                            ) : (
+                                              <ChevronRight className="h-3 w-3" />
+                                            )}
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              toggleExclBulk(
+                                                p.code,
+                                                g.localidades.map((l) => l.name),
+                                              )
+                                            }
+                                            className={cn(
+                                              "flex-1 flex items-center justify-between text-[11px] uppercase tracking-wider px-2 py-1 rounded font-semibold transition",
+                                              groupAllExcl
+                                                ? "bg-destructive/15 text-destructive"
+                                                : groupExclCount > 0
+                                                  ? "bg-destructive/10 text-destructive/80"
+                                                  : "text-ink-soft hover:bg-secondary",
+                                            )}
+                                          >
+                                            <span>{g.level1}</span>
+                                            <span className="text-[10px] font-normal opacity-80">
+                                              {groupExclCount > 0
+                                                ? `-${groupExclCount}/${g.localidades.length}`
+                                                : `${g.localidades.length}`}
+                                            </span>
+                                          </button>
+                                        </div>
                                       )}
-                                      {l.name}
-                                    </span>
-                                    <span className="font-mono text-[10px] text-muted-foreground">
-                                      {l.cp}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          )}
+
+                                      {groupOpen && (
+                                        <div className={cn("space-y-0.5", !flat && "ml-4 mt-0.5")}>
+                                          {g.subgroups.map((sg) => {
+                                            // Si no hay subgrupo (level2=null), renderiza localidades directo
+                                            if (!sg.level2) {
+                                              return sg.localidades.map((l) => {
+                                                const k = localidadKey(p.code, l.name);
+                                                const isExcl = excluded.includes(k);
+                                                const cleanName = l.name.includes(" · ")
+                                                  ? l.name.split(" · ").slice(1).join(" · ")
+                                                  : l.name;
+                                                return (
+                                                  <button
+                                                    key={k}
+                                                    type="button"
+                                                    onClick={() => toggleExcl(p.code, l.name)}
+                                                    className={cn(
+                                                      "w-full flex items-center justify-between text-xs px-2 py-1 rounded transition",
+                                                      isExcl
+                                                        ? "bg-destructive/10 text-destructive line-through"
+                                                        : "text-ink-soft hover:bg-secondary",
+                                                    )}
+                                                  >
+                                                    <span className="flex items-center gap-2">
+                                                      {isExcl ? (
+                                                        <X className="h-3 w-3" />
+                                                      ) : (
+                                                        <span className="w-3" />
+                                                      )}
+                                                      {cleanName}
+                                                    </span>
+                                                    <span className="font-mono text-[10px] text-muted-foreground">
+                                                      {l.cp}
+                                                    </span>
+                                                  </button>
+                                                );
+                                              });
+                                            }
+
+                                            // Subgrupo nivel 2
+                                            const subKey = `${groupKey}::${sg.level2}`;
+                                            const subOpen = openSubs.has(subKey);
+                                            const subExclCount = sg.localidades.filter((l) =>
+                                              excluded.includes(localidadKey(p.code, l.name)),
+                                            ).length;
+                                            const subAllExcl =
+                                              subExclCount === sg.localidades.length && sg.localidades.length > 0;
+                                            return (
+                                              <div key={subKey}>
+                                                <div className="flex items-center gap-1">
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => toggleSub(subKey)}
+                                                    className="p-0.5 text-muted-foreground hover:text-ink"
+                                                    aria-label={subOpen ? "Colapsar" : "Expandir"}
+                                                  >
+                                                    {subOpen ? (
+                                                      <ChevronDown className="h-3 w-3" />
+                                                    ) : (
+                                                      <ChevronRight className="h-3 w-3" />
+                                                    )}
+                                                  </button>
+                                                  <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                      toggleExclBulk(
+                                                        p.code,
+                                                        sg.localidades.map((l) => l.name),
+                                                      )
+                                                    }
+                                                    className={cn(
+                                                      "flex-1 flex items-center justify-between text-[11px] px-2 py-1 rounded transition",
+                                                      subAllExcl
+                                                        ? "bg-destructive/15 text-destructive font-medium"
+                                                        : subExclCount > 0
+                                                          ? "bg-destructive/10 text-destructive/80"
+                                                          : "text-ink-soft hover:bg-secondary",
+                                                    )}
+                                                  >
+                                                    <span>{sg.level2}</span>
+                                                    <span className="text-[10px] opacity-80">
+                                                      {subExclCount > 0
+                                                        ? `-${subExclCount}/${sg.localidades.length}`
+                                                        : `${sg.localidades.length}`}
+                                                    </span>
+                                                  </button>
+                                                </div>
+                                                {subOpen && (
+                                                  <div className="ml-4 mt-0.5 space-y-0.5">
+                                                    {sg.localidades.map((l) => {
+                                                      const k = localidadKey(p.code, l.name);
+                                                      const isExcl = excluded.includes(k);
+                                                      const cleanName = l.name.includes(" · ")
+                                                        ? l.name.split(" · ").slice(1).join(" · ")
+                                                        : l.name;
+                                                      return (
+                                                        <button
+                                                          key={k}
+                                                          type="button"
+                                                          onClick={() => toggleExcl(p.code, l.name)}
+                                                          className={cn(
+                                                            "w-full flex items-center justify-between text-xs px-2 py-1 rounded transition",
+                                                            isExcl
+                                                              ? "bg-destructive/10 text-destructive line-through"
+                                                              : "text-ink-soft hover:bg-secondary",
+                                                          )}
+                                                        >
+                                                          <span className="flex items-center gap-2">
+                                                            {isExcl ? (
+                                                              <X className="h-3 w-3" />
+                                                            ) : (
+                                                              <span className="w-3" />
+                                                            )}
+                                                            {cleanName}
+                                                          </span>
+                                                          <span className="font-mono text-[10px] text-muted-foreground">
+                                                            {l.cp}
+                                                          </span>
+                                                        </button>
+                                                      );
+                                                    })}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })()}
                         </div>
                       );
                     })}
