@@ -1908,6 +1908,23 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "T Costa Sur": { level1: "Resto provincia de Tarragona", level2: "Costa sur" },
   "T Ebro": { level1: "Resto provincia de Tarragona", level2: "Ebro" },
   "T Interior": { level1: "Resto provincia de Tarragona", level2: "Interior" },
+
+  // ─── Ceuta (51) ───
+  "Ceuta Capital": { level1: "Ceuta capital" },
+  "CE Periferia": { level1: "Resto territorio de Ceuta", level2: "Periferia" },
+
+  // ─── Melilla (52) ───
+  "Melilla Capital": { level1: "Melilla capital" },
+  "ME Periferia": { level1: "Resto territorio de Melilla", level2: "Periferia" },
+
+  // ─── Navarra (31) ───
+  "Pamplona Capital": { level1: "Pamplona (capital)" },
+  "NA Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "NA Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "NA Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "NA Norte Pirineo": { level1: "Resto Navarra", level2: "Norte / Pirineo" },
+  "NA Centro": { level1: "Resto Navarra", level2: "Centro" },
+  "NA Sur Ribera": { level1: "Resto Navarra", level2: "Sur / Ribera" },
 };
 
 export interface LocalitySubgroup {
