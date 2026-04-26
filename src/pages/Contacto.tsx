@@ -547,6 +547,21 @@ const Contacto = () => {
   };
 
   const confirmSend = async () => {
+    // Defensa extra: revalidar antes del envío real por si se manipuló el estado
+    const errors = validateAll(form);
+    if (Object.keys(errors).length > 0) {
+      setErrs(errors);
+      const t: Record<string, boolean> = {};
+      Object.keys(errors).forEach((k) => (t[k] = true));
+      setTouched((prev) => ({ ...prev, ...t }));
+      setStep("form");
+      toast.error("Faltan datos por completar antes de enviar");
+      requestAnimationFrame(() => {
+        const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
+        if (firstKey) scrollToField(firstKey as string);
+      });
+      return;
+    }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
