@@ -199,48 +199,49 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Benahavís", cp: "29679" },
   ],
   "41": [ // Sevilla
-    // — Sevilla capital: distritos centrales —
-    { name: "Sevilla · Casco Antiguo", cp: "41004" },
-    { name: "Sevilla · Triana", cp: "41010" },
-    { name: "Sevilla · Los Remedios", cp: "41011" },
-    { name: "Sevilla · Nervión", cp: "41005" },
-    { name: "Sevilla · Macarena", cp: "41008" },
-    // — Sevilla capital: distritos periféricos —
-    { name: "Sevilla · Este-Alcosa-Torreblanca", cp: "41020" },
-    { name: "Sevilla · Cerro-Amate", cp: "41006" },
-    { name: "Sevilla · Sur", cp: "41012" },
-    { name: "Sevilla · Bellavista-La Palmera", cp: "41013" },
-    { name: "Sevilla · Norte (Pino Montano)", cp: "41015" },
-    { name: "Sevilla · San Pablo-Santa Justa", cp: "41007" },
-    { name: "Dos Hermanas", cp: "41700" },
-    { name: "Alcalá de Guadaíra", cp: "41500" },
-    { name: "Utrera", cp: "41710" },
-    { name: "Mairena del Aljarafe", cp: "41927" },
-    { name: "Écija", cp: "41400" },
-    { name: "Carmona", cp: "41410" },
-    { name: "Tomares", cp: "41940" },
-    { name: "Los Palacios y Villafranca", cp: "41720" },
-    { name: "La Rinconada", cp: "41309" },
-    { name: "Lebrija", cp: "41740" },
-    { name: "Camas", cp: "41900" },
-    { name: "Coria del Río", cp: "41100" },
-    { name: "Bormujos", cp: "41930" },
-    { name: "Castilleja de la Cuesta", cp: "41950" },
-    { name: "Mairena del Alcor", cp: "41510" },
-    { name: "Morón de la Frontera", cp: "41530" },
-    { name: "San Juan de Aznalfarache", cp: "41920" },
-    { name: "Marchena", cp: "41620" },
-    { name: "Arahal", cp: "41600" },
-    { name: "Lora del Río", cp: "41440" },
-    { name: "La Algaba", cp: "41980" },
-    { name: "Estepa", cp: "41560" },
-    { name: "Sanlúcar la Mayor", cp: "41800" },
-    { name: "Osuna", cp: "41640" },
-    { name: "Pilas", cp: "41840" },
-    { name: "Brenes", cp: "41310" },
-    { name: "Cantillana", cp: "41320" },
-    { name: "Gines", cp: "41960" },
-    { name: "Espartinas", cp: "41807" },
+    // ───── 1) Sevilla Capital · 11 distritos ─────
+    { name: "Sevilla Capital · Casco Antiguo", cp: "41004" },
+    { name: "Sevilla Capital · Triana", cp: "41010" },
+    { name: "Sevilla Capital · Los Remedios", cp: "41011" },
+    { name: "Sevilla Capital · Nervión", cp: "41005" },
+    { name: "Sevilla Capital · Sur", cp: "41012" },
+    { name: "Sevilla Capital · Macarena", cp: "41008" },
+    { name: "Sevilla Capital · Norte", cp: "41015" },
+    { name: "Sevilla Capital · Este-Alcosa-Torreblanca", cp: "41020" },
+    { name: "Sevilla Capital · Cerro-Amate", cp: "41006" },
+    { name: "Sevilla Capital · San Pablo-Santa Justa", cp: "41007" },
+    { name: "Sevilla Capital · Bellavista-La Palmera", cp: "41013" },
+
+    // ───── 2) Área metropolitana ─────
+    // 2.1 Norte
+    { name: "SE Á. Metro Norte · La Rinconada", cp: "41309" },
+    { name: "SE Á. Metro Norte · Alcalá del Río", cp: "41200" },
+    // 2.2 Oeste / Aljarafe
+    { name: "SE Á. Metro Oeste · Camas", cp: "41900" },
+    { name: "SE Á. Metro Oeste · Tomares", cp: "41940" },
+    { name: "SE Á. Metro Oeste · Castilleja de la Cuesta", cp: "41950" },
+    { name: "SE Á. Metro Oeste · Mairena del Aljarafe", cp: "41927" },
+    { name: "SE Á. Metro Oeste · Bormujos", cp: "41930" },
+    { name: "SE Á. Metro Oeste · San Juan de Aznalfarache", cp: "41920" },
+    { name: "SE Á. Metro Oeste · Coria del Río", cp: "41100" },
+    // 2.3 Sur
+    { name: "SE Á. Metro Sur · Dos Hermanas", cp: "41700" },
+    { name: "SE Á. Metro Sur · Los Palacios y Villafranca", cp: "41720" },
+    // 2.4 Este
+    { name: "SE Á. Metro Este · Alcalá de Guadaíra", cp: "41500" },
+
+    // ───── 3) Resto provincia Sevilla ─────
+    // 3.1 Sierra Norte
+    { name: "SE Sierra Norte · Cazalla de la Sierra", cp: "41370" },
+    { name: "SE Sierra Norte · Constantina", cp: "41450" },
+    { name: "SE Sierra Norte · El Pedroso", cp: "41360" },
+    // 3.2 Campiña / Este
+    { name: "SE Campiña Este · Écija", cp: "41400" },
+    { name: "SE Campiña Este · Osuna", cp: "41640" },
+    { name: "SE Campiña Este · Marchena", cp: "41620" },
+    // 3.3 Sur profundo
+    { name: "SE Sur Profundo · Utrera", cp: "41710" },
+    { name: "SE Sur Profundo · Lebrija", cp: "41740" },
   ],
 
   // ============= ARAGÓN =============
@@ -1381,6 +1382,16 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Sierra Noroeste": { level1: "Resto de Comunidad", level2: "Sierra Noroeste" },
   "Sierra Oeste": { level1: "Resto de Comunidad", level2: "Sierra Oeste" },
   "Vegas / Sureste rural": { level1: "Resto de Comunidad", level2: "Vegas / Sureste rural" },
+
+  // ─── Sevilla (41) ───
+  "Sevilla Capital": { level1: "Sevilla Capital" },
+  "SE Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "SE Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste / Aljarafe" },
+  "SE Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "SE Á. Metro Este": { level1: "Área metropolitana", level2: "Este" },
+  "SE Sierra Norte": { level1: "Resto provincia Sevilla", level2: "Sierra Norte" },
+  "SE Campiña Este": { level1: "Resto provincia Sevilla", level2: "Campiña / Este" },
+  "SE Sur Profundo": { level1: "Resto provincia Sevilla", level2: "Sur profundo" },
 };
 
 export interface LocalitySubgroup {
