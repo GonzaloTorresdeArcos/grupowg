@@ -72,17 +72,7 @@ export const SolutionsDetailBlock = () => {
       {/* Intro grid: 3 módulos overview */}
       <section className="py-24 md:py-32 bg-background border-y border-foreground/5">
         <div className="container-tight">
-          <Reveal>
-            <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
-              {t("intro.titleA")}{" "}
-              <span className="text-teal italic">{t("intro.titleB")}</span> {t("intro.titleC")}
-            </h2>
-            <p className="mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-              {t("intro.lead")}
-            </p>
-          </Reveal>
-
-          <div className="mt-16 grid md:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10 rounded-2xl overflow-hidden">
+          <div className="grid md:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10 rounded-2xl overflow-hidden">
             {MODULES.map((m, i) => {
               const Icon = m.icon;
               return (
