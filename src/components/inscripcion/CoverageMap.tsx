@@ -56,6 +56,10 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
       n.has(code) ? n.delete(code) : n.add(code);
       return n;
     });
+    // Auto-seleccionar la provincia al expandirla para habilitar la exclusión
+    if (!openProv.has(code) && !selected.includes(code)) {
+      onChange([...selected, code]);
+    }
   };
 
   // Agrupar por CCAA con filtro
@@ -283,32 +287,22 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                           {/* LOCALIDADES (excluibles) */}
                           {provOpen && localidades.length > 0 && (
                             <div className="ml-6 mt-1 mb-2 pl-2 border-l border-border space-y-0.5">
-                              {!provSelected ? (
-                                <p className="text-[10px] text-muted-foreground py-1.5 px-2 bg-secondary/50 rounded">
-                                  Selecciona <strong>{p.name}</strong> arriba para poder excluir localidades.
-                                </p>
-                              ) : (
-                                <p className="text-[10px] uppercase text-muted-foreground py-1">
-                                  Marca las localidades que <strong>NO</strong> quieres atender
-                                </p>
-                              )}
+                              <p className="text-[10px] uppercase text-muted-foreground py-1">
+                                Marca las localidades que <strong>NO</strong> quieres atender
+                              </p>
                               {localidades.map((l) => {
                                 const k = localidadKey(p.code, l.name);
                                 const isExcl = excluded.includes(k);
-                                const disabled = !provSelected;
                                 return (
                                   <button
                                     key={k}
                                     type="button"
-                                    disabled={disabled}
                                     onClick={() => toggleExcl(p.code, l.name)}
                                     className={cn(
                                       "w-full flex items-center justify-between text-xs px-2 py-1 rounded transition",
-                                      disabled
-                                        ? "text-muted-foreground/70 cursor-not-allowed"
-                                        : isExcl
-                                          ? "bg-destructive/10 text-destructive line-through"
-                                          : "text-ink-soft hover:bg-secondary",
+                                      isExcl
+                                        ? "bg-destructive/10 text-destructive line-through"
+                                        : "text-ink-soft hover:bg-secondary",
                                     )}
                                   >
                                     <span className="flex items-center gap-2">
