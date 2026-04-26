@@ -1539,6 +1539,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "HSC Somontano": { level1: "Resto provincia de Huesca", level2: "Somontano / centro" },
   "HSC Pirineo": { level1: "Resto provincia de Huesca", level2: "Pirineo" },
   "HSC La Litera": { level1: "Resto provincia de Huesca", level2: "Este / La Litera" },
+
+  // ─── Teruel (44) ───
+  "Teruel Capital": { level1: "Teruel capital" },
+  "TE Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "TE Bajo Aragón": { level1: "Resto provincia de Teruel", level2: "Bajo Aragón" },
+  "TE Cuencas Mineras": { level1: "Resto provincia de Teruel", level2: "Comunidad de Calatayud / Cuencas Mineras" },
+  "TE Maestrazgo": { level1: "Resto provincia de Teruel", level2: "Maestrazgo / Este" },
 };
 
 export interface LocalitySubgroup {
