@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const TOKEN_KEY = "wg_draft_token";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isValidEmail = (s?: string) => !!s && EMAIL_RE.test(s) && s.length <= 320;
 
 export interface DraftState {
   id: string;
