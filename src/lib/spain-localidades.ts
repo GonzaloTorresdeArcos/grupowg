@@ -1356,3 +1356,102 @@ export const localidadesByProvincia = (code: string): Localidad[] =>
 /** Llave única estable para una localidad (provincia + nombre) */
 export const localidadKey = (provinciaCode: string, name: string) =>
   `${provinciaCode}::${name}`;
+
+// ============================================================
+//  AGRUPACIÓN JERÁRQUICA DE LOCALIDADES (nivel 1 → nivel 2)
+// ============================================================
+// Mapa de prefijo (parte antes del primer " · ") a su jerarquía operativa.
+// Si un prefijo no está en el mapa, se trata como un grupo plano de nivel 1
+// con el propio prefijo y sin subgrupo.
+
+export interface LocalityGrouping {
+  level1: string; // ej. "Área Metropolitana"
+  level2?: string; // ej. "Norte"
+}
+
+const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
+  // ─── Madrid (28) ───
+  "Madrid capital": { level1: "Madrid capital" },
+  "Á. Metro Norte": { level1: "Área Metropolitana", level2: "Norte" },
+  "Á. Metro Este": { level1: "Área Metropolitana", level2: "Este / Corredor del Henares" },
+  "Á. Metro Sur": { level1: "Área Metropolitana", level2: "Sur" },
+  "Á. Metro Oeste": { level1: "Área Metropolitana", level2: "Oeste / Noroeste" },
+  "Á. Metro Sureste": { level1: "Área Metropolitana", level2: "Sureste" },
+  "Sierra Norte": { level1: "Resto de Comunidad", level2: "Sierra Norte" },
+  "Sierra Noroeste": { level1: "Resto de Comunidad", level2: "Sierra Noroeste" },
+  "Sierra Oeste": { level1: "Resto de Comunidad", level2: "Sierra Oeste" },
+  "Vegas / Sureste rural": { level1: "Resto de Comunidad", level2: "Vegas / Sureste rural" },
+};
+
+export interface LocalitySubgroup {
+  key: string; // identificador estable: "L1" o "L1::L2"
+  level2: string | null; // null cuando es un grupo plano
+  localidades: Localidad[];
+}
+
+export interface LocalityGroup {
+  key: string; // nivel 1
+  level1: string;
+  hasSubgroups: boolean;
+  subgroups: LocalitySubgroup[]; // si hasSubgroups=false → un único subgrupo con level2=null
+  localidades: Localidad[]; // todas las localidades de este nivel 1 (atajo)
+}
+
+/**
+ * Devuelve las localidades de una provincia agrupadas en hasta 2 niveles
+ * jerárquicos a partir del prefijo `"Grupo · Localidad"` o
+ * `"Grupo · Sub · Localidad"`. Para provincias sin prefijos reconocibles,
+ * devuelve un único grupo "Localidades" plano.
+ */
+export const getGroupedLocalidades = (provinciaCode: string): LocalityGroup[] => {
+  const list = LOCALIDADES_BY_PROVINCE[provinciaCode] ?? [];
+  if (list.length === 0) return [];
+
+  const byL1 = new Map<string, Map<string | "__flat__", Localidad[]>>();
+
+  for (const loc of list) {
+    const sepIdx = loc.name.indexOf(" · ");
+    let l1 = "Localidades";
+    let l2: string | null = null;
+    if (sepIdx >= 0) {
+      const prefix = loc.name.slice(0, sepIdx);
+      const grouping = PREFIX_GROUPING[prefix];
+      if (grouping) {
+        l1 = grouping.level1;
+        l2 = grouping.level2 ?? null;
+      } else {
+        l1 = prefix;
+      }
+    }
+    if (!byL1.has(l1)) byL1.set(l1, new Map());
+    const subMap = byL1.get(l1)!;
+    const subKey = l2 ?? "__flat__";
+    if (!subMap.has(subKey)) subMap.set(subKey, []);
+    subMap.get(subKey)!.push(loc);
+  }
+
+  const groups: LocalityGroup[] = [];
+  for (const [l1, subMap] of byL1) {
+    const subgroups: LocalitySubgroup[] = [];
+    let hasSubgroups = false;
+    const allLocs: Localidad[] = [];
+    for (const [subKey, locs] of subMap) {
+      const level2 = subKey === "__flat__" ? null : (subKey as string);
+      if (level2) hasSubgroups = true;
+      subgroups.push({
+        key: level2 ? `${l1}::${level2}` : l1,
+        level2,
+        localidades: locs,
+      });
+      allLocs.push(...locs);
+    }
+    groups.push({
+      key: l1,
+      level1: l1,
+      hasSubgroups,
+      subgroups,
+      localidades: allLocs,
+    });
+  }
+  return groups;
+};
