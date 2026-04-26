@@ -95,6 +95,9 @@ export function MarcasSelector({
       if (!groups.has(d.gama)) groups.set(d.gama, []);
       groups.get(d.gama)!.push(d);
     });
+    groups.forEach((arr) =>
+      arr.sort((a, b) => a.label.localeCompare(b.label, "es", { sensitivity: "base" })),
+    );
     return groups;
   }, [value]);
 
