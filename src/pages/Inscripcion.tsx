@@ -18,6 +18,8 @@ import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
+import { MarcasSelector } from "@/components/inscripcion/MarcasSelector";
+import type { MarcaDetalle } from "@/lib/marcas-taxonomy";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega"];
@@ -99,6 +101,7 @@ const Inscripcion = () => {
   const [provinciaCodes, setProvinciaCodes] = useState<string[]>([]);
   const [familiasSel, setFamiliasSel] = useState<string[]>([]);
   const [marcas, setMarcas] = useState("");
+  const [marcasDetalle, setMarcasDetalle] = useState<MarcaDetalle[]>([]);
   const [tecnicos, setTecnicos] = useState<string>("");
   const [serviciosSel, setServiciosSel] = useState<string[]>([]);
   const [horarios, setHorarios] = useState("");
@@ -130,6 +133,7 @@ const Inscripcion = () => {
     if (d.provinciaCodes) setProvinciaCodes(d.provinciaCodes);
     if (d.familiasSel) setFamiliasSel(d.familiasSel);
     if (d.marcas) setMarcas(d.marcas);
+    if (Array.isArray(d.marcasDetalle)) setMarcasDetalle(d.marcasDetalle);
     if (d.tecnicos) setTecnicos(d.tecnicos);
     if (d.serviciosSel) setServiciosSel(d.serviciosSel);
     if (d.horarios) setHorarios(d.horarios);
@@ -153,12 +157,12 @@ const Inscripcion = () => {
       email: s1.email,
       current_step: step,
       form_data: {
-        s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad,
+        s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad,
         localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, step]);
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
@@ -341,12 +345,13 @@ const Inscripcion = () => {
               zona_cobertura: provinciasText,
               familias_producto: familiasSel,
               marcas_trabajadas: marcas,
+              marcas_codes: marcasDetalle.map((d) => d.code),
               numero_tecnicos: tecnicos ? parseInt(tecnicos) : null,
               servicios_ofrecidos: serviciosSel,
               horarios,
               capacidad_mensual: capacidad,
               coberturas,
-              datos_seguros: datosSeguros,
+              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle },
               documentosSubidos,
             },
           },
@@ -733,8 +738,14 @@ const Inscripcion = () => {
             <Field label="Familias de producto atendidas">
               <GamasSelector value={familiasSel} onChange={setFamiliasSel} />
             </Field>
-            <Field label="Marcas trabajadas">
-              <textarea className="input-base min-h-24" value={marcas} onChange={(e) => setMarcas(e.target.value)} placeholder="Listado libre de marcas" />
+            <Field label="Marcas trabajadas y relación SAT">
+              <MarcasSelector
+                familias={familiasSel}
+                value={marcasDetalle}
+                onChange={setMarcasDetalle}
+                otrasMarcas={marcas}
+                onOtrasChange={setMarcas}
+              />
             </Field>
             <div className="grid md:grid-cols-2 gap-5">
               <Field label="Número de técnicos">
