@@ -815,16 +815,17 @@ const Contacto = () => {
                         Faltan {orderedErrorList.length}{" "}
                         {orderedErrorList.length === 1 ? "campo" : "campos"} por completar
                       </p>
-                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      <ul className="mt-2 space-y-1 text-xs">
                         {orderedErrorList.map((err) => (
-                          <li key={err.key}>
+                          <li key={err.key} className="text-ink/80">
                             <button
                               type="button"
                               onClick={() => scrollToField(err.key)}
-                              className="text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
+                              className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
                             >
                               {err.label}
                             </button>
+                            <span className="text-muted-foreground"> — {err.message}</span>
                           </li>
                         ))}
                       </ul>
