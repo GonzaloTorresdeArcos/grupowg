@@ -15,12 +15,12 @@ import { PresenceMap } from "@/components/site/PresenceMap";
 import { toast } from "sonner";
 
 const MOTIVOS = [
-  { value: "garantias", label: "Garantías" },
-  { value: "reparaciones", label: "Reparaciones" },
+  { value: "reparaciones", label: "Instalaciones" },
   { value: "repuestos", label: "Repuestos" },
-  { value: "movilidad", label: "Movilidad" },
+  { value: "movilidad", label: "Equipos" },
+  { value: "garantias", label: "Garantías" },
   { value: "seguros", label: "Seguros" },
-  { value: "wg-network", label: "WG Network (colaboradores)" },
+  { value: "wg-network", label: "Formulario WG Network" },
   { value: "otro", label: "Otro" },
 ] as const;
 
