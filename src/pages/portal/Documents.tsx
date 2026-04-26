@@ -26,10 +26,10 @@ const typeIcon: Record<string, typeof Shield> = {
 };
 
 const statusConfig = {
-  valid: { label: "Vigente", color: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20", icon: CheckCircle2 },
-  expiring: { label: "Próximo a vencer", color: "bg-amber-500/10 text-amber-700 border-amber-500/20", icon: Clock },
-  expired: { label: "Vencido", color: "bg-red-500/10 text-red-700 border-red-500/20", icon: XCircle },
-  missing: { label: "Pendiente", color: "bg-muted text-muted-foreground border-border", icon: AlertTriangle },
+  valid: { color: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20", icon: CheckCircle2 },
+  expiring: { color: "bg-amber-500/10 text-amber-700 border-amber-500/20", icon: Clock },
+  expired: { color: "bg-red-500/10 text-red-700 border-red-500/20", icon: XCircle },
+  missing: { color: "bg-muted text-muted-foreground border-border", icon: AlertTriangle },
 };
 
 const PortalDocuments = () => {
@@ -67,7 +67,7 @@ const PortalDocuments = () => {
           : d,
       ),
     );
-    toast.success("Documento actualizado", { description: `${uploading.name} se ha renovado correctamente.` });
+    toast.success(t("documents.toasts.updated"), { description: t("documents.toasts.updatedDesc", { name: uploading.name }) });
     setUploading(null);
   };
 
@@ -85,15 +85,15 @@ const PortalDocuments = () => {
 
       {/* Status summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <SummaryCard label="Vigentes" count={counts.valid} active={filter === "valid"} onClick={() => setFilter(filter === "valid" ? "all" : "valid")} tone="emerald" />
-        <SummaryCard label="Próximos" count={counts.expiring} active={filter === "expiring"} onClick={() => setFilter(filter === "expiring" ? "all" : "expiring")} tone="amber" />
-        <SummaryCard label="Vencidos" count={counts.expired} active={filter === "expired"} onClick={() => setFilter(filter === "expired" ? "all" : "expired")} tone="red" />
-        <SummaryCard label="Pendientes" count={counts.missing} active={filter === "missing"} onClick={() => setFilter(filter === "missing" ? "all" : "missing")} tone="muted" />
+        <SummaryCard label={t("documents.filters.valid")} count={counts.valid} active={filter === "valid"} onClick={() => setFilter(filter === "valid" ? "all" : "valid")} tone="emerald" />
+        <SummaryCard label={t("documents.filters.expiring")} count={counts.expiring} active={filter === "expiring"} onClick={() => setFilter(filter === "expiring" ? "all" : "expiring")} tone="amber" />
+        <SummaryCard label={t("documents.filters.expired")} count={counts.expired} active={filter === "expired"} onClick={() => setFilter(filter === "expired" ? "all" : "expired")} tone="red" />
+        <SummaryCard label={t("documents.filters.missing")} count={counts.missing} active={filter === "missing"} onClick={() => setFilter(filter === "missing" ? "all" : "missing")} tone="muted" />
       </div>
 
       {filter !== "all" && (
         <button onClick={() => setFilter("all")} className="text-sm text-teal hover:underline">
-          ← Ver todos los documentos
+          {t("documents.filters.viewAll")}
         </button>
       )}
 
@@ -121,13 +121,13 @@ const PortalDocuments = () => {
                     <p className="font-medium text-ink">{doc.name}</p>
                     <Badge variant="outline" className={cn("gap-1 text-xs", cfg.color)}>
                       <StatusIcon className="h-3 w-3" />
-                      {cfg.label}
+                      {t(`documents.status.${doc.status}`)}
                     </Badge>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-muted-foreground">
                     {doc.fileName && <span>📎 {doc.fileName}</span>}
-                    {doc.issuedAt && <span>Emitido: {formatDate(doc.issuedAt)}</span>}
-                    {doc.expiresAt && <span>Vence: {formatDate(doc.expiresAt)}</span>}
+                    {doc.issuedAt && <span>{t("documents.fields.issued")}: {formatDate(doc.issuedAt)}</span>}
+                    {doc.expiresAt && <span>{t("documents.fields.expires")}: {formatDate(doc.expiresAt)}</span>}
                   </div>
                 </div>
 
@@ -135,7 +135,7 @@ const PortalDocuments = () => {
                   {doc.fileName && (
                     <Button variant="outline" size="sm" className="gap-1">
                       <Download className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">Descargar</span>
+                      <span className="hidden sm:inline">{t("documents.actions.download")}</span>
                     </Button>
                   )}
                   <Button
@@ -146,7 +146,7 @@ const PortalDocuments = () => {
                   >
                     {doc.status === "missing" ? <Upload className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}
                     <span className="hidden sm:inline">
-                      {doc.status === "missing" ? "Subir" : "Renovar"}
+                      {doc.status === "missing" ? t("documents.actions.upload") : t("documents.actions.renew")}
                     </span>
                   </Button>
                 </div>
@@ -163,30 +163,30 @@ const PortalDocuments = () => {
             <>
               <DialogHeader>
                 <DialogTitle className="font-display text-xl">
-                  {uploading.status === "missing" ? "Subir" : "Renovar"} documento
+                  {uploading.status === "missing" ? t("documents.dialog.uploadTitle") : t("documents.dialog.renewTitle")}
                 </DialogTitle>
                 <DialogDescription>{uploading.name}</DialogDescription>
               </DialogHeader>
 
               <form onSubmit={handleUpload} className="space-y-4 mt-2">
                 <div className="space-y-2">
-                  <Label htmlFor="file">Archivo (PDF, máx. 10 MB)</Label>
+                  <Label htmlFor="file">{t("documents.fields.file")}</Label>
                   <Input id="file" name="file" type="file" accept=".pdf,.jpg,.png" required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="expires_at">Fecha de vencimiento</Label>
+                  <Label htmlFor="expires_at">{t("documents.fields.expiresLabel")}</Label>
                   <Input id="expires_at" name="expires_at" type="date" />
                   <p className="text-xs text-muted-foreground">
-                    Te avisaremos 60, 30 y 7 días antes del vencimiento.
+                    {t("documents.fields.expiresHelp")}
                   </p>
                 </div>
                 <div className="flex gap-2 pt-2">
                   <Button type="button" variant="ghost" onClick={() => setUploading(null)} className="flex-1">
-                    Cancelar
+                    {t("documents.actions.cancel")}
                   </Button>
                   <Button type="submit" className="flex-1 gap-2">
                     <Upload className="h-4 w-4" />
-                    Subir
+                    {t("documents.actions.upload")}
                   </Button>
                 </div>
               </form>
