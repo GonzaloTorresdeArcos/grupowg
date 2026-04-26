@@ -42,14 +42,15 @@ Deno.serve(async (req) => {
       .eq("role", "admin");
 
     if (countErr) {
-      return new Response(JSON.stringify({ error: countErr.message }), {
+      console.error("[bootstrap-admin] count error", countErr);
+      return new Response(JSON.stringify({ error: "internal_error" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if ((count ?? 0) > 0) {
       return new Response(
-        JSON.stringify({ error: "Ya existe un administrador en el sistema. Pídele a un admin que te promocione." }),
+        JSON.stringify({ error: "admin_already_exists" }),
         { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -60,17 +61,19 @@ Deno.serve(async (req) => {
       .insert({ user_id: userData.user.id, role: "admin" });
 
     if (insertErr) {
-      return new Response(JSON.stringify({ error: insertErr.message }), {
+      console.error("[bootstrap-admin] insert error", insertErr);
+      return new Response(JSON.stringify({ error: "internal_error" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, message: "Eres el primer administrador" }), {
+    return new Response(JSON.stringify({ ok: true }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
+    console.error("[bootstrap-admin] unhandled", err);
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }),
+      JSON.stringify({ error: "internal_error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }

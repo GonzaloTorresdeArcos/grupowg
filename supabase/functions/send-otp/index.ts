@@ -6,7 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// Hash sencillo (no exponer códigos en claro). En producción usaríamos un servicio externo.
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+
 async function sha256(text: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -16,24 +21,25 @@ function generateCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) && s.length <= 320;
+const isPhone = (s: string) => /^\+?[\d\s().-]{6,32}$/.test(s);
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { action, channel, destination, code } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { action, channel, destination, code, resume_token } = body ?? {};
 
     if (!["email", "sms"].includes(channel)) {
-      return new Response(JSON.stringify({ error: "Canal inválido" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return json({ error: "invalid_channel" }, 400);
     }
-    if (!destination || typeof destination !== "string") {
-      return new Response(JSON.stringify({ error: "Destinatario requerido" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (typeof destination !== "string" || destination.length < 3 || destination.length > 320) {
+      return json({ error: "invalid_destination" }, 400);
     }
+    const dest = destination.toLowerCase().trim();
+    if (channel === "email" && !isEmail(dest)) return json({ error: "invalid_destination" }, 400);
+    if (channel === "sms" && !isPhone(dest)) return json({ error: "invalid_destination" }, 400);
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -41,52 +47,59 @@ Deno.serve(async (req) => {
     );
 
     if (action === "send") {
+      // Rate limit: max 3 sends per destination in last 10 minutes
+      const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      const { count: recentCount } = await supabase
+        .from("wg_otp_codes")
+        .select("id", { count: "exact", head: true })
+        .eq("channel", channel)
+        .eq("destination", dest)
+        .gte("created_at", tenMinAgo);
+
+      if ((recentCount ?? 0) >= 3) {
+        return json({ error: "rate_limited", message: "Too many requests. Try again in a few minutes." }, 429);
+      }
+
       const newCode = generateCode();
       const codeHash = await sha256(newCode);
 
-      // Invalidar códigos anteriores no consumidos del mismo destino
+      // Invalidate previous unused codes
       await supabase
         .from("wg_otp_codes")
         .update({ consumed_at: new Date().toISOString() })
         .eq("channel", channel)
-        .eq("destination", destination.toLowerCase())
+        .eq("destination", dest)
         .is("consumed_at", null);
 
       const { error } = await supabase.from("wg_otp_codes").insert({
         channel,
-        destination: destination.toLowerCase(),
+        destination: dest,
         code_hash: codeHash,
         expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("[send-otp][send] insert error", error);
+        return json({ error: "internal_error" }, 500);
+      }
 
-      // Devolvemos el código directamente (modo demo, sin coste de envío real).
-      // En producción aquí iría el envío real por email/SMS.
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          demo_code: newCode,
-          message: `Código enviado a ${destination}`,
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      // TODO production: deliver newCode via email (Resend) / SMS (Twilio).
+      // We never return the code to the caller.
+      console.info("[send-otp][send] code generated for", channel, dest);
+      return json({ ok: true, message: "Code sent" });
     }
 
     if (action === "verify") {
-      if (!code || typeof code !== "string") {
-        return new Response(JSON.stringify({ error: "Código requerido" }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+      if (typeof code !== "string" || !/^\d{6}$/.test(code)) {
+        return json({ error: "invalid_code" }, 400);
       }
 
       const codeHash = await sha256(code);
       const { data, error } = await supabase
         .from("wg_otp_codes")
-        .select("*")
+        .select("id")
         .eq("channel", channel)
-        .eq("destination", destination.toLowerCase())
+        .eq("destination", dest)
         .eq("code_hash", codeHash)
         .is("consumed_at", null)
         .gt("expires_at", new Date().toISOString())
@@ -94,33 +107,33 @@ Deno.serve(async (req) => {
         .limit(1)
         .maybeSingle();
 
-      if (error) throw error;
-      if (!data) {
-        return new Response(JSON.stringify({ ok: false, error: "Código no válido o expirado" }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+      if (error) {
+        console.error("[send-otp][verify] query error", error);
+        return json({ error: "internal_error" }, 500);
       }
+      if (!data) return json({ ok: false, error: "invalid_or_expired" }, 400);
 
       await supabase
         .from("wg_otp_codes")
         .update({ consumed_at: new Date().toISOString() })
         .eq("id", data.id);
 
-      return new Response(JSON.stringify({ ok: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      // If a resume_token was provided, flip the verification flag on the draft (server-only).
+      if (typeof resume_token === "string" && resume_token.length >= 16 && resume_token.length <= 128) {
+        const flag = channel === "email" ? "email_verified" : "phone_verified";
+        const { error: updErr } = await supabase
+          .from("wg_application_drafts")
+          .update({ [flag]: true })
+          .eq("resume_token", resume_token);
+        if (updErr) console.error("[send-otp][verify] draft flag error", updErr);
+      }
+
+      return json({ ok: true });
     }
 
-    return new Response(JSON.stringify({ error: "Acción no soportada" }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ error: "unsupported_action" }, 400);
   } catch (err) {
-    console.error("send-otp error", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("[send-otp] unhandled", err);
+    return json({ error: "internal_error" }, 500);
   }
 });

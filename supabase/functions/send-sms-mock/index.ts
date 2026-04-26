@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
     );
   } catch (err) {
     console.error("send-sms-mock error", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: "internal_error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
