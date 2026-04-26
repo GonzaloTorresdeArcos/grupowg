@@ -240,7 +240,35 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                   >
                     <span>{ccaa}</span>
                     <span className="text-[10px] font-normal opacity-80">
-                      {provs.filter((p) => selected.includes(p.code)).length}/{provs.length}
+                      {(() => {
+                        // Contador por "zonas operativas": si la provincia tiene
+                        // grupos jerárquicos (ej. Madrid → Centro / Á.Metro / Resto),
+                        // cuenta esos grupos en lugar de la provincia entera.
+                        let total = 0;
+                        let active = 0;
+                        for (const p of provs) {
+                          const groups = getGroupedLocalidades(p.code);
+                          const provGroupCount =
+                            groups.length > 1 || (groups[0]?.hasSubgroups ?? false)
+                              ? groups.length
+                              : 1;
+                          total += provGroupCount;
+                          if (selected.includes(p.code)) {
+                            // Resta los grupos completamente excluidos
+                            if (provGroupCount === 1) {
+                              active += 1;
+                            } else {
+                              const excludedGroups = groups.filter((g) =>
+                                g.localidades.every((l) =>
+                                  excluded.includes(localidadKey(p.code, l.name)),
+                                ),
+                              ).length;
+                              active += provGroupCount - excludedGroups;
+                            }
+                          }
+                        }
+                        return `${active}/${total}`;
+                      })()}
                     </span>
                   </button>
                 </div>
