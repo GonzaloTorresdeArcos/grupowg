@@ -145,7 +145,7 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
         <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur rounded-lg border border-border px-3 py-1.5 text-xs text-ink-soft flex items-center gap-1.5 pointer-events-none">
           <MapPin className="h-3 w-3 text-teal-deep" />
           {selected.length === 0
-            ? "Despliega CCAA y selecciona provincias o localidades a excluir"
+            ? "1) Despliega una CCAA  ·  2) Marca provincias  ·  3) Expande para excluir localidades"
             : `${selected.length} provincia${selected.length > 1 ? "s" : ""}${
                 excluded.length ? ` · ${excluded.length} localidad${excluded.length > 1 ? "es" : ""} excluida${excluded.length > 1 ? "s" : ""}` : ""
               }`}
