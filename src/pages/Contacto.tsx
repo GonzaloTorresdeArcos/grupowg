@@ -11,6 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
+import { PresenceMap } from "@/components/site/PresenceMap";
 import { toast } from "sonner";
 
 const MOTIVOS = [
