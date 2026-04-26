@@ -1382,6 +1382,16 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Sierra Noroeste": { level1: "Resto de Comunidad", level2: "Sierra Noroeste" },
   "Sierra Oeste": { level1: "Resto de Comunidad", level2: "Sierra Oeste" },
   "Vegas / Sureste rural": { level1: "Resto de Comunidad", level2: "Vegas / Sureste rural" },
+
+  // ─── Sevilla (41) ───
+  "Sevilla Capital": { level1: "Sevilla Capital" },
+  "SE Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "SE Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste / Aljarafe" },
+  "SE Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "SE Á. Metro Este": { level1: "Área metropolitana", level2: "Este" },
+  "SE Sierra Norte": { level1: "Resto provincia Sevilla", level2: "Sierra Norte" },
+  "SE Campiña Este": { level1: "Resto provincia Sevilla", level2: "Campiña / Este" },
+  "SE Sur Profundo": { level1: "Resto provincia Sevilla", level2: "Sur profundo" },
 };
 
 export interface LocalitySubgroup {
