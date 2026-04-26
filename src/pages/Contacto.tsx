@@ -749,13 +749,12 @@ const Contacto = () => {
           {/* LEFT */}
           <div className="md:col-span-5">
             <Reveal>
-              <p className="eyebrow-mono mb-4">Contacto</p>
+              <p className="eyebrow-mono mb-4">{t("hero.eyebrow")}</p>
               <h1 className="heading-display text-ink text-4xl sm:text-5xl md:text-7xl text-balance leading-[1.05] md:leading-[1.02] tracking-tight">
-                Hablemos.
+                {t("hero.title")}
               </h1>
               <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-md text-pretty">
-                Si eres fabricante, distribuidor, ecommerce, aseguradora, SAT o instalador,
-                cuéntanos qué necesitas resolver.
+                {t("hero.lead")}
               </p>
             </Reveal>
 
@@ -770,7 +769,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Email
+                      {t("sidebar.email")}
                     </span>
                     <span className="block text-sm font-medium text-ink truncate">
                       info@grupowg.com
@@ -787,7 +786,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Teléfono
+                      {t("sidebar.phone")}
                     </span>
                     <span className="block text-sm font-medium text-ink">
                       +34 900 000 000
@@ -801,10 +800,10 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Oficinas
+                      {t("sidebar.offices")}
                     </span>
                     <span className="block text-sm font-medium text-ink">
-                      Grupo Warranty Global · España
+                      {t("sidebar.officesValue")}
                     </span>
                   </span>
                 </div>
