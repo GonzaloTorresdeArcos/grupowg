@@ -1203,7 +1203,7 @@ const Contacto = () => {
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <Reveal>
-              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+              <article className="rounded-2xl border border-border bg-card text-card-foreground shadow-sm p-7 h-full">
                 <h3 className="font-display text-xl text-ink mb-4">Sede y direcciones</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Grupo Warranty Global opera desde su sede central en España, con presencia
