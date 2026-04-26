@@ -1,0 +1,11 @@
+{
+  "eyebrow": "02 · Le problème",
+  "title": "Aujourd'hui, le service après-vente <1>ne fonctionne pas comme un système</1>.",
+  "items": [
+    { "t": "Plusieurs prestataires sans coordination", "d": "Opérations fragmentées, responsabilités floues, escalades perdues." },
+    { "t": "Systèmes déconnectés", "d": "Données en silos. Aucune traçabilité réelle entre l'incident, l'exécution et la clôture." },
+    { "t": "Décisions sans critère technique", "d": "Affectations par géographie ou tarif, et non par capacité réelle ni connaissance produit." },
+    { "t": "Manque de visibilité", "d": "Le client final ne sait pas où en est son dossier. Vous non plus." }
+  ],
+  "result": "Résultat : <1>plus de coûts · plus d'incidents · pire expérience.</1>"
+}
