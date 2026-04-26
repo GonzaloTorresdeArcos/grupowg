@@ -32,42 +32,63 @@ const URGENCIAS = ["Estándar", "Alta", "Crítica"] as const;
 const RAMOS = ["Hogar", "Decesos", "Salud", "Auto", "Comercio", "Otro"] as const;
 const VEHICULOS = ["Turismo", "Furgoneta", "Industrial", "Moto", "Otro"] as const;
 
-const optionalString = (max: number) =>
-  z.string().trim().max(max, `Máximo ${max} caracteres`).optional().or(z.literal(""));
+type TFunc = (key: string, options?: Record<string, unknown>) => string;
 
-const baseSchema = z.object({
-  nombre: z.string().trim().min(1, "Requerido").max(120, "Máximo 120 caracteres"),
-  empresa: optionalString(200),
-  email: z.string().trim().email("Email no válido").max(255, "Máximo 255 caracteres"),
-  telefono: z
+const buildOptionalString = (max: number, t: TFunc) =>
+  z
     .string()
     .trim()
-    .max(20, "Máximo 20 caracteres")
-    .regex(/^[+\d\s().-]*$/, "Sólo dígitos y símbolos válidos")
+    .max(max, t("form.errors.max", { n: max }))
     .optional()
-    .or(z.literal("")),
-  motivo: z
-    .array(z.enum(motivoValues))
-    .min(1, "Selecciona al menos un motivo"),
-  // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
-  marca: optionalString(80),
-  numeroSerie: optionalString(60),
-  producto: optionalString(120),
-  urgencia: z.enum(URGENCIAS).optional(),
-  referencia: optionalString(80),
-  vehiculo: z.enum(VEHICULOS).optional(),
-  matricula: optionalString(15),
-  ramo: z.enum(RAMOS).optional(),
-  poliza: optionalString(60),
-  mensaje: z
-    .string()
-    .trim()
-    .min(10, "Cuéntanos un poco más")
-    .max(2000, "Máximo 2000 caracteres"),
-  consentimiento: z.literal(true, {
-    errorMap: () => ({ message: "Debes aceptar el tratamiento de datos para continuar" }),
-  }),
-});
+    .or(z.literal(""));
+
+const buildSchema = (t: TFunc) =>
+  z.object({
+    nombre: z
+      .string()
+      .trim()
+      .min(1, t("form.errors.required"))
+      .max(120, t("form.errors.max", { n: 120 })),
+    empresa: buildOptionalString(200, t),
+    email: z
+      .string()
+      .trim()
+      .email(t("form.errors.email"))
+      .max(255, t("form.errors.max", { n: 255 })),
+    telefono: z
+      .string()
+      .trim()
+      .max(20, t("form.errors.max", { n: 20 }))
+      .regex(/^[+\d\s().-]*$/, t("form.errors.phone"))
+      .optional()
+      .or(z.literal("")),
+    motivo: z.array(z.enum(motivoValues)).min(1, t("form.errors.motivoMin")),
+    // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
+    marca: buildOptionalString(80, t),
+    numeroSerie: buildOptionalString(60, t),
+    producto: buildOptionalString(120, t),
+    urgencia: z.enum(URGENCIAS).optional(),
+    referencia: buildOptionalString(80, t),
+    vehiculo: z.enum(VEHICULOS).optional(),
+    matricula: buildOptionalString(15, t),
+    ramo: z.enum(RAMOS).optional(),
+    poliza: buildOptionalString(60, t),
+    mensaje: z
+      .string()
+      .trim()
+      .min(10, t("form.errors.min"))
+      .max(2000, t("form.errors.max", { n: 2000 })),
+    consentimiento: z.literal(true, {
+      errorMap: () => ({ message: t("form.errors.consent") }),
+    }),
+  });
+
+// Schema "neutral" (en español) usado solo para inferir el tipo `FormData`.
+// Las validaciones reales pasan por `buildSchema(t)` dentro del componente.
+const baseSchema = buildSchema(((k: string, o?: Record<string, unknown>) => {
+  // Identidad: devuelve la clave para no romper inferencia
+  return o ? `${k}` : k;
+}) as TFunc);
 
 type FormData = z.infer<typeof baseSchema>;
 
