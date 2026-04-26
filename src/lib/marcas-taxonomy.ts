@@ -12,8 +12,8 @@ export type SatRelacion = "oficial" | "autorizado" | "multimarca";
 export const SAT_RELACIONES: { code: SatRelacion; label: string; hint: string }[] = [
   {
     code: "oficial",
-    label: "SAT Oficial",
-    hint: "Servicio Técnico Oficial reconocido por la marca, con contrato directo.",
+    label: "Servicio Técnico Oficial del Fabricante",
+    hint: "Servicio Técnico Oficial reconocido directamente por el fabricante, con contrato vigente.",
   },
   {
     code: "autorizado",
