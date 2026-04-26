@@ -1711,6 +1711,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "P Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
   "P Norte Montaña": { level1: "Resto provincia de Palencia", level2: "Norte (Montaña Palentina)" },
   "P Sur": { level1: "Resto provincia de Palencia", level2: "Sur" },
+
+  // ─── Salamanca (37) ───
+  "Salamanca Capital": { level1: "Salamanca capital" },
+  "SA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "SA Sur Ciudad Rodrigo": { level1: "Resto provincia de Salamanca", level2: "Sur (Ciudad Rodrigo)" },
+  "SA Este Peñaranda": { level1: "Resto provincia de Salamanca", level2: "Este / Peñaranda" },
+  "SA Oeste Frontera": { level1: "Resto provincia de Salamanca", level2: "Oeste / frontera" },
 };
 
 export interface LocalitySubgroup {
