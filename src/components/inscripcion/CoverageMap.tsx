@@ -52,6 +52,18 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
     onExcludedChange(excluded.includes(k) ? excluded.filter((x) => x !== k) : [...excluded, k]);
   };
 
+  /** Excluye o incluye en bloque un conjunto de localidades de una provincia. */
+  const toggleExclBulk = (provCode: string, names: string[]) => {
+    if (!onExcludedChange) return;
+    const keys = names.map((n) => localidadKey(provCode, n));
+    const allExcluded = keys.every((k) => excluded.includes(k));
+    if (allExcluded) {
+      onExcludedChange(excluded.filter((k) => !keys.includes(k)));
+    } else {
+      onExcludedChange(Array.from(new Set([...excluded, ...keys])));
+    }
+  };
+
   const toggleCcaaOpen = (ccaa: string) => {
     setOpenCcaa((prev) => {
       const n = new Set(prev);
