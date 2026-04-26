@@ -148,6 +148,51 @@ const Inscripcion = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, coberturas, datosSeguros, signerName, signerDni, step]);
 
+  // Autocompletado de localidad y provincia a partir del CP español.
+  // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
+  // Localidad se intenta obtener vía Zippopotam.us (gratuito, sin API key).
+  const [cpLookup, setCpLookup] = useState<"idle" | "loading" | "ok" | "notfound">("idle");
+  useEffect(() => {
+    const cp = s1.codigo_postal;
+    if (!/^\d{5}$/.test(cp)) {
+      setCpLookup("idle");
+      return;
+    }
+
+    // Provincia inmediata por prefijo
+    const prefix = cp.slice(0, 2);
+    const prov = provinciaByCode(prefix);
+    if (prov && s1.provincia_fiscal !== prov.name) {
+      setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
+    }
+
+    // Localidad: solo si el campo está vacío, no pisamos lo escrito por el usuario
+    if (s1.localidad.trim()) {
+      setCpLookup("ok");
+      return;
+    }
+
+    const ctrl = new AbortController();
+    setCpLookup("loading");
+    fetch(`https://api.zippopotam.us/es/${cp}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const place = data?.places?.[0]?.["place name"];
+        if (place) {
+          setS1((p) => (p.localidad ? p : { ...p, localidad: place }));
+          setCpLookup("ok");
+        } else {
+          setCpLookup("notfound");
+        }
+      })
+      .catch((err) => {
+        if (err?.name !== "AbortError") setCpLookup("notfound");
+      });
+
+    return () => ctrl.abort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s1.codigo_postal]);
+
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
