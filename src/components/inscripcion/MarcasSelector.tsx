@@ -184,7 +184,7 @@ export function MarcasSelector({
           );
         })}
         {filteredMarcas.length === 0 && (
-          <p className="col-span-full text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Sin resultados en esta gama.
           </p>
         )}
