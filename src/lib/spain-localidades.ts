@@ -758,16 +758,25 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "LE Sur · Astorga", cp: "24700" },
   ],
   "34": [ // Palencia
-    { name: "Palencia", cp: "34001" },
-    { name: "Aguilar de Campoo", cp: "34800" },
-    { name: "Guardo", cp: "34880" },
-    { name: "Venta de Baños", cp: "34200" },
-    { name: "Carrión de los Condes", cp: "34120" },
-    { name: "Saldaña", cp: "34100" },
-    { name: "Dueñas", cp: "34210" },
-    { name: "Villamuriel de Cerrato", cp: "34190" },
-    { name: "Paredes de Nava", cp: "34300" },
-    { name: "Cervera de Pisuerga", cp: "34840" },
+    // ───── 3.1 Palencia capital ─────
+    { name: "Palencia Capital · Centro", cp: "34001" },
+    { name: "Palencia Capital · San Antonio", cp: "34004" },
+    { name: "Palencia Capital · Allende el Río", cp: "34005" },
+    { name: "Palencia Capital · El Cristo", cp: "34006" },
+    { name: "Palencia Capital · Ave María", cp: "34003" },
+
+    // ───── 3.2 Área metropolitana ─────
+    // 3.2.1 Cinturón cercano
+    { name: "P Á. Metro Cercano · Villamuriel de Cerrato", cp: "34190" },
+    { name: "P Á. Metro Cercano · Grijota", cp: "34192" },
+
+    // ───── 3.3 Resto provincia de Palencia ─────
+    // 3.3.1 Norte (Montaña Palentina)
+    { name: "P Norte Montaña · Aguilar de Campoo", cp: "34800" },
+    { name: "P Norte Montaña · Guardo", cp: "34880" },
+    // 3.3.2 Sur
+    { name: "P Sur · Venta de Baños", cp: "34200" },
+    { name: "P Sur · Dueñas", cp: "34210" },
   ],
   "37": [ // Salamanca
     { name: "Salamanca", cp: "37001" },
@@ -1688,6 +1697,12 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "LE Ponferrada": { level1: "Resto provincia de León", level2: "Ponferrada" },
   "LE Norte Montaña": { level1: "Resto provincia de León", level2: "Norte / Montaña" },
   "LE Sur": { level1: "Resto provincia de León", level2: "Sur" },
+
+  // ─── Palencia (34) ───
+  "Palencia Capital": { level1: "Palencia capital" },
+  "P Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "P Norte Montaña": { level1: "Resto provincia de Palencia", level2: "Norte (Montaña Palentina)" },
+  "P Sur": { level1: "Resto provincia de Palencia", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
