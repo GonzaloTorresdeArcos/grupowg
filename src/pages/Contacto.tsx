@@ -488,7 +488,12 @@ const Contacto = () => {
     toast.success("Mensaje recibido");
   };
 
-  const motivoLabel = MOTIVOS.find((m) => m.value === form.motivo)?.label ?? "—";
+  const motivoLabel =
+    (form.motivo || []).length === 0
+      ? "—"
+      : MOTIVOS.filter((m) => (form.motivo || []).includes(m.value))
+          .map((m) => m.label)
+          .join(", ");
 
   return (
     <>
