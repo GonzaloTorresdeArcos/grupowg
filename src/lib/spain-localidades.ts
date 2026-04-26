@@ -779,19 +779,27 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "P Sur · Dueñas", cp: "34210" },
   ],
   "37": [ // Salamanca
-    { name: "Salamanca", cp: "37001" },
-    { name: "Béjar", cp: "37700" },
-    { name: "Ciudad Rodrigo", cp: "37500" },
-    { name: "Santa Marta de Tormes", cp: "37900" },
-    { name: "Villares de la Reina", cp: "37184" },
-    { name: "Carbajosa de la Sagrada", cp: "37188" },
-    { name: "Villamayor", cp: "37185" },
-    { name: "Guijuelo", cp: "37770" },
-    { name: "Peñaranda de Bracamonte", cp: "37300" },
-    { name: "Vitigudino", cp: "37210" },
-    { name: "Alba de Tormes", cp: "37800" },
-    { name: "Cabrerizos", cp: "37193" },
-    { name: "Castellanos de Moriscos", cp: "37439" },
+    // ───── 4.1 Salamanca capital ─────
+    { name: "Salamanca Capital · Centro", cp: "37001" },
+    { name: "Salamanca Capital · Garrido", cp: "37006" },
+    { name: "Salamanca Capital · Pizarrales", cp: "37005" },
+    { name: "Salamanca Capital · San José", cp: "37004" },
+    { name: "Salamanca Capital · Capuchinos", cp: "37003" },
+    { name: "Salamanca Capital · Vidal", cp: "37008" },
+
+    // ───── 4.2 Área metropolitana ─────
+    // 4.2.1 Cinturón cercano
+    { name: "SA Á. Metro Cercano · Santa Marta de Tormes", cp: "37900" },
+    { name: "SA Á. Metro Cercano · Carbajosa de la Sagrada", cp: "37188" },
+    { name: "SA Á. Metro Cercano · Villares de la Reina", cp: "37184" },
+
+    // ───── 4.3 Resto provincia de Salamanca ─────
+    // 4.3.1 Sur (Ciudad Rodrigo)
+    { name: "SA Sur Ciudad Rodrigo · Ciudad Rodrigo", cp: "37500" },
+    // 4.3.2 Este / Peñaranda
+    { name: "SA Este Peñaranda · Peñaranda de Bracamonte", cp: "37300" },
+    // 4.3.3 Oeste / frontera
+    { name: "SA Oeste Frontera · Vitigudino", cp: "37210" },
   ],
   "40": [ // Segovia
     { name: "Segovia", cp: "40001" },
@@ -1703,6 +1711,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "P Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
   "P Norte Montaña": { level1: "Resto provincia de Palencia", level2: "Norte (Montaña Palentina)" },
   "P Sur": { level1: "Resto provincia de Palencia", level2: "Sur" },
+
+  // ─── Salamanca (37) ───
+  "Salamanca Capital": { level1: "Salamanca capital" },
+  "SA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "SA Sur Ciudad Rodrigo": { level1: "Resto provincia de Salamanca", level2: "Sur (Ciudad Rodrigo)" },
+  "SA Este Peñaranda": { level1: "Resto provincia de Salamanca", level2: "Este / Peñaranda" },
+  "SA Oeste Frontera": { level1: "Resto provincia de Salamanca", level2: "Oeste / frontera" },
 };
 
 export interface LocalitySubgroup {
