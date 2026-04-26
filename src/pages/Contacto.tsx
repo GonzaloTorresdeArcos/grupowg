@@ -287,15 +287,21 @@ const Contacto = () => {
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  // Toggle de motivo (multi-selección): añade/quita y limpia campos condicionales huérfanos
+  // Defaults sensatos al marcar un motivo (solo se aplican si el campo está vacío)
+  const defaultsByMotivo: Partial<Record<MotivoValue, Partial<FormData>>> = {
+    reparaciones: { urgencia: "Estándar" },
+    movilidad: { vehiculo: "Turismo" },
+    seguros: { ramo: "Hogar" },
+  };
+
+  // Toggle de motivo (multi-selección): añade/quita, limpia huérfanos y prerrellena defaults
   const toggleMotivo = (value: MotivoValue) => {
     setForm((f) => {
       const current = (f.motivo || []) as MotivoValue[];
-      const next = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
+      const isAdding = !current.includes(value);
+      const next = isAdding ? [...current, value] : current.filter((v) => v !== value);
       const activeFields = getActiveFields(next);
-      // Limpia valores de campos condicionales que ya no aplican
+      // Limpia valores de campos condicionales que ya no aplican a ningún motivo activo
       const cleaned: Partial<FormData> = {};
       ALL_CONDITIONAL_FIELDS.forEach((field) => {
         if (!activeFields.has(field as string)) {
@@ -303,7 +309,18 @@ const Contacto = () => {
             field === "urgencia" || field === "vehiculo" || field === "ramo" ? undefined : "";
         }
       });
-      return { ...f, ...cleaned, motivo: next };
+      // Prerrellena defaults del motivo recién marcado (sin pisar valores existentes)
+      const prefilled: Partial<FormData> = {};
+      if (isAdding) {
+        const defs = defaultsByMotivo[value] || {};
+        Object.entries(defs).forEach(([k, v]) => {
+          const currentVal = (f as Record<string, unknown>)[k];
+          const isEmpty =
+            currentVal === undefined || currentVal === null || currentVal === "";
+          if (isEmpty) (prefilled as Record<string, unknown>)[k] = v;
+        });
+      }
+      return { ...f, ...cleaned, ...prefilled, motivo: next };
     });
     markTouched("motivo");
     const nextActive = getActiveFields(
