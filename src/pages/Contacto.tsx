@@ -426,7 +426,7 @@ const Contacto = () => {
     setTouched({});
     setStep("form");
     setConsentAt(null);
-    toast.success("Borrador descartado");
+    toast.success(t("form.discardDraft"));
   };
 
   const allErrors = useMemo(() => validateAll(form), [form]);
@@ -507,9 +507,8 @@ const Contacto = () => {
   };
 
   useEffect(() => {
-    const TITLE = "Contacto · Grupo WG | Hablemos de tu servicio postventa";
-    const DESC =
-      "Contacta con Grupo WG. Convertimos el servicio postventa en un sistema bajo control: garantías, reparaciones, repuestos, movilidad y seguros.";
+    const TITLE = t("seo.title");
+    const DESC = t("seo.description");
     const ORIGIN =
       typeof window !== "undefined" ? window.location.origin : "https://grupowg.lovable.app";
     const URL = `${ORIGIN}/contacto`;
@@ -615,7 +614,7 @@ const Contacto = () => {
     return () => {
       document.getElementById(ldId)?.remove();
     };
-  }, []);
+  }, [t]);
 
   // Orden visual de los campos para focus al primer error
   const FIELD_ORDER: Array<keyof FormData> = [
@@ -699,7 +698,7 @@ const Contacto = () => {
       const t: Record<string, boolean> = {};
       Object.keys(errors).forEach((k) => (t[k] = true));
       setTouched((prev) => ({ ...prev, ...t }));
-      toast.error("Revisa los campos marcados");
+      toast.error(t("form.errors.reviewToast"));
       focusFirstError(errors);
       return;
     }
@@ -717,7 +716,7 @@ const Contacto = () => {
       Object.keys(errors).forEach((k) => (t[k] = true));
       setTouched((prev) => ({ ...prev, ...t }));
       setStep("form");
-      toast.error("Faltan datos por completar antes de enviar");
+      toast.error(t("form.errors.sendToast"));
       requestAnimationFrame(() => {
         const firstKey = FIELD_ORDER.find((k) => errors[k as string]);
         if (firstKey) scrollToField(firstKey as string);
@@ -729,7 +728,7 @@ const Contacto = () => {
     setLoading(false);
     setSent(true);
     clearDraft();
-    toast.success("Mensaje recibido");
+    toast.success(t("form.success.title"));
   };
 
   const motivoLabel =
