@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { STATUS_LABELS, familiaLabel } from "@/lib/catalogos";
+import { useTranslation } from "react-i18next";
 
 type AssignedIncidence = {
   id: string;
@@ -41,6 +42,10 @@ const statusLabel: Record<string, string> = {
 };
 
 const PortalDashboard = () => {
+  const { t, i18n } = useTranslation("portal");
+  const locale = i18n.language?.startsWith("es") ? "es-ES" :
+                 i18n.language?.startsWith("pt") ? "pt-PT" :
+                 i18n.language?.startsWith("fr") ? "fr-FR" : "en-GB";
   const { profile, user } = useAuth();
   const todayAppts = mockAppointments
     .filter((a) => new Date(a.scheduledAt).toDateString() === new Date().toDateString())
