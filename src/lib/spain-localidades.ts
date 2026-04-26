@@ -2053,6 +2053,40 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "BA Campiña Sur": { level1: "Resto provincia de Badajoz", level2: "Campiña Sur" },
   "BA Vegas Altas": { level1: "Resto provincia de Badajoz", level2: "Vegas Altas / Guadiana" },
   "BA La Siberia": { level1: "Resto provincia de Badajoz", level2: "Este / La Siberia" },
+
+  // ─── A Coruña (15) ───
+  "A Coruña Capital": { level1: "A Coruña capital" },
+  "C Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "C Ferrolterra": { level1: "Resto provincia de A Coruña", level2: "Ferrolterra" },
+  "C Santiago": { level1: "Resto provincia de A Coruña", level2: "Santiago / área central" },
+  "C Barbanza": { level1: "Resto provincia de A Coruña", level2: "Barbanza" },
+  "C Costa da Morte": { level1: "Resto provincia de A Coruña", level2: "Costa da Morte" },
+  "C Interior Betanzos": { level1: "Resto provincia de A Coruña", level2: "Interior / Betanzos" },
+
+  // ─── Lugo (27) ───
+  "Lugo Capital": { level1: "Lugo capital" },
+  "LU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "LU A Mariña": { level1: "Resto provincia de Lugo", level2: "A Mariña" },
+  "LU Terra Chá": { level1: "Resto provincia de Lugo", level2: "Terra Chá / Norte interior" },
+  "LU Sur Ribeira Sacra": { level1: "Resto provincia de Lugo", level2: "Sur / Ribeira Sacra" },
+  "LU Interior Camino": { level1: "Resto provincia de Lugo", level2: "Interior / Camino" },
+
+  // ─── Ourense (32) ───
+  "Ourense Capital": { level1: "Ourense capital" },
+  "OU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "OU Verín Sur": { level1: "Resto provincia de Ourense", level2: "Verín / Sur" },
+  "OU Ribeiro Oeste": { level1: "Resto provincia de Ourense", level2: "Ribeiro / Oeste" },
+  "OU Valdeorras Este": { level1: "Resto provincia de Ourense", level2: "Valdeorras / Este" },
+  "OU Ribeira Sacra Norte": { level1: "Resto provincia de Ourense", level2: "Ribeira Sacra / Norte" },
+
+  // ─── Pontevedra (36) ───
+  "Pontevedra Capital": { level1: "Pontevedra capital" },
+  "PO Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "PO Vigo Á. Metro": { level1: "Resto provincia de Pontevedra", level2: "Vigo / área metropolitana" },
+  "PO Morrazo": { level1: "Resto provincia de Pontevedra", level2: "Morrazo" },
+  "PO O Salnés": { level1: "Resto provincia de Pontevedra", level2: "O Salnés" },
+  "PO Baixo Miño": { level1: "Resto provincia de Pontevedra", level2: "Baixo Miño" },
+  "PO Interior Deza": { level1: "Resto provincia de Pontevedra", level2: "Interior / Deza-Tabeirós" },
 };
 
 export interface LocalitySubgroup {
