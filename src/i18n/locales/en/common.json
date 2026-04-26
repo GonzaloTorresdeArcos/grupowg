@@ -6,5 +6,8 @@
   "next": "Next",
   "send": "Send",
   "edit": "Edit",
-  "close": "Close"
+  "close": "Close",
+  "contactCta": "Contact",
+  "requestInfo": "Request information",
+  "talkToTeam": "Talk to our team"
 }
