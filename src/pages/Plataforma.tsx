@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHero } from "@/components/site/PageHero";
 import { PlatformBlock } from "@/components/home/os/PlatformBlock";
 import { IntelligenceBlock } from "@/components/home/os/IntelligenceBlock";
@@ -6,39 +7,35 @@ import { ExperienceGovernanceBlock } from "@/components/home/os/ExperienceGovern
 import { ClosingBlock } from "@/components/home/os/ClosingBlock";
 
 const Plataforma = () => {
+  const { t } = useTranslation("plataforma");
+
   useEffect(() => {
-    document.title = "WG Service OS · Plataforma de servicio postventa";
+    document.title = t("seo.title");
     let m = document.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");
       m.setAttribute("name", "description");
       document.head.appendChild(m);
     }
-    m.setAttribute(
-      "content",
-      "WG Service OS: el sistema que conecta, ejecuta y controla todo el servicio postventa. Core, módulos (Execute, Control Tower, Scale) y capas de inteligencia técnica, producto, RMA, supply y automation.",
-    );
-  }, []);
+    m.setAttribute("content", t("seo.description"));
+  }, [t]);
 
   return (
     <>
       <PageHero
         title={
           <>
-            WG Service OS.{" "}
-            <span className="text-teal italic">El sistema</span> que conecta, ejecuta y controla.
+            {t("hero.titleA")}{" "}
+            <span className="text-teal italic">{t("hero.titleB")}</span> {t("hero.titleC")}
           </>
         }
-        subtitle="El servicio postventa no es una suma de partes. Es un sistema que debe funcionar de forma coordinada. Integramos operación, control e inteligencia en una única plataforma para ejecutar, medir y optimizar de principio a fin."
-        cta={{ label: "Hablar con nuestro equipo", to: "/contacto" }}
+        subtitle={t("hero.subtitle")}
+        cta={{ label: t("hero.cta"), to: "/contacto" }}
       />
       <PlatformBlock />
       <IntelligenceBlock />
       <ExperienceGovernanceBlock />
-      <ClosingBlock
-        lineOne="Una plataforma. Un sistema."
-        lineTwo="Control total del servicio."
-      />
+      <ClosingBlock lineOne={t("closing.lineOne")} lineTwo={t("closing.lineTwo")} />
     </>
   );
 };

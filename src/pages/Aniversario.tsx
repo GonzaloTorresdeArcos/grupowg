@@ -1,14 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { SimplePage } from "@/components/site/SimplePage";
 import { AnniversarySection } from "@/components/home/AnniversarySection";
 
-const Aniversario = () => (
-  <>
-    <SimplePage
-      eyebrow="Grupo Warranty Global (1976 — 2026)"
-      title="50 años haciendo del servicio nuestra forma de estar."
-      intro="Así nos enseñaron a hacer las cosas."
-    />
-    <AnniversarySection />
-  </>
-);
+const Aniversario = () => {
+  const { t } = useTranslation("aniversario");
+  return (
+    <>
+      <SimplePage eyebrow={t("eyebrow")} title={t("title")} intro={t("intro")} />
+      <AnniversarySection />
+    </>
+  );
+};
+
 export default Aniversario;
