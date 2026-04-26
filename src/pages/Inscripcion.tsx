@@ -717,7 +717,12 @@ const Inscripcion = () => {
 
             <div>
               <p className="block text-sm font-medium text-ink mb-3">Zona de cobertura</p>
-              <CoverageMap selected={provinciaCodes} onChange={setProvinciaCodes} />
+              <CoverageMap
+                selected={provinciaCodes}
+                onChange={setProvinciaCodes}
+                excluded={localidadesExcluidas}
+                onExcludedChange={setLocalidadesExcluidas}
+              />
             </div>
 
             <Field label="Familias de producto atendidas">
