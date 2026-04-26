@@ -98,6 +98,7 @@ const Inscripcion = () => {
   const [serviciosSel, setServiciosSel] = useState<string[]>([]);
   const [horarios, setHorarios] = useState("");
   const [capacidad, setCapacidad] = useState("");
+  const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
@@ -128,6 +129,7 @@ const Inscripcion = () => {
     if (d.serviciosSel) setServiciosSel(d.serviciosSel);
     if (d.horarios) setHorarios(d.horarios);
     if (d.capacidad) setCapacidad(d.capacidad);
+    if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
@@ -147,11 +149,11 @@ const Inscripcion = () => {
       current_step: step,
       form_data: {
         s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad,
-        coberturas, datosSeguros, signerName, signerDni,
+        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, coberturas, datosSeguros, signerName, signerDni, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, step]);
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
@@ -715,7 +717,12 @@ const Inscripcion = () => {
 
             <div>
               <p className="block text-sm font-medium text-ink mb-3">Zona de cobertura</p>
-              <CoverageMap selected={provinciaCodes} onChange={setProvinciaCodes} />
+              <CoverageMap
+                selected={provinciaCodes}
+                onChange={setProvinciaCodes}
+                excluded={localidadesExcluidas}
+                onExcludedChange={setLocalidadesExcluidas}
+              />
             </div>
 
             <Field label="Familias de producto atendidas">
