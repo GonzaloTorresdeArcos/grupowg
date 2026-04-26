@@ -1,0 +1,59 @@
+{
+  "title": "O modelo não muda. Muda <1>onde colocamos o controlo</1> e o que otimizamos.",
+  "lead": "O desempenho é sempre o resultado de um sistema coordenado.",
+  "mattersLabel": "O que lhes importa",
+  "applyLabel": "Como aplicamos",
+  "achieveLabel": "O que conseguimos",
+  "clientsLabel": "Clientes",
+  "items": [
+    {
+      "name": "Fabricantes",
+      "matters": "Custo de garantia sobre vendas · qualidade do produto em campo · First Time Fix · Turnaround Time · controlo da rede técnica · impacto direto na P&L.",
+      "apply": "O serviço é gerido como uma alavanca de controlo financeiro e de qualidade. Validação técnica, dados de falha em campo em tempo real e melhoria contínua do produto.",
+      "achieve": "Redução do custo de garantia, melhoria mensurável da qualidade e transformação da falha em informação útil para o produto.",
+      "clients": "Vestel · Cecotec · Sauber · Evvo",
+      "closing": "O serviço deixa de ser um custo. Passa a ser um sistema de controlo do negócio."
+    },
+    {
+      "name": "Retalho",
+      "matters": "Experiência do cliente em loja · rapidez de resolução · visibilidade operacional · redução de incidentes · coordenação com vários fornecedores.",
+      "apply": "O serviço integra-se como parte da experiência de compra: priorizamos o front, aceleramos atribuição e recolhas, coordenamos rede técnica e logística e damos visibilidade contínua.",
+      "achieve": "Melhor experiência do cliente, menor carga operacional na loja, maior rapidez de resolução e controlo diário do serviço.",
+      "clients": "Carrefour · Alcampo · Eroski · Makro",
+      "closing": "O serviço deixa de ser fricção e passa a ser parte da experiência."
+    },
+    {
+      "name": "Seguros",
+      "matters": "Controlo do custo de sinistros · eficiência do processo · tempos de resolução · escalabilidade · satisfação do segurado.",
+      "apply": "O serviço é gerido como um processo de controlo financeiro. Estruturamos a validação de casos, automatizamos decisões quando aplicável e monitorizamos KPIs financeiros e operacionais.",
+      "achieve": "Redução do custo de sinistros, maior controlo do processo, melhoria dos tempos de resolução e escalabilidade operacional.",
+      "clients": "Assurant · AIG · Caser · Companjon · Pelayo · Plus Ultra · Seyna",
+      "closing": "O serviço transforma-se numa ferramenta de controlo financeiro."
+    },
+    {
+      "name": "Eletrónica & distribuição",
+      "matters": "Custo do serviço · rapidez · redução de devoluções · eficiência operacional.",
+      "apply": "Otimizamos o sistema para eficiência e custo. Ajustamos a atribuição de rede, otimizamos peças e supply chain, reduzimos intervenções desnecessárias e melhoramos o diagnóstico.",
+      "achieve": "Menor custo por intervenção, redução de devoluções e maior eficiência operacional.",
+      "clients": "ElectroDepot · PC Componentes · Jocel · Telefac · Neumesse · Acadesa",
+      "closing": "O serviço transforma-se numa alavanca direta de eficiência."
+    },
+    {
+      "name": "Mobilidade",
+      "matters": "Capilaridade da rede · rapidez de resposta · experiência do utilizador · segurança.",
+      "apply": "O serviço adapta-se a um ambiente distribuído: implementamos redes técnicas capilares, priorizamos tempos de resposta, simplificamos diagnóstico e coordenamos intervenção no terreno.",
+      "achieve": "Maior cobertura, menor tempo de resposta e experiência homogénea independentemente do território.",
+      "clients": "Navee · Nilox · Denver · Ducati · Aprilia · Jeep · Lamborghini · Red Bull",
+      "closing": "O serviço acontece onde está o cliente."
+    },
+    {
+      "name": "Utilities",
+      "matters": "Disponibilidade contínua · cumprimento de SLA · continuidade do serviço · fidelização.",
+      "apply": "O serviço é gerido como infraestrutura crítica. Garantimos disponibilidade constante, priorizamos atribuição imediata, controlamos SLA em tempo real e asseguramos comunicação contínua.",
+      "achieve": "Cumprimento de SLA, maior continuidade de serviço e melhor experiência do cliente final.",
+      "clients": "Programas operados com empresas líderes do setor",
+      "closing": "O serviço transforma-se em infraestrutura."
+    }
+  ],
+  "synthesis": "Um mesmo sistema. Diferentes prioridades. <1>Um único resultado: controlo e desempenho.</1>"
+}

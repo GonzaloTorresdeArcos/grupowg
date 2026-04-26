@@ -1,0 +1,59 @@
+{
+  "title": "The model doesn't change. What changes is <1>where we place control</1> and what we optimise.",
+  "lead": "Performance is always the result of a coordinated system.",
+  "mattersLabel": "What matters to them",
+  "applyLabel": "How we apply it",
+  "achieveLabel": "What we achieve",
+  "clientsLabel": "Clients",
+  "items": [
+    {
+      "name": "Manufacturers",
+      "matters": "Warranty cost over sales · in-field product quality · First Time Fix · Turnaround Time · service network control · direct impact on P&L.",
+      "apply": "Service is managed as a financial and quality control lever. Technical validation, real-time in-field failure data and continuous product improvement.",
+      "achieve": "Reduced warranty cost, measurable quality improvement and turning failure into useful information for the product.",
+      "clients": "Vestel · Cecotec · Sauber · Evvo",
+      "closing": "Service stops being a cost. It becomes a business control system."
+    },
+    {
+      "name": "Retail",
+      "matters": "In-store customer experience · resolution speed · operational visibility · incident reduction · coordination across multiple providers.",
+      "apply": "Service is integrated as part of the buying experience: we prioritise the front office, speed up assignment and pickups, coordinate the service network and logistics, and provide continuous visibility.",
+      "achieve": "Better customer experience, less operational load in store, faster resolution and daily control of the service.",
+      "clients": "Carrefour · Alcampo · Eroski · Makro",
+      "closing": "Service stops being friction and becomes part of the experience."
+    },
+    {
+      "name": "Insurance",
+      "matters": "Claim cost control · process efficiency · resolution times · scalability · policyholder satisfaction.",
+      "apply": "Service is managed as a financial control process. We structure case validation, automate decisions where applicable and monitor financial and operational KPIs.",
+      "achieve": "Lower claim costs, greater process control, better resolution times and operational scalability.",
+      "clients": "Assurant · AIG · Caser · Companjon · Pelayo · Plus Ultra · Seyna",
+      "closing": "Service becomes a financial control tool."
+    },
+    {
+      "name": "Electronics & distribution",
+      "matters": "Service cost · speed · returns reduction · operational efficiency.",
+      "apply": "We optimise the system for efficiency and cost. We fine-tune network assignment, optimise spare parts and supply chain, reduce unnecessary interventions and improve diagnosis.",
+      "achieve": "Lower cost per intervention, fewer returns and higher operational efficiency.",
+      "clients": "ElectroDepot · PC Componentes · Jocel · Telefac · Neumesse · Acadesa",
+      "closing": "Service becomes a direct efficiency lever."
+    },
+    {
+      "name": "Mobility",
+      "matters": "Network capillarity · response speed · user experience · safety.",
+      "apply": "Service adapts to a distributed environment: we deploy capillary service networks, prioritise response times, simplify diagnosis and coordinate field interventions.",
+      "achieve": "Greater coverage, shorter response times and a consistent experience regardless of territory.",
+      "clients": "Navee · Nilox · Denver · Ducati · Aprilia · Jeep · Lamborghini · Red Bull",
+      "closing": "Service happens where the customer is."
+    },
+    {
+      "name": "Utilities",
+      "matters": "Continuous availability · SLA compliance · service continuity · loyalty.",
+      "apply": "Service is managed as critical infrastructure. We guarantee constant availability, prioritise immediate assignment, control SLAs in real time and ensure continuous communication.",
+      "achieve": "SLA compliance, greater service continuity and a better end-customer experience.",
+      "clients": "Programmes operated with leading companies in the sector",
+      "closing": "Service becomes infrastructure."
+    }
+  ],
+  "synthesis": "One system. Different priorities. <1>One single result: control and performance.</1>"
+}
