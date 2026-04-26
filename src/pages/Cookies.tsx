@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { SimplePage } from "@/components/site/SimplePage";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
 
