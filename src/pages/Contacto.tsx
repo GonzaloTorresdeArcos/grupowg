@@ -212,7 +212,14 @@ const Contacto = () => {
   useEffect(() => {
     const draft = loadDraft();
     if (draft && isDraftMeaningful(draft.form)) {
-      setForm(draft.form);
+      // Normaliza motivo: drafts antiguos pueden tener un string en vez de array
+      const rawMotivo = (draft.form as unknown as { motivo?: unknown }).motivo;
+      const normalizedMotivo: MotivoValue[] = Array.isArray(rawMotivo)
+        ? (rawMotivo as MotivoValue[])
+        : typeof rawMotivo === "string" && rawMotivo
+          ? [rawMotivo as MotivoValue]
+          : [];
+      setForm({ ...draft.form, motivo: normalizedMotivo });
       setStep(draft.step ?? "form");
       setRestored(new Date(draft.savedAt));
       if (draft.consentAt && draft.form.consentimiento) {
