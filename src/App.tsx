@@ -34,6 +34,7 @@ import PortalInvoices from "./pages/portal/Invoices.tsx";
 import PortalProfile from "./pages/portal/Profile.tsx";
 import PortalIncidencias from "./pages/portal/Incidencias.tsx";
 import PortalIncidenciaDetail from "./pages/portal/IncidenciaDetail.tsx";
+import PortalI18nDebug from "./pages/PortalI18nDebug.tsx";
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
 import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
 import { ConsentScripts } from "./components/site/ConsentScripts.tsx";
@@ -70,6 +71,9 @@ const App = () => (
                 <Route path="/legal/accesibilidad" element={<Accesibilidad />} />
                 <Route path="/legal/accesibilidad/estado" element={<AccesibilidadEstado />} />
               </Route>
+
+              {/* Debug i18n (no listado, no indexado) */}
+              <Route path="/portal-i18n-debug" element={<PortalI18nDebug />} />
 
               {/* Portal del colaborador */}
               <Route path="/portal/login" element={<PortalLogin />} />

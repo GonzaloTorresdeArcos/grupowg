@@ -10,9 +10,8 @@
  * Acceso: /portal-i18n-debug (no enlazada en navegación pública).
  * Pensada para QA antes del build de producción.
  */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Helmet } from "react-helmet-async";
 import { SUPPORTED_LANGS, type AppLang } from "@/i18n";
 import i18n from "@/i18n";
 
@@ -82,13 +81,19 @@ export default function PortalI18nDebug() {
 
   const totalIssues = report.reduce((acc, r) => acc + r.issues.length, 0);
 
+  useEffect(() => {
+    document.title = "i18n Debug · portal namespace";
+    let meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "robots";
+      document.head.appendChild(meta);
+    }
+    meta.content = "noindex,nofollow";
+  }, []);
+
   return (
     <main className="min-h-screen bg-background text-foreground p-8">
-      <Helmet>
-        <title>i18n Debug · portal namespace</title>
-        <meta name="robots" content="noindex,nofollow" />
-      </Helmet>
-
       <div className="mx-auto max-w-4xl space-y-8">
         <header>
           <p className="eyebrow mb-2">Debug</p>
@@ -109,7 +114,9 @@ export default function PortalI18nDebug() {
 
         <section
           className={`rounded-lg border p-4 ${
-            totalIssues === 0 ? "border-green-500/40 bg-green-500/5" : "border-amber-500/40 bg-amber-500/5"
+            totalIssues === 0
+              ? "border-emerald-500/40 bg-emerald-500/5"
+              : "border-amber-500/40 bg-amber-500/5"
           }`}
         >
           <h2 className="font-medium">
