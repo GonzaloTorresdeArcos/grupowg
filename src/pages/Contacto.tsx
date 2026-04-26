@@ -44,7 +44,9 @@ const baseSchema = z.object({
     .regex(/^[+\d\s().-]*$/, "Sólo dígitos y símbolos válidos")
     .optional()
     .or(z.literal("")),
-  motivo: z.enum(motivoValues, { message: "Selecciona un motivo" }),
+  motivo: z
+    .array(z.enum(motivoValues))
+    .min(1, "Selecciona al menos un motivo"),
   // Campos por motivo (todos opcionales en base; se requieren condicionalmente más abajo)
   marca: optionalString(80),
   numeroSerie: optionalString(60),
@@ -98,26 +100,40 @@ const ALL_CONDITIONAL_FIELDS: Array<keyof FormData> = [
   "poliza",
 ];
 
+const getActiveFields = (motivos: MotivoValue[]): Set<string> => {
+  const set = new Set<string>();
+  motivos.forEach((m) => {
+    (fieldsByMotivo[m] || []).forEach((f) => set.add(f as string));
+  });
+  return set;
+};
+
+const getRequiredFields = (motivos: MotivoValue[]): Array<keyof FormData> => {
+  const out = new Set<keyof FormData>();
+  motivos.forEach((m) => {
+    (requiredByMotivo[m] || []).forEach((f) => out.add(f));
+  });
+  return Array.from(out);
+};
+
 const validateAll = (data: FormData) => {
   const r = baseSchema.safeParse(data);
   const errors: Record<string, string> = {};
-  const activeFields = new Set<string>(
-    (fieldsByMotivo[data.motivo as MotivoValue] || []) as string[],
-  );
+  const motivos = (data.motivo || []) as MotivoValue[];
+  const activeFields = getActiveFields(motivos);
 
   if (!r.success) {
     r.error.issues.forEach((i) => {
       const key = i.path[0] as string;
-      // Ignora errores de campos condicionales que no pertenecen al motivo activo
+      // Ignora errores de campos condicionales que no pertenecen a ningún motivo activo
       if (ALL_CONDITIONAL_FIELDS.includes(key as keyof FormData) && !activeFields.has(key)) {
         return;
       }
       errors[key] = i.message;
     });
   }
-  // Validación condicional: campos requeridos del motivo activo
-  const required = requiredByMotivo[data.motivo as MotivoValue] || [];
-  required.forEach((field) => {
+  // Validación condicional: campos requeridos para los motivos activos
+  getRequiredFields(motivos).forEach((field) => {
     const v = (data as Record<string, unknown>)[field];
     if (!v || (typeof v === "string" && v.trim() === "")) {
       errors[field as string] = "Requerido para este motivo";
@@ -131,7 +147,7 @@ const initialForm: FormData = {
   empresa: "",
   email: "",
   telefono: "",
-  motivo: "" as MotivoValue,
+  motivo: [] as MotivoValue[],
   marca: "",
   numeroSerie: "",
   producto: "",
@@ -177,7 +193,7 @@ const isDraftMeaningful = (f: FormData) =>
     f.empresa?.trim() ||
     f.email?.trim() ||
     f.telefono?.trim() ||
-    f.motivo ||
+    (f.motivo && f.motivo.length > 0) ||
     f.mensaje?.trim()
   );
 
@@ -264,24 +280,41 @@ const Contacto = () => {
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  // Cambio de motivo: limpia touched/errs de campos condicionales que ya no aplican
-  const selectMotivo = (value: MotivoValue) => {
-    const activeFields = new Set<string>(
-      (fieldsByMotivo[value] || []) as string[],
-    );
-    setForm((f) => ({ ...f, motivo: value }));
+  // Toggle de motivo (multi-selección): añade/quita y limpia campos condicionales huérfanos
+  const toggleMotivo = (value: MotivoValue) => {
+    setForm((f) => {
+      const current = (f.motivo || []) as MotivoValue[];
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      const activeFields = getActiveFields(next);
+      // Limpia valores de campos condicionales que ya no aplican
+      const cleaned: Partial<FormData> = {};
+      ALL_CONDITIONAL_FIELDS.forEach((field) => {
+        if (!activeFields.has(field as string)) {
+          (cleaned as Record<string, unknown>)[field as string] =
+            field === "urgencia" || field === "vehiculo" || field === "ramo" ? undefined : "";
+        }
+      });
+      return { ...f, ...cleaned, motivo: next };
+    });
     markTouched("motivo");
+    const nextActive = getActiveFields(
+      ((form.motivo || []) as MotivoValue[]).includes(value)
+        ? ((form.motivo || []) as MotivoValue[]).filter((v) => v !== value)
+        : [...((form.motivo || []) as MotivoValue[]), value],
+    );
     setTouched((t) => {
       const next = { ...t };
       ALL_CONDITIONAL_FIELDS.forEach((field) => {
-        if (!activeFields.has(field as string)) delete next[field as string];
+        if (!nextActive.has(field as string)) delete next[field as string];
       });
       return next;
     });
     setErrs((e) => {
       const next = { ...e };
       ALL_CONDITIONAL_FIELDS.forEach((field) => {
-        if (!activeFields.has(field as string)) delete next[field as string];
+        if (!nextActive.has(field as string)) delete next[field as string];
       });
       return next;
     });
@@ -455,7 +488,12 @@ const Contacto = () => {
     toast.success("Mensaje recibido");
   };
 
-  const motivoLabel = MOTIVOS.find((m) => m.value === form.motivo)?.label ?? "—";
+  const motivoLabel =
+    (form.motivo || []).length === 0
+      ? "—"
+      : MOTIVOS.filter((m) => (form.motivo || []).includes(m.value))
+          .map((m) => m.label)
+          .join(", ");
 
   return (
     <>
@@ -724,12 +762,12 @@ const Contacto = () => {
                   <Field name="motivo" label="Motivo de contacto *" error={visibleErrs.motivo}>
                     <div className="flex flex-wrap gap-2">
                       {MOTIVOS.map((m) => {
-                        const active = form.motivo === m.value;
+                        const active = (form.motivo || []).includes(m.value);
                         return (
                           <button
                             key={m.value}
                             type="button"
-                            onClick={() => selectMotivo(m.value)}
+                            onClick={() => toggleMotivo(m.value)}
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone " +
                               (active
@@ -746,7 +784,7 @@ const Contacto = () => {
                   </Field>
 
                   {/* Campos por motivo */}
-                  {form.motivo === "garantias" && (
+                  {(form.motivo || []).includes("garantias") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="marca" label="Marca *" error={visibleErrs.marca}>
                         <input
@@ -769,7 +807,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "reparaciones" && (
+                  {(form.motivo || []).includes("reparaciones") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="producto" label="Producto *" error={visibleErrs.producto}>
                         <input
@@ -800,7 +838,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "repuestos" && (
+                  {(form.motivo || []).includes("repuestos") && (
                     <Field name="referencia" label="Referencia o código de pieza *" error={visibleErrs.referencia}>
                       <input
                         className="input-base"
@@ -812,7 +850,7 @@ const Contacto = () => {
                     </Field>
                   )}
 
-                  {form.motivo === "movilidad" && (
+                  {(form.motivo || []).includes("movilidad") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="vehiculo" label="Tipo de vehículo *" error={visibleErrs.vehiculo}>
                         <select
@@ -843,7 +881,7 @@ const Contacto = () => {
                     </div>
                   )}
 
-                  {form.motivo === "seguros" && (
+                  {(form.motivo || []).includes("seguros") && (
                     <div className="grid md:grid-cols-2 gap-5">
                       <Field name="ramo" label="Ramo *" error={visibleErrs.ramo}>
                         <select
