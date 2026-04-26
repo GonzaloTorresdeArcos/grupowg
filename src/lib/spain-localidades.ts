@@ -1599,89 +1599,86 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= PAÍS VASCO =============
   "01": [ // Álava
-    { name: "Vitoria-Gasteiz", cp: "01001" },
-    { name: "Llodio", cp: "01400" },
-    { name: "Amurrio", cp: "01470" },
-    { name: "Salvatierra (Agurain)", cp: "01200" },
-    { name: "Laudio", cp: "01400" },
-    { name: "Ayala (Aiara)", cp: "01476" },
-    { name: "Iruña Oka", cp: "01230" },
-    { name: "Oyón (Oion)", cp: "01320" },
-    { name: "Alegría-Dulantzi", cp: "01240" },
-    { name: "Laguardia", cp: "01300" },
-    { name: "Labastida", cp: "01330" },
+    // ───── 1) Vitoria-Gasteiz capital ─────
+    { name: "Vitoria-Gasteiz Capital · Centro", cp: "01001" },
+    { name: "Vitoria-Gasteiz Capital · Lakua", cp: "01010" },
+    { name: "Vitoria-Gasteiz Capital · Zabalgana", cp: "01015" },
+    { name: "Vitoria-Gasteiz Capital · Salburua", cp: "01020" },
+
+    // ───── 2) Resto Álava ─────
+    // 2.1 Rioja Alavesa
+    { name: "AR Rioja Alavesa · Laguardia", cp: "01300" },
+    // 2.2 Norte
+    { name: "AR Norte · Amurrio", cp: "01470" },
+    { name: "AR Norte · Llodio", cp: "01400" },
   ],
   "20": [ // Gipuzkoa
-    { name: "San Sebastián (Donostia)", cp: "20001" },
-    { name: "Irún", cp: "20301" },
-    { name: "Errenteria", cp: "20100" },
-    { name: "Eibar", cp: "20600" },
-    { name: "Zarautz", cp: "20800" },
-    { name: "Hernani", cp: "20120" },
-    { name: "Tolosa", cp: "20400" },
-    { name: "Arrasate (Mondragón)", cp: "20500" },
-    { name: "Bergara", cp: "20570" },
-    { name: "Andoain", cp: "20140" },
-    { name: "Pasaia", cp: "20110" },
-    { name: "Lasarte-Oria", cp: "20160" },
-    { name: "Beasain", cp: "20200" },
-    { name: "Azkoitia", cp: "20720" },
-    { name: "Azpeitia", cp: "20730" },
-    { name: "Oñati", cp: "20560" },
-    { name: "Zumarraga", cp: "20700" },
-    { name: "Urnieta", cp: "20130" },
-    { name: "Lezo", cp: "20100" },
-    { name: "Oiartzun", cp: "20180" },
-    { name: "Hondarribia", cp: "20280" },
-    { name: "Usurbil", cp: "20170" },
-    { name: "Ordizia", cp: "20240" },
-    { name: "Zumaia", cp: "20750" },
-    { name: "Getaria", cp: "20808" },
-    { name: "Deba", cp: "20820" },
-    { name: "Mutriku", cp: "20830" },
-    { name: "Soraluze", cp: "20590" },
+    // ───── 1) San Sebastián capital ─────
+    { name: "San Sebastián Capital · Centro", cp: "20001" },
+    { name: "San Sebastián Capital · Gros", cp: "20002" },
+    { name: "San Sebastián Capital · Amara", cp: "20009" },
+    { name: "San Sebastián Capital · Antiguo", cp: "20008" },
+    { name: "San Sebastián Capital · Altza", cp: "20017" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "SS Donostialdea · Hernani", cp: "20120" },
+    { name: "SS Donostialdea · Astigarraga", cp: "20115" },
+    { name: "SS Donostialdea · Pasaia", cp: "20110" },
+    { name: "SS Donostialdea · Errenteria", cp: "20100" },
+
+    // ───── 3) Resto Gipuzkoa ─────
+    // 3.1 Bajo Bidasoa
+    { name: "SS Bajo Bidasoa · Irún", cp: "20301" },
+    { name: "SS Bajo Bidasoa · Hondarribia", cp: "20280" },
+    // 3.2 Alto Deba
+    { name: "SS Alto Deba · Arrasate (Mondragón)", cp: "20500" },
+    { name: "SS Alto Deba · Bergara", cp: "20570" },
+    { name: "SS Alto Deba · Oñati", cp: "20560" },
+    // 3.3 Bajo Deba
+    { name: "SS Bajo Deba · Eibar", cp: "20600" },
+    { name: "SS Bajo Deba · Elgoibar", cp: "20870" },
+    { name: "SS Bajo Deba · Deba", cp: "20820" },
+    // 3.4 Interior
+    { name: "SS Interior · Tolosa", cp: "20400" },
+    { name: "SS Interior · Beasain", cp: "20200" },
+    { name: "SS Interior · Azpeitia", cp: "20730" },
+    { name: "SS Interior · Azkoitia", cp: "20720" },
   ],
   "48": [ // Bizkaia
-    // — Bilbao capital: distritos centrales —
-    { name: "Bilbao · Abando", cp: "48001" },
-    { name: "Bilbao · Casco Viejo (Ibaiondo)", cp: "48005" },
-    { name: "Bilbao · Indautxu", cp: "48010" },
-    { name: "Bilbao · Begoña", cp: "48006" },
-    // — Bilbao capital: distritos periféricos —
-    { name: "Bilbao · Deusto", cp: "48014" },
-    { name: "Bilbao · Uribarri", cp: "48007" },
-    { name: "Bilbao · Errekalde", cp: "48012" },
-    { name: "Bilbao · Basurto-Zorroza", cp: "48013" },
-    { name: "Bilbao · Otxarkoaga-Txurdinaga", cp: "48004" },
-    { name: "Barakaldo", cp: "48901" },
-    { name: "Getxo", cp: "48930" },
-    { name: "Portugalete", cp: "48920" },
-    { name: "Santurtzi", cp: "48980" },
-    { name: "Basauri", cp: "48970" },
-    { name: "Leioa", cp: "48940" },
-    { name: "Durango", cp: "48200" },
-    { name: "Galdakao", cp: "48960" },
-    { name: "Sestao", cp: "48910" },
-    { name: "Erandio", cp: "48950" },
-    { name: "Sopelana", cp: "48600" },
-    { name: "Amorebieta-Etxano", cp: "48340" },
-    { name: "Ermua", cp: "48260" },
-    { name: "Mungia", cp: "48100" },
-    { name: "Bermeo", cp: "48370" },
-    { name: "Gernika-Lumo", cp: "48300" },
-    { name: "Markina-Xemein", cp: "48270" },
-    { name: "Arrigorriaga", cp: "48480" },
-    { name: "Iurreta", cp: "48215" },
-    { name: "Ondarroa", cp: "48700" },
-    { name: "Lekeitio", cp: "48280" },
-    { name: "Zalla", cp: "48860" },
-    { name: "Balmaseda", cp: "48800" },
-    { name: "Güeñes", cp: "48840" },
-    { name: "Sopuerta", cp: "48190" },
-    { name: "Berriz", cp: "48240" },
-    { name: "Etxebarri", cp: "48450" },
-    { name: "Berango", cp: "48640" },
-    { name: "Plentzia", cp: "48620" },
+    // ───── 1) Bilbao capital ─────
+    { name: "Bilbao Capital · Centro", cp: "48001" },
+    { name: "Bilbao Capital · Abando", cp: "48001" },
+    { name: "Bilbao Capital · Deusto", cp: "48014" },
+    { name: "Bilbao Capital · Indautxu", cp: "48010" },
+    { name: "Bilbao Capital · Santutxu", cp: "48006" },
+    { name: "Bilbao Capital · Rekalde", cp: "48012" },
+
+    // ───── 2) Área metropolitana (Gran Bilbao) ─────
+    // 2.1 Margen derecha
+    { name: "BI Á. Metro Margen Derecha · Getxo", cp: "48930" },
+    { name: "BI Á. Metro Margen Derecha · Leioa", cp: "48940" },
+    { name: "BI Á. Metro Margen Derecha · Erandio", cp: "48950" },
+    { name: "BI Á. Metro Margen Derecha · Sopela", cp: "48600" },
+    // 2.2 Margen izquierda
+    { name: "BI Á. Metro Margen Izquierda · Barakaldo", cp: "48901" },
+    { name: "BI Á. Metro Margen Izquierda · Sestao", cp: "48910" },
+    { name: "BI Á. Metro Margen Izquierda · Portugalete", cp: "48920" },
+    { name: "BI Á. Metro Margen Izquierda · Santurtzi", cp: "48980" },
+    // 2.3 Interior cercano
+    { name: "BI Á. Metro Interior Cercano · Basauri", cp: "48970" },
+    { name: "BI Á. Metro Interior Cercano · Galdakao", cp: "48960" },
+    { name: "BI Á. Metro Interior Cercano · Arrigorriaga", cp: "48480" },
+
+    // ───── 3) Resto Bizkaia ─────
+    // 3.1 Durangaldea
+    { name: "BI Durangaldea · Durango", cp: "48200" },
+    { name: "BI Durangaldea · Amorebieta-Etxano", cp: "48340" },
+    // 3.2 Costa / Uribe
+    { name: "BI Costa Uribe · Bermeo", cp: "48370" },
+    { name: "BI Costa Uribe · Gernika-Lumo", cp: "48300" },
+    // 3.3 Encartaciones
+    { name: "BI Encartaciones · Balmaseda", cp: "48800" },
+    { name: "BI Encartaciones · Zalla", cp: "48860" },
   ],
 
   // ============= CEUTA Y MELILLA =============
