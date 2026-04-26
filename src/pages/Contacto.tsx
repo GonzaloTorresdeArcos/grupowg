@@ -179,7 +179,7 @@ const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
 // ============= i18n para la vista previa de campos =============
-type PreviewLang = "es" | "en";
+type PreviewLang = "es" | "en" | "pt";
 
 const PREVIEW_I18N: Record<PreviewLang, {
   title: string;
@@ -238,6 +238,32 @@ const PREVIEW_I18N: Record<PreviewLang, {
       matricula: "Identifier",
       ramo: "Insurance line",
       poliza: "Policy",
+    },
+  },
+  pt: {
+    title: "Informação adicional que iremos pedir-te",
+    required: "Campos obrigatórios",
+    langLabel: "Idioma",
+    motivoLabels: {
+      reparaciones: "Reparações",
+      instalaciones: "Instalações",
+      repuestos: "Peças sobressalentes",
+      movilidad: "Equipamentos",
+      garantias: "Garantias",
+      seguros: "Seguros",
+      "wg-network": "Formulário WG Network",
+      otro: "Outro",
+    },
+    fieldLabels: {
+      marca: "Marca",
+      numeroSerie: "Nº de série",
+      producto: "Produto",
+      urgencia: "Urgência",
+      referencia: "Referência",
+      vehiculo: "Tipo de equipamento",
+      matricula: "Identificador",
+      ramo: "Ramo",
+      poliza: "Apólice",
     },
   },
 };
@@ -1007,7 +1033,7 @@ const Contacto = () => {
                             role="group"
                             aria-label={t.langLabel}
                           >
-                            {(["es", "en"] as const).map((lng) => {
+                            {(["es", "en", "pt"] as const).map((lng) => {
                               const active = previewLang === lng;
                               return (
                                 <button
