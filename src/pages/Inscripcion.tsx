@@ -637,12 +637,41 @@ const Inscripcion = () => {
                   onChange={(e) => { setS1({ ...s1, email: e.target.value }); if (emailVerified) setEmailVerified(false); }}
                 />
               </Field>
-              <Field label="Teléfono *" error={errs1.telefono}>
-                <input
-                  className="input-base"
-                  value={s1.telefono}
-                  onChange={(e) => { setS1({ ...s1, telefono: e.target.value }); if (phoneVerified) setPhoneVerified(false); }}
-                />
+              <Field
+                label="Teléfono *"
+                error={errs1.telefono}
+                hint={`Solo el número (sin prefijo). Prefijo país: ${phoneCountry.dial}`}
+              >
+                <div className="flex gap-2">
+                  <select
+                    aria-label="Prefijo de país"
+                    className="input-base !w-auto min-w-[7.5rem] flex-shrink-0"
+                    value={phoneCountry.code}
+                    onChange={(e) => {
+                      const next = COUNTRIES[e.target.value as CountryPhone["code"]] ?? COUNTRIES.ES;
+                      setPhoneCountry(next);
+                      setPhoneCountryAuto(false);
+                      if (phoneVerified) setPhoneVerified(false);
+                    }}
+                  >
+                    {Object.values(COUNTRIES).map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.dial} {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    className="input-base flex-1"
+                    inputMode="tel"
+                    placeholder="612 345 678"
+                    value={s1.telefono}
+                    onChange={(e) => {
+                      const local = sanitizeLocalNumber(e.target.value, phoneCountry.dial);
+                      setS1({ ...s1, telefono: local });
+                      if (phoneVerified) setPhoneVerified(false);
+                    }}
+                  />
+                </div>
               </Field>
             </div>
 
@@ -662,7 +691,7 @@ const Inscripcion = () => {
               <ErrorLogger context="OtpVerification:sms">
                 <OtpVerification
                   channel="sms"
-                  destination={s1.telefono}
+                  destination={composeE164(phoneCountry.dial, s1.telefono)}
                   verified={phoneVerified}
                   resumeToken={draft?.resume_token}
                   onVerified={async () => {
