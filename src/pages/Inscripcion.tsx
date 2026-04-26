@@ -738,7 +738,7 @@ const Inscripcion = () => {
             <Field label="Familias de producto atendidas">
               <GamasSelector value={familiasSel} onChange={setFamiliasSel} />
             </Field>
-            <Field label="Marcas trabajadas y relación SAT">
+            <Field label="Marcas en las que es SAT oficial (autorizado por fabricante)">
               <MarcasSelector
                 gamasActivas={Array.from(new Set(familiasSel.map((f) => f.split(".")[0])))}
                 value={marcasDetalle}
