@@ -684,16 +684,30 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CASTILLA Y LEÓN =============
   "05": [ // Ávila
-    { name: "Ávila", cp: "05001" },
-    { name: "Arévalo", cp: "05200" },
-    { name: "Arenas de San Pedro", cp: "05400" },
-    { name: "Las Navas del Marqués", cp: "05230" },
-    { name: "Sotillo de la Adrada", cp: "05420" },
-    { name: "Cebreros", cp: "05260" },
-    { name: "El Tiemblo", cp: "05270" },
-    { name: "Candeleda", cp: "05480" },
-    { name: "El Barco de Ávila", cp: "05600" },
-    { name: "Madrigal de las Altas Torres", cp: "05220" },
+    // ───── 1.1 Ávila capital (zonas) ─────
+    { name: "Ávila Capital · Centro", cp: "05001" },
+    { name: "Ávila Capital · Norte", cp: "05003" },
+    { name: "Ávila Capital · Sur", cp: "05004" },
+    { name: "Ávila Capital · Este", cp: "05002" },
+    { name: "Ávila Capital · Oeste", cp: "05005" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "AV Á. Metro Cercano · La Colilla", cp: "05192" },
+    { name: "AV Á. Metro Cercano · Martiherrero", cp: "05195" },
+    { name: "AV Á. Metro Cercano · El Fresno", cp: "05194" },
+    { name: "AV Á. Metro Cercano · Vicolozano", cp: "05130" },
+
+    // ───── 1.3 Resto provincia de Ávila ─────
+    // 1.3.1 Valle del Tiétar (sur)
+    { name: "AV Valle del Tiétar · Arenas de San Pedro", cp: "05400" },
+    { name: "AV Valle del Tiétar · Candeleda", cp: "05480" },
+    { name: "AV Valle del Tiétar · Sotillo de la Adrada", cp: "05420" },
+    // 1.3.2 Norte / La Moraña
+    { name: "AV La Moraña · Arévalo", cp: "05200" },
+    // 1.3.3 Oeste
+    { name: "AV Oeste · Piedrahíta", cp: "05500" },
+    { name: "AV Oeste · El Barco de Ávila", cp: "05600" },
   ],
   "09": [ // Burgos
     { name: "Burgos", cp: "09001" },
@@ -1635,6 +1649,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "S Occidente": { level1: "Resto Cantabria", level2: "Occidente" },
   "S Oriente": { level1: "Resto Cantabria", level2: "Oriente" },
   "S Interior": { level1: "Resto Cantabria", level2: "Interior" },
+
+  // ─── Ávila (05) ───
+  "Ávila Capital": { level1: "Ávila capital" },
+  "AV Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "AV Valle del Tiétar": { level1: "Resto provincia de Ávila", level2: "Valle del Tiétar (sur)" },
+  "AV La Moraña": { level1: "Resto provincia de Ávila", level2: "Norte / La Moraña" },
+  "AV Oeste": { level1: "Resto provincia de Ávila", level2: "Oeste" },
 };
 
 export interface LocalitySubgroup {
