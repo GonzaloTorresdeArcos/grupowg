@@ -1,0 +1,58 @@
+{
+  "eyebrow": "02 · Capas de inteligencia",
+  "title": "Lo que hace el sistema <1>diferencial</1>.",
+  "lead": "Sobre el Core y los módulos, WG Service OS incorpora capas de inteligencia que mejoran el rendimiento del servicio de forma continua.",
+  "tagline": "No solo ejecutamos: entendemos, optimizamos y mejoramos el sistema.",
+  "layers": [
+    {
+      "bullets": [
+        "Diagnóstico asistido",
+        "Validación técnica de intervenciones",
+        "Reducción de errores de diagnóstico",
+        "Mejora del First Time Fix",
+        "Soporte experto en casos complejos"
+      ],
+      "closing": "Sustituimos estructura por inteligencia. Sabemos cuándo algo está mal y cómo corregirlo."
+    },
+    {
+      "bullets": [
+        "Detección de fallos recurrentes",
+        "Análisis por SKU y componente",
+        "Identificación de averías endémicas",
+        "Impacto en coste, TAT y calidad",
+        "Generación de informes técnicos"
+      ],
+      "closing": "Convertimos el servicio en información de negocio."
+    },
+    {
+      "bullets": [
+        "Componentes con fallo sistemático",
+        "Control de umbrales de fallo (% por pieza o modelo)",
+        "Activación de procesos de abono con fabricante",
+        "Trazabilidad de incidencias asociadas"
+      ],
+      "closing": "El fallo deja de ser solo un coste. Es oportunidad de recuperación y mejora."
+    },
+    {
+      "bullets": [
+        "Planificación de repuestos basada en históricos",
+        "Niveles óptimos de stock",
+        "Optimización de pedidos a fabricantes",
+        "Cobertura inicial de repuestos (% suministro)",
+        "Alineación demanda real ↔ aprovisionamiento"
+      ],
+      "closing": "El repuesto deja de ser un cuello de botella. Es palanca de eficiencia."
+    },
+    {
+      "bullets": [
+        "Decisiones automatizadas en base a datos",
+        "Workflows inteligentes",
+        "Orquestación end-to-end",
+        "Reglas y aprendizaje continuo",
+        "Closed-loop execution"
+      ],
+      "closing": "No automatizamos tareas aisladas. Automatizamos resultados."
+    }
+  ],
+  "synthesis": "Cada interacción genera información. Cada decisión mejora el sistema. <1>Cada mejora impacta en coste, calidad y tiempo.</1>"
+}
