@@ -1,0 +1,30 @@
+{
+  "eyebrow": "Legal",
+  "lastUpdated": "Last updated: {{date}}",
+  "lastReviewed": "Last reviewed: {{date}}",
+  "officialNotice": "The legal text is published in Spanish, the official binding language. Translated versions are provided for informational courtesy only and have no legal effect.",
+  "privacy": {
+    "title": "Privacy policy",
+    "intro": "Information about the processing of personal data at Grupo Warranty Global, in accordance with Regulation (EU) 2016/679 (GDPR) and Spanish Organic Law 3/2018 (LOPDGDD). The full legal text is available in Spanish.",
+    "seoDesc": "Information about how Grupo Warranty Global processes personal data under GDPR and LOPDGDD: controller, purposes, lawful basis, recipients, retention and rights.",
+    "seoTitle": "Privacy policy · Grupo Warranty Global"
+  },
+  "legalNotice": {
+    "title": "Legal notice",
+    "intro": "General terms of use of grupowg.com, in accordance with Article 10 of Spanish Law 34/2002 on Information Society Services and E-Commerce (LSSI-CE). The full legal text is available in Spanish.",
+    "seoDesc": "Legal notice of grupowg.com under Spanish Law 34/2002 (LSSI-CE).",
+    "seoTitle": "Legal notice · Grupo Warranty Global"
+  },
+  "cookies": {
+    "title": "Cookie policy",
+    "intro": "Information about the use of cookies and similar technologies on grupowg.com, in accordance with Article 22.2 of the LSSI-CE and the Spanish Data Protection Agency (AEPD) guidelines.",
+    "seoDesc": "Cookie policy of grupowg.com: types, purposes, duration and how to manage consent.",
+    "seoTitle": "Cookie policy · Grupo Warranty Global"
+  },
+  "accessibility": {
+    "title": "Accessibility statement",
+    "intro": "Grupo Warranty Global is committed to making its website grupowg.com accessible, in accordance with Spanish Royal Decree 1112/2018, transposing Directive (EU) 2016/2102 into Spanish law.",
+    "seoDesc": "Accessibility statement of grupowg.com under Royal Decree 1112/2018 and standard EN 301 549 (WCAG 2.1 level AA).",
+    "seoTitle": "Accessibility statement · Grupo Warranty Global"
+  }
+}

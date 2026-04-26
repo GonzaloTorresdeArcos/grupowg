@@ -1,0 +1,30 @@
+{
+  "eyebrow": "Legal",
+  "lastUpdated": "Última actualización: {{date}}",
+  "lastReviewed": "Última revisión: {{date}}",
+  "officialNotice": "El texto legal se publica en español, idioma oficial vinculante. Las versiones traducidas se ofrecen como cortesía informativa y no producen efectos jurídicos.",
+  "privacy": {
+    "title": "Política de privacidad",
+    "intro": "Información sobre el tratamiento de datos personales en Grupo Warranty Global, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD).",
+    "seoDesc": "Información sobre el tratamiento de datos personales en Grupo Warranty Global, conforme al RGPD y la LOPDGDD: responsable, finalidades, base legítima, destinatarios, conservación y derechos.",
+    "seoTitle": "Política de privacidad · Grupo Warranty Global"
+  },
+  "legalNotice": {
+    "title": "Aviso legal",
+    "intro": "Condiciones generales de uso del sitio web grupowg.com, conforme al artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE).",
+    "seoDesc": "Aviso legal de grupowg.com conforme a la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE).",
+    "seoTitle": "Aviso legal · Grupo Warranty Global"
+  },
+  "cookies": {
+    "title": "Política de cookies",
+    "intro": "Información sobre el uso de cookies y tecnologías similares en grupowg.com, conforme al artículo 22.2 de la LSSI-CE y a las directrices de la AEPD.",
+    "seoDesc": "Política de cookies de grupowg.com: tipos, finalidades, duración y forma de gestionar el consentimiento.",
+    "seoTitle": "Política de cookies · Grupo Warranty Global"
+  },
+  "accessibility": {
+    "title": "Declaración de accesibilidad",
+    "intro": "Grupo Warranty Global se compromete a hacer accesible su sitio web grupowg.com, de conformidad con el Real Decreto 1112/2018, de 7 de septiembre, por el que se transpone al ordenamiento jurídico español la Directiva (UE) 2016/2102.",
+    "seoDesc": "Declaración de accesibilidad de grupowg.com conforme al Real Decreto 1112/2018 y a la norma UNE-EN 301 549 (WCAG 2.1 nivel AA).",
+    "seoTitle": "Declaración de accesibilidad · Grupo Warranty Global"
+  }
+}
