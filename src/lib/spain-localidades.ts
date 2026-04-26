@@ -442,35 +442,70 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
   ],
 
   // ============= ISLAS BALEARES =============
-  "07": [
-    { name: "Palma", cp: "07001" },
-    { name: "Calvià", cp: "07181" },
-    { name: "Manacor", cp: "07500" },
-    { name: "Inca", cp: "07300" },
-    { name: "Ibiza (Eivissa)", cp: "07800" },
-    { name: "Santa Eulària des Riu", cp: "07840" },
-    { name: "Mahón (Maó)", cp: "07701" },
-    { name: "Ciutadella de Menorca", cp: "07760" },
-    { name: "Marratxí", cp: "07141" },
-    { name: "Llucmajor", cp: "07620" },
-    { name: "Sant Antoni de Portmany", cp: "07820" },
-    { name: "Pollença", cp: "07460" },
-    { name: "Felanitx", cp: "07200" },
-    { name: "Alcúdia", cp: "07400" },
-    { name: "Sóller", cp: "07100" },
-    { name: "Sant Josep de sa Talaia", cp: "07830" },
-    { name: "Capdepera", cp: "07580" },
-    { name: "Andratx", cp: "07150" },
-    { name: "Son Servera", cp: "07550" },
-    { name: "Santanyí", cp: "07650" },
-    { name: "Artà", cp: "07570" },
-    { name: "Binissalem", cp: "07350" },
-    { name: "Sa Pobla", cp: "07420" },
-    { name: "Muro", cp: "07440" },
-    { name: "Alaior", cp: "07730" },
-    { name: "Es Mercadal", cp: "07740" },
-    { name: "Sant Lluís", cp: "07710" },
-    { name: "Formentera (Sant Francesc)", cp: "07860" },
+  "07": [ // Illes Balears
+    // ───── 1) Mallorca - Palma capital ─────
+    { name: "Palma Capital · Centre", cp: "07001" },
+    { name: "Palma Capital · Ponent", cp: "07015" },
+    { name: "Palma Capital · Nord", cp: "07010" },
+    { name: "Palma Capital · Llevant", cp: "07007" },
+    { name: "Palma Capital · Playa de Palma", cp: "07610" },
+    { name: "Palma Capital · Son Oliva", cp: "07004" },
+    { name: "Palma Capital · Son Gotleu", cp: "07008" },
+    { name: "Palma Capital · Pere Garau", cp: "07007" },
+    { name: "Palma Capital · Santa Catalina", cp: "07013" },
+
+    // ───── 2) Mallorca - Área metropolitana ─────
+    { name: "MA Á. Metro Cercano · Marratxí", cp: "07141" },
+    { name: "MA Á. Metro Cercano · Calvià", cp: "07181" },
+    { name: "MA Á. Metro Cercano · Llucmajor", cp: "07620" },
+    { name: "MA Á. Metro Cercano · Santa Eugènia", cp: "07142" },
+    { name: "MA Á. Metro Cercano · Esporles", cp: "07190" },
+    { name: "MA Á. Metro Cercano · Puigpunyent", cp: "07194" },
+
+    // ───── 3) Mallorca - Resto ─────
+    // 3.1 Norte
+    { name: "MA Norte · Inca", cp: "07300" },
+    { name: "MA Norte · Alcúdia", cp: "07400" },
+    { name: "MA Norte · Pollença", cp: "07460" },
+    { name: "MA Norte · Sa Pobla", cp: "07420" },
+    { name: "MA Norte · Muro", cp: "07440" },
+    { name: "MA Norte · Campanet", cp: "07310" },
+    // 3.2 Este
+    { name: "MA Este · Manacor", cp: "07500" },
+    { name: "MA Este · Felanitx", cp: "07200" },
+    { name: "MA Este · Santanyí", cp: "07650" },
+    { name: "MA Este · Son Servera", cp: "07550" },
+    { name: "MA Este · Capdepera", cp: "07580" },
+    { name: "MA Este · Artà", cp: "07570" },
+    // 3.3 Oeste / Serra de Tramuntana
+    { name: "MA Oeste Tramuntana · Sóller", cp: "07100" },
+    { name: "MA Oeste Tramuntana · Valldemossa", cp: "07170" },
+    { name: "MA Oeste Tramuntana · Deià", cp: "07179" },
+    { name: "MA Oeste Tramuntana · Andratx", cp: "07150" },
+    { name: "MA Oeste Tramuntana · Banyalbufar", cp: "07191" },
+
+    // ───── 4) Menorca ─────
+    { name: "Menorca · Maó (Mahón)", cp: "07701" },
+    { name: "Menorca · Ciutadella", cp: "07760" },
+    { name: "Menorca · Es Mercadal", cp: "07740" },
+    { name: "Menorca · Alaior", cp: "07730" },
+    { name: "Menorca · Es Castell", cp: "07720" },
+    { name: "Menorca · Sant Lluís", cp: "07710" },
+    { name: "Menorca · Ferreries", cp: "07750" },
+    { name: "Menorca · Es Migjorn Gran", cp: "07749" },
+
+    // ───── 5) Ibiza ─────
+    { name: "Ibiza · Eivissa", cp: "07800" },
+    { name: "Ibiza · Sant Antoni de Portmany", cp: "07820" },
+    { name: "Ibiza · Santa Eulària des Riu", cp: "07840" },
+    { name: "Ibiza · Sant Josep de sa Talaia", cp: "07830" },
+    { name: "Ibiza · Sant Joan de Labritja", cp: "07810" },
+
+    // ───── 6) Formentera ─────
+    { name: "Formentera · Sant Francesc Xavier", cp: "07860" },
+    { name: "Formentera · Sant Ferran de ses Roques", cp: "07871" },
+    { name: "Formentera · Es Pujols", cp: "07871" },
+    { name: "Formentera · La Savina", cp: "07870" },
   ],
 
   // ============= CANARIAS =============
@@ -2142,6 +2177,16 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "LR Rioja Media": { level1: "Resto La Rioja", level2: "Rioja Media" },
   "LR Rioja Baja": { level1: "Resto La Rioja", level2: "Rioja Baja / Oriental" },
   "LR Sierra": { level1: "Resto La Rioja", level2: "Sierra" },
+
+  // ─── Illes Balears (07) ───
+  "Palma Capital": { level1: "Mallorca", level2: "Palma (capital)" },
+  "MA Á. Metro Cercano": { level1: "Mallorca", level2: "Área metropolitana" },
+  "MA Norte": { level1: "Mallorca", level2: "Resto Mallorca · Norte" },
+  "MA Este": { level1: "Mallorca", level2: "Resto Mallorca · Este" },
+  "MA Oeste Tramuntana": { level1: "Mallorca", level2: "Resto Mallorca · Oeste / Serra de Tramuntana" },
+  "Menorca": { level1: "Menorca" },
+  "Ibiza": { level1: "Ibiza" },
+  "Formentera": { level1: "Formentera" },
 };
 
 export interface LocalitySubgroup {
