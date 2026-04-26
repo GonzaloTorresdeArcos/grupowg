@@ -1767,6 +1767,37 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "SA Sur Ciudad Rodrigo": { level1: "Resto provincia de Salamanca", level2: "Sur (Ciudad Rodrigo)" },
   "SA Este Peñaranda": { level1: "Resto provincia de Salamanca", level2: "Este / Peñaranda" },
   "SA Oeste Frontera": { level1: "Resto provincia de Salamanca", level2: "Oeste / frontera" },
+
+  // ─── Segovia (40) ───
+  "Segovia Capital": { level1: "Segovia capital" },
+  "SG Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "SG Noroeste": { level1: "Resto provincia de Segovia", level2: "Noroeste" },
+  "SG Norte": { level1: "Resto provincia de Segovia", level2: "Norte" },
+  "SG Este": { level1: "Resto provincia de Segovia", level2: "Este" },
+
+  // ─── Soria (42) ───
+  "Soria Capital": { level1: "Soria capital" },
+  "SO Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "SO Oeste": { level1: "Resto provincia de Soria", level2: "Oeste" },
+  "SO Norte": { level1: "Resto provincia de Soria", level2: "Norte" },
+  "SO Sur": { level1: "Resto provincia de Soria", level2: "Sur" },
+
+  // ─── Valladolid (47) ───
+  "Valladolid Capital": { level1: "Valladolid capital" },
+  "VA Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "VA Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "VA Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "VA Á. Metro Este": { level1: "Área metropolitana", level2: "Este" },
+  "VA Sur": { level1: "Resto provincia de Valladolid", level2: "Sur" },
+  "VA Oeste": { level1: "Resto provincia de Valladolid", level2: "Oeste" },
+  "VA Norte": { level1: "Resto provincia de Valladolid", level2: "Norte" },
+
+  // ─── Zamora (49) ───
+  "Zamora Capital": { level1: "Zamora capital" },
+  "ZA Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "ZA Norte": { level1: "Resto provincia de Zamora", level2: "Norte" },
+  "ZA Oeste": { level1: "Resto provincia de Zamora", level2: "Oeste" },
+  "ZA Sur": { level1: "Resto provincia de Zamora", level2: "Sur" },
 };
 
 export interface LocalitySubgroup {
