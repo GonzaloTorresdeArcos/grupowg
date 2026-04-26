@@ -1459,6 +1459,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "CO Subbética": { level1: "Resto provincia de Córdoba", level2: "Sur (Subbética)" },
   "CO Campiña": { level1: "Resto provincia de Córdoba", level2: "Campiña" },
   "CO Norte": { level1: "Resto provincia de Córdoba", level2: "Norte (Los Pedroches / Valle del Guadiato)" },
+
+  // ─── Granada (18) ───
+  "Granada Capital": { level1: "Granada capital" },
+  "GR Á. Metro Oeste": { level1: "Área metropolitana", level2: "Cinturón Oeste" },
+  "GR Á. Metro Sur": { level1: "Área metropolitana", level2: "Cinturón Sur" },
+  "GR Á. Metro Norte": { level1: "Área metropolitana", level2: "Cinturón Norte" },
+  "GR Costa Tropical": { level1: "Resto provincia de Granada", level2: "Costa Tropical" },
+  "GR Norte Interior": { level1: "Resto provincia de Granada", level2: "Norte / interior" },
+  "GR Alpujarra": { level1: "Resto provincia de Granada", level2: "Alpujarra" },
 };
 
 export interface LocalitySubgroup {
