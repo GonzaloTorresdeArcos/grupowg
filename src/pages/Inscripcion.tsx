@@ -62,6 +62,9 @@ const step1Schema = z.object({
   email: z.string().trim().email("Email no válido").max(255),
   telefono: z.string().trim().min(6, "Teléfono no válido").max(20),
   direccion_fiscal: z.string().trim().max(300).optional(),
+  codigo_postal: z.string().trim().regex(/^\d{5}$/, "CP de 5 dígitos").optional().or(z.literal("")),
+  localidad: z.string().trim().max(120).optional(),
+  provincia_fiscal: z.string().trim().max(120).optional(),
 });
 
 const Inscripcion = () => {
@@ -76,6 +79,7 @@ const Inscripcion = () => {
     razon_social: "", nombre_comercial: "", cif_nif: "", tipo_colaborador: "",
     persona_contacto: "", email: "", telefono: "",
     direccion_fiscal: "",
+    codigo_postal: "", localidad: "", provincia_fiscal: "",
   });
   const [errs1, setErrs1] = useState<Record<string, string>>({});
   const [emailVerified, setEmailVerified] = useState(false);
