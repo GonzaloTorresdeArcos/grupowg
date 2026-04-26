@@ -1170,7 +1170,7 @@ const Contacto = () => {
           </Reveal>
 
           <Reveal delay={120}>
-            <div className="mt-10 relative rounded-3xl overflow-hidden border border-border shadow-sm aspect-[16/9] md:aspect-[21/9] bg-muted">
+            <div className="mt-10 relative rounded-2xl md:rounded-3xl overflow-hidden border border-border shadow-sm h-[260px] sm:h-[340px] md:h-auto md:aspect-[21/9] bg-muted">
               <PresenceMap />
               <div className="absolute bottom-3 left-3 z-[400] bg-card/95 backdrop-blur rounded-lg border border-border px-3 py-2 text-xs text-ink-soft pointer-events-none space-y-1.5">
                 <div className="flex items-center gap-2">
