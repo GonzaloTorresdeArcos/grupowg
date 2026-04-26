@@ -159,24 +159,37 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "GR Alpujarra · Lanjarón", cp: "18420" },
   ],
   "21": [ // Huelva
-    { name: "Huelva", cp: "21001" },
-    { name: "Lepe", cp: "21440" },
-    { name: "Almonte", cp: "21730" },
-    { name: "Moguer", cp: "21800" },
-    { name: "Ayamonte", cp: "21400" },
-    { name: "Isla Cristina", cp: "21410" },
-    { name: "Cartaya", cp: "21450" },
-    { name: "Punta Umbría", cp: "21100" },
-    { name: "Bollullos Par del Condado", cp: "21710" },
-    { name: "Aljaraque", cp: "21110" },
-    { name: "Gibraleón", cp: "21500" },
-    { name: "Valverde del Camino", cp: "21600" },
-    { name: "La Palma del Condado", cp: "21700" },
-    { name: "Aracena", cp: "21200" },
-    { name: "Trigueros", cp: "21620" },
-    { name: "Nerva", cp: "21670" },
-    { name: "Minas de Riotinto", cp: "21660" },
-    { name: "Rociana del Condado", cp: "21720" },
+    // ───── 1.1 Huelva capital (barrios) ─────
+    { name: "Huelva Capital · Centro", cp: "21001" },
+    { name: "Huelva Capital · Isla Chica", cp: "21002" },
+    { name: "Huelva Capital · El Matadero", cp: "21003" },
+    { name: "Huelva Capital · Molino de la Vega", cp: "21006" },
+    { name: "Huelva Capital · Pérez Cubillas", cp: "21006" },
+    { name: "Huelva Capital · Verdeluz", cp: "21005" },
+    { name: "Huelva Capital · La Orden", cp: "21006" },
+    { name: "Huelva Capital · Fuentepiña", cp: "21007" },
+    { name: "Huelva Capital · El Carmen", cp: "21002" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "HU Á. Metro Cercano · Punta Umbría", cp: "21100" },
+    { name: "HU Á. Metro Cercano · Aljaraque", cp: "21110" },
+    { name: "HU Á. Metro Cercano · Gibraleón", cp: "21500" },
+    { name: "HU Á. Metro Cercano · Palos de la Frontera", cp: "21810" },
+    { name: "HU Á. Metro Cercano · Moguer", cp: "21800" },
+
+    // ───── 1.3 Resto provincia de Huelva ─────
+    // 1.3.1 Costa
+    { name: "HU Costa · Lepe", cp: "21440" },
+    { name: "HU Costa · Isla Cristina", cp: "21410" },
+    { name: "HU Costa · Ayamonte", cp: "21400" },
+    // 1.3.2 Condado
+    { name: "HU Condado · Almonte", cp: "21730" },
+    { name: "HU Condado · La Palma del Condado", cp: "21700" },
+    // 1.3.3 Sierra
+    { name: "HU Sierra · Aracena", cp: "21200" },
+    { name: "HU Sierra · Cortegana", cp: "21230" },
+    { name: "HU Sierra · Jabugo", cp: "21290" },
   ],
   "23": [ // Jaén
     { name: "Jaén", cp: "23001" },
@@ -1468,6 +1481,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "GR Costa Tropical": { level1: "Resto provincia de Granada", level2: "Costa Tropical" },
   "GR Norte Interior": { level1: "Resto provincia de Granada", level2: "Norte / interior" },
   "GR Alpujarra": { level1: "Resto provincia de Granada", level2: "Alpujarra" },
+
+  // ─── Huelva (21) ───
+  "Huelva Capital": { level1: "Huelva capital" },
+  "HU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "HU Costa": { level1: "Resto provincia de Huelva", level2: "Costa" },
+  "HU Condado": { level1: "Resto provincia de Huelva", level2: "Condado" },
+  "HU Sierra": { level1: "Resto provincia de Huelva", level2: "Sierra" },
 };
 
 export interface LocalitySubgroup {
