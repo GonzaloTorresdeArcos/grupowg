@@ -619,18 +619,20 @@ const Inscripcion = () => {
                   />
                 )}
               </Field>
-              <Field label="Provincia" error={errs1.provincia_fiscal} className="md:col-span-2">
-                <select
-                  className="input-base"
-                  value={s1.provincia_fiscal}
-                  onChange={(e) => setS1({ ...s1, provincia_fiscal: e.target.value })}
-                >
-                  <option value="">Selecciona</option>
-                  {PROVINCIAS.map((p) => (
-                    <option key={p.code} value={p.name}>{p.name}</option>
-                  ))}
-                </select>
-              </Field>
+              <div className="md:col-span-2">
+                <Field label="Provincia" error={errs1.provincia_fiscal}>
+                  <select
+                    className="input-base"
+                    value={s1.provincia_fiscal}
+                    onChange={(e) => setS1({ ...s1, provincia_fiscal: e.target.value })}
+                  >
+                    <option value="">Selecciona</option>
+                    {PROVINCIAS.map((p) => (
+                      <option key={p.code} value={p.name}>{p.name}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
               <Field label="Email *" error={errs1.email}>
                 <input
                   type="email"
