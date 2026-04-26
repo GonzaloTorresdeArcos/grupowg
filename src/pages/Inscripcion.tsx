@@ -441,6 +441,7 @@ const Inscripcion = () => {
 
       // Generar PDF firmado y registrar la firma vía edge function (acción register_agreement)
       try {
+        const readAt = agreementReadAt ?? new Date();
         const { path: pdfPath } = await generateAndUploadAgreement({
           signerName,
           signerDni,
@@ -451,6 +452,7 @@ const Inscripcion = () => {
           signedAt: new Date(),
           applicationId: appId,
           draftId: draft?.id,
+          agreementReadAt: readAt,
         });
 
         await supabase.functions.invoke("submit-application", {
@@ -464,6 +466,9 @@ const Inscripcion = () => {
               signature_data_url: signatureData,
               pdf_path: pdfPath,
               user_agent: navigator.userAgent.slice(0, 500),
+              agreement_version: AGREEMENT_VERSION,
+              agreement_hash: AGREEMENT_HASH,
+              agreement_read_at: readAt.toISOString(),
             },
           },
         });
