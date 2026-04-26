@@ -631,7 +631,18 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CATALUÑA =============
   "08": [ // Barcelona
-    { name: "Barcelona", cp: "08001" },
+    // — Barcelona capital: distritos centrales —
+    { name: "Barcelona · Ciutat Vella", cp: "08001" },
+    { name: "Barcelona · L'Eixample", cp: "08010" },
+    { name: "Barcelona · Gràcia", cp: "08012" },
+    { name: "Barcelona · Sants-Montjuïc", cp: "08014" },
+    { name: "Barcelona · Sant Martí", cp: "08018" },
+    { name: "Barcelona · Sarrià-Sant Gervasi", cp: "08017" },
+    { name: "Barcelona · Les Corts", cp: "08028" },
+    // — Barcelona capital: distritos periféricos —
+    { name: "Barcelona · Horta-Guinardó", cp: "08035" },
+    { name: "Barcelona · Nou Barris", cp: "08016" },
+    { name: "Barcelona · Sant Andreu", cp: "08030" },
     { name: "L'Hospitalet de Llobregat", cp: "08901" },
     { name: "Badalona", cp: "08911" },
     { name: "Terrassa", cp: "08221" },
