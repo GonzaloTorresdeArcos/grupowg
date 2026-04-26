@@ -231,17 +231,18 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                       return (
                         <div key={p.code}>
                           <div className="flex items-center gap-1">
-                            {localidades.length > 0 && provSelected ? (
+                            {localidades.length > 0 ? (
                               <button
                                 type="button"
                                 onClick={() => toggleProvOpen(p.code)}
-                                className="p-1 text-muted-foreground hover:text-ink"
-                                aria-label={provOpen ? "Colapsar" : "Expandir"}
+                                className="p-1 text-teal-deep hover:text-ink"
+                                aria-label={provOpen ? "Colapsar localidades" : "Ver localidades"}
+                                title={provOpen ? "Ocultar localidades" : `Ver ${localidades.length} localidades`}
                               >
                                 {provOpen ? (
-                                  <ChevronDown className="h-3 w-3" />
+                                  <ChevronDown className="h-3.5 w-3.5" />
                                 ) : (
-                                  <ChevronRight className="h-3 w-3" />
+                                  <ChevronRight className="h-3.5 w-3.5" />
                                 )}
                               </button>
                             ) : (
