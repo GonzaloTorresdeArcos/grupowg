@@ -1518,6 +1518,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "MA Costa del Sol Occ": { level1: "Resto provincia de Málaga", level2: "Costa del Sol occidental" },
   "MA Axarquía": { level1: "Resto provincia de Málaga", level2: "Costa oriental / Axarquía" },
   "MA Interior": { level1: "Resto provincia de Málaga", level2: "Interior" },
+
+  // ─── Huesca (22) ───
+  "Huesca Capital": { level1: "Huesca capital" },
+  "HSC Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "HSC Somontano": { level1: "Resto provincia de Huesca", level2: "Somontano / centro" },
+  "HSC Pirineo": { level1: "Resto provincia de Huesca", level2: "Pirineo" },
+  "HSC La Litera": { level1: "Resto provincia de Huesca", level2: "Este / La Litera" },
 };
 
 export interface LocalitySubgroup {
