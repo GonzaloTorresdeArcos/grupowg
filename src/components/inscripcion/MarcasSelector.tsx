@@ -74,8 +74,11 @@ export function MarcasSelector({
 
   const filteredMarcas = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return currentGama.marcas;
-    return currentGama.marcas.filter((m) => m.toLowerCase().includes(q));
+    const sorted = [...currentGama.marcas].sort((a, b) =>
+      a.localeCompare(b, "es", { sensitivity: "base" }),
+    );
+    if (!q) return sorted;
+    return sorted.filter((m) => m.toLowerCase().includes(q));
   }, [currentGama, query]);
 
   // Contador por gama
