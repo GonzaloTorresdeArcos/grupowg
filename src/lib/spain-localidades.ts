@@ -275,7 +275,21 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Valderrobres", cp: "44580" },
   ],
   "50": [ // Zaragoza
-    { name: "Zaragoza", cp: "50001" },
+    // — Zaragoza capital: distritos centrales —
+    { name: "Zaragoza · Centro", cp: "50001" },
+    { name: "Zaragoza · Casco Histórico", cp: "50003" },
+    { name: "Zaragoza · Universidad", cp: "50009" },
+    { name: "Zaragoza · La Magdalena-San Pablo", cp: "50002" },
+    // — Zaragoza capital: distritos periféricos —
+    { name: "Zaragoza · Delicias", cp: "50010" },
+    { name: "Zaragoza · Las Fuentes", cp: "50013" },
+    { name: "Zaragoza · La Almozara", cp: "50003" },
+    { name: "Zaragoza · Oliver-Valdefierro", cp: "50011" },
+    { name: "Zaragoza · Torrero-La Paz", cp: "50007" },
+    { name: "Zaragoza · El Rabal (Actur)", cp: "50015" },
+    { name: "Zaragoza · Santa Isabel", cp: "50016" },
+    { name: "Zaragoza · Casablanca", cp: "50012" },
+    { name: "Zaragoza · Miralbueno", cp: "50011" },
     { name: "Calatayud", cp: "50300" },
     { name: "Utebo", cp: "50180" },
     { name: "Ejea de los Caballeros", cp: "50600" },
