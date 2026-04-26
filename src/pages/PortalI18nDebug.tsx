@@ -92,6 +92,62 @@ export default function PortalI18nDebug() {
     meta.content = "noindex,nofollow";
   }, []);
 
+  const downloadFile = (filename: string, content: string, mime: string) => {
+    const blob = new Blob([content], { type: `${mime};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const stamp = () => new Date().toISOString().replace(/[:.]/g, "-");
+
+  const handleDownloadJson = () => {
+    const payload = {
+      namespace: "portal",
+      reference: "es",
+      generatedAt: new Date().toISOString(),
+      totalIssues,
+      results: report.map(({ lang, issues }) => ({
+        lang,
+        issueCount: issues.length,
+        issues,
+      })),
+    };
+    downloadFile(
+      `i18n-portal-report-${stamp()}.json`,
+      JSON.stringify(payload, null, 2),
+      "application/json",
+    );
+  };
+
+  const handleDownloadCsv = () => {
+    const escape = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const rows = [["lang", "kind", "path", "refType", "gotType"]];
+    for (const { lang, issues } of report) {
+      if (issues.length === 0) {
+        rows.push([lang, "ok", "", "", ""]);
+        continue;
+      }
+      for (const i of issues) {
+        rows.push([
+          lang,
+          i.kind,
+          i.path,
+          i.kind === "type" ? i.refType : "",
+          i.kind === "type" ? i.gotType : "",
+        ]);
+      }
+    }
+    const csv = rows.map((r) => r.map(escape).join(",")).join("\n");
+    downloadFile(`i18n-portal-report-${stamp()}.csv`, csv, "text/csv");
+  };
+
+
   return (
     <main className="min-h-screen bg-background text-foreground p-8">
       <div className="mx-auto max-w-4xl space-y-8">
@@ -110,6 +166,22 @@ export default function PortalI18nDebug() {
             Sample render: <strong>{t("login.title")}</strong> · current lang{" "}
             <code className="font-mono">{i18n.language}</code>
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadJson}
+              className="inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium hover:bg-muted transition"
+            >
+              ⬇ Download JSON
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadCsv}
+              className="inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium hover:bg-muted transition"
+            >
+              ⬇ Download CSV
+            </button>
+          </div>
         </header>
 
         <section
