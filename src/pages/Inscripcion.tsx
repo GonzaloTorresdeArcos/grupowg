@@ -15,6 +15,7 @@ import { computeScoring } from "@/lib/scoring";
 import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
+import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -84,6 +85,10 @@ const Inscripcion = () => {
   const [errs1, setErrs1] = useState<Record<string, string>>({});
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  // País telefónico (prefijo internacional). Se infiere automáticamente del CP
+  // cuando es posible; el usuario puede cambiarlo manualmente.
+  const [phoneCountry, setPhoneCountry] = useState<CountryPhone>(COUNTRIES.ES);
+  const [phoneCountryAuto, setPhoneCountryAuto] = useState(true);
 
   // Step 2
   const [provinciaCodes, setProvinciaCodes] = useState<string[]>([]);
@@ -157,17 +162,28 @@ const Inscripcion = () => {
 
   useEffect(() => {
     const cp = s1.codigo_postal;
-    if (!/^\d{5}$/.test(cp)) {
+    if (!/^\d{4,5}(-\d{3})?$/.test(cp)) {
       setCpLookup("idle");
       setCpLocalidades([]);
       return;
     }
 
-    // Provincia inmediata por prefijo
-    const prefix = cp.slice(0, 2);
-    const prov = provinciaByCode(prefix);
-    if (prov && s1.provincia_fiscal !== prov.name) {
-      setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
+    // Inferimos prefijo telefónico por CP (solo si el usuario no lo cambió a mano).
+    if (phoneCountryAuto) {
+      const inferredCountry = countryFromPostalCode(cp);
+      if (inferredCountry && inferredCountry.code !== phoneCountry.code) {
+        setPhoneCountry(inferredCountry);
+        if (phoneVerified) setPhoneVerified(false);
+      }
+    }
+
+    // Provincia inmediata por prefijo (solo aplica a CP español de 5 dígitos).
+    if (/^\d{5}$/.test(cp)) {
+      const prefix = cp.slice(0, 2);
+      const prov = provinciaByCode(prefix);
+      if (prov && s1.provincia_fiscal !== prov.name) {
+        setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
+      }
     }
 
     const ctrl = new AbortController();
@@ -311,6 +327,8 @@ const Inscripcion = () => {
             resume_token: draft.resume_token,
             application: {
               ...s1,
+              // Persistimos el teléfono ya en formato internacional E.164.
+              telefono: composeE164(phoneCountry.dial, s1.telefono),
               provincias: provinciasText,
               provincias_codes: provinciaCodes,
               zona_cobertura: provinciasText,
@@ -621,12 +639,41 @@ const Inscripcion = () => {
                   onChange={(e) => { setS1({ ...s1, email: e.target.value }); if (emailVerified) setEmailVerified(false); }}
                 />
               </Field>
-              <Field label="Teléfono *" error={errs1.telefono}>
-                <input
-                  className="input-base"
-                  value={s1.telefono}
-                  onChange={(e) => { setS1({ ...s1, telefono: e.target.value }); if (phoneVerified) setPhoneVerified(false); }}
-                />
+              <Field
+                label="Teléfono *"
+                error={errs1.telefono}
+                hint={`Solo el número (sin prefijo). Prefijo país: ${phoneCountry.dial}`}
+              >
+                <div className="flex gap-2">
+                  <select
+                    aria-label="Prefijo de país"
+                    className="input-base !w-auto min-w-[7.5rem] flex-shrink-0"
+                    value={phoneCountry.code}
+                    onChange={(e) => {
+                      const next = COUNTRIES[e.target.value as CountryPhone["code"]] ?? COUNTRIES.ES;
+                      setPhoneCountry(next);
+                      setPhoneCountryAuto(false);
+                      if (phoneVerified) setPhoneVerified(false);
+                    }}
+                  >
+                    {Object.values(COUNTRIES).map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.flag} {c.dial} {c.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    className="input-base flex-1"
+                    inputMode="tel"
+                    placeholder="612 345 678"
+                    value={s1.telefono}
+                    onChange={(e) => {
+                      const local = sanitizeLocalNumber(e.target.value, phoneCountry.dial);
+                      setS1({ ...s1, telefono: local });
+                      if (phoneVerified) setPhoneVerified(false);
+                    }}
+                  />
+                </div>
               </Field>
             </div>
 
@@ -646,7 +693,7 @@ const Inscripcion = () => {
               <ErrorLogger context="OtpVerification:sms">
                 <OtpVerification
                   channel="sms"
-                  destination={s1.telefono}
+                  destination={composeE164(phoneCountry.dial, s1.telefono)}
                   verified={phoneVerified}
                   resumeToken={draft?.resume_token}
                   onVerified={async () => {
