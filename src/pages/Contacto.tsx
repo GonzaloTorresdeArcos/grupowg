@@ -75,6 +75,7 @@ type FormData = z.infer<typeof baseSchema>;
 const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca"],
   reparaciones: ["producto", "urgencia"],
+  instalaciones: ["producto", "urgencia"],
   repuestos: ["referencia"],
   movilidad: ["vehiculo"],
   seguros: ["ramo"],
@@ -84,6 +85,7 @@ const requiredByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
 const fieldsByMotivo: Partial<Record<MotivoValue, Array<keyof FormData>>> = {
   garantias: ["marca", "numeroSerie"],
   reparaciones: ["producto", "urgencia"],
+  instalaciones: ["producto", "urgencia"],
   repuestos: ["referencia"],
   movilidad: ["vehiculo", "matricula"],
   seguros: ["ramo", "poliza"],
