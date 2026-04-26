@@ -14,7 +14,7 @@ import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
 import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
-import { provinciaByCode } from "@/lib/spain-provinces";
+import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -62,6 +62,9 @@ const step1Schema = z.object({
   email: z.string().trim().email("Email no válido").max(255),
   telefono: z.string().trim().min(6, "Teléfono no válido").max(20),
   direccion_fiscal: z.string().trim().max(300).optional(),
+  codigo_postal: z.string().trim().regex(/^\d{5}$/, "CP de 5 dígitos").optional().or(z.literal("")),
+  localidad: z.string().trim().max(120).optional(),
+  provincia_fiscal: z.string().trim().max(120).optional(),
 });
 
 const Inscripcion = () => {
@@ -76,6 +79,7 @@ const Inscripcion = () => {
     razon_social: "", nombre_comercial: "", cif_nif: "", tipo_colaborador: "",
     persona_contacto: "", email: "", telefono: "",
     direccion_fiscal: "",
+    codigo_postal: "", localidad: "", provincia_fiscal: "",
   });
   const [errs1, setErrs1] = useState<Record<string, string>>({});
   const [emailVerified, setEmailVerified] = useState(false);
@@ -461,6 +465,35 @@ const Inscripcion = () => {
               </Field>
               <Field label="Dirección fiscal">
                 <input className="input-base" value={s1.direccion_fiscal} onChange={(e) => setS1({ ...s1, direccion_fiscal: e.target.value })} />
+              </Field>
+              <Field label="Código postal" error={errs1.codigo_postal}>
+                <input
+                  className="input-base"
+                  inputMode="numeric"
+                  maxLength={5}
+                  placeholder="28001"
+                  value={s1.codigo_postal}
+                  onChange={(e) => setS1({ ...s1, codigo_postal: e.target.value.replace(/\D/g, "").slice(0, 5) })}
+                />
+              </Field>
+              <Field label="Localidad" error={errs1.localidad}>
+                <input
+                  className="input-base"
+                  value={s1.localidad}
+                  onChange={(e) => setS1({ ...s1, localidad: e.target.value })}
+                />
+              </Field>
+              <Field label="Provincia" error={errs1.provincia_fiscal}>
+                <select
+                  className="input-base"
+                  value={s1.provincia_fiscal}
+                  onChange={(e) => setS1({ ...s1, provincia_fiscal: e.target.value })}
+                >
+                  <option value="">Selecciona</option>
+                  {PROVINCIAS.map((p) => (
+                    <option key={p.code} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
               </Field>
               <Field label="Email *" error={errs1.email}>
                 <input
