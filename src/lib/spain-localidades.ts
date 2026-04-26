@@ -2134,6 +2134,14 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Vitoria-Gasteiz Capital": { level1: "Vitoria-Gasteiz (capital)" },
   "AR Rioja Alavesa": { level1: "Resto Álava", level2: "Rioja Alavesa" },
   "AR Norte": { level1: "Resto Álava", level2: "Norte" },
+
+  // ─── La Rioja (26) ───
+  "Logroño Capital": { level1: "Logroño (capital)" },
+  "LR Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "LR Rioja Alta": { level1: "Resto La Rioja", level2: "Rioja Alta" },
+  "LR Rioja Media": { level1: "Resto La Rioja", level2: "Rioja Media" },
+  "LR Rioja Baja": { level1: "Resto La Rioja", level2: "Rioja Baja / Oriental" },
+  "LR Sierra": { level1: "Resto La Rioja", level2: "Sierra" },
 };
 
 export interface LocalitySubgroup {
