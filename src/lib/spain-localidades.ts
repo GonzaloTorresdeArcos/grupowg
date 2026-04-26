@@ -2225,6 +2225,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Menorca": { level1: "Menorca" },
   "Ibiza": { level1: "Ibiza" },
   "Formentera": { level1: "Formentera" },
+
+  // ─── Asturias (33) ───
+  "Oviedo Capital": { level1: "Oviedo (capital)" },
+  "AS Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón central" },
+  "AS Eje Industrial": { level1: "Resto Asturias", level2: "Área central ampliada (eje industrial)" },
+  "AS Cuencas Mineras": { level1: "Resto Asturias", level2: "Cuencas mineras" },
+  "AS Oriente": { level1: "Resto Asturias", level2: "Oriente" },
+  "AS Occidente": { level1: "Resto Asturias", level2: "Occidente" },
+  "AS Interior": { level1: "Resto Asturias", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
