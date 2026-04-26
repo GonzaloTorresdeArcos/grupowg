@@ -1649,6 +1649,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "S Occidente": { level1: "Resto Cantabria", level2: "Occidente" },
   "S Oriente": { level1: "Resto Cantabria", level2: "Oriente" },
   "S Interior": { level1: "Resto Cantabria", level2: "Interior" },
+
+  // ─── Ávila (05) ───
+  "Ávila Capital": { level1: "Ávila capital" },
+  "AV Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "AV Valle del Tiétar": { level1: "Resto provincia de Ávila", level2: "Valle del Tiétar (sur)" },
+  "AV La Moraña": { level1: "Resto provincia de Ávila", level2: "Norte / La Moraña" },
+  "AV Oeste": { level1: "Resto provincia de Ávila", level2: "Oeste" },
 };
 
 export interface LocalitySubgroup {
