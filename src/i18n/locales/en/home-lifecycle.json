@@ -1,0 +1,37 @@
+{
+  "eyebrow1": "02 · Service Lifecycle",
+  "title": "One single flow, <1>from end to end</1>.",
+  "lead": "From the first contact to closure, every phase of the service is designed, connected and measured. These are not independent processes: it is a system that works in an integrated way.",
+  "stages": [
+    { "t": "Demand intake", "d": "Unified capture across every channel." },
+    { "t": "Diagnosis and decision", "d": "Technical validation, not administrative triage." },
+    { "t": "Network assignment", "d": "To the right resource: capability, brand, geography." },
+    { "t": "Service execution", "d": "Coordinated operation in real time." },
+    { "t": "Spare parts management", "d": "Smart stock, OEM, validated compatibility." },
+    { "t": "Logistics coordination", "d": "Delivery, pickup and return synchronised." },
+    { "t": "Support and intelligence", "d": "Technical knowledge applied to every case." },
+    { "t": "Closure and validation", "d": "Resolution verified with the end customer." },
+    { "t": "Control and analytics", "d": "End-to-end traceability and metrics." }
+  ],
+  "eyebrow2": "03 · How it works",
+  "subtitle": "Every layer of the service, <1>under control</1>.",
+  "hasLabel": "Every layer has",
+  "has": [
+    "A clear owner.",
+    "Defined KPIs.",
+    "A direct impact on cost, quality and time."
+  ],
+  "enablesLabel": "This enables",
+  "enables": [
+    "Making decisions with criteria.",
+    "Spotting deviations quickly.",
+    "Continuously improving performance."
+  ],
+  "synthesis": "Designed to work as a system, <1>not as isolated areas</1>.",
+  "kpis": [
+    { "t": "Clear ownership", "d": "A defined owner for each service layer." },
+    { "t": "Business KPIs", "d": "Metrics aligned with cost, quality and time." },
+    { "t": "Real control", "d": "Early detection of deviations and continuous improvement." },
+    { "t": "Operation → outcome", "d": "Direct link between execution and outcome." }
+  ]
+}

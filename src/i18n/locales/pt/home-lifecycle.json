@@ -1,0 +1,37 @@
+{
+  "eyebrow1": "02 · Service Lifecycle",
+  "title": "Um fluxo único, <1>de ponta a ponta</1>.",
+  "lead": "Do primeiro contacto ao fecho, cada fase do serviço é desenhada, ligada e medida. Não são processos independentes: é um sistema que funciona de forma integrada.",
+  "stages": [
+    { "t": "Entrada de procura", "d": "Captura unificada por todos os canais." },
+    { "t": "Diagnóstico e decisão", "d": "Validação técnica, não triagem administrativa." },
+    { "t": "Atribuição de rede", "d": "Ao recurso certo: capacidade, marca, geografia." },
+    { "t": "Execução do serviço", "d": "Operação coordenada em tempo real." },
+    { "t": "Gestão de peças", "d": "Stock inteligente, OEM, compatibilidade validada." },
+    { "t": "Coordenação logística", "d": "Entrega, recolha e devolução sincronizadas." },
+    { "t": "Suporte e inteligência", "d": "Conhecimento técnico aplicado a cada caso." },
+    { "t": "Fecho e validação", "d": "Resolução verificada com o cliente final." },
+    { "t": "Controlo e analítica", "d": "Rastreabilidade e métricas end-to-end." }
+  ],
+  "eyebrow2": "03 · Como funciona",
+  "subtitle": "Cada camada do serviço, <1>sob controlo</1>.",
+  "hasLabel": "Cada camada tem",
+  "has": [
+    "Um responsável claro.",
+    "KPIs definidos.",
+    "Um impacto direto em custo, qualidade e tempo."
+  ],
+  "enablesLabel": "Isto permite",
+  "enables": [
+    "Tomar decisões com critério.",
+    "Detetar desvios rapidamente.",
+    "Melhorar o desempenho de forma contínua."
+  ],
+  "synthesis": "Desenhado para funcionar como um sistema, <1>não como áreas isoladas</1>.",
+  "kpis": [
+    { "t": "Ownership claro", "d": "Um responsável definido por camada do serviço." },
+    { "t": "KPIs de negócio", "d": "Métricas alinhadas a custo, qualidade e tempo." },
+    { "t": "Controlo real", "d": "Deteção precoce de desvios e melhoria contínua." },
+    { "t": "Operação → resultado", "d": "Ligação direta entre execução e outcome." }
+  ]
+}
