@@ -158,7 +158,21 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Marmolejo", cp: "23770" },
   ],
   "29": [ // Málaga
-    { name: "Málaga", cp: "29001" },
+    // — Málaga capital: distritos centrales —
+    { name: "Málaga · Centro", cp: "29001" },
+    { name: "Málaga · Ensanche-Soho", cp: "29005" },
+    { name: "Málaga · La Malagueta", cp: "29016" },
+    // — Málaga capital: distritos periféricos —
+    { name: "Málaga · Este (Pedregalejo, El Palo)", cp: "29017" },
+    { name: "Málaga · Ciudad Jardín", cp: "29014" },
+    { name: "Málaga · Bailén-Miraflores", cp: "29009" },
+    { name: "Málaga · Palma-Palmilla", cp: "29011" },
+    { name: "Málaga · Cruz de Humilladero", cp: "29004" },
+    { name: "Málaga · Carretera de Cádiz", cp: "29006" },
+    { name: "Málaga · Churriana", cp: "29140" },
+    { name: "Málaga · Campanillas", cp: "29590" },
+    { name: "Málaga · Puerto de la Torre", cp: "29190" },
+    { name: "Málaga · Teatinos-Universidad", cp: "29010" },
     { name: "Marbella", cp: "29600" },
     { name: "Mijas", cp: "29650" },
     { name: "Fuengirola", cp: "29640" },
