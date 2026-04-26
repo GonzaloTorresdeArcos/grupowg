@@ -15,7 +15,8 @@ import { PresenceMap } from "@/components/site/PresenceMap";
 import { toast } from "sonner";
 
 const MOTIVOS = [
-  { value: "reparaciones", label: "Instalaciones" },
+  { value: "reparaciones", label: "Reparaciones" },
+  { value: "instalaciones", label: "Instalaciones" },
   { value: "repuestos", label: "Repuestos" },
   { value: "movilidad", label: "Equipos" },
   { value: "garantias", label: "Garantías" },
