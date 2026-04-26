@@ -684,6 +684,9 @@ export type Database = {
       }
       wg_signed_agreements: {
         Row: {
+          agreement_hash: string | null
+          agreement_read_at: string | null
+          agreement_version: string | null
           application_id: string | null
           created_at: string
           draft_id: string | null
@@ -698,6 +701,9 @@ export type Database = {
           user_agent: string | null
         }
         Insert: {
+          agreement_hash?: string | null
+          agreement_read_at?: string | null
+          agreement_version?: string | null
           application_id?: string | null
           created_at?: string
           draft_id?: string | null
@@ -712,6 +718,9 @@ export type Database = {
           user_agent?: string | null
         }
         Update: {
+          agreement_hash?: string | null
+          agreement_read_at?: string | null
+          agreement_version?: string | null
           application_id?: string | null
           created_at?: string
           draft_id?: string | null
