@@ -115,6 +115,28 @@ Deno.serve(async (req) => {
       if (!isStr(application_id, 64) || !signature || typeof signature !== "object") {
         return json({ error: "invalid_payload" }, 400);
       }
+
+      // Verify agreement integrity: hash sent by client must match the one
+      // computed server-side from the canonical agreement text.
+      const clientVersion = isStr(signature.agreement_version, 32) ? signature.agreement_version : null;
+      const clientHash = isStr(signature.agreement_hash, 64) ? signature.agreement_hash : null;
+      if (!clientVersion || !clientHash) {
+        return json({ error: "missing_agreement_metadata" }, 400);
+      }
+      if (clientVersion !== AGREEMENT_VERSION || clientHash !== AGREEMENT_HASH) {
+        console.warn("[submit-application][register_agreement] agreement hash mismatch", {
+          clientVersion, clientHash, expected: { AGREEMENT_VERSION, AGREEMENT_HASH },
+        });
+        return json({
+          error: "agreement_hash_mismatch",
+          expected_version: AGREEMENT_VERSION,
+          expected_hash: AGREEMENT_HASH,
+        }, 400);
+      }
+
+      const readAtRaw = isStr(signature.agreement_read_at, 64) ? signature.agreement_read_at : null;
+      const readAtIso = readAtRaw && !isNaN(Date.parse(readAtRaw)) ? new Date(readAtRaw).toISOString() : null;
+
       const { data: draft0, error: dErr } = await supabase
         .from("wg_application_drafts")
         .select("id, email")
@@ -131,6 +153,9 @@ Deno.serve(async (req) => {
         signature_data_url: isStr(signature.signature_data_url, 500_000) ? signature.signature_data_url : null,
         pdf_path: isStr(signature.pdf_path, 1024) ? signature.pdf_path : null,
         user_agent: isStr(signature.user_agent, 500) ? signature.user_agent : null,
+        agreement_version: AGREEMENT_VERSION,
+        agreement_hash: AGREEMENT_HASH,
+        agreement_read_at: readAtIso,
       };
       if (!sigPayload.signer_name) return json({ error: "missing_signer" }, 400);
       const { error: sigErr } = await supabase.from("wg_signed_agreements").insert(sigPayload);
