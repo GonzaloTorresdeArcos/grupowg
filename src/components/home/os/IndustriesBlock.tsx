@@ -1,98 +1,37 @@
 import { Reveal } from "@/components/site/Reveal";
 import { Factory, Shield, ShoppingBag, Bike, Zap, Cpu, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
-const industries = [
-  {
-    icon: Factory,
-    name: "Fabricantes",
-    matters:
-      "Coste de garantía sobre ventas · calidad de producto en campo · First Time Fix · Turnaround Time · control de la red técnica · impacto directo en P&L.",
-    apply:
-      "El servicio se gestiona como una palanca de control financiero y de calidad. Validación técnica, datos de fallo en campo en tiempo real y mejora continua del producto.",
-    achieve:
-      "Reducción del coste de garantía, mejora medible de calidad y conversión del fallo en información útil para producto.",
-    clients: "Vestel · Cecotec · Sauber · Evvo",
-    closing: "El servicio deja de ser un coste. Pasa a ser un sistema de control del negocio.",
-  },
-  {
-    icon: ShoppingBag,
-    name: "Retail",
-    matters:
-      "Experiencia de cliente en tienda · rapidez de resolución · visibilidad operativa · reducción de incidencias · coordinación con múltiples proveedores.",
-    apply:
-      "El servicio se integra como parte de la experiencia de compra: priorizamos el front, aceleramos asignación y recogidas, coordinamos red técnica y logística y damos visibilidad continua.",
-    achieve:
-      "Mejor experiencia de cliente, menor carga operativa en tienda, mayor rapidez de resolución y control diario del servicio.",
-    clients: "Carrefour · Alcampo · Eroski · Makro",
-    closing: "El servicio deja de ser fricción y pasa a ser parte de la experiencia.",
-  },
-  {
-    icon: Shield,
-    name: "Seguros",
-    matters:
-      "Control del coste de siniestros · eficiencia del proceso · tiempos de resolución · escalabilidad · satisfacción del asegurado.",
-    apply:
-      "El servicio se gestiona como un proceso de control financiero. Estructuramos la validación de casos, automatizamos decisiones cuando aplica y monitorizamos KPIs financieros y operativos.",
-    achieve:
-      "Reducción del coste de siniestros, mayor control del proceso, mejora de tiempos de resolución y escalabilidad operativa.",
-    clients: "Assurant · AIG · Caser · Companjon · Pelayo · Plus Ultra · Seyna",
-    closing: "El servicio se convierte en una herramienta de control financiero.",
-  },
-  {
-    icon: Cpu,
-    name: "Electrónica & distribución",
-    matters:
-      "Coste del servicio · rapidez · reducción de devoluciones · eficiencia operativa.",
-    apply:
-      "Optimizamos el sistema para eficiencia y coste. Ajustamos la asignación de red, optimizamos repuestos y supply chain, reducimos intervenciones innecesarias y mejoramos diagnóstico.",
-    achieve:
-      "Menor coste por intervención, reducción de devoluciones y mayor eficiencia operativa.",
-    clients: "ElectroDepot · PC Componentes · Jocel · Telefac · Neumesse · Acadesa",
-    closing: "El servicio se convierte en una palanca directa de eficiencia.",
-  },
-  {
-    icon: Bike,
-    name: "Movilidad",
-    matters:
-      "Capilaridad de la red · rapidez de respuesta · experiencia de usuario · seguridad.",
-    apply:
-      "El servicio se adapta a un entorno distribuido: desplegamos redes técnicas capilares, priorizamos tiempos de respuesta, simplificamos diagnóstico y coordinamos intervención en campo.",
-    achieve:
-      "Mayor cobertura, menor tiempo de respuesta y experiencia homogénea independientemente del territorio.",
-    clients: "Navee · Nilox · Denver · Ducati · Aprilia · Jeep · Lamborghini · Red Bull",
-    closing: "El servicio ocurre donde está el cliente.",
-  },
-  {
-    icon: Zap,
-    name: "Utilities",
-    matters:
-      "Disponibilidad continua · cumplimiento de SLA · continuidad del servicio · fidelización.",
-    apply:
-      "El servicio se gestiona como infraestructura crítica. Garantizamos disponibilidad constante, priorizamos asignación inmediata, controlamos SLA en tiempo real y aseguramos comunicación continua.",
-    achieve:
-      "Cumplimiento de SLA, mayor continuidad de servicio y mejor experiencia del cliente final.",
-    clients: "Programas operados con compañías líderes del sector",
-    closing: "El servicio se convierte en infraestructura.",
-  },
-];
+const ICONS = [Factory, ShoppingBag, Shield, Cpu, Bike, Zap];
 
 export const IndustriesBlock = () => {
+  const { t } = useTranslation("home-industries");
+  const items = t("items", { returnObjects: true }) as {
+    name: string;
+    matters: string;
+    apply: string;
+    achieve: string;
+    clients: string;
+    closing: string;
+  }[];
   const [active, setActive] = useState(0);
-  const I = industries[active];
-  const Icon = I.icon;
+  const I = items[active];
+  const Icon = ICONS[active];
   return (
     <section className="py-28 md:py-36 bg-background">
       <div className="container-tight">
         <Reveal>
           <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-3xl text-balance">
-            No cambia el modelo. Cambia{" "}
-            <span className="text-teal italic">dónde ponemos el control</span>{" "}
-            y qué optimizamos.
+            <Trans
+              i18nKey="title"
+              t={t}
+              components={[<span key="0" className="text-teal italic" />]}
+            />
           </h2>
           <p className="mt-6 max-w-2xl text-muted-foreground text-lg leading-relaxed">
-            El rendimiento siempre es el resultado de un sistema coordinado.
+            {t("lead")}
           </p>
         </Reveal>
 
@@ -100,8 +39,8 @@ export const IndustriesBlock = () => {
           {/* Tabs verticales */}
           <Reveal className="lg:col-span-4">
             <div className="flex flex-col border border-foreground/10 rounded-2xl overflow-hidden bg-ink-elevated">
-              {industries.map((ind, i) => {
-                const I2 = ind.icon;
+              {items.map((ind, i) => {
+                const I2 = ICONS[i];
                 const isActive = i === active;
                 return (
                   <button
@@ -155,19 +94,19 @@ export const IndustriesBlock = () => {
               <div className="grid sm:grid-cols-3 gap-6 mt-8">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal mb-3">
-                    Qué les importa
+                    {t("mattersLabel")}
                   </p>
                   <p className="text-sm text-foreground/85 leading-relaxed">{I.matters}</p>
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal mb-3">
-                    Cómo aplicamos
+                    {t("applyLabel")}
                   </p>
                   <p className="text-sm text-foreground/85 leading-relaxed">{I.apply}</p>
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-teal mb-3">
-                    Qué conseguimos
+                    {t("achieveLabel")}
                   </p>
                   <p className="text-sm text-foreground/85 leading-relaxed">{I.achieve}</p>
                 </div>
@@ -175,7 +114,7 @@ export const IndustriesBlock = () => {
 
               <div className="mt-8 pt-6 border-t border-foreground/10">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/40 mb-2">
-                  Clientes
+                  {t("clientsLabel")}
                 </p>
                 <p className="text-foreground/90 text-[15px]">{I.clients}</p>
               </div>
@@ -189,8 +128,11 @@ export const IndustriesBlock = () => {
 
         <Reveal delay={200}>
           <p className="mt-16 font-display text-2xl md:text-3xl text-foreground/85 max-w-3xl mx-auto text-center text-balance leading-snug">
-            Un mismo sistema. Diferentes prioridades.{" "}
-            <span className="text-teal">Un único resultado: control y rendimiento.</span>
+            <Trans
+              i18nKey="synthesis"
+              t={t}
+              components={[<span key="0" className="text-teal" />]}
+            />
           </p>
         </Reveal>
       </div>

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   compact?: boolean;
@@ -10,13 +11,16 @@ interface Props {
  * Modo compact = overlay del hero. Modo normal = sección dedicada.
  */
 export const ServiceOSDiagram = ({ compact = false }: Props) => {
-  const nodes = [
-    { x: 8, y: 50, label: "Entrada" },
-    { x: 28, y: 30, label: "Diagnóstico" },
-    { x: 48, y: 60, label: "Asignación" },
-    { x: 72, y: 35, label: "Ejecución" },
-    { x: 92, y: 55, label: "Control" },
+  const { t } = useTranslation("home-diagram");
+  const labels = t("nodes", { returnObjects: true }) as string[];
+  const positions = [
+    { x: 8, y: 50 },
+    { x: 28, y: 30 },
+    { x: 48, y: 60 },
+    { x: 72, y: 35 },
+    { x: 92, y: 55 },
   ];
+  const nodes = positions.map((p, i) => ({ ...p, label: labels[i] ?? "" }));
 
   return (
     <div
@@ -26,9 +30,9 @@ export const ServiceOSDiagram = ({ compact = false }: Props) => {
       )}
     >
       <div className="flex items-center justify-between mb-3">
-        <div className="badge-os">flujo en vivo</div>
+        <div className="badge-os">{t("liveBadge")}</div>
         <p className="font-mono text-[10px] text-bone/40 uppercase tracking-[0.18em]">
-          wg-os :: lifecycle.svc
+          {t("tag")}
         </p>
       </div>
       <div className={cn("relative w-full", compact ? "h-24" : "h-44 md:h-56")}>
