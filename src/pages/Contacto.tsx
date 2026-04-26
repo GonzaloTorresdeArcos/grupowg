@@ -1033,7 +1033,7 @@ const Contacto = () => {
                             role="group"
                             aria-label={t.langLabel}
                           >
-                            {(["es", "en"] as const).map((lng) => {
+                            {(["es", "en", "pt"] as const).map((lng) => {
                               const active = previewLang === lng;
                               return (
                                 <button
