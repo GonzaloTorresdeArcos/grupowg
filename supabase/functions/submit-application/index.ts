@@ -75,14 +75,49 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const {
+      action,
       resume_token,
       application,
       signature,
+      application_id,
     } = body ?? {};
 
     if (!isStr(resume_token, 128) || (resume_token as string).length < 16) {
       return json({ error: "invalid_token" }, 400);
     }
+
+    // ---------- Action: register agreement for an existing app ----------
+    if (action === "register_agreement") {
+      if (!isStr(application_id, 64) || !signature || typeof signature !== "object") {
+        return json({ error: "invalid_payload" }, 400);
+      }
+      const { data: draft0, error: dErr } = await supabase
+        .from("wg_application_drafts")
+        .select("id, email")
+        .eq("resume_token", resume_token)
+        .maybeSingle();
+      if (dErr || !draft0) return json({ error: "draft_not_found" }, 404);
+
+      const sigPayload = {
+        application_id,
+        draft_id: draft0.id,
+        signer_name: isStr(signature.signer_name, 200) ? signature.signer_name : "",
+        signer_dni: isStr(signature.signer_dni, 32) ? signature.signer_dni : null,
+        signer_email: draft0.email,
+        signature_data_url: isStr(signature.signature_data_url, 500_000) ? signature.signature_data_url : null,
+        pdf_path: isStr(signature.pdf_path, 1024) ? signature.pdf_path : null,
+        user_agent: isStr(signature.user_agent, 500) ? signature.user_agent : null,
+      };
+      if (!sigPayload.signer_name) return json({ error: "missing_signer" }, 400);
+      const { error: sigErr } = await supabase.from("wg_signed_agreements").insert(sigPayload);
+      if (sigErr) {
+        console.error("[submit-application][register_agreement] insert error", sigErr);
+        return json({ error: "internal_error" }, 500);
+      }
+      return json({ ok: true });
+    }
+
+    // ---------- Default action: full submission ----------
     if (!application || typeof application !== "object") {
       return json({ error: "invalid_application" }, 400);
     }

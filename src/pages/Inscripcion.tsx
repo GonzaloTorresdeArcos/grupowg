@@ -305,11 +305,7 @@ const Inscripcion = () => {
         setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 
-      // Generar PDF firmado, subirlo, y registrar la firma vía edge function (segundo invoke
-      // a submit-application sólo para el bloque de firma — opcional). Como el endpoint
-      // ya recibió el flujo principal, aquí registramos la firma directamente con un upload
-      // simple + insert via signed-agreements path. Por simplicidad y para no exponer la
-      // tabla, generamos el PDF y enviamos el enlace en una segunda llamada.
+      // Generar PDF firmado y registrar la firma vía edge function (acción register_agreement)
       try {
         const { path: pdfPath } = await generateAndUploadAgreement({
           signerName,
@@ -323,19 +319,11 @@ const Inscripcion = () => {
           draftId: draft?.id,
         });
 
-        // Re-llamamos submit-application solo con el bloque "signature" para registrar el agreement de forma segura.
         await supabase.functions.invoke("submit-application", {
           body: {
+            action: "register_agreement",
             resume_token: draft.resume_token,
-            application: {
-              ...s1,
-              provincias: provinciasText,
-              provincias_codes: provinciaCodes,
-              familias_producto: familiasSel,
-              servicios_ofrecidos: serviciosSel,
-              capacidad_mensual: capacidad,
-              coberturas,
-            },
+            application_id: appId,
             signature: {
               signer_name: signerName,
               signer_dni: signerDni || null,
