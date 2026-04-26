@@ -133,6 +133,7 @@ const Inscripcion = () => {
     if (d.provinciaCodes) setProvinciaCodes(d.provinciaCodes);
     if (d.familiasSel) setFamiliasSel(d.familiasSel);
     if (d.marcas) setMarcas(d.marcas);
+    if (Array.isArray(d.marcasDetalle)) setMarcasDetalle(d.marcasDetalle);
     if (d.tecnicos) setTecnicos(d.tecnicos);
     if (d.serviciosSel) setServiciosSel(d.serviciosSel);
     if (d.horarios) setHorarios(d.horarios);
