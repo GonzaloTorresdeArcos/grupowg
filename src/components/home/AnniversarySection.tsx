@@ -17,7 +17,7 @@ export const AnniversarySection = () => (
       </Reveal>
 
       <Reveal delay={120} className="md:col-span-7">
-        <p className="eyebrow text-teal-soft mb-4">08 · 50 aniversario</p>
+        <p className="eyebrow text-teal-soft mb-4">50 aniversario</p>
         <h2 className="heading-display text-bone text-4xl md:text-6xl text-balance">
           50 años resolviendo.
         </h2>
@@ -25,7 +25,7 @@ export const AnniversarySection = () => (
           <p>Este aniversario no es solo una cifra. Es una seña de identidad.</p>
           <p>
             50 años de oficio, relaciones duraderas, equipo estable, clientes que siguen confiando
-            y miles de incidencias resueltas cada año.
+            y decenas de miles de incidencias resueltas cada año.
           </p>
         </div>
         <p className="mt-10 font-display italic text-2xl md:text-3xl text-teal">
