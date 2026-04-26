@@ -814,7 +814,7 @@ const Contacto = () => {
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-xs uppercase tracking-wider text-muted-foreground">
-                      Horario
+                      {t("sidebar.hours", { defaultValue: "Horario" })}
                     </span>
                     <span className="block text-sm font-medium text-ink">
                       L-V · 09:00 – 18:00
