@@ -1563,6 +1563,17 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "TE Bajo Aragón": { level1: "Resto provincia de Teruel", level2: "Bajo Aragón" },
   "TE Cuencas Mineras": { level1: "Resto provincia de Teruel", level2: "Comunidad de Calatayud / Cuencas Mineras" },
   "TE Maestrazgo": { level1: "Resto provincia de Teruel", level2: "Maestrazgo / Este" },
+
+  // ─── Zaragoza (50) ───
+  "Zaragoza Capital": { level1: "Zaragoza capital" },
+  "Z Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "Z Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "Z Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "Z Á. Metro Este": { level1: "Área metropolitana", level2: "Este" },
+  "Z Eje Oeste": { level1: "Resto provincia de Zaragoza", level2: "Eje oeste (Ribera Alta / Ebro)" },
+  "Z Valdejalón": { level1: "Resto provincia de Zaragoza", level2: "Eje sur (Valdejalón)" },
+  "Z Eje Este": { level1: "Resto provincia de Zaragoza", level2: "Eje este (Bajo Ebro / Caspe)" },
+  "Z Cinco Villas": { level1: "Resto provincia de Zaragoza", level2: "Norte / Cinco Villas ampliado" },
 };
 
 export interface LocalitySubgroup {
