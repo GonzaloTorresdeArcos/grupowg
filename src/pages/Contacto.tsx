@@ -836,10 +836,10 @@ const Contacto = () => {
                       <Check className="h-5 w-5 text-ink" />
                     </div>
                     <h2 className="font-display text-3xl md:text-4xl mb-4">
-                      Mensaje recibido.
+                      {t("form.success.title")}.
                     </h2>
                     <p className="text-bone/70 text-base md:text-lg max-w-md">
-                      Te contestaremos lo antes posible. Gracias por confiar en Grupo WG.
+                      {t("form.success.description")}
                     </p>
                   </div>
                 </div>
@@ -847,9 +847,9 @@ const Contacto = () => {
             ) : step === "review" ? (
               <Reveal>
                 <div className="rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm">
-                  <p className="eyebrow-mono mb-3">Paso 2 de 2 · Revisión</p>
+                  <p className="eyebrow-mono mb-3">{t("form.stepReviewTitle")}</p>
                   <h2 className="font-display text-2xl md:text-3xl text-ink mb-6">
-                    Revisa antes de enviar
+                    {t("form.review.title")}
                   </h2>
                   <dl className="divide-y divide-border text-sm">
                     <ReviewRow label="Nombre" value={form.nombre} />
