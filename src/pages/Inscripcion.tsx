@@ -18,6 +18,8 @@ import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
+import { MarcasSelector } from "@/components/inscripcion/MarcasSelector";
+import type { MarcaDetalle } from "@/lib/marcas-taxonomy";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega"];
