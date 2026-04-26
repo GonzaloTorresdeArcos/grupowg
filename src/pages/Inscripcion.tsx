@@ -22,7 +22,7 @@ import { MarcasSelector } from "@/components/inscripcion/MarcasSelector";
 import type { MarcaDetalle } from "@/lib/marcas-taxonomy";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega"];
+const servicios = ["Reparación en domicilio", "Reparación en taller", "Recogida / entrega", "Swap / Refurbished (sustitución y puesta a nuevo)"];
 const instalacionTipos = [
   "Aire Acondicionado",
   "Encastre / Integración",
