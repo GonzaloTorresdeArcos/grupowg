@@ -475,30 +475,44 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CANARIAS =============
   "35": [ // Las Palmas
-    { name: "Las Palmas de Gran Canaria", cp: "35001" },
-    { name: "Telde", cp: "35200" },
-    { name: "Santa Lucía de Tirajana", cp: "35110" },
-    { name: "San Bartolomé de Tirajana", cp: "35100" },
-    { name: "Arrecife", cp: "35500" },
-    { name: "Puerto del Rosario", cp: "35600" },
-    { name: "Arucas", cp: "35400" },
-    { name: "Ingenio", cp: "35250" },
-    { name: "Gáldar", cp: "35460" },
-    { name: "Santa María de Guía", cp: "35450" },
-    { name: "Mogán", cp: "35140" },
-    { name: "Agüimes", cp: "35260" },
-    { name: "La Oliva (Corralejo)", cp: "35640" },
-    { name: "Pájara (Morro Jable)", cp: "35625" },
-    { name: "Tías", cp: "35510" },
-    { name: "Teguise", cp: "35530" },
-    { name: "Yaiza", cp: "35570" },
-    { name: "San Bartolomé (Lanzarote)", cp: "35550" },
-    { name: "Antigua", cp: "35630" },
-    { name: "Tuineje (Gran Tarajal)", cp: "35620" },
-    { name: "Vega de San Mateo", cp: "35320" },
-    { name: "Valsequillo", cp: "35217" },
-    { name: "Firgas", cp: "35430" },
-    { name: "Teror", cp: "35330" },
+    // ───── 1.1 Las Palmas de Gran Canaria (barrios) ─────
+    { name: "Las Palmas de GC · Vegueta", cp: "35001" },
+    { name: "Las Palmas de GC · Triana", cp: "35002" },
+    { name: "Las Palmas de GC · Arenales", cp: "35006" },
+    { name: "Las Palmas de GC · Ciudad Alta", cp: "35013" },
+    { name: "Las Palmas de GC · Schamann", cp: "35013" },
+    { name: "Las Palmas de GC · La Isleta", cp: "35009" },
+    { name: "Las Palmas de GC · Guanarteme", cp: "35008" },
+    { name: "Las Palmas de GC · Alcaravaneras", cp: "35007" },
+    { name: "Las Palmas de GC · Tafira", cp: "35017" },
+    { name: "Las Palmas de GC · Siete Palmas", cp: "35019" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Norte cercano
+    { name: "GC Á. Metro Norte · Arucas", cp: "35400" },
+    { name: "GC Á. Metro Norte · Teror", cp: "35330" },
+    // 1.2.2 Este cercano
+    { name: "GC Á. Metro Este · Telde", cp: "35200" },
+    { name: "GC Á. Metro Este · Ingenio", cp: "35250" },
+
+    // ───── 1.3 Resto isla de Gran Canaria ─────
+    // 1.3.1 Sur turístico
+    { name: "GC Sur Turístico · Maspalomas (San Bartolomé de Tirajana)", cp: "35100" },
+    { name: "GC Sur Turístico · Mogán", cp: "35140" },
+    // 1.3.2 Oeste / interior
+    { name: "GC Oeste Interior · Agaete", cp: "35480" },
+    { name: "GC Oeste Interior · Gáldar", cp: "35460" },
+    { name: "GC Oeste Interior · Santa María de Guía", cp: "35450" },
+
+    // ───── 1.4 Otras islas de la provincia ─────
+    // 1.4.1 Lanzarote
+    { name: "Otras Islas Lanzarote · Arrecife", cp: "35500" },
+    { name: "Otras Islas Lanzarote · Tías", cp: "35510" },
+    { name: "Otras Islas Lanzarote · San Bartolomé", cp: "35550" },
+    // 1.4.2 Fuerteventura
+    { name: "Otras Islas Fuerteventura · Puerto del Rosario", cp: "35600" },
+    { name: "Otras Islas Fuerteventura · La Oliva", cp: "35640" },
+    { name: "Otras Islas Fuerteventura · Pájara", cp: "35625" },
   ],
   "38": [ // S.C. Tenerife
     { name: "Santa Cruz de Tenerife", cp: "38001" },
@@ -1574,6 +1588,15 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "Z Valdejalón": { level1: "Resto provincia de Zaragoza", level2: "Eje sur (Valdejalón)" },
   "Z Eje Este": { level1: "Resto provincia de Zaragoza", level2: "Eje este (Bajo Ebro / Caspe)" },
   "Z Cinco Villas": { level1: "Resto provincia de Zaragoza", level2: "Norte / Cinco Villas ampliado" },
+
+  // ─── Las Palmas (35) ───
+  "Las Palmas de GC": { level1: "Las Palmas de Gran Canaria" },
+  "GC Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte cercano" },
+  "GC Á. Metro Este": { level1: "Área metropolitana", level2: "Este cercano" },
+  "GC Sur Turístico": { level1: "Resto isla de Gran Canaria", level2: "Sur turístico" },
+  "GC Oeste Interior": { level1: "Resto isla de Gran Canaria", level2: "Oeste / interior" },
+  "Otras Islas Lanzarote": { level1: "Otras islas de la provincia", level2: "Lanzarote" },
+  "Otras Islas Fuerteventura": { level1: "Otras islas de la provincia", level2: "Fuerteventura" },
 };
 
 export interface LocalitySubgroup {
