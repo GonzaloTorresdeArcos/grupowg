@@ -877,7 +877,7 @@ const Contacto = () => {
                     <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0 text-xs">
                       <p className="font-medium text-ink">
-                        Consentimiento aceptado
+                        {t("form.fields.consentimiento")}
                       </p>
                       <p className="mt-0.5 text-muted-foreground leading-relaxed">
                         Aceptaste el tratamiento de datos conforme a la{" "}
@@ -907,7 +907,7 @@ const Contacto = () => {
                       className="btn-on-light w-full sm:w-auto justify-center"
                     >
                       <ArrowLeft className="h-4 w-4" />
-                      Volver y editar
+                      {t("form.back")}
                     </button>
                     <button
                       type="button"
@@ -916,7 +916,7 @@ const Contacto = () => {
                       className="btn-primary disabled:opacity-50 w-full sm:flex-1 justify-center"
                     >
                       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                      Confirmar y enviar
+                      {loading ? t("form.sending") : t("form.confirmSend")}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -929,12 +929,12 @@ const Contacto = () => {
                   className="space-y-5 rounded-3xl bg-card border border-border p-6 sm:p-8 md:p-10 shadow-sm"
                   noValidate
                 >
-                  <p className="eyebrow-mono">Paso 1 de 2 · Datos</p>
+                  <p className="eyebrow-mono">{t("form.stepDataTitle")}</p>
                   {restored && (
                     <div className="rounded-xl border border-teal/30 bg-teal/5 px-4 py-3 flex items-start gap-3">
                       <Check className="h-4 w-4 text-teal mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0 text-xs text-ink/80">
-                        <p className="font-medium text-ink">Borrador restaurado</p>
+                        <p className="font-medium text-ink">{t("form.draftRestored")}</p>
                         <p className="mt-0.5 text-muted-foreground">
                           Recuperamos tus datos guardados el{" "}
                           {restored.toLocaleString("es-ES", {
