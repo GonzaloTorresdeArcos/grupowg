@@ -973,7 +973,11 @@ const Inscripcion = () => {
                   type="checkbox"
                   className="mt-1 h-4 w-4 rounded border-border accent-teal"
                   checked={agreementRead}
-                  onChange={(e) => setAgreementRead(e.target.checked)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setAgreementRead(checked);
+                    setAgreementReadAt(checked ? new Date() : null);
+                  }}
                 />
                 <span>
                   He leído y acepto el contenido del <span className="font-medium text-ink">acuerdo de colaboración</span>.
@@ -1049,7 +1053,11 @@ const Inscripcion = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setAgreementRead(true); setAgreementOpen(false); }}
+                  onClick={() => {
+                    setAgreementRead(true);
+                    setAgreementReadAt(new Date());
+                    setAgreementOpen(false);
+                  }}
                   className="btn-primary"
                 >
                   <Check className="h-4 w-4" /> He leído el acuerdo
