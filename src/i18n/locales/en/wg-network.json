@@ -1,0 +1,65 @@
+{
+  "seo": {
+    "title": "WG Professional Network · Grupo Warranty Global",
+    "description": "A network of professional technical services with backing, tools and protection. 50 years entering people's homes."
+  },
+  "hero": {
+    "eyebrow": "WG Professional Network",
+    "title1": "It's about the people.",
+    "title2": "It's about you.",
+    "intro": "A commitment to our technical services network. 50 years entering people's homes and solving real problems. The network is not logos or processes: it's you.",
+    "list": [
+      "— Those who get up early.",
+      "— Those who drive hundreds of kilometres.",
+      "— Those who show up when something fails.",
+      "— Those who solve what nobody else can solve."
+    ],
+    "manifesto": "Grupo WG works thanks to you.",
+    "cta": "Join WG Professional Network"
+  },
+  "layers": {
+    "eyebrow": "The plan",
+    "title": "A plan structured in 3 layers.",
+    "layerLabel": "Layer",
+    "items": [
+      { "n": "01", "t": "Relieve pressure", "d": "Spare parts at wholesale cost and agile processes, less operational friction." },
+      { "n": "02", "t": "Grow", "d": "New equipment at competitive prices, extended warranties and new categories and revenue lines." },
+      { "n": "03", "t": "Protect", "d": "Collective insurance, health, life, legal protection, income protection, savings, PRL, compliance and documentation." }
+    ]
+  },
+  "benefits": {
+    "eyebrow": "Benefits",
+    "title": "We truly protect.",
+    "subtitle": "Because it's not just about the work. You matter.",
+    "items": [
+      { "t": "Collective insurance", "d": "Preferred conditions for professionals and teams." },
+      { "t": "Legal protection", "d": "Legal advice for incidents, claims and disputes." },
+      { "t": "Income protection", "d": "Financial peace of mind in case of leave, accident or interruption." },
+      { "t": "Health", "d": "Medical coverage for professionals and families." },
+      { "t": "Life", "d": "Family protection and financial security." },
+      { "t": "Savings plans", "d": "Savings and retirement solutions." },
+      { "t": "Occupational risk", "d": "Risk prevention and workplace safety compliance." },
+      { "t": "Assisted compliance", "d": "Document onboarding, validation and regulatory follow-up." },
+      { "t": "Documentation", "d": "Everything in order, up to date and traceable." },
+      { "t": "New product", "d": "Access to new product on advantageous terms." },
+      { "t": "Spare parts at cost", "d": "Material without margin to improve competitiveness and cash flow." },
+      { "t": "Commercial opportunities", "d": "Activations with manufacturers, distributors and extended warranty programmes." }
+    ],
+    "outro": "We want you to work with peace of mind. We want you covered and safe."
+  },
+  "commitments": {
+    "eyebrow": "Non-negotiable",
+    "title": "3 non-negotiable commitments.",
+    "items": [
+      { "n": "1", "t": "Spare parts at wholesale cost", "d": "So you can compete, grow and breathe in your day-to-day." },
+      { "n": "2", "t": "Extended warranties and equipment at the best price", "d": "So you can have recurring income and build loyal customers." },
+      { "n": "3", "t": "Collective insurance", "d": "So you are protected as you deserve." }
+    ],
+    "outro": "We'll build the rest together, based on your needs and appetite."
+  },
+  "finalCta": {
+    "title": "Join WG Professional Network.",
+    "subtitle": "A single process to activate work, protection and growth.",
+    "cta": "Start registration"
+  }
+}

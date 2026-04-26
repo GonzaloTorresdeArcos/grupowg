@@ -1,0 +1,65 @@
+{
+  "seo": {
+    "title": "WG Professional Network · Grupo Warranty Global",
+    "description": "Un réseau de services techniques professionnels avec soutien, outils et protection. 50 ans à entrer chez les gens."
+  },
+  "hero": {
+    "eyebrow": "WG Professional Network",
+    "title1": "Il s'agit des gens.",
+    "title2": "Il s'agit de vous.",
+    "intro": "Un engagement envers notre réseau de services techniques. 50 ans à entrer chez les gens et à résoudre de vrais problèmes. Le réseau, ce ne sont pas des logos ni des processus : c'est vous.",
+    "list": [
+      "— Ceux qui se lèvent tôt.",
+      "— Ceux qui parcourent des centaines de kilomètres.",
+      "— Ceux qui font face quand quelque chose tombe en panne.",
+      "— Ceux qui résolvent ce que personne d'autre ne sait résoudre."
+    ],
+    "manifesto": "Grupo WG fonctionne grâce à vous.",
+    "cta": "Rejoignez WG Professional Network"
+  },
+  "layers": {
+    "eyebrow": "Le plan",
+    "title": "Un plan structuré en 3 couches.",
+    "layerLabel": "Couche",
+    "items": [
+      { "n": "01", "t": "Soulager la pression", "d": "Pièces au prix de gros et processus agiles, moins de friction opérationnelle." },
+      { "n": "02", "t": "Faire croître", "d": "Équipements neufs à prix compétitif, garanties étendues et nouvelles gammes et sources de revenus." },
+      { "n": "03", "t": "Protéger", "d": "Assurances collectives, santé, vie, protection juridique, protection de revenus, épargne, PRL, conformité et documentation." }
+    ]
+  },
+  "benefits": {
+    "eyebrow": "Avantages",
+    "title": "Nous protégeons vraiment.",
+    "subtitle": "Parce qu'il n'y a pas que le travail. Vous comptez.",
+    "items": [
+      { "t": "Assurances collectives", "d": "Conditions préférentielles pour professionnels et équipes." },
+      { "t": "Protection juridique", "d": "Conseil juridique en cas d'incidents, réclamations et litiges." },
+      { "t": "Protection des revenus", "d": "Tranquillité financière en cas d'arrêt, accident ou interruption." },
+      { "t": "Santé", "d": "Couverture médicale pour professionnels et familles." },
+      { "t": "Vie", "d": "Protection familiale et sécurité économique." },
+      { "t": "Plans d'épargne", "d": "Solutions d'épargne et de prévoyance." },
+      { "t": "Risques pro", "d": "Prévention des risques et conformité en sécurité au travail." },
+      { "t": "Conformité assistée", "d": "Onboarding documentaire, validation et suivi réglementaire." },
+      { "t": "Documentation", "d": "Tout en règle, à jour et traçable." },
+      { "t": "Produit neuf", "d": "Accès à du produit neuf à conditions avantageuses." },
+      { "t": "Pièces au prix coûtant", "d": "Matériel sans marge pour améliorer compétitivité et trésorerie." },
+      { "t": "Opportunités commerciales", "d": "Activations avec fabricants, distributeurs et programmes de garantie étendue." }
+    ],
+    "outro": "Nous voulons que vous travailliez sereins. Nous vous voulons couverts et en sécurité."
+  },
+  "commitments": {
+    "eyebrow": "Non négociables",
+    "title": "3 engagements non négociables.",
+    "items": [
+      { "n": "1", "t": "Pièces au prix de gros", "d": "Pour que vous puissiez rivaliser, grandir et respirer au quotidien." },
+      { "n": "2", "t": "Garanties étendues et équipements au meilleur prix", "d": "Pour avoir des revenus récurrents et construire une clientèle fidèle." },
+      { "n": "3", "t": "Assurances collectives", "d": "Pour que vous soyez protégés comme vous le méritez." }
+    ],
+    "outro": "Le reste, nous le construirons ensemble, selon vos besoins et envies."
+  },
+  "finalCta": {
+    "title": "Rejoignez WG Professional Network.",
+    "subtitle": "Un processus unique pour activer travail, protection et croissance.",
+    "cta": "Commencer l'inscription"
+  }
+}
