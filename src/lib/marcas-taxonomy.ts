@@ -46,6 +46,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Bosch", "Siemens", "Balay", "Beko", "Whirlpool", "Indesit", "Hotpoint",
       "Electrolux", "AEG", "LG", "Samsung", "Haier", "Candy", "Hoover",
       "Miele", "Hisense", "Teka", "Grundig", "Sharp", "Corberó",
+      "Neff", "Gaggenau", "Smeg", "Fagor", "Edesa", "Zanussi", "Midea",
+      "Hitachi", "Daewoo", "Aspes", "New Pol", "Svan", "EAS Electric",
     ],
   },
   {
@@ -56,6 +58,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Samsung", "LG", "Sony", "Hisense", "TCL", "Philips", "Panasonic",
       "Sharp", "Xiaomi", "Grundig", "Thomson", "JVC", "Telefunken", "Metz",
       "Blaupunkt", "Streamview", "Strong", "Denver", "Qilive", "TD Systems",
+      "Bose", "Sonos", "Yamaha", "Harman Kardon", "Pioneer", "Toshiba",
+      "Loewe", "Bang & Olufsen",
     ],
   },
   {
@@ -66,6 +70,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Cecotec", "Philips", "Bosch", "Braun", "Moulinex", "Tefal", "Rowenta",
       "Krups", "DeLonghi", "Kenwood", "Russell Hobbs", "Severin", "Ufesa",
       "Orbegozo", "Black+Decker", "Ninja", "Shark", "Xiaomi", "Solac", "Taurus",
+      "Nespresso", "Jura", "iRobot (Roomba)", "Dyson", "Remington", "ghd",
+      "Smeg", "Miele", "Electrolux", "Princess", "Jata", "Lacor",
     ],
   },
   {
@@ -77,6 +83,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Haier", "Toshiba", "Panasonic", "Carrier", "Johnson", "Daitsu",
       "Orbegozo", "Cecotec", "Rowenta", "DeLonghi", "Honeywell", "Tristar",
       "Taurus", "Equation (Leroy Merlin)",
+      "Hitachi", "Midea", "Junkers", "Vaillant", "Saunier Duval", "Baxi",
+      "Ferroli", "Ariston", "Beretta", "Roca",
     ],
   },
   {
@@ -87,6 +95,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Xiaomi", "Cecotec", "Ninebot (Segway)", "Nilox", "Denver", "SmartGyro",
       "Youin", "UrbanGlide", "Dualtron", "Kugoo", "Navee", "Aprilia", "Ducati",
       "Jeep", "Lamborghini", "Red Bull", "E-Twow", "Hiboy", "Kaabo", "Inokim",
+      "Segway", "Ducati Urban e-Mobility", "Askoll", "NIU", "Silence",
+      "Super Soco", "Sunra", "Velocifero",
     ],
   },
   {
@@ -97,6 +107,9 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Apple", "Samsung", "HP", "Lenovo", "Dell", "Asus", "Acer", "MSI",
       "Huawei", "Xiaomi", "LG", "Sony", "Canon", "Epson", "Brother", "TP-Link",
       "Netgear", "Logitech", "Corsair", "Razer",
+      "Microsoft", "Google", "OnePlus", "Oppo", "Realme", "Nokia", "Motorola",
+      "Honor", "Nintendo", "Garmin", "Fitbit", "JBL", "AOC", "BenQ", "ViewSonic",
+      "D-Link", "Asus ROG", "Kingston", "WD",
     ],
   },
   {
@@ -108,6 +121,8 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
       "Fagor Industrial", "Teka Industrial", "Coreco", "Infrico", "Polar",
       "Bartscher", "Buffalo", "Sammic", "Robot Coupe", "Dynamic", "Santos",
       "Jemi", "Zanussi Professional", "Scotsman", "Hoshizaki", "Brema",
+      "Lainox", "Convotherm", "Unox", "Angelo Po", "Repagas", "Mainho",
+      "Movilfrit", "Frucosol", "Eurofred", "Liebherr Professional",
     ],
   },
 ];
