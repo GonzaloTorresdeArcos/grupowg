@@ -1606,6 +1606,16 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "GC Oeste Interior": { level1: "Resto isla de Gran Canaria", level2: "Oeste / interior" },
   "Otras Islas Lanzarote": { level1: "Otras islas de la provincia", level2: "Lanzarote" },
   "Otras Islas Fuerteventura": { level1: "Otras islas de la provincia", level2: "Fuerteventura" },
+
+  // ─── S.C. Tenerife (38) ───
+  "S.C. Tenerife": { level1: "S.C. Tenerife (capital)" },
+  "TF Á. Metro SC-LL": { level1: "Área metropolitana", level2: "Área metropolitana Santa Cruz – La Laguna" },
+  "TF Norte": { level1: "Resto isla de Tenerife", level2: "Norte" },
+  "TF Sur Turístico": { level1: "Resto isla de Tenerife", level2: "Sur turístico" },
+  "TF Oeste": { level1: "Resto isla de Tenerife", level2: "Oeste / noroeste" },
+  "TF Otras Islas La Palma": { level1: "Otras islas de la provincia", level2: "La Palma" },
+  "TF Otras Islas La Gomera": { level1: "Otras islas de la provincia", level2: "La Gomera" },
+  "TF Otras Islas El Hierro": { level1: "Otras islas de la provincia", level2: "El Hierro" },
 };
 
 export interface LocalitySubgroup {
