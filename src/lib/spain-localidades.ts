@@ -553,26 +553,37 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= CANTABRIA =============
   "39": [
-    { name: "Santander", cp: "39001" },
-    { name: "Torrelavega", cp: "39300" },
-    { name: "Castro-Urdiales", cp: "39700" },
-    { name: "Camargo", cp: "39600" },
-    { name: "Piélagos", cp: "39470" },
-    { name: "Laredo", cp: "39770" },
-    { name: "Santoña", cp: "39740" },
-    { name: "Astillero", cp: "39610" },
-    { name: "Reinosa", cp: "39200" },
-    { name: "Santa Cruz de Bezana", cp: "39100" },
-    { name: "Los Corrales de Buelna", cp: "39400" },
-    { name: "Suances", cp: "39340" },
-    { name: "Cabezón de la Sal", cp: "39500" },
-    { name: "Colindres", cp: "39750" },
-    { name: "Comillas", cp: "39520" },
-    { name: "San Vicente de la Barquera", cp: "39540" },
-    { name: "Ramales de la Victoria", cp: "39800" },
-    { name: "Potes", cp: "39570" },
-    { name: "Medio Cudeyo", cp: "39709" },
-    { name: "Santa María de Cayón", cp: "39660" },
+    // ───── 1.1 Santander (capital) ─────
+    { name: "Santander Capital · Centro", cp: "39001" },
+    { name: "Santander Capital · Puertochico", cp: "39004" },
+    { name: "Santander Capital · Sardinero", cp: "39005" },
+    { name: "Santander Capital · Cueto", cp: "39012" },
+    { name: "Santander Capital · Valdenoja", cp: "39012" },
+    { name: "Santander Capital · Monte", cp: "39012" },
+    { name: "Santander Capital · Castilla-Hermida", cp: "39009" },
+    { name: "Santander Capital · Nueva Montaña", cp: "39011" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Arco de la Bahía
+    { name: "S Á. Metro Bahía · Camargo", cp: "39600" },
+    { name: "S Á. Metro Bahía · El Astillero", cp: "39610" },
+    { name: "S Á. Metro Bahía · Piélagos", cp: "39470" },
+    { name: "S Á. Metro Bahía · Santa Cruz de Bezana", cp: "39100" },
+
+    // ───── 1.3 Resto Cantabria ─────
+    // 1.3.1 Eje Torrelavega (hub clave)
+    { name: "S Eje Torrelavega · Torrelavega", cp: "39300" },
+    { name: "S Eje Torrelavega · Los Corrales de Buelna", cp: "39400" },
+    { name: "S Eje Torrelavega · Cartes", cp: "39311" },
+    // 1.3.2 Occidente
+    { name: "S Occidente · San Vicente de la Barquera", cp: "39540" },
+    { name: "S Occidente · Comillas", cp: "39520" },
+    // 1.3.3 Oriente
+    { name: "S Oriente · Castro Urdiales", cp: "39700" },
+    { name: "S Oriente · Laredo", cp: "39770" },
+    { name: "S Oriente · Santoña", cp: "39740" },
+    // 1.3.4 Interior
+    { name: "S Interior · Reinosa", cp: "39200" },
   ],
 
   // ============= CASTILLA-LA MANCHA =============
@@ -1616,6 +1627,14 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "TF Otras Islas La Palma": { level1: "Otras islas de la provincia", level2: "La Palma" },
   "TF Otras Islas La Gomera": { level1: "Otras islas de la provincia", level2: "La Gomera" },
   "TF Otras Islas El Hierro": { level1: "Otras islas de la provincia", level2: "El Hierro" },
+
+  // ─── Cantabria (39) ───
+  "Santander Capital": { level1: "Santander (capital)" },
+  "S Á. Metro Bahía": { level1: "Área metropolitana", level2: "Arco de la Bahía" },
+  "S Eje Torrelavega": { level1: "Resto Cantabria", level2: "Eje Torrelavega (hub clave)" },
+  "S Occidente": { level1: "Resto Cantabria", level2: "Occidente" },
+  "S Oriente": { level1: "Resto Cantabria", level2: "Oriente" },
+  "S Interior": { level1: "Resto Cantabria", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
