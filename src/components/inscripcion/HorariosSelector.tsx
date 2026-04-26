@@ -43,7 +43,7 @@ export function buildHorariosString(s: Estado): string {
     parts.push(`Sáb ${s.sabMananaDesde}-${s.sabMananaHasta} y ${s.sabTardeDesde}-${s.sabTardeHasta}`);
   }
   const urg =
-    s.urgencia === "en_el_dia" ? "Urgencias en el día (avisos <9:00)" :
+    s.urgencia === "en_el_dia" ? "Urgencias en el día (avisos <9:00h)" :
     s.urgencia === "menos_48h" ? "Urgencias <48h" :
     s.urgencia === "menos_24h" ? "Urgencias <24h" :
     s.urgencia === "mismo_dia" ? "Urgencias mismo día" :
@@ -186,7 +186,7 @@ export function HorariosSelector({ value, onChange }: Props) {
           onChange={(v) => upd("urgencia", v)}
           options={[
             { id: "no", label: "No" },
-            { id: "en_el_dia", label: "En el día (avisos <9:00)" },
+            { id: "en_el_dia", label: "En el día (avisos <9:00h)" },
             { id: "menos_4h", label: "<4h" },
             { id: "24_7", label: "24/7" },
           ]}
