@@ -795,6 +795,31 @@ const Contacto = () => {
                       </button>
                     </div>
                   )}
+                  {Object.keys(errs).length > 0 && orderedErrorList.length > 0 && (
+                    <div
+                      role="alert"
+                      aria-live="polite"
+                      className="rounded-xl border border-destructive/40 bg-destructive/5 px-4 py-3"
+                    >
+                      <p className="text-sm font-medium text-destructive">
+                        Faltan {orderedErrorList.length}{" "}
+                        {orderedErrorList.length === 1 ? "campo" : "campos"} por completar
+                      </p>
+                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                        {orderedErrorList.map((err) => (
+                          <li key={err.key}>
+                            <button
+                              type="button"
+                              onClick={() => scrollToField(err.key)}
+                              className="text-destructive underline underline-offset-2 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40 rounded"
+                            >
+                              {err.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="grid md:grid-cols-2 gap-5">
                     <Field name="nombre" label="Nombre *" error={visibleErrs.nombre}>
                       <input
