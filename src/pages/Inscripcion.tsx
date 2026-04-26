@@ -455,7 +455,7 @@ const Inscripcion = () => {
           agreementReadAt: readAt,
         });
 
-        await supabase.functions.invoke("submit-application", {
+        const { data: regData, error: regErr } = await supabase.functions.invoke("submit-application", {
           body: {
             action: "register_agreement",
             resume_token: draft.resume_token,
@@ -472,6 +472,16 @@ const Inscripcion = () => {
             },
           },
         });
+        const regErrCode = (regData as { error?: string } | null)?.error;
+        if (regErr || regErrCode) {
+          if (regErrCode === "agreement_hash_mismatch") {
+            toast.error(
+              "El acuerdo firmado no coincide con la versión vigente. Por favor recarga la página y vuelve a firmar.",
+            );
+          } else {
+            console.error("register_agreement error", regErr ?? regErrCode);
+          }
+        }
       } catch (e) {
         console.error("Agreement PDF error", e);
       }
