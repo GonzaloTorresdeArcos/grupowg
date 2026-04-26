@@ -327,6 +327,8 @@ const Inscripcion = () => {
             resume_token: draft.resume_token,
             application: {
               ...s1,
+              // Persistimos el teléfono ya en formato internacional E.164.
+              telefono: composeE164(phoneCountry.dial, s1.telefono),
               provincias: provinciasText,
               provincias_codes: provinciaCodes,
               zona_cobertura: provinciasText,
