@@ -62,11 +62,11 @@ const PortalLogin = () => {
     });
     setLoading(false);
     if (error) {
-      toast.error("No se pudo crear la cuenta", { description: error.message });
+      toast.error(t("login.toasts.signupError"), { description: error.message });
       return;
     }
-    toast.success("Cuenta creada", {
-      description: "Vinculamos tu cuenta a tu solicitud automáticamente.",
+    toast.success(t("login.toasts.signupOk"), {
+      description: t("login.toasts.signupOkDesc"),
     });
     navigate(from, { replace: true });
   };
@@ -78,7 +78,7 @@ const PortalLogin = () => {
     });
     if (result.error) {
       setLoading(false);
-      toast.error("Error con Google", { description: String(result.error) });
+      toast.error(t("login.toasts.googleError"), { description: String(result.error) });
     }
   };
 
@@ -87,47 +87,47 @@ const PortalLogin = () => {
       <div className="container-tight py-6">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink transition-colors">
           <ArrowLeft className="h-4 w-4" />
-          Volver a la web
+          {t("login.back")}
         </Link>
       </div>
 
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
-            <p className="eyebrow mb-3">WG Professional Network</p>
+            <p className="eyebrow mb-3">{t("login.eyebrow")}</p>
             <h1 className="font-display text-3xl md:text-4xl text-ink leading-tight">
-              Portal del colaborador
+              {t("login.title")}
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              Accede a tu actividad, calendario, documentos y facturación.
+              {t("login.subtitle")}
             </p>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
             <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
               <TabsList className="grid grid-cols-2 w-full mb-6">
-                <TabsTrigger value="signin">Entrar</TabsTrigger>
-                <TabsTrigger value="signup">Crear cuenta</TabsTrigger>
+                <TabsTrigger value="signin">{t("login.tabs.signin")}</TabsTrigger>
+                <TabsTrigger value="signup">{t("login.tabs.signup")}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email">{t("login.fields.email")}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signin-email" name="email" type="email" required placeholder="tu@empresa.com" className="pl-9" />
+                      <Input id="signin-email" name="email" type="email" required placeholder={t("login.fields.emailPlaceholder")} className="pl-9" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Contraseña</Label>
+                    <Label htmlFor="signin-password">{t("login.fields.password")}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input id="signin-password" name="password" type="password" required minLength={6} className="pl-9" />
                     </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Entrar al portal"}
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signin")}
                   </Button>
                 </form>
               </TabsContent>
@@ -135,31 +135,31 @@ const PortalLogin = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Nombre</Label>
+                    <Label htmlFor="signup-name">{t("login.fields.name")}</Label>
                     <div className="relative">
                       <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signup-name" name="name" required placeholder="Tu nombre" className="pl-9" />
+                      <Input id="signup-name" name="name" required placeholder={t("login.fields.namePlaceholder")} className="pl-9" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email de la solicitud</Label>
+                    <Label htmlFor="signup-email">{t("login.fields.applicationEmail")}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signup-email" name="email" type="email" required placeholder="tu@empresa.com" className="pl-9" />
+                      <Input id="signup-email" name="email" type="email" required placeholder={t("login.fields.emailPlaceholder")} className="pl-9" />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Usa el mismo email con el que te inscribiste en WG Network.
+                      {t("login.fields.applicationHelp")}
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Contraseña</Label>
+                    <Label htmlFor="signup-password">{t("login.fields.password")}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input id="signup-password" name="password" type="password" required minLength={6} className="pl-9" />
                     </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Crear cuenta"}
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signup")}
                   </Button>
                 </form>
               </TabsContent>
@@ -170,7 +170,7 @@ const PortalLogin = () => {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">o continúa con</span>
+                <span className="bg-card px-2 text-muted-foreground">{t("login.divider")}</span>
               </div>
             </div>
 
@@ -181,14 +181,14 @@ const PortalLogin = () => {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Google
+              {t("login.google")}
             </Button>
           </div>
 
           <p className="text-center text-xs text-muted-foreground mt-6">
-            ¿Aún no eres parte de la red?{" "}
+            {t("login.footer")}{" "}
             <Link to="/wg-network/inscripcion" className="text-ink underline-offset-4 hover:underline">
-              Inscríbete aquí
+              {t("login.footerLink")}
             </Link>
           </p>
         </div>
