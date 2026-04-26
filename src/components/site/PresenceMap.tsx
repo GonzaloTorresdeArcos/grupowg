@@ -38,13 +38,28 @@ const CANARIAS_COVERAGE: [number, number][] = [
 ];
 
 export const PresenceMap = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   return (
     <MapContainer
-      center={[39.5, -5.5]}
-      zoom={5}
-      minZoom={4}
+      center={isMobile ? [39.5, -4.5] : [39.5, -5.5]}
+      zoom={isMobile ? 4 : 5}
+      minZoom={isMobile ? 4 : 4}
       maxZoom={9}
       scrollWheelZoom={false}
+      dragging={!isMobile}
+      doubleClickZoom={!isMobile}
+      touchZoom={!isMobile}
+      tap={false}
+      zoomControl={!isMobile}
       className="h-full w-full"
       aria-label="Mapa de presencia de Grupo WG en España y Portugal"
     >
