@@ -17,6 +17,7 @@ export interface AgreementData {
 
 /** Cláusulas del acuerdo, reutilizables en pantalla y en PDF. */
 export const AGREEMENT_TITLE = "Acuerdo de colaboración";
+export const AGREEMENT_SUBTITLE = "WG Professional Network";
 export const AGREEMENT_VERSION = "v1.0.0";
 
 /** Hash determinista (FNV-1a 32 bits, hex) del texto del acuerdo para trazabilidad. */
@@ -41,6 +42,11 @@ export const AGREEMENT_CLAUSES: string[] = [
 
 export const AGREEMENT_CLOSING =
   "El presente acuerdo manifiesta la voluntad inicial de incorporación a la red. La formalización contractual definitiva se realizará tras la validación documental y la firma del contrato mercantil correspondiente.";
+
+/** Hash del contenido textual del acuerdo (versión + intro + cláusulas + cierre). */
+export const AGREEMENT_HASH = fnv1aHex(
+  [AGREEMENT_VERSION, AGREEMENT_INTRO, ...AGREEMENT_CLAUSES, AGREEMENT_CLOSING].join("\n"),
+);
 
 interface DraftPdfData {
   signerName?: string;
