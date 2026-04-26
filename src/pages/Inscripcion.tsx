@@ -12,7 +12,15 @@ import { CoverageMap } from "@/components/inscripcion/CoverageMap";
 import { SignaturePad } from "@/components/inscripcion/SignaturePad";
 import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
-import { generateAndUploadAgreement } from "@/lib/agreement-pdf";
+import {
+  generateAndUploadAgreement,
+  generateDraftAgreementPdf,
+  AGREEMENT_TITLE,
+  AGREEMENT_SUBTITLE,
+  AGREEMENT_INTRO,
+  AGREEMENT_CLAUSES,
+  AGREEMENT_CLOSING,
+} from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
 import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
@@ -124,6 +132,26 @@ const Inscripcion = () => {
   const [signerDni, setSignerDni] = useState("");
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [agreementRead, setAgreementRead] = useState(false);
+  const [agreementOpen, setAgreementOpen] = useState(false);
+
+  const downloadDraftAgreement = () => {
+    const blob = generateDraftAgreementPdf({
+      signerName: signerName || s1.razon_social,
+      signerDni,
+      signerEmail: s1.email,
+      companyName: s1.razon_social,
+      cif: s1.cif_nif,
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "acuerdo-colaboracion-borrador.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   // Hidratar desde draft
   const hydrated = useRef(false);
