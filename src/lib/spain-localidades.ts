@@ -185,7 +185,19 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "Benahavís", cp: "29679" },
   ],
   "41": [ // Sevilla
-    { name: "Sevilla", cp: "41001" },
+    // — Sevilla capital: distritos centrales —
+    { name: "Sevilla · Casco Antiguo", cp: "41004" },
+    { name: "Sevilla · Triana", cp: "41010" },
+    { name: "Sevilla · Los Remedios", cp: "41011" },
+    { name: "Sevilla · Nervión", cp: "41005" },
+    { name: "Sevilla · Macarena", cp: "41008" },
+    // — Sevilla capital: distritos periféricos —
+    { name: "Sevilla · Este-Alcosa-Torreblanca", cp: "41020" },
+    { name: "Sevilla · Cerro-Amate", cp: "41006" },
+    { name: "Sevilla · Sur", cp: "41012" },
+    { name: "Sevilla · Bellavista-La Palmera", cp: "41013" },
+    { name: "Sevilla · Norte (Pino Montano)", cp: "41015" },
+    { name: "Sevilla · San Pablo-Santa Justa", cp: "41007" },
     { name: "Dos Hermanas", cp: "41700" },
     { name: "Alcalá de Guadaíra", cp: "41500" },
     { name: "Utrera", cp: "41710" },
