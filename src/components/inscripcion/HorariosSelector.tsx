@@ -4,7 +4,14 @@ import { cn } from "@/lib/utils";
 const HORAS = Array.from({ length: 25 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
 
 type SabadoModo = "no" | "manana" | "manana_tarde";
-type UrgenciaModo = "no" | "menos_24h" | "mismo_dia";
+type UrgenciaModo =
+  | "no"
+  | "en_el_dia"
+  | "menos_48h"
+  | "menos_24h"
+  | "mismo_dia"
+  | "menos_4h"
+  | "24_7";
 
 interface Estado {
   lvDesde: string;
@@ -36,8 +43,12 @@ export function buildHorariosString(s: Estado): string {
     parts.push(`Sáb ${s.sabMananaDesde}-${s.sabMananaHasta} y ${s.sabTardeDesde}-${s.sabTardeHasta}`);
   }
   const urg =
+    s.urgencia === "en_el_dia" ? "Urgencias en el día (avisos <11:00)" :
+    s.urgencia === "menos_48h" ? "Urgencias <48h" :
     s.urgencia === "menos_24h" ? "Urgencias <24h" :
-    s.urgencia === "mismo_dia" ? "Urgencias mismo día" : "";
+    s.urgencia === "mismo_dia" ? "Urgencias mismo día" :
+    s.urgencia === "menos_4h" ? "Urgencias <4h" :
+    s.urgencia === "24_7" ? "Urgencias 24/7" : "";
   if (urg) parts.push(urg);
   return parts.join(" | ");
 }
@@ -57,7 +68,11 @@ function parse(v: string): Estado {
     out.sabadoModo = "manana";
     out.sabMananaDesde = sabM[1]; out.sabMananaHasta = sabM[2];
   }
-  if (/Urgencias\s+<24h/.test(v)) out.urgencia = "menos_24h";
+  if (/Urgencias\s+24\/7/.test(v)) out.urgencia = "24_7";
+  else if (/Urgencias\s+<4h/.test(v)) out.urgencia = "menos_4h";
+  else if (/Urgencias\s+<48h/.test(v)) out.urgencia = "menos_48h";
+  else if (/Urgencias\s+<24h/.test(v)) out.urgencia = "menos_24h";
+  else if (/Urgencias\s+en el d[íi]a/.test(v)) out.urgencia = "en_el_dia";
   else if (/Urgencias\s+mismo d[íi]a/.test(v)) out.urgencia = "mismo_dia";
   return out;
 }
@@ -171,10 +186,17 @@ export function HorariosSelector({ value, onChange }: Props) {
           onChange={(v) => upd("urgencia", v)}
           options={[
             { id: "no", label: "No" },
+            { id: "en_el_dia", label: "En el día (avisos <11:00)" },
+            { id: "menos_48h", label: "<48h" },
             { id: "menos_24h", label: "<24h" },
             { id: "mismo_dia", label: "Mismo día" },
+            { id: "menos_4h", label: "<4h" },
+            { id: "24_7", label: "24/7" },
           ]}
         />
+        <div className="mt-2 text-xs text-muted-foreground">
+          Retail/fabricantes: <span className="text-ink">en el día</span> o <span className="text-ink">&lt;48h</span>. Energía/hogar: <span className="text-ink">&lt;4h</span> o <span className="text-ink">24/7</span> (emergencias / seguros de hogar).
+        </div>
       </div>
 
       {resumen && (
