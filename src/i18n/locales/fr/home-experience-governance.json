@@ -1,0 +1,20 @@
+{
+  "eyebrow": "03 · Couches transverses",
+  "titleA": "Expérience et gouvernance,",
+  "titleB": "by design",
+  "layers": [
+    { "title": "Couche d'expérience", "sub": "L'expérience comme résultat du système", "bullets": ["Capture dès le premier contact", "Cohérence sur tout le parcours", "Mesure basée sur la performance (TAT, FTF)"], "closing": "L'expérience ne se gère pas. Elle se construit depuis le système." },
+    { "title": "Couche de gouvernance", "sub": "Contrôle et conformité structurels", "bullets": ["Homologation du réseau technique", "Contrôle documentaire", "Conformité contractuelle", "Gestion des risques"], "closing": "Nous garantissons que le système non seulement fonctionne. Il est conforme." }
+  ],
+  "flowEyebrow": "04 · De l'incident à la résolution",
+  "flowTitleA": "Quatre moments.",
+  "flowTitleB": "Un seul flux",
+  "flow": [
+    { "t": "Entrée", "d": "Interaction" },
+    { "t": "Décision", "d": "Système" },
+    { "t": "Exécution", "d": "Opération" },
+    { "t": "Contrôle", "d": "Suivi" }
+  ],
+  "flowClosingA": "Chaque interaction ne résout pas seulement un cas.",
+  "flowClosingB": "Elle améliore le système."
+}

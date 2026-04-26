@@ -1,0 +1,10 @@
+{
+  "titleA": "Managed, measured",
+  "titleB": "and verified",
+  "lead": "Three connected layers that turn experience into something built, not improvised.",
+  "blocks": [
+    { "title": "How we manage it", "lead": "Experience is not managed in isolation. It is built across the entire service.", "bullets": ["From the initial diagnosis", "During execution", "In meeting deadlines", "In the quality of resolution"], "closing": "Every step in the process directly impacts how the customer perceives the service." },
+    { "title": "How we measure it", "lead": "We measure experience through the real performance of the system.", "bullets": ["Total turnaround time (TAT)", "First-time fix (FTF)", "Incidents and complaints", "Compliance with commitments"], "closing": "Experience is not a subjective perception. It is a measurable consequence." },
+    { "title": "What we achieve", "lead": "Tangible results that hold up over time and are felt in every interaction.", "bullets": ["Consistent experience, regardless of provider", "Less friction for the customer", "Fewer unnecessary contacts", "More trust in the service"], "closing": "An experience that does not depend on luck. It depends on the system." }
+  ]
+}
