@@ -221,6 +221,10 @@ const Inscripcion = () => {
       toast.error("Debes aceptar las condiciones");
       return;
     }
+    if (!draft?.resume_token) {
+      toast.error("No hemos podido recuperar tu solicitud. Recarga la página.");
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -229,28 +233,50 @@ const Inscripcion = () => {
         .filter(Boolean)
         .join(", ");
 
-      const { data: app, error } = await supabase
-        .from("wg_network_applications")
-        .insert({
-          ...s1,
-          provincias: provinciasText,
-          zona_cobertura: provinciasText,
-          familias_producto: familiasSel,
-          marcas_trabajadas: marcas,
-          numero_tecnicos: tecnicos ? parseInt(tecnicos) : null,
-          servicios_ofrecidos: serviciosSel,
-          horarios,
-          capacidad_mensual: capacidad,
-          coberturas,
-          datos_seguros: datosSeguros,
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
+      // Submit application via secure edge function (server forces status=pending,
+      // recomputes scoring, validates verification flags from the draft).
+      const documentosSubidos = Object.values(files).filter(Boolean).length;
+      const { data: submitData, error: submitError } = await supabase.functions.invoke(
+        "submit-application",
+        {
+          body: {
+            resume_token: draft.resume_token,
+            application: {
+              ...s1,
+              provincias: provinciasText,
+              provincias_codes: provinciaCodes,
+              zona_cobertura: provinciasText,
+              familias_producto: familiasSel,
+              marcas_trabajadas: marcas,
+              numero_tecnicos: tecnicos ? parseInt(tecnicos) : null,
+              servicios_ofrecidos: serviciosSel,
+              horarios,
+              capacidad_mensual: capacidad,
+              coberturas,
+              datos_seguros: datosSeguros,
+              documentosSubidos,
+            },
+          },
+        },
+      );
 
-      const appId = app.id;
+      if (submitError || !submitData?.ok) {
+        const errCode = submitData?.error;
+        if (errCode === "email_not_verified") {
+          toast.error("Verifica tu email antes de enviar la solicitud");
+        } else if (errCode === "missing_required_fields") {
+          toast.error("Faltan campos obligatorios");
+        } else {
+          toast.error("No hemos podido enviar tu solicitud. Inténtalo de nuevo.");
+        }
+        setSubmitting(false);
+        return;
+      }
 
-      // Upload de documentos
+      const appId: string = submitData.application_id;
+
+      // Upload de documentos (RLS sigue permitiendo INSERT en wg_network_documents
+      // si el application_id existe).
       const uploads = Object.entries(files).filter(([, f]) => f);
       for (const [docType, file] of uploads) {
         if (!file) continue;
@@ -279,7 +305,11 @@ const Inscripcion = () => {
         setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 
-      // Generar PDF firmado y subirlo
+      // Generar PDF firmado, subirlo, y registrar la firma vía edge function (segundo invoke
+      // a submit-application sólo para el bloque de firma — opcional). Como el endpoint
+      // ya recibió el flujo principal, aquí registramos la firma directamente con un upload
+      // simple + insert via signed-agreements path. Por simplicidad y para no exponer la
+      // tabla, generamos el PDF y enviamos el enlace en una segunda llamada.
       try {
         const { path: pdfPath } = await generateAndUploadAgreement({
           signerName,
@@ -293,15 +323,27 @@ const Inscripcion = () => {
           draftId: draft?.id,
         });
 
-        await supabase.from("wg_signed_agreements").insert({
-          application_id: appId,
-          draft_id: draft?.id,
-          signer_name: signerName,
-          signer_dni: signerDni || null,
-          signer_email: s1.email,
-          signature_data_url: signatureData,
-          pdf_path: pdfPath,
-          user_agent: navigator.userAgent.slice(0, 500),
+        // Re-llamamos submit-application solo con el bloque "signature" para registrar el agreement de forma segura.
+        await supabase.functions.invoke("submit-application", {
+          body: {
+            resume_token: draft.resume_token,
+            application: {
+              ...s1,
+              provincias: provinciasText,
+              provincias_codes: provinciaCodes,
+              familias_producto: familiasSel,
+              servicios_ofrecidos: serviciosSel,
+              capacidad_mensual: capacidad,
+              coberturas,
+            },
+            signature: {
+              signer_name: signerName,
+              signer_dni: signerDni || null,
+              signature_data_url: signatureData,
+              pdf_path: pdfPath,
+              user_agent: navigator.userAgent.slice(0, 500),
+            },
+          },
         });
       } catch (e) {
         console.error("Agreement PDF error", e);
@@ -317,26 +359,13 @@ const Inscripcion = () => {
             templateData: {
               name: signerName,
               companyName: s1.razon_social,
-              tier: scoring.tier,
+              tier: submitData.scoring?.tier ?? scoring.tier,
             },
           },
         })
         .then(({ error: emailErr }) => {
           if (emailErr) console.warn("[email] no enviado:", emailErr.message);
         });
-
-      // Guardar scoring
-      try {
-        await supabase.from("wg_application_scoring").insert({
-          application_id: appId,
-          draft_id: draft?.id,
-          total_score: scoring.total,
-          tier: scoring.tier,
-          breakdown: scoring.breakdown,
-        });
-      } catch (e) {
-        console.error("Scoring error", e);
-      }
 
       clearDraft();
       setDone(true);
