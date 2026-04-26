@@ -1925,6 +1925,35 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "NA Norte Pirineo": { level1: "Resto Navarra", level2: "Norte / Pirineo" },
   "NA Centro": { level1: "Resto Navarra", level2: "Centro" },
   "NA Sur Ribera": { level1: "Resto Navarra", level2: "Sur / Ribera" },
+
+  // ─── Alicante (03) ───
+  "Alicante Capital": { level1: "Alicante capital" },
+  "A Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "A Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "A Marina Alta": { level1: "Resto provincia de Alicante", level2: "Marina Alta" },
+  "A Marina Baixa": { level1: "Resto provincia de Alicante", level2: "Marina Baixa" },
+  "A Alcoià Comtat": { level1: "Resto provincia de Alicante", level2: "L'Alcoià / Comtat (interior norte)" },
+  "A Vinalopó": { level1: "Resto provincia de Alicante", level2: "Vinalopó (interior)" },
+  "A Sur Metro Ampliado": { level1: "Resto provincia de Alicante", level2: "Sur metropolitano ampliado" },
+  "A Vega Baja": { level1: "Resto provincia de Alicante", level2: "Vega Baja (sur)" },
+
+  // ─── Castellón (12) ───
+  "Castellón Capital": { level1: "Castellón de la Plana (capital)" },
+  "CS Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "CS Plana Ampliada": { level1: "Resto provincia de Castellón", level2: "Plana Alta / Plana Baixa ampliada" },
+  "CS Norte Litoral": { level1: "Resto provincia de Castellón", level2: "Norte litoral" },
+  "CS Interior Norte": { level1: "Resto provincia de Castellón", level2: "Interior norte" },
+  "CS Interior Sur": { level1: "Resto provincia de Castellón", level2: "Interior sur" },
+
+  // ─── Valencia (46) ───
+  "Valencia Capital": { level1: "Valencia capital" },
+  "V Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "V Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "V Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "V Camp de Morvedre": { level1: "Resto provincia de Valencia", level2: "Norte / Camp de Morvedre" },
+  "V Ribera Sur Litoral": { level1: "Resto provincia de Valencia", level2: "Ribera / Sur litoral" },
+  "V Safor": { level1: "Resto provincia de Valencia", level2: "Safor" },
+  "V Interior": { level1: "Resto provincia de Valencia", level2: "Interior" },
 };
 
 export interface LocalitySubgroup {
