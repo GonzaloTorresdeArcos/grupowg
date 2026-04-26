@@ -240,7 +240,35 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                   >
                     <span>{ccaa}</span>
                     <span className="text-[10px] font-normal opacity-80">
-                      {provs.filter((p) => selected.includes(p.code)).length}/{provs.length}
+                      {(() => {
+                        // Contador por "zonas operativas": si la provincia tiene
+                        // grupos jerárquicos (ej. Madrid → Centro / Á.Metro / Resto),
+                        // cuenta esos grupos en lugar de la provincia entera.
+                        let total = 0;
+                        let active = 0;
+                        for (const p of provs) {
+                          const groups = getGroupedLocalidades(p.code);
+                          const provGroupCount =
+                            groups.length > 1 || (groups[0]?.hasSubgroups ?? false)
+                              ? groups.length
+                              : 1;
+                          total += provGroupCount;
+                          if (selected.includes(p.code)) {
+                            // Resta los grupos completamente excluidos
+                            if (provGroupCount === 1) {
+                              active += 1;
+                            } else {
+                              const excludedGroups = groups.filter((g) =>
+                                g.localidades.every((l) =>
+                                  excluded.includes(localidadKey(p.code, l.name)),
+                                ),
+                              ).length;
+                              active += provGroupCount - excludedGroups;
+                            }
+                          }
+                        }
+                        return `${active}/${total}`;
+                      })()}
                     </span>
                   </button>
                 </div>
@@ -285,16 +313,39 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                             >
                               <span className="flex items-center gap-2">
                                 {p.name}
-                                {localidades.length > 0 && (
-                                  <span
-                                    className={cn(
-                                      "text-[10px] px-1.5 py-0.5 rounded",
-                                      provSelected ? "bg-bone/20 text-bone/90" : "bg-secondary text-muted-foreground",
-                                    )}
-                                  >
-                                    {localidades.length} loc.
-                                  </span>
-                                )}
+                                {localidades.length > 0 && (() => {
+                                  const groups = getGroupedLocalidades(p.code);
+                                  const hasHierarchy =
+                                    groups.length > 1 || (groups[0]?.hasSubgroups ?? false);
+                                  if (hasHierarchy) {
+                                    const excludedGroups = groups.filter((g) =>
+                                      g.localidades.every((l) =>
+                                        excluded.includes(localidadKey(p.code, l.name)),
+                                      ),
+                                    ).length;
+                                    const activeGroups = groups.length - excludedGroups;
+                                    return (
+                                      <span
+                                        className={cn(
+                                          "text-[10px] px-1.5 py-0.5 rounded",
+                                          provSelected ? "bg-bone/20 text-bone/90" : "bg-secondary text-muted-foreground",
+                                        )}
+                                      >
+                                        {activeGroups}/{groups.length} zonas
+                                      </span>
+                                    );
+                                  }
+                                  return (
+                                    <span
+                                      className={cn(
+                                        "text-[10px] px-1.5 py-0.5 rounded",
+                                        provSelected ? "bg-bone/20 text-bone/90" : "bg-secondary text-muted-foreground",
+                                      )}
+                                    >
+                                      {localidades.length} loc.
+                                    </span>
+                                  );
+                                })()}
                                 {exclCount > 0 && (
                                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-destructive/20 text-destructive">
                                     -{exclCount}
