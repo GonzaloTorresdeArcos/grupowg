@@ -59,6 +59,30 @@ function computeScoring(input: ScoringInput) {
   return { total, tier, breakdown };
 }
 
+// ----------- Agreement integrity (mirror of src/lib/agreement-pdf.ts) -----------
+const AGREEMENT_VERSION = "v1.0.0";
+const AGREEMENT_INTRO =
+  "El firmante declara, como representante legal o autorizado de la empresa indicada, que:";
+const AGREEMENT_CLAUSES: string[] = [
+  "Los datos aportados en el formulario de inscripción son veraces y completos.",
+  "Acepta las condiciones generales del programa WG Professional Network y se compromete a aportar la documentación obligatoria pendiente para la activación operativa.",
+  "Autoriza a Welife Group a tratar los datos facilitados con la finalidad de gestionar esta inscripción y, si procede, formalizar la relación de colaboración.",
+  "Se compromete a comunicar cualquier cambio relevante en su capacidad operativa, estructura societaria, seguros o documentación obligatoria.",
+];
+const AGREEMENT_CLOSING =
+  "El presente acuerdo manifiesta la voluntad inicial de incorporación a la red. La formalización contractual definitiva se realizará tras la validación documental y la firma del contrato mercantil correspondiente.";
+function fnv1aHex(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
+const AGREEMENT_HASH = fnv1aHex(
+  [AGREEMENT_VERSION, AGREEMENT_INTRO, ...AGREEMENT_CLAUSES, AGREEMENT_CLOSING].join("\n"),
+);
+
 // ----------- Validation -----------
 const isStr = (v: unknown, max = 500) => typeof v === "string" && v.length <= max;
 const isStrArr = (v: unknown, max = 100) =>
