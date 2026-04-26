@@ -3,7 +3,7 @@ import { Check, ChevronDown, ChevronRight, MapPin, Search, X } from "lucide-reac
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { PROVINCIAS, type Provincia } from "@/lib/spain-provinces";
-import { LOCALIDADES_BY_PROVINCE, localidadKey } from "@/lib/spain-localidades";
+import { LOCALIDADES_BY_PROVINCE, getGroupedLocalidades, localidadKey } from "@/lib/spain-localidades";
 import { cn } from "@/lib/utils";
 
 interface Props {
