@@ -360,39 +360,56 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "TE Maestrazgo · Cantavieja", cp: "44140" },
   ],
   "50": [ // Zaragoza
-    // — Zaragoza capital: distritos centrales —
-    { name: "Zaragoza · Centro", cp: "50001" },
-    { name: "Zaragoza · Casco Histórico", cp: "50003" },
-    { name: "Zaragoza · Universidad", cp: "50009" },
-    { name: "Zaragoza · La Magdalena-San Pablo", cp: "50002" },
-    // — Zaragoza capital: distritos periféricos —
-    { name: "Zaragoza · Delicias", cp: "50010" },
-    { name: "Zaragoza · Las Fuentes", cp: "50013" },
-    { name: "Zaragoza · La Almozara", cp: "50003" },
-    { name: "Zaragoza · Oliver-Valdefierro", cp: "50011" },
-    { name: "Zaragoza · Torrero-La Paz", cp: "50007" },
-    { name: "Zaragoza · El Rabal (Actur)", cp: "50015" },
-    { name: "Zaragoza · Santa Isabel", cp: "50016" },
-    { name: "Zaragoza · Casablanca", cp: "50012" },
-    { name: "Zaragoza · Miralbueno", cp: "50011" },
-    { name: "Calatayud", cp: "50300" },
-    { name: "Utebo", cp: "50180" },
-    { name: "Ejea de los Caballeros", cp: "50600" },
-    { name: "Tarazona", cp: "50500" },
-    { name: "Caspe", cp: "50700" },
-    { name: "La Almunia de Doña Godina", cp: "50100" },
-    { name: "Cuarte de Huerva", cp: "50410" },
-    { name: "Zuera", cp: "50800" },
-    { name: "Borja", cp: "50540" },
-    { name: "Cariñena", cp: "50400" },
-    { name: "Daroca", cp: "50360" },
-    { name: "Épila", cp: "50290" },
-    { name: "Tauste", cp: "50660" },
-    { name: "Alagón", cp: "50630" },
-    { name: "María de Huerva", cp: "50430" },
-    { name: "Pina de Ebro", cp: "50750" },
-    { name: "Pedrola", cp: "50690" },
-    { name: "Casetas", cp: "50620" },
+    // ───── 1.1 Zaragoza capital (distritos) ─────
+    { name: "Zaragoza Capital · Casco Antiguo", cp: "50003" },
+    { name: "Zaragoza Capital · Centro", cp: "50001" },
+    { name: "Zaragoza Capital · Delicias", cp: "50010" },
+    { name: "Zaragoza Capital · Universidad", cp: "50009" },
+    { name: "Zaragoza Capital · San José", cp: "50008" },
+    { name: "Zaragoza Capital · Las Fuentes", cp: "50013" },
+    { name: "Zaragoza Capital · La Almozara", cp: "50003" },
+    { name: "Zaragoza Capital · Oliver-Valdefierro", cp: "50011" },
+    { name: "Zaragoza Capital · Torrero-La Paz", cp: "50007" },
+    { name: "Zaragoza Capital · Actur-Rey Fernando", cp: "50018" },
+    { name: "Zaragoza Capital · El Rabal", cp: "50015" },
+    { name: "Zaragoza Capital · Santa Isabel", cp: "50016" },
+    { name: "Zaragoza Capital · Casablanca", cp: "50012" },
+    { name: "Zaragoza Capital · Miralbueno", cp: "50011" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Norte
+    { name: "Z Á. Metro Norte · Villanueva de Gállego", cp: "50830" },
+    { name: "Z Á. Metro Norte · San Mateo de Gállego", cp: "50840" },
+    // 1.2.2 Oeste
+    { name: "Z Á. Metro Oeste · Utebo", cp: "50180" },
+    { name: "Z Á. Metro Oeste · Figueruelas", cp: "50639" },
+    { name: "Z Á. Metro Oeste · Pedrola", cp: "50690" },
+    // 1.2.3 Sur
+    { name: "Z Á. Metro Sur · Cuarte de Huerva", cp: "50410" },
+    { name: "Z Á. Metro Sur · Cadrete", cp: "50420" },
+    { name: "Z Á. Metro Sur · María de Huerva", cp: "50430" },
+    // 1.2.4 Este
+    { name: "Z Á. Metro Este · La Puebla de Alfindén", cp: "50171" },
+    { name: "Z Á. Metro Este · Pastriz", cp: "50194" },
+    { name: "Z Á. Metro Este · Alfajarín", cp: "50172" },
+
+    // ───── 1.3 Resto provincia de Zaragoza ─────
+    // 1.3.1 Eje oeste (Ribera Alta / Ebro)
+    { name: "Z Eje Oeste · Alagón", cp: "50630" },
+    { name: "Z Eje Oeste · Gallur", cp: "50650" },
+    { name: "Z Eje Oeste · Ejea de los Caballeros", cp: "50600" },
+    { name: "Z Eje Oeste · Tauste", cp: "50660" },
+    // 1.3.2 Eje sur (Valdejalón)
+    { name: "Z Valdejalón · La Almunia de Doña Godina", cp: "50100" },
+    { name: "Z Valdejalón · Calatorao", cp: "50280" },
+    { name: "Z Valdejalón · Épila", cp: "50290" },
+    // 1.3.3 Eje este (Bajo Ebro / Caspe)
+    { name: "Z Eje Este · Quinto", cp: "50770" },
+    { name: "Z Eje Este · Fuentes de Ebro", cp: "50740" },
+    { name: "Z Eje Este · Caspe", cp: "50700" },
+    // 1.3.4 Norte / Cinco Villas ampliado
+    { name: "Z Cinco Villas · Sos del Rey Católico", cp: "50680" },
+    { name: "Z Cinco Villas · Uncastillo", cp: "50678" },
   ],
 
   // ============= ASTURIAS =============
