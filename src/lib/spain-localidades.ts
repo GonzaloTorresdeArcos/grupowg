@@ -710,18 +710,28 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
     { name: "AV Oeste · El Barco de Ávila", cp: "05600" },
   ],
   "09": [ // Burgos
-    { name: "Burgos", cp: "09001" },
-    { name: "Miranda de Ebro", cp: "09200" },
-    { name: "Aranda de Duero", cp: "09400" },
-    { name: "Briviesca", cp: "09240" },
-    { name: "Medina de Pomar", cp: "09500" },
-    { name: "Villarcayo", cp: "09550" },
-    { name: "Lerma", cp: "09340" },
-    { name: "Salas de los Infantes", cp: "09600" },
-    { name: "Roa", cp: "09300" },
-    { name: "Belorado", cp: "09250" },
-    { name: "Espinosa de los Monteros", cp: "09560" },
-    { name: "Quintanar de la Sierra", cp: "09670" },
+    // ───── 1.1 Burgos capital ─────
+    { name: "Burgos Capital · Centro", cp: "09003" },
+    { name: "Burgos Capital · Gamonal", cp: "09007" },
+    { name: "Burgos Capital · Capiscol", cp: "09007" },
+    { name: "Burgos Capital · Villimar", cp: "09007" },
+    { name: "Burgos Capital · San Pedro y San Felices", cp: "09001" },
+    { name: "Burgos Capital · Fuentecillas", cp: "09001" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "BU Á. Metro Cercano · Villagonzalo Pedernales", cp: "09195" },
+    { name: "BU Á. Metro Cercano · Cardeñajimeno", cp: "09193" },
+    { name: "BU Á. Metro Cercano · Quintanadueñas", cp: "09197" },
+
+    // ───── 1.3 Resto provincia de Burgos ─────
+    // 1.3.1 Eje Miranda de Ebro
+    { name: "BU Eje Miranda de Ebro · Miranda de Ebro", cp: "09200" },
+    // 1.3.2 Eje Aranda de Duero
+    { name: "BU Eje Aranda de Duero · Aranda de Duero", cp: "09400" },
+    // 1.3.3 Norte / Merindades
+    { name: "BU Merindades · Villarcayo", cp: "09550" },
+    { name: "BU Merindades · Medina de Pomar", cp: "09500" },
   ],
   "24": [ // León
     { name: "León", cp: "24001" },
@@ -1656,6 +1666,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "AV Valle del Tiétar": { level1: "Resto provincia de Ávila", level2: "Valle del Tiétar (sur)" },
   "AV La Moraña": { level1: "Resto provincia de Ávila", level2: "Norte / La Moraña" },
   "AV Oeste": { level1: "Resto provincia de Ávila", level2: "Oeste" },
+
+  // ─── Burgos (09) ───
+  "Burgos Capital": { level1: "Burgos capital" },
+  "BU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "BU Eje Miranda de Ebro": { level1: "Resto provincia de Burgos", level2: "Eje Miranda de Ebro" },
+  "BU Eje Aranda de Duero": { level1: "Resto provincia de Burgos", level2: "Eje Aranda de Duero" },
+  "BU Merindades": { level1: "Resto provincia de Burgos", level2: "Norte / Merindades" },
 };
 
 export interface LocalitySubgroup {
