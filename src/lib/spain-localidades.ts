@@ -2084,6 +2084,28 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "PO O Salnés": { level1: "Resto provincia de Pontevedra", level2: "O Salnés" },
   "PO Baixo Miño": { level1: "Resto provincia de Pontevedra", level2: "Baixo Miño" },
   "PO Interior Deza": { level1: "Resto provincia de Pontevedra", level2: "Interior / Deza-Tabeirós" },
+
+  // ─── Bizkaia (48) ───
+  "Bilbao Capital": { level1: "Bilbao (capital)" },
+  "BI Á. Metro Margen Derecha": { level1: "Área metropolitana (Gran Bilbao)", level2: "Margen derecha" },
+  "BI Á. Metro Margen Izquierda": { level1: "Área metropolitana (Gran Bilbao)", level2: "Margen izquierda" },
+  "BI Á. Metro Interior Cercano": { level1: "Área metropolitana (Gran Bilbao)", level2: "Interior cercano" },
+  "BI Durangaldea": { level1: "Resto Bizkaia", level2: "Durangaldea" },
+  "BI Costa Uribe": { level1: "Resto Bizkaia", level2: "Costa / Uribe" },
+  "BI Encartaciones": { level1: "Resto Bizkaia", level2: "Encartaciones" },
+
+  // ─── Gipuzkoa (20) ───
+  "San Sebastián Capital": { level1: "San Sebastián (capital)" },
+  "SS Donostialdea": { level1: "Área metropolitana", level2: "Donostialdea" },
+  "SS Bajo Bidasoa": { level1: "Resto Gipuzkoa", level2: "Bajo Bidasoa" },
+  "SS Alto Deba": { level1: "Resto Gipuzkoa", level2: "Alto Deba" },
+  "SS Bajo Deba": { level1: "Resto Gipuzkoa", level2: "Bajo Deba" },
+  "SS Interior": { level1: "Resto Gipuzkoa", level2: "Interior" },
+
+  // ─── Álava (01) ───
+  "Vitoria-Gasteiz Capital": { level1: "Vitoria-Gasteiz (capital)" },
+  "AR Rioja Alavesa": { level1: "Resto Álava", level2: "Rioja Alavesa" },
+  "AR Norte": { level1: "Resto Álava", level2: "Norte" },
 };
 
 export interface LocalitySubgroup {
