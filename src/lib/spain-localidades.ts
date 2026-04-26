@@ -306,20 +306,30 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= ARAGÓN =============
   "22": [ // Huesca
-    { name: "Huesca", cp: "22001" },
-    { name: "Monzón", cp: "22400" },
-    { name: "Barbastro", cp: "22300" },
-    { name: "Fraga", cp: "22520" },
-    { name: "Jaca", cp: "22700" },
-    { name: "Sabiñánigo", cp: "22600" },
-    { name: "Binéfar", cp: "22500" },
-    { name: "Sariñena", cp: "22200" },
-    { name: "Tamarite de Litera", cp: "22550" },
-    { name: "Graus", cp: "22430" },
-    { name: "Almudévar", cp: "22270" },
-    { name: "Ayerbe", cp: "22800" },
-    { name: "Boltaña", cp: "22340" },
-    { name: "Aínsa", cp: "22330" },
+    // ───── 1.1 Huesca capital (barrios) ─────
+    { name: "Huesca Capital · Centro", cp: "22001" },
+    { name: "Huesca Capital · Perpetuo Socorro", cp: "22004" },
+    { name: "Huesca Capital · Santo Domingo y San Martín", cp: "22002" },
+    { name: "Huesca Capital · San Lorenzo", cp: "22003" },
+    { name: "Huesca Capital · María Auxiliadora", cp: "22005" },
+
+    // ───── 1.2 Área metropolitana ─────
+    // 1.2.1 Cinturón cercano
+    { name: "HSC Á. Metro Cercano · Monzón", cp: "22400" },
+    { name: "HSC Á. Metro Cercano · Almudévar", cp: "22270" },
+    { name: "HSC Á. Metro Cercano · Tierz", cp: "22193" },
+    { name: "HSC Á. Metro Cercano · Quicena", cp: "22192" },
+
+    // ───── 1.3 Resto provincia de Huesca ─────
+    // 1.3.1 Somontano / centro
+    { name: "HSC Somontano · Barbastro", cp: "22300" },
+    // 1.3.2 Pirineo
+    { name: "HSC Pirineo · Jaca", cp: "22700" },
+    { name: "HSC Pirineo · Sabiñánigo", cp: "22600" },
+    { name: "HSC Pirineo · Aínsa", cp: "22330" },
+    // 1.3.3 Este / La Litera
+    { name: "HSC La Litera · Binéfar", cp: "22500" },
+    { name: "HSC La Litera · Fraga", cp: "22520" },
   ],
   "44": [ // Teruel
     { name: "Teruel", cp: "44001" },
@@ -1508,6 +1518,13 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "MA Costa del Sol Occ": { level1: "Resto provincia de Málaga", level2: "Costa del Sol occidental" },
   "MA Axarquía": { level1: "Resto provincia de Málaga", level2: "Costa oriental / Axarquía" },
   "MA Interior": { level1: "Resto provincia de Málaga", level2: "Interior" },
+
+  // ─── Huesca (22) ───
+  "Huesca Capital": { level1: "Huesca capital" },
+  "HSC Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "HSC Somontano": { level1: "Resto provincia de Huesca", level2: "Somontano / centro" },
+  "HSC Pirineo": { level1: "Resto provincia de Huesca", level2: "Pirineo" },
+  "HSC La Litera": { level1: "Resto provincia de Huesca", level2: "Este / La Litera" },
 };
 
 export interface LocalitySubgroup {
