@@ -1,40 +1,38 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHero } from "@/components/site/PageHero";
 import { ExperienceBlock } from "@/components/home/os/ExperienceBlock";
 import { ExperienceMethodBlock } from "@/components/home/os/ExperienceMethodBlock";
 import { ClosingBlock } from "@/components/home/os/ClosingBlock";
 
 const Experiencia = () => {
+  const { t } = useTranslation("experiencia");
+
   useEffect(() => {
-    document.title = "Experiencia cliente · WG Service OS";
+    document.title = t("seo.title");
     let m = document.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");
       m.setAttribute("name", "description");
       document.head.appendChild(m);
     }
-    m.setAttribute(
-      "content",
-      "La experiencia no es un canal, es el resultado del sistema. Visibilidad real, una sola conversación y resolución en primera visita.",
-    );
-  }, []);
+    m.setAttribute("content", t("seo.description"));
+  }, [t]);
 
   return (
     <>
       <PageHero
-        
         title={
           <>
-            La experiencia es el{" "}
-            <span className="text-teal italic">resultado</span> del sistema.
+            {t("hero.titleA")}{" "}
+            <span className="text-teal italic">{t("hero.titleB")}</span> {t("hero.titleC")}
           </>
         }
-        subtitle="Sin scripts forzados, sin canales inconexos, sin promesas vacías. Solo respuestas claras, trazabilidad completa y resolución real."
-        cta={{ label: "Solicitar información", to: "/contacto" }}
+        subtitle={t("hero.subtitle")}
+        cta={{ label: t("hero.cta"), to: "/contacto" }}
       />
       <ExperienceBlock />
       <ExperienceMethodBlock />
-      
       <ClosingBlock />
     </>
   );

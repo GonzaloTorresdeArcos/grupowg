@@ -1,42 +1,37 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHero } from "@/components/site/PageHero";
 import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
 import { ClosingBlock } from "@/components/home/os/ClosingBlock";
 
-
 const Modelo = () => {
+  const { t } = useTranslation("modelo");
+
   useEffect(() => {
-    document.title = "Modelo · WG Service OS";
+    document.title = t("seo.title");
     let m = document.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");
       m.setAttribute("name", "description");
       document.head.appendChild(m);
     }
-    m.setAttribute(
-      "content",
-      "El modelo WG Service OS: un sistema único de control y ejecución del servicio postventa, de principio a fin.",
-    );
-  }, []);
+    m.setAttribute("content", t("seo.description"));
+  }, [t]);
 
   return (
     <>
       <PageHero
-        
         title={
           <>
-            Un sistema operativo de servicio,{" "}
-            <span className="text-teal italic">end-to-end</span>.
+            {t("hero.titleA")}{" "}
+            <span className="text-teal italic">{t("hero.titleB")}</span>.
           </>
         }
-        subtitle="El rendimiento del servicio no depende de áreas aisladas, sino de cómo funciona el sistema en su conjunto. Estructuramos el servicio como un flujo completo, donde cada etapa está conectada, tiene un objetivo claro y contribuye directamente al resultado final."
-        cta={{ label: "Solicitar información", to: "/contacto" }}
+        subtitle={t("hero.subtitle")}
+        cta={{ label: t("hero.cta"), to: "/contacto" }}
       />
       <LifecycleBlock />
-      <ClosingBlock
-        lineOne="No gestionamos partes del servicio."
-        lineTwo="Diseñamos el sistema para que el resultado sea correcto."
-      />
+      <ClosingBlock lineOne={t("closing.lineOne")} lineTwo={t("closing.lineTwo")} />
     </>
   );
 };

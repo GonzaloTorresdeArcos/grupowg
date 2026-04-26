@@ -5,8 +5,11 @@
  * - Detecta el idioma del navegador en la primera visita; si no es soportado,
  *   cae a ES.
  * - Persiste la elección del usuario en localStorage bajo `wg:lang`.
- * - Namespaces: `common`, `header`, `footer`, `contacto` y los `home-*` que
- *   componen la portada (un namespace por bloque).
+ * - Namespaces: `common`, `header`, `footer`, `breadcrumbs`, `contacto`,
+ *   los `home-*` (uno por bloque de la home), las páginas marketing
+ *   (`grupo`, `modelo`, `soluciones`, `plataforma`, `industrias`,
+ *   `experiencia`, `marcas`, `aniversario`, `wg-network`), `inscripcion`,
+ *   `portal` y `legal`.
  *
  * Las traducciones viven en `src/i18n/locales/<lang>/<namespace>.json` y se
  * importan estáticamente para no añadir un loader HTTP.
@@ -15,9 +18,12 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
+// ---------- ES ----------
 import esCommon from "./locales/es/common.json";
 import esHeader from "./locales/es/header.json";
 import esFooter from "./locales/es/footer.json";
+import esBreadcrumbs from "./locales/es/breadcrumbs.json";
+import esLegal from "./locales/es/legal.json";
 import esContacto from "./locales/es/contacto.json";
 import esHomeHero from "./locales/es/home-hero.json";
 import esHomeProblem from "./locales/es/home-problem.json";
@@ -35,10 +41,23 @@ import esHomeNetwork from "./locales/es/home-network.json";
 import esHomeAbout from "./locales/es/home-about.json";
 import esHomeClosing from "./locales/es/home-closing.json";
 import esHomeDiagram from "./locales/es/home-diagram.json";
+import esHomeExperienceMethod from "./locales/es/home-experience-method.json";
+import esHomeExperienceGov from "./locales/es/home-experience-governance.json";
+import esGrupo from "./locales/es/grupo.json";
+import esModelo from "./locales/es/modelo.json";
+import esSoluciones from "./locales/es/soluciones.json";
+import esPlataforma from "./locales/es/plataforma.json";
+import esIndustrias from "./locales/es/industrias.json";
+import esExperiencia from "./locales/es/experiencia.json";
+import esMarcas from "./locales/es/marcas.json";
+import esAniversario from "./locales/es/aniversario.json";
 
+// ---------- EN ----------
 import enCommon from "./locales/en/common.json";
 import enHeader from "./locales/en/header.json";
 import enFooter from "./locales/en/footer.json";
+import enBreadcrumbs from "./locales/en/breadcrumbs.json";
+import enLegal from "./locales/en/legal.json";
 import enContacto from "./locales/en/contacto.json";
 import enHomeHero from "./locales/en/home-hero.json";
 import enHomeProblem from "./locales/en/home-problem.json";
@@ -56,10 +75,23 @@ import enHomeNetwork from "./locales/en/home-network.json";
 import enHomeAbout from "./locales/en/home-about.json";
 import enHomeClosing from "./locales/en/home-closing.json";
 import enHomeDiagram from "./locales/en/home-diagram.json";
+import enHomeExperienceMethod from "./locales/en/home-experience-method.json";
+import enHomeExperienceGov from "./locales/en/home-experience-governance.json";
+import enGrupo from "./locales/en/grupo.json";
+import enModelo from "./locales/en/modelo.json";
+import enSoluciones from "./locales/en/soluciones.json";
+import enPlataforma from "./locales/en/plataforma.json";
+import enIndustrias from "./locales/en/industrias.json";
+import enExperiencia from "./locales/en/experiencia.json";
+import enMarcas from "./locales/en/marcas.json";
+import enAniversario from "./locales/en/aniversario.json";
 
+// ---------- PT ----------
 import ptCommon from "./locales/pt/common.json";
 import ptHeader from "./locales/pt/header.json";
 import ptFooter from "./locales/pt/footer.json";
+import ptBreadcrumbs from "./locales/pt/breadcrumbs.json";
+import ptLegal from "./locales/pt/legal.json";
 import ptContacto from "./locales/pt/contacto.json";
 import ptHomeHero from "./locales/pt/home-hero.json";
 import ptHomeProblem from "./locales/pt/home-problem.json";
@@ -77,10 +109,23 @@ import ptHomeNetwork from "./locales/pt/home-network.json";
 import ptHomeAbout from "./locales/pt/home-about.json";
 import ptHomeClosing from "./locales/pt/home-closing.json";
 import ptHomeDiagram from "./locales/pt/home-diagram.json";
+import ptHomeExperienceMethod from "./locales/pt/home-experience-method.json";
+import ptHomeExperienceGov from "./locales/pt/home-experience-governance.json";
+import ptGrupo from "./locales/pt/grupo.json";
+import ptModelo from "./locales/pt/modelo.json";
+import ptSoluciones from "./locales/pt/soluciones.json";
+import ptPlataforma from "./locales/pt/plataforma.json";
+import ptIndustrias from "./locales/pt/industrias.json";
+import ptExperiencia from "./locales/pt/experiencia.json";
+import ptMarcas from "./locales/pt/marcas.json";
+import ptAniversario from "./locales/pt/aniversario.json";
 
+// ---------- FR ----------
 import frCommon from "./locales/fr/common.json";
 import frHeader from "./locales/fr/header.json";
 import frFooter from "./locales/fr/footer.json";
+import frBreadcrumbs from "./locales/fr/breadcrumbs.json";
+import frLegal from "./locales/fr/legal.json";
 import frContacto from "./locales/fr/contacto.json";
 import frHomeHero from "./locales/fr/home-hero.json";
 import frHomeProblem from "./locales/fr/home-problem.json";
@@ -98,6 +143,16 @@ import frHomeNetwork from "./locales/fr/home-network.json";
 import frHomeAbout from "./locales/fr/home-about.json";
 import frHomeClosing from "./locales/fr/home-closing.json";
 import frHomeDiagram from "./locales/fr/home-diagram.json";
+import frHomeExperienceMethod from "./locales/fr/home-experience-method.json";
+import frHomeExperienceGov from "./locales/fr/home-experience-governance.json";
+import frGrupo from "./locales/fr/grupo.json";
+import frModelo from "./locales/fr/modelo.json";
+import frSoluciones from "./locales/fr/soluciones.json";
+import frPlataforma from "./locales/fr/plataforma.json";
+import frIndustrias from "./locales/fr/industrias.json";
+import frExperiencia from "./locales/fr/experiencia.json";
+import frMarcas from "./locales/fr/marcas.json";
+import frAniversario from "./locales/fr/aniversario.json";
 
 export const SUPPORTED_LANGS = ["es", "en", "pt", "fr"] as const;
 export type AppLang = (typeof SUPPORTED_LANGS)[number];
@@ -109,99 +164,112 @@ export const LANG_LABELS: Record<AppLang, string> = {
   fr: "Français",
 };
 
+const buildBundle = (b: {
+  common: unknown; header: unknown; footer: unknown; breadcrumbs: unknown; contacto: unknown;
+  homeHero: unknown; homeProblem: unknown; homeSolution: unknown; homeDifferential: unknown;
+  homeServiceos: unknown; homeMetrics: unknown; homeLifecycle: unknown; homeSolutions: unknown;
+  homePlatform: unknown; homeIntelligence: unknown; homeIndustries: unknown; homeExperience: unknown;
+  homeNetwork: unknown; homeAbout: unknown; homeClosing: unknown; homeDiagram: unknown;
+  homeExperienceMethod: unknown; homeExperienceGov: unknown;
+  grupo: unknown; modelo: unknown; soluciones: unknown; plataforma: unknown;
+  industrias: unknown; experiencia: unknown; marcas: unknown; aniversario: unknown;
+  legal: unknown;
+}) => ({
+  common: b.common,
+  header: b.header,
+  footer: b.footer,
+  breadcrumbs: b.breadcrumbs,
+  contacto: b.contacto,
+  "home-hero": b.homeHero,
+  "home-problem": b.homeProblem,
+  "home-solution": b.homeSolution,
+  "home-differential": b.homeDifferential,
+  "home-serviceos": b.homeServiceos,
+  "home-metrics": b.homeMetrics,
+  "home-lifecycle": b.homeLifecycle,
+  "home-solutions": b.homeSolutions,
+  "home-platform": b.homePlatform,
+  "home-intelligence": b.homeIntelligence,
+  "home-industries": b.homeIndustries,
+  "home-experience": b.homeExperience,
+  "home-network": b.homeNetwork,
+  "home-about": b.homeAbout,
+  "home-closing": b.homeClosing,
+  "home-diagram": b.homeDiagram,
+  "home-experience-method": b.homeExperienceMethod,
+  "home-experience-governance": b.homeExperienceGov,
+  grupo: b.grupo,
+  modelo: b.modelo,
+  soluciones: b.soluciones,
+  plataforma: b.plataforma,
+  industrias: b.industrias,
+  experiencia: b.experiencia,
+  marcas: b.marcas,
+  aniversario: b.aniversario,
+  legal: b.legal,
+});
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      es: {
-        common: esCommon,
-        header: esHeader,
-        footer: esFooter,
-        contacto: esContacto,
-        "home-hero": esHomeHero,
-        "home-problem": esHomeProblem,
-        "home-solution": esHomeSolution,
-        "home-differential": esHomeDifferential,
-        "home-serviceos": esHomeServiceos,
-        "home-metrics": esHomeMetrics,
-        "home-lifecycle": esHomeLifecycle,
-        "home-solutions": esHomeSolutions,
-        "home-platform": esHomePlatform,
-        "home-intelligence": esHomeIntelligence,
-        "home-industries": esHomeIndustries,
-        "home-experience": esHomeExperience,
-        "home-network": esHomeNetwork,
-        "home-about": esHomeAbout,
-        "home-closing": esHomeClosing,
-        "home-diagram": esHomeDiagram,
-      },
-      en: {
-        common: enCommon,
-        header: enHeader,
-        footer: enFooter,
-        contacto: enContacto,
-        "home-hero": enHomeHero,
-        "home-problem": enHomeProblem,
-        "home-solution": enHomeSolution,
-        "home-differential": enHomeDifferential,
-        "home-serviceos": enHomeServiceos,
-        "home-metrics": enHomeMetrics,
-        "home-lifecycle": enHomeLifecycle,
-        "home-solutions": enHomeSolutions,
-        "home-platform": enHomePlatform,
-        "home-intelligence": enHomeIntelligence,
-        "home-industries": enHomeIndustries,
-        "home-experience": enHomeExperience,
-        "home-network": enHomeNetwork,
-        "home-about": enHomeAbout,
-        "home-closing": enHomeClosing,
-        "home-diagram": enHomeDiagram,
-      },
-      pt: {
-        common: ptCommon,
-        header: ptHeader,
-        footer: ptFooter,
-        contacto: ptContacto,
-        "home-hero": ptHomeHero,
-        "home-problem": ptHomeProblem,
-        "home-solution": ptHomeSolution,
-        "home-differential": ptHomeDifferential,
-        "home-serviceos": ptHomeServiceos,
-        "home-metrics": ptHomeMetrics,
-        "home-lifecycle": ptHomeLifecycle,
-        "home-solutions": ptHomeSolutions,
-        "home-platform": ptHomePlatform,
-        "home-intelligence": ptHomeIntelligence,
-        "home-industries": ptHomeIndustries,
-        "home-experience": ptHomeExperience,
-        "home-network": ptHomeNetwork,
-        "home-about": ptHomeAbout,
-        "home-closing": ptHomeClosing,
-        "home-diagram": ptHomeDiagram,
-      },
-      fr: {
-        common: frCommon,
-        header: frHeader,
-        footer: frFooter,
-        contacto: frContacto,
-        "home-hero": frHomeHero,
-        "home-problem": frHomeProblem,
-        "home-solution": frHomeSolution,
-        "home-differential": frHomeDifferential,
-        "home-serviceos": frHomeServiceos,
-        "home-metrics": frHomeMetrics,
-        "home-lifecycle": frHomeLifecycle,
-        "home-solutions": frHomeSolutions,
-        "home-platform": frHomePlatform,
-        "home-intelligence": frHomeIntelligence,
-        "home-industries": frHomeIndustries,
-        "home-experience": frHomeExperience,
-        "home-network": frHomeNetwork,
-        "home-about": frHomeAbout,
-        "home-closing": frHomeClosing,
-        "home-diagram": frHomeDiagram,
-      },
+      es: buildBundle({
+        common: esCommon, header: esHeader, footer: esFooter, breadcrumbs: esBreadcrumbs, contacto: esContacto,
+        homeHero: esHomeHero, homeProblem: esHomeProblem, homeSolution: esHomeSolution,
+        homeDifferential: esHomeDifferential, homeServiceos: esHomeServiceos,
+        homeMetrics: esHomeMetrics, homeLifecycle: esHomeLifecycle, homeSolutions: esHomeSolutions,
+        homePlatform: esHomePlatform, homeIntelligence: esHomeIntelligence,
+        homeIndustries: esHomeIndustries, homeExperience: esHomeExperience,
+        homeNetwork: esHomeNetwork, homeAbout: esHomeAbout, homeClosing: esHomeClosing,
+        homeDiagram: esHomeDiagram, homeExperienceMethod: esHomeExperienceMethod,
+        homeExperienceGov: esHomeExperienceGov,
+        grupo: esGrupo, modelo: esModelo, soluciones: esSoluciones, plataforma: esPlataforma,
+        industrias: esIndustrias, experiencia: esExperiencia, marcas: esMarcas, aniversario: esAniversario,
+        legal: esLegal,
+      }),
+      en: buildBundle({
+        common: enCommon, header: enHeader, footer: enFooter, breadcrumbs: enBreadcrumbs, contacto: enContacto,
+        homeHero: enHomeHero, homeProblem: enHomeProblem, homeSolution: enHomeSolution,
+        homeDifferential: enHomeDifferential, homeServiceos: enHomeServiceos,
+        homeMetrics: enHomeMetrics, homeLifecycle: enHomeLifecycle, homeSolutions: enHomeSolutions,
+        homePlatform: enHomePlatform, homeIntelligence: enHomeIntelligence,
+        homeIndustries: enHomeIndustries, homeExperience: enHomeExperience,
+        homeNetwork: enHomeNetwork, homeAbout: enHomeAbout, homeClosing: enHomeClosing,
+        homeDiagram: enHomeDiagram, homeExperienceMethod: enHomeExperienceMethod,
+        homeExperienceGov: enHomeExperienceGov,
+        grupo: enGrupo, modelo: enModelo, soluciones: enSoluciones, plataforma: enPlataforma,
+        industrias: enIndustrias, experiencia: enExperiencia, marcas: enMarcas, aniversario: enAniversario,
+        legal: enLegal,
+      }),
+      pt: buildBundle({
+        common: ptCommon, header: ptHeader, footer: ptFooter, breadcrumbs: ptBreadcrumbs, contacto: ptContacto,
+        homeHero: ptHomeHero, homeProblem: ptHomeProblem, homeSolution: ptHomeSolution,
+        homeDifferential: ptHomeDifferential, homeServiceos: ptHomeServiceos,
+        homeMetrics: ptHomeMetrics, homeLifecycle: ptHomeLifecycle, homeSolutions: ptHomeSolutions,
+        homePlatform: ptHomePlatform, homeIntelligence: ptHomeIntelligence,
+        homeIndustries: ptHomeIndustries, homeExperience: ptHomeExperience,
+        homeNetwork: ptHomeNetwork, homeAbout: ptHomeAbout, homeClosing: ptHomeClosing,
+        homeDiagram: ptHomeDiagram, homeExperienceMethod: ptHomeExperienceMethod,
+        homeExperienceGov: ptHomeExperienceGov,
+        grupo: ptGrupo, modelo: ptModelo, soluciones: ptSoluciones, plataforma: ptPlataforma,
+        industrias: ptIndustrias, experiencia: ptExperiencia, marcas: ptMarcas, aniversario: ptAniversario,
+        legal: ptLegal,
+      }),
+      fr: buildBundle({
+        common: frCommon, header: frHeader, footer: frFooter, breadcrumbs: frBreadcrumbs, contacto: frContacto,
+        homeHero: frHomeHero, homeProblem: frHomeProblem, homeSolution: frHomeSolution,
+        homeDifferential: frHomeDifferential, homeServiceos: frHomeServiceos,
+        homeMetrics: frHomeMetrics, homeLifecycle: frHomeLifecycle, homeSolutions: frHomeSolutions,
+        homePlatform: frHomePlatform, homeIntelligence: frHomeIntelligence,
+        homeIndustries: frHomeIndustries, homeExperience: frHomeExperience,
+        homeNetwork: frHomeNetwork, homeAbout: frHomeAbout, homeClosing: frHomeClosing,
+        homeDiagram: frHomeDiagram, homeExperienceMethod: frHomeExperienceMethod,
+        homeExperienceGov: frHomeExperienceGov,
+        grupo: frGrupo, modelo: frModelo, soluciones: frSoluciones, plataforma: frPlataforma,
+        industrias: frIndustrias, experiencia: frExperiencia, marcas: frMarcas, aniversario: frAniversario,
+        legal: frLegal,
+      }),
     },
     fallbackLng: "es",
     supportedLngs: SUPPORTED_LANGS as unknown as string[],

@@ -1,0 +1,30 @@
+{
+  "eyebrow": "Legal",
+  "lastUpdated": "Última atualização: {{date}}",
+  "lastReviewed": "Última revisão: {{date}}",
+  "officialNotice": "O texto legal é publicado em espanhol, idioma oficial vinculativo. As versões traduzidas são fornecidas a título informativo e não produzem efeitos jurídicos.",
+  "privacy": {
+    "title": "Política de privacidade",
+    "intro": "Informação sobre o tratamento de dados pessoais no Grupo Warranty Global, em conformidade com o Regulamento (UE) 2016/679 (RGPD) e a Lei Orgânica espanhola 3/2018 (LOPDGDD). O texto legal completo está disponível em espanhol.",
+    "seoDesc": "Informação sobre o tratamento de dados pessoais no Grupo Warranty Global em conformidade com o RGPD e a LOPDGDD.",
+    "seoTitle": "Política de privacidade · Grupo Warranty Global"
+  },
+  "legalNotice": {
+    "title": "Aviso legal",
+    "intro": "Condições gerais de utilização do sítio grupowg.com, em conformidade com o artigo 10.º da Lei espanhola 34/2002 (LSSI-CE). O texto legal completo está disponível em espanhol.",
+    "seoDesc": "Aviso legal de grupowg.com em conformidade com a Lei espanhola 34/2002 (LSSI-CE).",
+    "seoTitle": "Aviso legal · Grupo Warranty Global"
+  },
+  "cookies": {
+    "title": "Política de cookies",
+    "intro": "Informação sobre o uso de cookies e tecnologias similares em grupowg.com, em conformidade com o artigo 22.2 da LSSI-CE e as diretrizes da AEPD.",
+    "seoDesc": "Política de cookies de grupowg.com: tipos, finalidades, duração e gestão do consentimento.",
+    "seoTitle": "Política de cookies · Grupo Warranty Global"
+  },
+  "accessibility": {
+    "title": "Declaração de acessibilidade",
+    "intro": "O Grupo Warranty Global compromete-se a tornar acessível o seu sítio grupowg.com, em conformidade com o Real Decreto espanhol 1112/2018, que transpõe a Diretiva (UE) 2016/2102.",
+    "seoDesc": "Declaração de acessibilidade de grupowg.com em conformidade com o Real Decreto 1112/2018 e a norma EN 301 549 (WCAG 2.1 nível AA).",
+    "seoTitle": "Declaração de acessibilidade · Grupo Warranty Global"
+  }
+}
