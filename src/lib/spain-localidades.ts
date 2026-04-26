@@ -1482,31 +1482,36 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= NAVARRA =============
   "31": [
-    { name: "Pamplona", cp: "31001" },
-    { name: "Tudela", cp: "31500" },
-    { name: "Barañáin", cp: "31010" },
-    { name: "Burlada", cp: "31600" },
-    { name: "Estella", cp: "31200" },
-    { name: "Tafalla", cp: "31300" },
-    { name: "Zizur Mayor", cp: "31180" },
-    { name: "Ansoáin", cp: "31013" },
-    { name: "Villava", cp: "31610" },
-    { name: "Berriozar", cp: "31013" },
-    { name: "Sangüesa", cp: "31400" },
-    { name: "Peralta", cp: "31350" },
-    { name: "Cintruénigo", cp: "31592" },
-    { name: "Corella", cp: "31591" },
-    { name: "Lodosa", cp: "31580" },
-    { name: "Castejón", cp: "31590" },
-    { name: "Olite", cp: "31390" },
-    { name: "Alsasua", cp: "31800" },
-    { name: "Aoiz", cp: "31430" },
-    { name: "Huarte", cp: "31620" },
-    { name: "Noáin", cp: "31110" },
-    { name: "Cizur", cp: "31190" },
-    { name: "Mendavia", cp: "31587" },
-    { name: "Marcilla", cp: "31340" },
-    { name: "Valtierra", cp: "31514" },
+    // ───── 3.1 Pamplona (capital) ─────
+    { name: "Pamplona Capital · Casco Antiguo", cp: "31001" },
+    { name: "Pamplona Capital · Ensanche", cp: "31002" },
+    { name: "Pamplona Capital · Iturrama", cp: "31007" },
+    { name: "Pamplona Capital · San Juan", cp: "31011" },
+    { name: "Pamplona Capital · Rochapea", cp: "31014" },
+    { name: "Pamplona Capital · Chantrea", cp: "31015" },
+    { name: "Pamplona Capital · Mendillorri", cp: "31016" },
+
+    // ───── 3.2 Área metropolitana ─────
+    // 3.2.1 Norte
+    { name: "NA Á. Metro Norte · Villava", cp: "31610" },
+    { name: "NA Á. Metro Norte · Burlada", cp: "31600" },
+    { name: "NA Á. Metro Norte · Huarte", cp: "31620" },
+    // 3.2.2 Oeste
+    { name: "NA Á. Metro Oeste · Barañáin", cp: "31010" },
+    { name: "NA Á. Metro Oeste · Zizur Mayor", cp: "31180" },
+    // 3.2.3 Sur
+    { name: "NA Á. Metro Sur · Noáin", cp: "31110" },
+    { name: "NA Á. Metro Sur · Beriáin", cp: "31191" },
+
+    // ───── 3.3 Resto Navarra ─────
+    // 3.3.1 Norte / Pirineo
+    { name: "NA Norte Pirineo · Elizondo", cp: "31700" },
+    { name: "NA Norte Pirineo · Roncal", cp: "31415" },
+    // 3.3.2 Centro
+    { name: "NA Centro · Estella", cp: "31200" },
+    { name: "NA Centro · Tafalla", cp: "31300" },
+    // 3.3.3 Sur / Ribera
+    { name: "NA Sur Ribera · Tudela", cp: "31500" },
   ],
 
   // ============= PAÍS VASCO =============
@@ -1597,8 +1602,30 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
   ],
 
   // ============= CEUTA Y MELILLA =============
-  "51": [{ name: "Ceuta", cp: "51001" }],
-  "52": [{ name: "Melilla", cp: "52001" }],
+  "51": [
+    // ───── 1.1 Ceuta capital ─────
+    { name: "Ceuta Capital · Centro", cp: "51001" },
+    { name: "Ceuta Capital · Hadú", cp: "51002" },
+    { name: "Ceuta Capital · El Príncipe", cp: "51003" },
+    { name: "Ceuta Capital · Recinto Sur", cp: "51001" },
+    { name: "Ceuta Capital · Benzú", cp: "51004" },
+    // ───── 1.3 Resto territorio de Ceuta ─────
+    // 1.3.1 Periferia
+    { name: "CE Periferia · Monte Hacho", cp: "51002" },
+    { name: "CE Periferia · García Aldave", cp: "51003" },
+  ],
+  "52": [
+    // ───── 2.1 Melilla capital ─────
+    { name: "Melilla Capital · Centro", cp: "52001" },
+    { name: "Melilla Capital · Ensanche", cp: "52003" },
+    { name: "Melilla Capital · Industrial", cp: "52006" },
+    { name: "Melilla Capital · Cabrerizas", cp: "52005" },
+    { name: "Melilla Capital · Real", cp: "52002" },
+    // ───── 2.3 Resto territorio de Melilla ─────
+    // 2.3.1 Periferia
+    { name: "ME Periferia · Rostrogordo", cp: "52004" },
+    { name: "ME Periferia · Barrio Chino", cp: "52006" },
+  ],
 };
 
 export const localidadesByProvincia = (code: string): Localidad[] =>
@@ -1881,6 +1908,23 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "T Costa Sur": { level1: "Resto provincia de Tarragona", level2: "Costa sur" },
   "T Ebro": { level1: "Resto provincia de Tarragona", level2: "Ebro" },
   "T Interior": { level1: "Resto provincia de Tarragona", level2: "Interior" },
+
+  // ─── Ceuta (51) ───
+  "Ceuta Capital": { level1: "Ceuta capital" },
+  "CE Periferia": { level1: "Resto territorio de Ceuta", level2: "Periferia" },
+
+  // ─── Melilla (52) ───
+  "Melilla Capital": { level1: "Melilla capital" },
+  "ME Periferia": { level1: "Resto territorio de Melilla", level2: "Periferia" },
+
+  // ─── Navarra (31) ───
+  "Pamplona Capital": { level1: "Pamplona (capital)" },
+  "NA Á. Metro Norte": { level1: "Área metropolitana", level2: "Norte" },
+  "NA Á. Metro Oeste": { level1: "Área metropolitana", level2: "Oeste" },
+  "NA Á. Metro Sur": { level1: "Área metropolitana", level2: "Sur" },
+  "NA Norte Pirineo": { level1: "Resto Navarra", level2: "Norte / Pirineo" },
+  "NA Centro": { level1: "Resto Navarra", level2: "Centro" },
+  "NA Sur Ribera": { level1: "Resto Navarra", level2: "Sur / Ribera" },
 };
 
 export interface LocalitySubgroup {
