@@ -1,0 +1,102 @@
+{
+  "seo": {
+    "title": "Contacto · Grupo WG",
+    "description": "Contacta con Grupo WG. Convertimos el servicio postventa en un sistema bajo control: garantías, reparaciones, repuestos, movilidad y seguros."
+  },
+  "hero": {
+    "eyebrow": "Contacto",
+    "title": "Hablemos.",
+    "lead": "Si eres fabricante, distribuidor, ecommerce, aseguradora, SAT o instalador, cuéntanos qué necesitas resolver."
+  },
+  "sidebar": {
+    "email": "Email",
+    "phone": "Teléfono",
+    "offices": "Oficinas",
+    "officesValue": "Grupo Warranty Global · España"
+  },
+  "form": {
+    "stepDataTitle": "Paso 1 de 2 · Datos",
+    "stepReviewTitle": "Paso 2 de 2 · Revisar y enviar",
+    "draftRestored": "Borrador restaurado",
+    "draftRestoredDate": "Recuperamos tus datos guardados el {{date}}.",
+    "discardDraft": "Descartar borrador",
+    "fields": {
+      "nombre": "Nombre",
+      "empresa": "Empresa",
+      "email": "Email",
+      "telefono": "Teléfono",
+      "motivo": "Motivo de contacto",
+      "marca": "Marca",
+      "numeroSerie": "Nº de serie",
+      "producto": "Producto",
+      "urgencia": "Urgencia",
+      "referencia": "Referencia",
+      "vehiculo": "Tipo de vehículo",
+      "matricula": "Matrícula",
+      "ramo": "Ramo",
+      "poliza": "Póliza",
+      "mensaje": "Mensaje",
+      "consentimiento": "Consentimiento"
+    },
+    "required": "*",
+    "select": "Selecciona…",
+    "motivos": {
+      "reparaciones": "Reparaciones",
+      "instalaciones": "Instalaciones",
+      "repuestos": "Repuestos",
+      "movilidad": "Equipos",
+      "garantias": "Garantías",
+      "seguros": "Seguros",
+      "wg-network": "Formulario WG Network",
+      "otro": "Otro"
+    },
+    "preview": {
+      "title": "Información adicional que te pediremos",
+      "required": "Campos obligatorios"
+    },
+    "consent": "He leído y acepto la política de privacidad y el tratamiento de datos.",
+    "submitReview": "Revisar antes de enviar",
+    "back": "Volver",
+    "confirmSend": "Confirmar y enviar",
+    "sending": "Enviando…",
+    "errors": {
+      "required": "Requerido",
+      "email": "Email no válido",
+      "phone": "Sólo dígitos y símbolos válidos",
+      "max": "Máximo {{n}} caracteres",
+      "min": "Cuéntanos un poco más",
+      "motivoMin": "Selecciona al menos un motivo",
+      "consent": "Debes aceptar el tratamiento de datos para continuar",
+      "requiredForMotivo": "Requerido para {{motivos}}",
+      "reviewToast": "Revisa los campos marcados",
+      "sendToast": "Faltan datos por completar antes de enviar"
+    },
+    "success": {
+      "title": "Mensaje recibido",
+      "description": "Te respondemos en menos de 24 h laborables."
+    },
+    "review": {
+      "title": "Revisa tus datos",
+      "edit": "Editar"
+    }
+  },
+  "info": {
+    "eyebrow": "Información de contacto",
+    "title": "Cómo y cuándo",
+    "titleAccent": "trabajamos contigo",
+    "cards": {
+      "sede": {
+        "title": "Sede y direcciones",
+        "body": "Grupo Warranty Global opera desde su sede central."
+      },
+      "horarios": {
+        "title": "Horarios de atención",
+        "body": "Atención comercial y técnica en horario laboral."
+      },
+      "areas": {
+        "title": "Áreas de servicio",
+        "body": "Cobertura nacional en España y proyectos internacionales."
+      }
+    }
+  }
+}
