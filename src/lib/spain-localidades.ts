@@ -1012,7 +1012,30 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= MADRID =============
   "28": [
-    { name: "Madrid", cp: "28001" },
+    // — Madrid capital: distritos dentro de la M-30 (almendra central) —
+    { name: "Madrid · Centro", cp: "28013" },
+    { name: "Madrid · Salamanca", cp: "28001" },
+    { name: "Madrid · Chamberí", cp: "28010" },
+    { name: "Madrid · Retiro", cp: "28009" },
+    { name: "Madrid · Arganzuela", cp: "28005" },
+    { name: "Madrid · Chamartín", cp: "28036" },
+    { name: "Madrid · Tetuán", cp: "28020" },
+    { name: "Madrid · Moncloa-Aravaca", cp: "28008" },
+    // — Madrid capital: distritos fuera de la M-30 (periferia) —
+    { name: "Madrid · Carabanchel", cp: "28019" },
+    { name: "Madrid · Latina", cp: "28011" },
+    { name: "Madrid · Usera", cp: "28026" },
+    { name: "Madrid · Villaverde", cp: "28021" },
+    { name: "Madrid · Puente de Vallecas", cp: "28038" },
+    { name: "Madrid · Villa de Vallecas", cp: "28031" },
+    { name: "Madrid · Moratalaz", cp: "28030" },
+    { name: "Madrid · Ciudad Lineal", cp: "28017" },
+    { name: "Madrid · Hortaleza", cp: "28043" },
+    { name: "Madrid · San Blas-Canillejas", cp: "28022" },
+    { name: "Madrid · Vicálvaro", cp: "28032" },
+    { name: "Madrid · Barajas", cp: "28042" },
+    { name: "Madrid · Fuencarral-El Pardo", cp: "28034" },
+    // — Área metropolitana / municipios de la Comunidad —
     { name: "Móstoles", cp: "28931" },
     { name: "Alcalá de Henares", cp: "28801" },
     { name: "Fuenlabrada", cp: "28940" },
