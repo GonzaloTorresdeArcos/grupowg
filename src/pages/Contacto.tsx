@@ -1234,7 +1234,7 @@ const Contacto = () => {
             </Reveal>
 
             <Reveal delay={100}>
-              <article className="rounded-2xl border border-border bg-card p-7 h-full">
+              <article className="rounded-2xl border border-border bg-card text-card-foreground shadow-sm p-7 h-full">
                 <h3 className="font-display text-xl text-ink mb-4">Horarios de atención</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Atención comercial y técnica en horario laboral peninsular. Las urgencias
