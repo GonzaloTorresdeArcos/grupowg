@@ -1238,88 +1238,160 @@ export const LOCALIDADES_BY_PROVINCE: Record<string, Localidad[]> = {
 
   // ============= GALICIA =============
   "15": [ // A Coruña
-    { name: "A Coruña", cp: "15001" },
-    { name: "Santiago de Compostela", cp: "15701" },
-    { name: "Ferrol", cp: "15401" },
-    { name: "Narón", cp: "15570" },
-    { name: "Oleiros", cp: "15173" },
-    { name: "Carballo", cp: "15100" },
-    { name: "Arteixo", cp: "15142" },
-    { name: "Ames", cp: "15220" },
-    { name: "Culleredo", cp: "15670" },
-    { name: "Cambre", cp: "15660" },
-    { name: "Ribeira", cp: "15960" },
-    { name: "Boiro", cp: "15930" },
-    { name: "Betanzos", cp: "15300" },
-    { name: "Sada", cp: "15160" },
-    { name: "Bergondo", cp: "15165" },
-    { name: "Cee", cp: "15270" },
-    { name: "Noia", cp: "15200" },
-    { name: "Padrón", cp: "15900" },
-    { name: "Melide", cp: "15800" },
-    { name: "Negreira", cp: "15830" },
-    { name: "Ortigueira", cp: "15330" },
-    { name: "As Pontes de García Rodríguez", cp: "15320" },
-    { name: "Pontedeume", cp: "15600" },
-    { name: "Fene", cp: "15500" },
-    { name: "Mugardos", cp: "15620" },
-    { name: "Teo", cp: "15883" },
-    { name: "Brión", cp: "15865" },
-    { name: "Muros", cp: "15250" },
-    { name: "Carral", cp: "15175" },
+    // ───── 1) A Coruña capital ─────
+    { name: "A Coruña Capital · Centro", cp: "15001" },
+    { name: "A Coruña Capital · Monte Alto", cp: "15002" },
+    { name: "A Coruña Capital · Cuatro Caminos", cp: "15006" },
+    { name: "A Coruña Capital · Los Mallos", cp: "15007" },
+    { name: "A Coruña Capital · Elviña", cp: "15008" },
+    { name: "A Coruña Capital · Matogrande", cp: "15009" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "C Á. Metro Cercano · Arteixo", cp: "15142" },
+    { name: "C Á. Metro Cercano · Oleiros", cp: "15173" },
+    { name: "C Á. Metro Cercano · Culleredo", cp: "15670" },
+    { name: "C Á. Metro Cercano · Cambre", cp: "15660" },
+    { name: "C Á. Metro Cercano · Sada", cp: "15160" },
+    { name: "C Á. Metro Cercano · Bergondo", cp: "15165" },
+
+    // ───── 3) Resto provincia de A Coruña ─────
+    // 3.1 Ferrolterra
+    { name: "C Ferrolterra · Ferrol", cp: "15401" },
+    { name: "C Ferrolterra · Narón", cp: "15570" },
+    { name: "C Ferrolterra · Fene", cp: "15500" },
+    { name: "C Ferrolterra · Pontedeume", cp: "15600" },
+    { name: "C Ferrolterra · As Pontes de García Rodríguez", cp: "15320" },
+    // 3.2 Santiago / área central
+    { name: "C Santiago · Santiago de Compostela", cp: "15701" },
+    { name: "C Santiago · Ames", cp: "15220" },
+    { name: "C Santiago · Teo", cp: "15883" },
+    { name: "C Santiago · Ordes", cp: "15680" },
+    { name: "C Santiago · Negreira", cp: "15830" },
+    // 3.3 Barbanza
+    { name: "C Barbanza · Ribeira", cp: "15960" },
+    { name: "C Barbanza · Boiro", cp: "15930" },
+    { name: "C Barbanza · A Pobra do Caramiñal", cp: "15940" },
+    { name: "C Barbanza · Rianxo", cp: "15920" },
+    // 3.4 Costa da Morte
+    { name: "C Costa da Morte · Carballo", cp: "15100" },
+    { name: "C Costa da Morte · Cee", cp: "15270" },
+    { name: "C Costa da Morte · Corcubión", cp: "15130" },
+    { name: "C Costa da Morte · Vimianzo", cp: "15129" },
+    { name: "C Costa da Morte · Muros", cp: "15250" },
+    { name: "C Costa da Morte · Noia", cp: "15200" },
+    // 3.5 Interior / Betanzos
+    { name: "C Interior Betanzos · Betanzos", cp: "15300" },
+    { name: "C Interior Betanzos · Curtis", cp: "15310" },
+    { name: "C Interior Betanzos · Arzúa", cp: "15810" },
+    { name: "C Interior Betanzos · Melide", cp: "15800" },
   ],
   "27": [ // Lugo
-    { name: "Lugo", cp: "27001" },
-    { name: "Monforte de Lemos", cp: "27400" },
-    { name: "Viveiro", cp: "27850" },
-    { name: "Vilalba", cp: "27800" },
-    { name: "Sarria", cp: "27600" },
-    { name: "Ribadeo", cp: "27700" },
-    { name: "Foz", cp: "27780" },
-    { name: "Burela", cp: "27880" },
-    { name: "Chantada", cp: "27500" },
-    { name: "Cervo", cp: "27891" },
-    { name: "Quiroga", cp: "27320" },
-    { name: "Becerreá", cp: "27640" },
+    // ───── 1) Lugo capital ─────
+    { name: "Lugo Capital · Centro", cp: "27001" },
+    { name: "Lugo Capital · A Milagrosa", cp: "27003" },
+    { name: "Lugo Capital · Fingoi", cp: "27004" },
+    { name: "Lugo Capital · Montirón", cp: "27002" },
+    { name: "Lugo Capital · Paradai", cp: "27003" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "LU Á. Metro Cercano · Outeiro de Rei", cp: "27150" },
+    { name: "LU Á. Metro Cercano · Castro de Rei", cp: "27259" },
+    { name: "LU Á. Metro Cercano · Rábade", cp: "27370" },
+    { name: "LU Á. Metro Cercano · Guntín", cp: "27210" },
+
+    // ───── 3) Resto provincia de Lugo ─────
+    // 3.1 A Mariña
+    { name: "LU A Mariña · Ribadeo", cp: "27700" },
+    { name: "LU A Mariña · Foz", cp: "27780" },
+    { name: "LU A Mariña · Viveiro", cp: "27850" },
+    { name: "LU A Mariña · Burela", cp: "27880" },
+    { name: "LU A Mariña · Mondoñedo", cp: "27740" },
+    // 3.2 Terra Chá / Norte interior
+    { name: "LU Terra Chá · Vilalba", cp: "27800" },
+    { name: "LU Terra Chá · Meira", cp: "27240" },
+    { name: "LU Terra Chá · Guitiriz", cp: "27300" },
+    // 3.3 Sur / Ribeira Sacra
+    { name: "LU Sur Ribeira Sacra · Monforte de Lemos", cp: "27400" },
+    { name: "LU Sur Ribeira Sacra · Chantada", cp: "27500" },
+    { name: "LU Sur Ribeira Sacra · Quiroga", cp: "27320" },
+    { name: "LU Sur Ribeira Sacra · Sober", cp: "27460" },
+    // 3.4 Interior / Camino
+    { name: "LU Interior Camino · Sarria", cp: "27600" },
+    { name: "LU Interior Camino · Portomarín", cp: "27170" },
+    { name: "LU Interior Camino · Palas de Rei", cp: "27200" },
   ],
   "32": [ // Ourense
-    { name: "Ourense", cp: "32001" },
-    { name: "O Barco de Valdeorras", cp: "32300" },
-    { name: "Verín", cp: "32600" },
-    { name: "O Carballiño", cp: "32500" },
-    { name: "A Rúa", cp: "32350" },
-    { name: "Allariz", cp: "32660" },
-    { name: "Xinzo de Limia", cp: "32630" },
-    { name: "Ribadavia", cp: "32400" },
-    { name: "Celanova", cp: "32800" },
-    { name: "Maceda", cp: "32700" },
-    { name: "O Pereiro de Aguiar", cp: "32710" },
+    // ───── 1) Ourense capital ─────
+    { name: "Ourense Capital · Centro", cp: "32001" },
+    { name: "Ourense Capital · A Ponte", cp: "32002" },
+    { name: "Ourense Capital · O Couto", cp: "32004" },
+    { name: "Ourense Capital · As Lagoas", cp: "32004" },
+    { name: "Ourense Capital · Barrocás", cp: "32005" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "OU Á. Metro Cercano · Barbadás", cp: "32890" },
+    { name: "OU Á. Metro Cercano · San Cibrao das Viñas", cp: "32911" },
+    { name: "OU Á. Metro Cercano · Pereiro de Aguiar", cp: "32710" },
+    { name: "OU Á. Metro Cercano · Toén", cp: "32930" },
+
+    // ───── 3) Resto provincia de Ourense ─────
+    // 3.1 Verín / Sur
+    { name: "OU Verín Sur · Verín", cp: "32600" },
+    { name: "OU Verín Sur · Xinzo de Limia", cp: "32630" },
+    { name: "OU Verín Sur · Allariz", cp: "32660" },
+    // 3.2 Ribeiro / Oeste
+    { name: "OU Ribeiro Oeste · O Carballiño", cp: "32500" },
+    { name: "OU Ribeiro Oeste · Ribadavia", cp: "32400" },
+    { name: "OU Ribeiro Oeste · Celanova", cp: "32800" },
+    // 3.3 Valdeorras / Este
+    { name: "OU Valdeorras Este · O Barco de Valdeorras", cp: "32300" },
+    { name: "OU Valdeorras Este · A Rúa", cp: "32350" },
+    { name: "OU Valdeorras Este · Viana do Bolo", cp: "32550" },
+    // 3.4 Ribeira Sacra / Norte
+    { name: "OU Ribeira Sacra Norte · Castro Caldelas", cp: "32760" },
+    { name: "OU Ribeira Sacra Norte · A Pobra de Trives", cp: "32780" },
   ],
   "36": [ // Pontevedra
-    { name: "Pontevedra", cp: "36001" },
-    { name: "Vigo", cp: "36201" },
-    { name: "Redondela", cp: "36800" },
-    { name: "Vilagarcía de Arousa", cp: "36600" },
-    { name: "Cangas", cp: "36940" },
-    { name: "Marín", cp: "36900" },
-    { name: "Ponteareas", cp: "36860" },
-    { name: "Lalín", cp: "36500" },
-    { name: "A Estrada", cp: "36680" },
-    { name: "Sanxenxo", cp: "36960" },
-    { name: "O Porriño", cp: "36400" },
-    { name: "Tui", cp: "36700" },
-    { name: "Bueu", cp: "36930" },
-    { name: "Moaña", cp: "36950" },
-    { name: "Nigrán", cp: "36350" },
-    { name: "Gondomar", cp: "36380" },
-    { name: "Vilanova de Arousa", cp: "36620" },
-    { name: "Cambados", cp: "36630" },
-    { name: "Cuntis", cp: "36670" },
-    { name: "Caldas de Reis", cp: "36650" },
-    { name: "Mos", cp: "36415" },
-    { name: "Salvaterra de Miño", cp: "36450" },
-    { name: "Poio", cp: "36005" },
-    { name: "Baiona", cp: "36300" },
+    // ───── 1) Pontevedra capital ─────
+    { name: "Pontevedra Capital · Centro", cp: "36001" },
+    { name: "Pontevedra Capital · A Parda", cp: "36002" },
+    { name: "Pontevedra Capital · Monte Porreiro", cp: "36004" },
+    { name: "Pontevedra Capital · Campolongo", cp: "36004" },
+
+    // ───── 2) Área metropolitana ─────
+    { name: "PO Á. Metro Cercano · Marín", cp: "36900" },
+    { name: "PO Á. Metro Cercano · Poio", cp: "36005" },
+    { name: "PO Á. Metro Cercano · Sanxenxo", cp: "36960" },
+    { name: "PO Á. Metro Cercano · Bueu", cp: "36930" },
+
+    // ───── 3) Resto provincia de Pontevedra ─────
+    // 3.1 Vigo / área metropolitana
+    { name: "PO Vigo Á. Metro · Vigo", cp: "36201" },
+    { name: "PO Vigo Á. Metro · Redondela", cp: "36800" },
+    { name: "PO Vigo Á. Metro · Mos", cp: "36415" },
+    { name: "PO Vigo Á. Metro · O Porriño", cp: "36400" },
+    { name: "PO Vigo Á. Metro · Nigrán", cp: "36350" },
+    { name: "PO Vigo Á. Metro · Baiona", cp: "36300" },
+    { name: "PO Vigo Á. Metro · Gondomar", cp: "36380" },
+    // 3.2 Morrazo
+    { name: "PO Morrazo · Cangas", cp: "36940" },
+    { name: "PO Morrazo · Moaña", cp: "36950" },
+    // 3.3 O Salnés
+    { name: "PO O Salnés · Vilagarcía de Arousa", cp: "36600" },
+    { name: "PO O Salnés · Cambados", cp: "36630" },
+    { name: "PO O Salnés · O Grove", cp: "36980" },
+    { name: "PO O Salnés · Vilanova de Arousa", cp: "36620" },
+    { name: "PO O Salnés · A Illa de Arousa", cp: "36626" },
+    // 3.4 Baixo Miño
+    { name: "PO Baixo Miño · Tui", cp: "36700" },
+    { name: "PO Baixo Miño · A Guarda", cp: "36780" },
+    { name: "PO Baixo Miño · Tomiño", cp: "36740" },
+    { name: "PO Baixo Miño · O Rosal", cp: "36770" },
+    // 3.5 Interior / Deza-Tabeirós
+    { name: "PO Interior Deza · Lalín", cp: "36500" },
+    { name: "PO Interior Deza · Silleda", cp: "36540" },
+    { name: "PO Interior Deza · A Estrada", cp: "36680" },
+    { name: "PO Interior Deza · Ponteareas", cp: "36860" },
   ],
 
   // ============= LA RIOJA =============
@@ -1981,6 +2053,40 @@ const PREFIX_GROUPING: Record<string, LocalityGrouping> = {
   "BA Campiña Sur": { level1: "Resto provincia de Badajoz", level2: "Campiña Sur" },
   "BA Vegas Altas": { level1: "Resto provincia de Badajoz", level2: "Vegas Altas / Guadiana" },
   "BA La Siberia": { level1: "Resto provincia de Badajoz", level2: "Este / La Siberia" },
+
+  // ─── A Coruña (15) ───
+  "A Coruña Capital": { level1: "A Coruña capital" },
+  "C Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "C Ferrolterra": { level1: "Resto provincia de A Coruña", level2: "Ferrolterra" },
+  "C Santiago": { level1: "Resto provincia de A Coruña", level2: "Santiago / área central" },
+  "C Barbanza": { level1: "Resto provincia de A Coruña", level2: "Barbanza" },
+  "C Costa da Morte": { level1: "Resto provincia de A Coruña", level2: "Costa da Morte" },
+  "C Interior Betanzos": { level1: "Resto provincia de A Coruña", level2: "Interior / Betanzos" },
+
+  // ─── Lugo (27) ───
+  "Lugo Capital": { level1: "Lugo capital" },
+  "LU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "LU A Mariña": { level1: "Resto provincia de Lugo", level2: "A Mariña" },
+  "LU Terra Chá": { level1: "Resto provincia de Lugo", level2: "Terra Chá / Norte interior" },
+  "LU Sur Ribeira Sacra": { level1: "Resto provincia de Lugo", level2: "Sur / Ribeira Sacra" },
+  "LU Interior Camino": { level1: "Resto provincia de Lugo", level2: "Interior / Camino" },
+
+  // ─── Ourense (32) ───
+  "Ourense Capital": { level1: "Ourense capital" },
+  "OU Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "OU Verín Sur": { level1: "Resto provincia de Ourense", level2: "Verín / Sur" },
+  "OU Ribeiro Oeste": { level1: "Resto provincia de Ourense", level2: "Ribeiro / Oeste" },
+  "OU Valdeorras Este": { level1: "Resto provincia de Ourense", level2: "Valdeorras / Este" },
+  "OU Ribeira Sacra Norte": { level1: "Resto provincia de Ourense", level2: "Ribeira Sacra / Norte" },
+
+  // ─── Pontevedra (36) ───
+  "Pontevedra Capital": { level1: "Pontevedra capital" },
+  "PO Á. Metro Cercano": { level1: "Área metropolitana", level2: "Cinturón cercano" },
+  "PO Vigo Á. Metro": { level1: "Resto provincia de Pontevedra", level2: "Vigo / área metropolitana" },
+  "PO Morrazo": { level1: "Resto provincia de Pontevedra", level2: "Morrazo" },
+  "PO O Salnés": { level1: "Resto provincia de Pontevedra", level2: "O Salnés" },
+  "PO Baixo Miño": { level1: "Resto provincia de Pontevedra", level2: "Baixo Miño" },
+  "PO Interior Deza": { level1: "Resto provincia de Pontevedra", level2: "Interior / Deza-Tabeirós" },
 };
 
 export interface LocalitySubgroup {
