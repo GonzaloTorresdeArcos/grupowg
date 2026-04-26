@@ -186,16 +186,13 @@ export function HorariosSelector({ value, onChange }: Props) {
           onChange={(v) => upd("urgencia", v)}
           options={[
             { id: "no", label: "No" },
-            { id: "en_el_dia", label: "En el día (avisos <11:00)" },
-            { id: "menos_48h", label: "<48h" },
-            { id: "menos_24h", label: "<24h" },
-            { id: "mismo_dia", label: "Mismo día" },
+            { id: "en_el_dia", label: "En el día (avisos <9:00)" },
             { id: "menos_4h", label: "<4h" },
             { id: "24_7", label: "24/7" },
           ]}
         />
         <div className="mt-2 text-xs text-muted-foreground">
-          Retail/fabricantes: <span className="text-ink">en el día</span> o <span className="text-ink">&lt;48h</span>. Energía/hogar: <span className="text-ink">&lt;4h</span> o <span className="text-ink">24/7</span> (emergencias / seguros de hogar).
+          Energía/hogar: <span className="text-ink">&lt;4h</span> o <span className="text-ink">24/7</span> (emergencias / seguros de hogar).
         </div>
       </div>
 
