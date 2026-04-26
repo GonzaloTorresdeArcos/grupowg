@@ -1,0 +1,132 @@
+{
+  "seo": {
+    "loginTitle": "Portal do colaborador · Grupo Warranty Global",
+    "loginDescription": "Aceda à sua atividade, calendário, documentos e faturação.",
+    "dashboardTitle": "Resumo · Portal WG"
+  },
+  "login": {
+    "back": "Voltar ao site",
+    "eyebrow": "WG Professional Network",
+    "title": "Portal do colaborador",
+    "subtitle": "Aceda à sua atividade, calendário, documentos e faturação.",
+    "tabs": { "signin": "Entrar", "signup": "Criar conta" },
+    "fields": {
+      "email": "Email",
+      "password": "Palavra-passe",
+      "name": "Nome",
+      "namePlaceholder": "O seu nome",
+      "emailPlaceholder": "voce@empresa.com",
+      "applicationEmail": "Email da candidatura",
+      "applicationHelp": "Use o mesmo email com que se inscreveu na WG Network."
+    },
+    "submit": {
+      "signin": "Entrar no portal",
+      "signup": "Criar conta"
+    },
+    "divider": "ou continue com",
+    "google": "Google",
+    "footer": "Ainda não faz parte da rede?",
+    "footerLink": "Inscreva-se aqui",
+    "toasts": {
+      "signinError": "Não foi possível iniciar sessão",
+      "signinOk": "Bem-vindo de volta",
+      "signupError": "Não foi possível criar a conta",
+      "signupOk": "Conta criada",
+      "signupOkDesc": "Vinculámos a sua conta à sua candidatura automaticamente.",
+      "googleError": "Erro com o Google",
+      "signedOut": "Sessão terminada"
+    }
+  },
+  "nav": {
+    "section": "WG Network",
+    "title": "Portal SAT",
+    "summary": "Resumo",
+    "calendar": "Calendário",
+    "documents": "Documentos",
+    "billing": "Faturação",
+    "profile": "Perfil",
+    "ops": "Operações",
+    "incidences": "Incidências",
+    "signOut": "Terminar sessão",
+    "fallbackName": "Colaborador"
+  },
+  "dashboard": {
+    "eyebrow": "Resumo",
+    "greeting": "Olá",
+    "subtitle": "A sua atividade na WG Network · Últimos 30 dias",
+    "assigned": {
+      "eyebrow": "Atribuídas a si",
+      "title": "Incidências em curso"
+    },
+    "kpis": {
+      "active": "Ativas",
+      "activeSuffix": "casos",
+      "closed": "Fechadas (mês)",
+      "closedSuffix": "casos",
+      "tat": "TAT médio",
+      "tatSuffix": "dias",
+      "rating": "Avaliação",
+      "ratingSuffix": "/ 5"
+    },
+    "trend": {
+      "eyebrow": "Atividade",
+      "title": "Incidências e FTF · 12 meses"
+    },
+    "earnings": {
+      "eyebrow": "Liquidação em curso",
+      "subtitle": "Abril 2025 · {{count}} serviços",
+      "pending": "Pendente de cobrança",
+      "ytd": "Casos YTD",
+      "ftf": "FTF médio",
+      "cta": "Ver faturação"
+    },
+    "today": {
+      "eyebrow": "Hoje",
+      "title": "Marcações programadas",
+      "viewAgenda": "Ver agenda",
+      "empty": "Sem marcações programadas hoje",
+      "min": "min"
+    },
+    "backlog": {
+      "eyebrow": "Backlog",
+      "title": "Incidências ativas"
+    },
+    "docAlert": {
+      "title": "Tem 1 documento próximo de vencer e 1 vencido",
+      "subtitle": "Mantenha a sua documentação em dia para continuar a receber atribuições.",
+      "cta": "Rever"
+    },
+    "status": {
+      "abierta": "Aberta",
+      "en_curso": "Em curso",
+      "esperando_repuesto": "À espera de peça",
+      "cerrada": "Fechada"
+    }
+  },
+  "calendar": {
+    "eyebrow": "Agenda",
+    "title": "Calendário de marcações",
+    "subtitle": "Próximas visitas e instalações."
+  },
+  "documents": {
+    "eyebrow": "Documentação",
+    "title": "Os seus documentos",
+    "subtitle": "Mantenha a sua documentação em dia para continuar a receber atribuições."
+  },
+  "invoices": {
+    "eyebrow": "Faturação",
+    "title": "Liquidações e faturas",
+    "subtitle": "Resumo das suas liquidações mensais."
+  },
+  "profile": {
+    "eyebrow": "Conta",
+    "title": "O seu perfil",
+    "subtitle": "Gira os seus dados e preferências."
+  },
+  "incidences": {
+    "eyebrow": "Operações",
+    "title": "Caixa de incidências",
+    "subtitle": "Gira, atribua e feche incidências.",
+    "detailTitle": "Detalhe da incidência"
+  }
+}

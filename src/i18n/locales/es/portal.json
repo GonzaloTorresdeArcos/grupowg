@@ -1,0 +1,132 @@
+{
+  "seo": {
+    "loginTitle": "Portal del colaborador · Grupo Warranty Global",
+    "loginDescription": "Accede a tu actividad, calendario, documentos y facturación.",
+    "dashboardTitle": "Resumen · Portal WG"
+  },
+  "login": {
+    "back": "Volver a la web",
+    "eyebrow": "WG Professional Network",
+    "title": "Portal del colaborador",
+    "subtitle": "Accede a tu actividad, calendario, documentos y facturación.",
+    "tabs": { "signin": "Entrar", "signup": "Crear cuenta" },
+    "fields": {
+      "email": "Email",
+      "password": "Contraseña",
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "emailPlaceholder": "tu@empresa.com",
+      "applicationEmail": "Email de la solicitud",
+      "applicationHelp": "Usa el mismo email con el que te inscribiste en WG Network."
+    },
+    "submit": {
+      "signin": "Entrar al portal",
+      "signup": "Crear cuenta"
+    },
+    "divider": "o continúa con",
+    "google": "Google",
+    "footer": "¿Aún no eres parte de la red?",
+    "footerLink": "Inscríbete aquí",
+    "toasts": {
+      "signinError": "No se pudo iniciar sesión",
+      "signinOk": "Bienvenido de nuevo",
+      "signupError": "No se pudo crear la cuenta",
+      "signupOk": "Cuenta creada",
+      "signupOkDesc": "Vinculamos tu cuenta a tu solicitud automáticamente.",
+      "googleError": "Error con Google",
+      "signedOut": "Sesión cerrada"
+    }
+  },
+  "nav": {
+    "section": "WG Network",
+    "title": "Portal SAT",
+    "summary": "Resumen",
+    "calendar": "Calendario",
+    "documents": "Documentos",
+    "billing": "Facturación",
+    "profile": "Perfil",
+    "ops": "Operaciones",
+    "incidences": "Incidencias",
+    "signOut": "Cerrar sesión",
+    "fallbackName": "Colaborador"
+  },
+  "dashboard": {
+    "eyebrow": "Resumen",
+    "greeting": "Hola",
+    "subtitle": "Tu actividad en WG Network · Últimos 30 días",
+    "assigned": {
+      "eyebrow": "Asignadas a ti",
+      "title": "Incidencias en curso"
+    },
+    "kpis": {
+      "active": "Activas",
+      "activeSuffix": "casos",
+      "closed": "Cerradas (mes)",
+      "closedSuffix": "casos",
+      "tat": "TAT medio",
+      "tatSuffix": "días",
+      "rating": "Valoración",
+      "ratingSuffix": "/ 5"
+    },
+    "trend": {
+      "eyebrow": "Actividad",
+      "title": "Incidencias y FTF · 12 meses"
+    },
+    "earnings": {
+      "eyebrow": "Liquidación en curso",
+      "subtitle": "Abril 2025 · {{count}} servicios",
+      "pending": "Pendiente cobro",
+      "ytd": "Casos YTD",
+      "ftf": "FTF medio",
+      "cta": "Ver facturación"
+    },
+    "today": {
+      "eyebrow": "Hoy",
+      "title": "Citas programadas",
+      "viewAgenda": "Ver agenda",
+      "empty": "Sin citas programadas hoy",
+      "min": "min"
+    },
+    "backlog": {
+      "eyebrow": "Backlog",
+      "title": "Incidencias activas"
+    },
+    "docAlert": {
+      "title": "Tienes 1 documento próximo a vencer y 1 vencido",
+      "subtitle": "Mantén tu documentación al día para seguir recibiendo asignaciones.",
+      "cta": "Revisar"
+    },
+    "status": {
+      "abierta": "Abierta",
+      "en_curso": "En curso",
+      "esperando_repuesto": "Esperando repuesto",
+      "cerrada": "Cerrada"
+    }
+  },
+  "calendar": {
+    "eyebrow": "Agenda",
+    "title": "Calendario de citas",
+    "subtitle": "Próximas visitas e instalaciones."
+  },
+  "documents": {
+    "eyebrow": "Documentación",
+    "title": "Tus documentos",
+    "subtitle": "Mantén tu documentación al día para seguir recibiendo asignaciones."
+  },
+  "invoices": {
+    "eyebrow": "Facturación",
+    "title": "Liquidaciones y facturas",
+    "subtitle": "Resumen de tus liquidaciones mensuales."
+  },
+  "profile": {
+    "eyebrow": "Cuenta",
+    "title": "Tu perfil",
+    "subtitle": "Gestiona tus datos y preferencias."
+  },
+  "incidences": {
+    "eyebrow": "Operaciones",
+    "title": "Bandeja de incidencias",
+    "subtitle": "Gestiona, asigna y cierra incidencias.",
+    "detailTitle": "Detalle de incidencia"
+  }
+}

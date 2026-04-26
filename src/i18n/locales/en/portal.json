@@ -1,0 +1,132 @@
+{
+  "seo": {
+    "loginTitle": "Collaborator portal · Grupo Warranty Global",
+    "loginDescription": "Access your activity, calendar, documents and billing.",
+    "dashboardTitle": "Overview · WG Portal"
+  },
+  "login": {
+    "back": "Back to website",
+    "eyebrow": "WG Professional Network",
+    "title": "Collaborator portal",
+    "subtitle": "Access your activity, calendar, documents and billing.",
+    "tabs": { "signin": "Sign in", "signup": "Create account" },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "you@company.com",
+      "applicationEmail": "Application email",
+      "applicationHelp": "Use the same email you used to register with WG Network."
+    },
+    "submit": {
+      "signin": "Enter the portal",
+      "signup": "Create account"
+    },
+    "divider": "or continue with",
+    "google": "Google",
+    "footer": "Not part of the network yet?",
+    "footerLink": "Register here",
+    "toasts": {
+      "signinError": "Could not sign in",
+      "signinOk": "Welcome back",
+      "signupError": "Could not create account",
+      "signupOk": "Account created",
+      "signupOkDesc": "We linked your account to your application automatically.",
+      "googleError": "Google error",
+      "signedOut": "Signed out"
+    }
+  },
+  "nav": {
+    "section": "WG Network",
+    "title": "SAT Portal",
+    "summary": "Overview",
+    "calendar": "Calendar",
+    "documents": "Documents",
+    "billing": "Billing",
+    "profile": "Profile",
+    "ops": "Operations",
+    "incidences": "Cases",
+    "signOut": "Sign out",
+    "fallbackName": "Collaborator"
+  },
+  "dashboard": {
+    "eyebrow": "Overview",
+    "greeting": "Hello",
+    "subtitle": "Your activity in WG Network · Last 30 days",
+    "assigned": {
+      "eyebrow": "Assigned to you",
+      "title": "Cases in progress"
+    },
+    "kpis": {
+      "active": "Active",
+      "activeSuffix": "cases",
+      "closed": "Closed (month)",
+      "closedSuffix": "cases",
+      "tat": "Avg. TAT",
+      "tatSuffix": "days",
+      "rating": "Rating",
+      "ratingSuffix": "/ 5"
+    },
+    "trend": {
+      "eyebrow": "Activity",
+      "title": "Cases and FTF · 12 months"
+    },
+    "earnings": {
+      "eyebrow": "Current settlement",
+      "subtitle": "April 2025 · {{count}} services",
+      "pending": "Pending payment",
+      "ytd": "Cases YTD",
+      "ftf": "Avg. FTF",
+      "cta": "View billing"
+    },
+    "today": {
+      "eyebrow": "Today",
+      "title": "Scheduled appointments",
+      "viewAgenda": "View agenda",
+      "empty": "No appointments scheduled today",
+      "min": "min"
+    },
+    "backlog": {
+      "eyebrow": "Backlog",
+      "title": "Active cases"
+    },
+    "docAlert": {
+      "title": "You have 1 document expiring soon and 1 expired",
+      "subtitle": "Keep your documentation up to date to keep receiving assignments.",
+      "cta": "Review"
+    },
+    "status": {
+      "abierta": "Open",
+      "en_curso": "In progress",
+      "esperando_repuesto": "Awaiting parts",
+      "cerrada": "Closed"
+    }
+  },
+  "calendar": {
+    "eyebrow": "Agenda",
+    "title": "Appointment calendar",
+    "subtitle": "Upcoming visits and installations."
+  },
+  "documents": {
+    "eyebrow": "Documentation",
+    "title": "Your documents",
+    "subtitle": "Keep your documentation up to date to keep receiving assignments."
+  },
+  "invoices": {
+    "eyebrow": "Billing",
+    "title": "Settlements and invoices",
+    "subtitle": "Summary of your monthly settlements."
+  },
+  "profile": {
+    "eyebrow": "Account",
+    "title": "Your profile",
+    "subtitle": "Manage your data and preferences."
+  },
+  "incidences": {
+    "eyebrow": "Operations",
+    "title": "Cases inbox",
+    "subtitle": "Manage, assign and close cases.",
+    "detailTitle": "Case detail"
+  }
+}
