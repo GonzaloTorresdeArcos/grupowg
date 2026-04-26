@@ -237,6 +237,7 @@ i18n
         homeExperienceGov: esHomeExperienceGov,
         grupo: esGrupo, modelo: esModelo, soluciones: esSoluciones, plataforma: esPlataforma,
         industrias: esIndustrias, experiencia: esExperiencia, marcas: esMarcas, aniversario: esAniversario,
+        wgNetwork: esWgNetwork, portal: esPortal,
         legal: esLegal,
       }),
       en: buildBundle({
@@ -251,6 +252,7 @@ i18n
         homeExperienceGov: enHomeExperienceGov,
         grupo: enGrupo, modelo: enModelo, soluciones: enSoluciones, plataforma: enPlataforma,
         industrias: enIndustrias, experiencia: enExperiencia, marcas: enMarcas, aniversario: enAniversario,
+        wgNetwork: enWgNetwork, portal: enPortal,
         legal: enLegal,
       }),
       pt: buildBundle({
@@ -265,6 +267,7 @@ i18n
         homeExperienceGov: ptHomeExperienceGov,
         grupo: ptGrupo, modelo: ptModelo, soluciones: ptSoluciones, plataforma: ptPlataforma,
         industrias: ptIndustrias, experiencia: ptExperiencia, marcas: ptMarcas, aniversario: ptAniversario,
+        wgNetwork: ptWgNetwork, portal: ptPortal,
         legal: ptLegal,
       }),
       fr: buildBundle({
