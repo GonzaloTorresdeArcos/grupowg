@@ -9,28 +9,30 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
-
-const collaboratorNav = [
-  { to: "/portal", label: "Resumen", icon: LayoutDashboard, end: true },
-  { to: "/portal/calendario", label: "Calendario", icon: Calendar },
-  { to: "/portal/documentos", label: "Documentos", icon: FileText },
-  { to: "/portal/facturacion", label: "Facturación", icon: Receipt },
-  { to: "/portal/perfil", label: "Perfil", icon: Settings },
-];
-
-const adminNav = [
-  { to: "/portal/incidencias", label: "Incidencias", icon: Inbox },
-];
+import { useTranslation } from "react-i18next";
 
 export const PortalLayout = () => {
+  const { t } = useTranslation("portal");
   const { profile, user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
+  const collaboratorNav = [
+    { to: "/portal", label: t("nav.summary"), icon: LayoutDashboard, end: true },
+    { to: "/portal/calendario", label: t("nav.calendar"), icon: Calendar },
+    { to: "/portal/documentos", label: t("nav.documents"), icon: FileText },
+    { to: "/portal/facturacion", label: t("nav.billing"), icon: Receipt },
+    { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
+  ];
+
+  const adminNav = [
+    { to: "/portal/incidencias", label: t("nav.incidences"), icon: Inbox },
+  ];
+
   const handleSignOut = async () => {
     await signOut();
-    toast.success("Sesión cerrada");
+    toast.success(t("login.toasts.signedOut"));
     navigate("/portal/login");
   };
 
