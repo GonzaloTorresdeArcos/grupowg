@@ -1,0 +1,40 @@
+{
+  "eyebrow": "08 · Soluções",
+  "title": "Três formas de <1>ativar o sistema</1>.",
+  "viewDetail": "Ver detalhe",
+  "cards": [
+    {
+      "sub": "Fazemo-lo por si",
+      "d": "Gerimos o serviço pós-venda de ponta a ponta. Tratamos de toda a operação para que o serviço funcione com qualidade, rapidez e controlo.",
+      "bullets": [
+        "Atendimento e diagnóstico",
+        "Atribuição de rede técnica",
+        "Gestão de intervenções",
+        "Coordenação logística e de peças"
+      ],
+      "tagline": "Externaliza o serviço. Nós operamo-lo."
+    },
+    {
+      "sub": "Controlamo-lo consigo",
+      "d": "Controlamos e melhoramos o serviço quando intervêm vários fornecedores. Integramos toda a informação numa visão única para decidir.",
+      "bullets": [
+        "Dashboards claros e controlo de custos",
+        "Comparativa real entre fornecedores",
+        "Deteção de problemas e melhorias",
+        "KPIs alinhados ao negócio"
+      ],
+      "tagline": "Uma única visão para todo o serviço."
+    },
+    {
+      "sub": "Acompanhamo-lo na expansão",
+      "d": "Desenhamos o serviço e ajudamos a fazê-lo crescer de forma ordenada, também internacionalmente. O mesmo padrão em todos os mercados.",
+      "bullets": [
+        "Definição do modelo, SLA e KPIs",
+        "Seleção e homologação de rede",
+        "Peças, logística e stock ótimo",
+        "Implementação multipaís com controlo central"
+      ],
+      "tagline": "De desenhar o serviço a fazê-lo funcionar à escala."
+    }
+  ]
+}

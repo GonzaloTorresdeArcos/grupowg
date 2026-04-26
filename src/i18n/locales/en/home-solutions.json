@@ -1,0 +1,40 @@
+{
+  "eyebrow": "08 · Solutions",
+  "title": "Three ways to <1>activate the system</1>.",
+  "viewDetail": "See details",
+  "cards": [
+    {
+      "sub": "We do it for you",
+      "d": "We manage the after-sales service end to end. We take care of the entire operation so the service runs with quality, speed and control.",
+      "bullets": [
+        "Customer support and diagnosis",
+        "Service network assignment",
+        "Intervention management",
+        "Logistics and spare parts coordination"
+      ],
+      "tagline": "You outsource the service. We run it."
+    },
+    {
+      "sub": "We control it with you",
+      "d": "We control and improve the service when several providers are involved. We bring all the information into a single view to make decisions.",
+      "bullets": [
+        "Clear dashboards and cost control",
+        "Real comparison across providers",
+        "Issue detection and improvements",
+        "KPIs aligned with the business"
+      ],
+      "tagline": "One single view for the entire service."
+    },
+    {
+      "sub": "We support your expansion",
+      "d": "We design the service and help it grow in an orderly way, internationally too. Same standard across every market.",
+      "bullets": [
+        "Model, SLA and KPI definition",
+        "Network selection and certification",
+        "Spare parts, logistics and optimal stock",
+        "Multi-country rollout with central control"
+      ],
+      "tagline": "From designing the service to making it work at scale."
+    }
+  ]
+}

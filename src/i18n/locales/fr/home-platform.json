@@ -1,0 +1,62 @@
+{
+  "eyebrow": "01 · Comment ça fonctionne",
+  "title": "Une architecture modulaire. <1>Un système unique.</1>",
+  "lead": "Nous intégrons les systèmes existants pour capter l'information, décider et coordonner l'exécution en temps réel. La technologie n'est pas une fin : elle transforme le service en un système exécutable et pilotable.",
+  "capabilitiesLabel": "Capacités",
+  "capabilitiesSub": "L3 · Ce qui le rend possible",
+  "capabilities": [
+    "Nous captons l'information dès le premier contact",
+    "Nous intégrons les canaux de support au réseau technique",
+    "Nous synchronisons les opérations de bout en bout",
+    "Nous automatisons les décisions là où c'est utile"
+  ],
+  "modulesLabel": "Modules",
+  "modulesSub": "L2 · Comment c'est activé",
+  "modules": [
+    {
+      "sub": "Opérations complètes",
+      "bullets": [
+        "Accueil et diagnostic",
+        "Affectation au réseau",
+        "Gestion des interventions",
+        "Coordination logistique",
+        "Gestion des pièces"
+      ],
+      "tagline": "Externalisation avec contrôle"
+    },
+    {
+      "sub": "Couche de contrôle transversale",
+      "bullets": [
+        "Consolidation des données",
+        "KPIs (coût, TAT, FTF)",
+        "Comparaison des prestataires",
+        "Alertes et écarts"
+      ],
+      "tagline": "Une vue unique pour décider"
+    },
+    {
+      "sub": "Conception et déploiement",
+      "bullets": [
+        "Définition du service lifecycle",
+        "Sélection et homologation du réseau",
+        "Conception opérationnelle et logistique",
+        "Déploiement multi-pays"
+      ],
+      "tagline": "Concevoir le service et le faire fonctionner à grande échelle"
+    }
+  ],
+  "coreLabel": "Core",
+  "coreSub": "L1 · Le moteur",
+  "coreTitle": "WG Service OS Core orchestre le service lifecycle de bout en bout",
+  "coreBullets": [
+    "Connecte le front, les opérations, le réseau technique, la logistique et le contrôle",
+    "Assure une traçabilité complète de chaque intervention",
+    "Intègre les systèmes existants du client sans les remplacer"
+  ],
+  "coreClosing": "La source unique de vérité du service.",
+  "pillars": [
+    { "t": "Une base unique", "d": "Toute l'information du service au même endroit." },
+    { "t": "Un système unique", "d": "Opérations, contrôle et intelligence connectés." },
+    { "t": "Contrôle total", "d": "Visibilité et décision à chaque étape du lifecycle." }
+  ]
+}
