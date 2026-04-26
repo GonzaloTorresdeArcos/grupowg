@@ -4,6 +4,11 @@
  * cada provincia (≈ 1.500 entradas) para que el colaborador pueda excluir
  * localidades concretas dentro de su zona de cobertura.
  *
+ * Para las grandes capitales (Madrid, Barcelona, Valencia, Sevilla, Málaga,
+ * Zaragoza, Bilbao) se desglosa el municipio capital en distritos / zonas
+ * (centro y periferia) para permitir exclusiones más finas (p.ej. atender
+ * "Madrid Centro" pero no "Vallecas").
+ *
  * Nota: España tiene >8.000 municipios. Esta lista no es exhaustiva, pero
  * incluye prácticamente todos los >5.000 habitantes y todas las cabeceras
  * comarcales relevantes para servicios técnicos / SAT.
