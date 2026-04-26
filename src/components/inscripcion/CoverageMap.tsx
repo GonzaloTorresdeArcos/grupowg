@@ -260,8 +260,18 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                             >
                               <span className="flex items-center gap-2">
                                 {p.name}
+                                {localidades.length > 0 && (
+                                  <span
+                                    className={cn(
+                                      "text-[10px] px-1.5 py-0.5 rounded",
+                                      provSelected ? "bg-bone/20 text-bone/90" : "bg-secondary text-muted-foreground",
+                                    )}
+                                  >
+                                    {localidades.length} loc.
+                                  </span>
+                                )}
                                 {exclCount > 0 && (
-                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-bone/20 text-bone/90">
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-destructive/20 text-destructive">
                                     -{exclCount}
                                   </span>
                                 )}
@@ -271,24 +281,34 @@ export const CoverageMap = ({ selected, onChange, excluded = [], onExcludedChang
                           </div>
 
                           {/* LOCALIDADES (excluibles) */}
-                          {provSelected && provOpen && localidades.length > 0 && (
+                          {provOpen && localidades.length > 0 && (
                             <div className="ml-6 mt-1 mb-2 pl-2 border-l border-border space-y-0.5">
-                              <p className="text-[10px] uppercase text-muted-foreground py-1">
-                                Marca las localidades que <strong>NO</strong> quieres atender
-                              </p>
+                              {!provSelected ? (
+                                <p className="text-[10px] text-muted-foreground py-1.5 px-2 bg-secondary/50 rounded">
+                                  Selecciona <strong>{p.name}</strong> arriba para poder excluir localidades.
+                                </p>
+                              ) : (
+                                <p className="text-[10px] uppercase text-muted-foreground py-1">
+                                  Marca las localidades que <strong>NO</strong> quieres atender
+                                </p>
+                              )}
                               {localidades.map((l) => {
                                 const k = localidadKey(p.code, l.name);
                                 const isExcl = excluded.includes(k);
+                                const disabled = !provSelected;
                                 return (
                                   <button
                                     key={k}
                                     type="button"
+                                    disabled={disabled}
                                     onClick={() => toggleExcl(p.code, l.name)}
                                     className={cn(
                                       "w-full flex items-center justify-between text-xs px-2 py-1 rounded transition",
-                                      isExcl
-                                        ? "bg-destructive/10 text-destructive line-through"
-                                        : "text-ink-soft hover:bg-secondary",
+                                      disabled
+                                        ? "text-muted-foreground/70 cursor-not-allowed"
+                                        : isExcl
+                                          ? "bg-destructive/10 text-destructive line-through"
+                                          : "text-ink-soft hover:bg-secondary",
                                     )}
                                   >
                                     <span className="flex items-center gap-2">
