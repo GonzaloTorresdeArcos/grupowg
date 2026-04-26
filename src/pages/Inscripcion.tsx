@@ -162,17 +162,28 @@ const Inscripcion = () => {
 
   useEffect(() => {
     const cp = s1.codigo_postal;
-    if (!/^\d{5}$/.test(cp)) {
+    if (!/^\d{4,5}(-\d{3})?$/.test(cp)) {
       setCpLookup("idle");
       setCpLocalidades([]);
       return;
     }
 
-    // Provincia inmediata por prefijo
-    const prefix = cp.slice(0, 2);
-    const prov = provinciaByCode(prefix);
-    if (prov && s1.provincia_fiscal !== prov.name) {
-      setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
+    // Inferimos prefijo telefónico por CP (solo si el usuario no lo cambió a mano).
+    if (phoneCountryAuto) {
+      const inferredCountry = countryFromPostalCode(cp);
+      if (inferredCountry && inferredCountry.code !== phoneCountry.code) {
+        setPhoneCountry(inferredCountry);
+        if (phoneVerified) setPhoneVerified(false);
+      }
+    }
+
+    // Provincia inmediata por prefijo (solo aplica a CP español de 5 dígitos).
+    if (/^\d{5}$/.test(cp)) {
+      const prefix = cp.slice(0, 2);
+      const prov = provinciaByCode(prefix);
+      if (prov && s1.provincia_fiscal !== prov.name) {
+        setS1((p) => ({ ...p, provincia_fiscal: prov.name }));
+      }
     }
 
     const ctrl = new AbortController();
