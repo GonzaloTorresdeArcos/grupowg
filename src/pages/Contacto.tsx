@@ -762,12 +762,12 @@ const Contacto = () => {
                   <Field name="motivo" label="Motivo de contacto *" error={visibleErrs.motivo}>
                     <div className="flex flex-wrap gap-2">
                       {MOTIVOS.map((m) => {
-                        const active = form.motivo === m.value;
+                        const active = (form.motivo || []).includes(m.value);
                         return (
                           <button
                             key={m.value}
                             type="button"
-                            onClick={() => selectMotivo(m.value)}
+                            onClick={() => toggleMotivo(m.value)}
                             className={
                               "px-3.5 py-2 rounded-full text-xs font-medium border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bone " +
                               (active
