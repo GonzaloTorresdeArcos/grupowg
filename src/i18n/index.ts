@@ -209,7 +209,7 @@ i18n
   .init({
     resources: {
       es: buildBundle({
-        common: esCommon, header: esHeader, footer: esFooter, contacto: esContacto,
+        common: esCommon, header: esHeader, footer: esFooter, breadcrumbs: esBreadcrumbs, contacto: esContacto,
         homeHero: esHomeHero, homeProblem: esHomeProblem, homeSolution: esHomeSolution,
         homeDifferential: esHomeDifferential, homeServiceos: esHomeServiceos,
         homeMetrics: esHomeMetrics, homeLifecycle: esHomeLifecycle, homeSolutions: esHomeSolutions,
@@ -222,7 +222,7 @@ i18n
         industrias: esIndustrias, experiencia: esExperiencia, marcas: esMarcas, aniversario: esAniversario,
       }),
       en: buildBundle({
-        common: enCommon, header: enHeader, footer: enFooter, contacto: enContacto,
+        common: enCommon, header: enHeader, footer: enFooter, breadcrumbs: enBreadcrumbs, contacto: enContacto,
         homeHero: enHomeHero, homeProblem: enHomeProblem, homeSolution: enHomeSolution,
         homeDifferential: enHomeDifferential, homeServiceos: enHomeServiceos,
         homeMetrics: enHomeMetrics, homeLifecycle: enHomeLifecycle, homeSolutions: enHomeSolutions,
@@ -235,7 +235,7 @@ i18n
         industrias: enIndustrias, experiencia: enExperiencia, marcas: enMarcas, aniversario: enAniversario,
       }),
       pt: buildBundle({
-        common: ptCommon, header: ptHeader, footer: ptFooter, contacto: ptContacto,
+        common: ptCommon, header: ptHeader, footer: ptFooter, breadcrumbs: ptBreadcrumbs, contacto: ptContacto,
         homeHero: ptHomeHero, homeProblem: ptHomeProblem, homeSolution: ptHomeSolution,
         homeDifferential: ptHomeDifferential, homeServiceos: ptHomeServiceos,
         homeMetrics: ptHomeMetrics, homeLifecycle: ptHomeLifecycle, homeSolutions: ptHomeSolutions,
@@ -248,7 +248,7 @@ i18n
         industrias: ptIndustrias, experiencia: ptExperiencia, marcas: ptMarcas, aniversario: ptAniversario,
       }),
       fr: buildBundle({
-        common: frCommon, header: frHeader, footer: frFooter, contacto: frContacto,
+        common: frCommon, header: frHeader, footer: frFooter, breadcrumbs: frBreadcrumbs, contacto: frContacto,
         homeHero: frHomeHero, homeProblem: frHomeProblem, homeSolution: frHomeSolution,
         homeDifferential: frHomeDifferential, homeServiceos: frHomeServiceos,
         homeMetrics: frHomeMetrics, homeLifecycle: frHomeLifecycle, homeSolutions: frHomeSolutions,
