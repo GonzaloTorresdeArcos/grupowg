@@ -161,7 +161,7 @@ export const LANG_LABELS: Record<AppLang, string> = {
 };
 
 const buildBundle = (b: {
-  common: unknown; header: unknown; footer: unknown; contacto: unknown;
+  common: unknown; header: unknown; footer: unknown; breadcrumbs: unknown; contacto: unknown;
   homeHero: unknown; homeProblem: unknown; homeSolution: unknown; homeDifferential: unknown;
   homeServiceos: unknown; homeMetrics: unknown; homeLifecycle: unknown; homeSolutions: unknown;
   homePlatform: unknown; homeIntelligence: unknown; homeIndustries: unknown; homeExperience: unknown;
@@ -173,6 +173,7 @@ const buildBundle = (b: {
   common: b.common,
   header: b.header,
   footer: b.footer,
+  breadcrumbs: b.breadcrumbs,
   contacto: b.contacto,
   "home-hero": b.homeHero,
   "home-problem": b.homeProblem,
