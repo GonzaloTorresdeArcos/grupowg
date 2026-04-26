@@ -65,7 +65,7 @@ const step1Schema = z.object({
 });
 
 const Inscripcion = () => {
-  const { draft, loading: draftLoading, saving: draftSaving, save: saveDraft, clear: clearDraft } = useDraft();
+  const { draft, loading: draftLoading, saving: draftSaving, save: saveDraft, refresh: refreshDraft, clear: clearDraft } = useDraft();
 
   const [step, setStep] = useState<Step>(1);
   const [submitting, setSubmitting] = useState(false);
@@ -130,7 +130,7 @@ const Inscripcion = () => {
     toast.success("Hemos recuperado tu progreso anterior");
   }, [draft, draftLoading]);
 
-  // Auto-save (al cambiar datos clave o paso)
+  // Auto-save (al cambiar datos clave o paso). Verification flags are server-side only.
   useEffect(() => {
     if (!s1.email) return;
     saveDraft({
@@ -140,11 +140,9 @@ const Inscripcion = () => {
         s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad,
         coberturas, datosSeguros, signerName, signerDni,
       },
-      email_verified: emailVerified,
-      phone_verified: phoneVerified,
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, coberturas, datosSeguros, signerName, signerDni, emailVerified, phoneVerified, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, tecnicos, serviciosSel, horarios, capacidad, coberturas, datosSeguros, signerName, signerDni, step]);
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
