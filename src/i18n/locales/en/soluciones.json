@@ -1,7 +1,7 @@
 {
   "seo": { "title": "Solutions · WG Execute · Control Tower · Scale", "description": "Three ways to activate the service system: WG Execute (we run it for you), WG Control Tower (single view across providers) and WG Scale (international rollout under control)." },
   "hero": { "titleA": "Three ways to", "titleB": "activate the system", "subtitle": "Execute, Control Tower and Scale. You choose the level of involvement; we make sure the service works with quality, control and consistency.", "cta": "Request information" },
-  "intro": { "titleA": "Three ways to", "titleB": "activate the service", "titleC": "system.", "lead": "Three modules. One platform. You choose the level of involvement according to your operating model." },
+  "intro": { "titleA": "Three modules.", "titleB": "One platform", "titleC": ".", "lead": "You choose the level of involvement according to your operating model." },
   "modules": {
     "execute": {
       "tagline": "We do it for you",
