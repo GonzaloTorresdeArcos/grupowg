@@ -1161,10 +1161,10 @@ const Contacto = () => {
           <Reveal>
             <p className="eyebrow-mono mb-3">Dónde estamos</p>
             <h2 className="heading-display text-foreground text-3xl md:text-5xl text-balance max-w-2xl">
-              Operamos en <span className="text-teal italic">toda España</span>.
+              Operamos en <span className="text-teal italic">toda España y Portugal</span>.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-xl text-pretty">
-              Sede central en España con red de colaboradores cualificados a nivel nacional.
+              Sede central en Madrid y presencia operativa en Barcelona, Valencia y Canarias. Red de colaboradores cualificados en la Península Ibérica.
             </p>
           </Reveal>
 
