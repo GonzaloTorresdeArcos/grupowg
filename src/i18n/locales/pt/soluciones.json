@@ -1,7 +1,7 @@
 {
   "seo": { "title": "Soluções · WG Execute · Control Tower · Scale", "description": "Três formas de ativar o sistema de serviço: WG Execute (operamos por si), WG Control Tower (visão única multi-fornecedor) e WG Scale (implementação internacional com controlo)." },
   "hero": { "titleA": "Três formas de", "titleB": "ativar o sistema", "subtitle": "Execute, Control Tower e Scale. Escolhe o grau de envolvimento; nós garantimos que o serviço funciona com qualidade, controlo e consistência.", "cta": "Solicitar informação" },
-  "intro": { "titleA": "Três formas de", "titleB": "ativar o sistema", "titleC": "de serviço.", "lead": "Três módulos. A mesma plataforma. Escolhe o grau de envolvimento segundo o teu modelo operativo." },
+  "intro": { "titleA": "Três módulos.", "titleB": "A mesma plataforma", "titleC": ".", "lead": "Escolhes o grau de envolvimento segundo o teu modelo operativo." },
   "modules": {
     "execute": {
       "tagline": "Fazemo-lo por si",
