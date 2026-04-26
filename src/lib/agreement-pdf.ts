@@ -158,8 +158,16 @@ function buildAgreementDoc(d: AgreementData & { isDraft?: boolean }): jsPDF {
   doc.setTextColor(120, 130, 140);
   if (!d.isDraft) {
     doc.text(`Firmado: ${d.signedAt.toLocaleString("es-ES")}`, margin, y);
+    y += 12;
+    if (d.agreementReadAt) {
+      doc.text(`Lectura aceptada: ${d.agreementReadAt.toLocaleString("es-ES")}`, margin, y);
+      y += 12;
+    }
+    doc.text(`Versión del acuerdo: ${AGREEMENT_VERSION} · hash ${AGREEMENT_HASH}`, margin, y);
   } else {
     doc.text("Pendiente de firma", margin, y);
+    y += 12;
+    doc.text(`Versión del acuerdo: ${AGREEMENT_VERSION} · hash ${AGREEMENT_HASH}`, margin, y);
   }
 
   doc.setFontSize(8);
