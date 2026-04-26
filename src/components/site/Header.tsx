@@ -79,13 +79,13 @@ export const Header = ({ dark = true }: HeaderProps) => {
           <Logo
             className={cn(
               "h-10 sm:h-12 md:h-14",
-              // Logo blanco cuando el fondo del header es oscuro:
-              // - tema dark + transparente (sobre hero oscuro)
-              // - tema dark + scrolled/open (bg-ink)
-              // - tema light pero aún transparente sobre hero oscuro (ej. /wg-network arriba del todo)
+              // Logo blanco solo cuando el fondo del header es oscuro:
+              // - tema dark (siempre, fondo ink o transparente sobre hero oscuro)
+              // - en /wg-network root, el hero es oscuro → blanco mientras esté transparente
+              //   (al hacer scroll el header se vuelve claro y vuelve a colores normales)
               dark
                 ? "brightness-0 invert"
-                : !scrolled && !open && "brightness-0 invert",
+                : location.pathname === "/wg-network" && !scrolled && !open && "brightness-0 invert",
             )}
           />
         </Link>
