@@ -1,0 +1,37 @@
+{
+  "eyebrow1": "02 · Service Lifecycle",
+  "title": "Un flux unique, <1>de bout en bout</1>.",
+  "lead": "Du premier contact à la clôture, chaque phase du service est conçue, connectée et mesurée. Ce ne sont pas des processus indépendants : c'est un système qui fonctionne de manière intégrée.",
+  "stages": [
+    { "t": "Entrée de la demande", "d": "Capture unifiée sur tous les canaux." },
+    { "t": "Diagnostic et décision", "d": "Validation technique, pas un tri administratif." },
+    { "t": "Affectation au réseau", "d": "À la bonne ressource : capacité, marque, géographie." },
+    { "t": "Exécution du service", "d": "Opération coordonnée en temps réel." },
+    { "t": "Gestion des pièces", "d": "Stock intelligent, OEM, compatibilité validée." },
+    { "t": "Coordination logistique", "d": "Livraison, enlèvement et retour synchronisés." },
+    { "t": "Support et intelligence", "d": "Savoir-faire technique appliqué à chaque dossier." },
+    { "t": "Clôture et validation", "d": "Résolution vérifiée avec le client final." },
+    { "t": "Contrôle et analytique", "d": "Traçabilité et indicateurs de bout en bout." }
+  ],
+  "eyebrow2": "03 · Comment ça fonctionne",
+  "subtitle": "Chaque couche du service, <1>sous contrôle</1>.",
+  "hasLabel": "Chaque couche a",
+  "has": [
+    "Un responsable clair.",
+    "Des KPIs définis.",
+    "Un impact direct sur coût, qualité et délai."
+  ],
+  "enablesLabel": "Cela permet",
+  "enables": [
+    "Prendre des décisions avec discernement.",
+    "Détecter rapidement les écarts.",
+    "Améliorer la performance en continu."
+  ],
+  "synthesis": "Conçu pour fonctionner comme un système, <1>pas comme des silos</1>.",
+  "kpis": [
+    { "t": "Ownership clair", "d": "Un responsable défini par couche de service." },
+    { "t": "KPIs business", "d": "Indicateurs alignés sur coût, qualité et délai." },
+    { "t": "Contrôle réel", "d": "Détection précoce des écarts et amélioration continue." },
+    { "t": "Opération → résultat", "d": "Lien direct entre exécution et outcome." }
+  ]
+}

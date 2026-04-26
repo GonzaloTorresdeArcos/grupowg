@@ -1,0 +1,18 @@
+{
+  "badge": "WG Service OS · v2026",
+  "title": {
+    "line1": "Onde os outros terminam,",
+    "line2": "nós começamos"
+  },
+  "lead": "Transformamos o serviço pós-venda num sistema que funciona <1>sob controlo</1>. Mesmo quando está fragmentado entre vários fornecedores.",
+  "sub": "Integramos operação, experiência do cliente e conhecimento técnico para executar, controlar e otimizar o serviço de ponta a ponta.",
+  "ctaPrimary": "Solicitar informação",
+  "ctaSecondary": "Ver o modelo",
+  "imageAlt": "Técnico de pós-venda a diagnosticar um eletrodoméstico",
+  "liveBadge": "live · sistema operativo ativo",
+  "stats": {
+    "operation": { "label": "Operação", "value": "+150K", "caption": "ocorrências / ano" },
+    "network": { "label": "Rede", "value": "+400", "caption": "SAT ativos" },
+    "track": { "label": "Trajetória", "value": "50", "caption": "anos de ofício" }
+  }
+}

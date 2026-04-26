@@ -1,0 +1,24 @@
+{
+  "eyebrow": "05 · WG Service OS",
+  "title": "O sistema operativo do serviço.",
+  "lead": "Uma camada que liga todo o serviço: transforma cada interação numa decisão estruturada e cada decisão numa execução mensurável.",
+  "whatLabel": "O que é",
+  "whatText": "Uma camada que liga pessoas, processos e tecnologia num único fluxo operacional.",
+  "doesLabel": "O que faz",
+  "doesText": "Interação → Decisão → Execução. Num mesmo sistema, sem fricção.",
+  "panelTitle": "Antes vs agora",
+  "beforeLabel": "Antes",
+  "afterLabel": "Agora",
+  "before": [
+    "Sistemas desconectados",
+    "Decisões manuais",
+    "Falta de controlo",
+    "Silos de informação"
+  ],
+  "after": [
+    "Sistema único",
+    "Decisões estruturadas",
+    "Controlo completo",
+    "Dados integrados em tempo real"
+  ]
+}

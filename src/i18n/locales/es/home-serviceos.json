@@ -1,0 +1,24 @@
+{
+  "eyebrow": "05 · WG Service OS",
+  "title": "El sistema operativo del servicio.",
+  "lead": "Una capa que conecta todo el servicio: convierte cada interacción en una decisión estructurada y cada decisión en una ejecución medible.",
+  "whatLabel": "Qué es",
+  "whatText": "Una capa que conecta personas, procesos y tecnología en un único flujo operativo.",
+  "doesLabel": "Qué hace",
+  "doesText": "Interacción → Decisión → Ejecución. En un mismo sistema, sin fricción.",
+  "panelTitle": "Antes vs ahora",
+  "beforeLabel": "Antes",
+  "afterLabel": "Ahora",
+  "before": [
+    "Sistemas desconectados",
+    "Decisiones manuales",
+    "Falta de control",
+    "Silos de información"
+  ],
+  "after": [
+    "Sistema único",
+    "Decisiones estructuradas",
+    "Control completo",
+    "Datos integrados en tiempo real"
+  ]
+}

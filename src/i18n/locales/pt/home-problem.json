@@ -1,0 +1,11 @@
+{
+  "eyebrow": "02 · O problema",
+  "title": "Hoje, o serviço pós-venda <1>não funciona como um sistema</1>.",
+  "items": [
+    { "t": "Vários fornecedores sem coordenação", "d": "Operação fragmentada, responsabilidades difusas, escalonamentos que se perdem." },
+    { "t": "Sistemas desconectados", "d": "Dados em silos. Sem rastreabilidade real entre incidente, execução e fecho." },
+    { "t": "Decisões sem critério técnico", "d": "Atribuições por geografia ou tarifa, não por capacidade real nem conhecimento de produto." },
+    { "t": "Falta de visibilidade", "d": "O cliente final não sabe o que se passa com o seu caso. Você também não." }
+  ],
+  "result": "Resultado: <1>mais custo · mais incidentes · pior experiência.</1>"
+}

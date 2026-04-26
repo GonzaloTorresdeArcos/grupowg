@@ -1,0 +1,18 @@
+{
+  "badge": "WG Service OS · v2026",
+  "title": {
+    "line1": "Where others stop,",
+    "line2": "we begin"
+  },
+  "lead": "We turn after-sales service into a system that works <1>under control</1>. Even when it is fragmented across multiple providers.",
+  "sub": "We integrate operations, customer experience and technical knowledge to execute, control and optimise the service from end to end.",
+  "ctaPrimary": "Request information",
+  "ctaSecondary": "See the model",
+  "imageAlt": "After-sales service technician diagnosing an appliance",
+  "liveBadge": "live · operating system active",
+  "stats": {
+    "operation": { "label": "Operations", "value": "+150K", "caption": "tickets / year" },
+    "network": { "label": "Network", "value": "+400", "caption": "active service partners" },
+    "track": { "label": "Track record", "value": "50", "caption": "years of craft" }
+  }
+}

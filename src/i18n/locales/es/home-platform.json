@@ -1,0 +1,62 @@
+{
+  "eyebrow": "01 · Cómo funciona",
+  "title": "Una arquitectura modular. <1>Un único sistema.</1>",
+  "lead": "Integramos los sistemas existentes para capturar información, tomar decisiones y coordinar la ejecución en tiempo real. La tecnología no es un fin: convierte el servicio en un sistema ejecutable y controlable.",
+  "capabilitiesLabel": "Capacidades",
+  "capabilitiesSub": "L3 · Lo que hace posible",
+  "capabilities": [
+    "Capturamos información desde el primer contacto",
+    "Integramos canales de atención con la red técnica",
+    "Sincronizamos la operación de principio a fin",
+    "Automatizamos decisiones donde aporta valor"
+  ],
+  "modulesLabel": "Módulos",
+  "modulesSub": "L2 · Cómo se activa",
+  "modules": [
+    {
+      "sub": "Operación completa",
+      "bullets": [
+        "Atención y diagnóstico",
+        "Asignación de red",
+        "Gestión de intervenciones",
+        "Coordinación logística",
+        "Gestión de repuestos"
+      ],
+      "tagline": "Externalización con control"
+    },
+    {
+      "sub": "Capa de control transversal",
+      "bullets": [
+        "Consolidación de datos",
+        "KPIs (coste, TAT, FTF)",
+        "Comparativa de proveedores",
+        "Alertas y desviaciones"
+      ],
+      "tagline": "Una única visión para decidir"
+    },
+    {
+      "sub": "Diseño y despliegue",
+      "bullets": [
+        "Definición del service lifecycle",
+        "Selección y homologación de red",
+        "Diseño operativo y logístico",
+        "Despliegue multi-país"
+      ],
+      "tagline": "Diseñar el servicio y hacerlo funcionar a escala"
+    }
+  ],
+  "coreLabel": "Core",
+  "coreSub": "L1 · El motor",
+  "coreTitle": "WG Service OS Core orquesta el service lifecycle end-to-end",
+  "coreBullets": [
+    "Conecta front, operación, red técnica, logística y control",
+    "Asegura trazabilidad completa de cada intervención",
+    "Integra los sistemas existentes del cliente sin sustituirlos"
+  ],
+  "coreClosing": "La única fuente de verdad del servicio.",
+  "pillars": [
+    { "t": "Una única base", "d": "Toda la información del servicio en un mismo lugar." },
+    { "t": "Un único sistema", "d": "Operación, control e inteligencia conectadas." },
+    { "t": "Control total", "d": "Visibilidad y decisión en cada etapa del lifecycle." }
+  ]
+}

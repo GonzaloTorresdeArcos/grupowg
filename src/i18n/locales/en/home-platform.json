@@ -1,0 +1,62 @@
+{
+  "eyebrow": "01 · How it works",
+  "title": "Modular architecture. <1>One single system.</1>",
+  "lead": "We integrate existing systems to capture information, make decisions and coordinate execution in real time. Technology is not the goal: it turns the service into an executable, controllable system.",
+  "capabilitiesLabel": "Capabilities",
+  "capabilitiesSub": "L3 · What makes it possible",
+  "capabilities": [
+    "We capture information from the first contact",
+    "We integrate customer channels with the service network",
+    "We synchronise operations from end to end",
+    "We automate decisions where it adds value"
+  ],
+  "modulesLabel": "Modules",
+  "modulesSub": "L2 · How it is activated",
+  "modules": [
+    {
+      "sub": "Full operations",
+      "bullets": [
+        "Customer support and diagnosis",
+        "Network assignment",
+        "Intervention management",
+        "Logistics coordination",
+        "Spare parts management"
+      ],
+      "tagline": "Outsourcing with control"
+    },
+    {
+      "sub": "Cross-cutting control layer",
+      "bullets": [
+        "Data consolidation",
+        "KPIs (cost, TAT, FTF)",
+        "Provider benchmarking",
+        "Alerts and deviations"
+      ],
+      "tagline": "One single view to decide"
+    },
+    {
+      "sub": "Design and rollout",
+      "bullets": [
+        "Service lifecycle definition",
+        "Network selection and certification",
+        "Operational and logistics design",
+        "Multi-country rollout"
+      ],
+      "tagline": "Design the service and make it work at scale"
+    }
+  ],
+  "coreLabel": "Core",
+  "coreSub": "L1 · The engine",
+  "coreTitle": "WG Service OS Core orchestrates the service lifecycle end to end",
+  "coreBullets": [
+    "Connects front office, operations, service network, logistics and control",
+    "Ensures full traceability of every intervention",
+    "Integrates the client's existing systems without replacing them"
+  ],
+  "coreClosing": "The single source of truth for the service.",
+  "pillars": [
+    { "t": "One single base", "d": "All service information in the same place." },
+    { "t": "One single system", "d": "Operations, control and intelligence connected." },
+    { "t": "Full control", "d": "Visibility and decision at every stage of the lifecycle." }
+  ]
+}

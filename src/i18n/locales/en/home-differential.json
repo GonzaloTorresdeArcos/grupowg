@@ -1,0 +1,10 @@
+{
+  "eyebrow": "04 · Differential",
+  "title": "Control · knowledge · execution.",
+  "lead": "Three inseparable layers that hold every operation together.",
+  "items": [
+    { "t": "End-to-end control", "d": "Full visibility on every case: from intake to closure, with real-time data and single ownership." },
+    { "t": "Technical knowledge", "d": "Real diagnosis, root-cause validation, product criteria. Decisions based on data, not assumptions." },
+    { "t": "Integrated execution", "d": "Operations, spare parts, logistics and the service network orchestrated as a single flow. No friction, no blind handoffs." }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eyebrow": "02 · The problem",
+  "title": "Today, after-sales service <1>doesn't work as a system</1>.",
+  "items": [
+    { "t": "Multiple providers, no coordination", "d": "Fragmented operations, blurred ownership, escalations that get lost." },
+    { "t": "Disconnected systems", "d": "Siloed data. No real traceability between case, execution and closure." },
+    { "t": "Decisions without technical criteria", "d": "Assignments by geography or rate, not by real capability or product knowledge." },
+    { "t": "Lack of visibility", "d": "End customers don't know what's happening with their case. Neither do you." }
+  ],
+  "result": "Result: <1>higher cost · more incidents · worse experience.</1>"
+}

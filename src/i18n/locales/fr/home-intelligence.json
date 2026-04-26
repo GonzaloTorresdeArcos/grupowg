@@ -1,0 +1,58 @@
+{
+  "eyebrow": "02 · Couches d'intelligence",
+  "title": "Ce qui rend le système <1>différenciant</1>.",
+  "lead": "Au-dessus du Core et des modules, WG Service OS intègre des couches d'intelligence qui améliorent en continu la performance du service.",
+  "tagline": "Nous ne nous contentons pas d'exécuter : nous comprenons, optimisons et améliorons le système.",
+  "layers": [
+    {
+      "bullets": [
+        "Diagnostic assisté",
+        "Validation technique des interventions",
+        "Réduction des erreurs de diagnostic",
+        "Amélioration du First Time Fix",
+        "Support expert sur les cas complexes"
+      ],
+      "closing": "Nous remplaçons la structure par l'intelligence. Nous savons quand quelque chose ne va pas et comment le corriger."
+    },
+    {
+      "bullets": [
+        "Détection des défauts récurrents",
+        "Analyse par SKU et composant",
+        "Identification des pannes endémiques",
+        "Impact sur coût, TAT et qualité",
+        "Génération de rapports techniques"
+      ],
+      "closing": "Nous transformons le service en information business."
+    },
+    {
+      "bullets": [
+        "Composants à défaillance systématique",
+        "Contrôle des seuils de défaillance (% par pièce ou modèle)",
+        "Activation des processus de remboursement fabricant",
+        "Traçabilité des incidents associés"
+      ],
+      "closing": "La panne n'est plus seulement un coût. C'est une opportunité de récupération et d'amélioration."
+    },
+    {
+      "bullets": [
+        "Planification des pièces basée sur l'historique",
+        "Niveaux de stock optimaux",
+        "Optimisation des commandes fabricants",
+        "Couverture initiale en pièces (% approvisionnement)",
+        "Alignement demande réelle ↔ approvisionnement"
+      ],
+      "closing": "La pièce n'est plus un goulot d'étranglement. Elle devient un levier d'efficacité."
+    },
+    {
+      "bullets": [
+        "Décisions automatisées basées sur les données",
+        "Workflows intelligents",
+        "Orchestration de bout en bout",
+        "Règles et apprentissage continu",
+        "Closed-loop execution"
+      ],
+      "closing": "Nous n'automatisons pas des tâches isolées. Nous automatisons des résultats."
+    }
+  ],
+  "synthesis": "Chaque interaction génère de l'information. Chaque décision améliore le système. <1>Chaque amélioration impacte coût, qualité et délai.</1>"
+}

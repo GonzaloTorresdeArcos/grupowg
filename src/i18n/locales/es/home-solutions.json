@@ -1,0 +1,40 @@
+{
+  "eyebrow": "08 · Soluciones",
+  "title": "Tres formas de <1>activar el sistema</1>.",
+  "viewDetail": "Ver detalle",
+  "cards": [
+    {
+      "sub": "Lo hacemos por ti",
+      "d": "Gestionamos el servicio postventa de principio a fin. Nos encargamos de toda la operación para que el servicio funcione con calidad, rapidez y control.",
+      "bullets": [
+        "Atención y diagnóstico",
+        "Asignación de red técnica",
+        "Gestión de intervenciones",
+        "Coordinación logística y repuestos"
+      ],
+      "tagline": "Externalizas el servicio. Nosotros lo operamos."
+    },
+    {
+      "sub": "Lo controlamos contigo",
+      "d": "Controlamos y mejoramos el servicio cuando intervienen varios proveedores. Integramos toda la información en una visión única para tomar decisiones.",
+      "bullets": [
+        "Dashboards claros y control de costes",
+        "Comparativa real entre proveedores",
+        "Detección de problemas y mejoras",
+        "KPIs alineados a negocio"
+      ],
+      "tagline": "Una única visión para todo el servicio."
+    },
+    {
+      "sub": "Te acompañamos en tu expansión",
+      "d": "Diseñamos el servicio y lo ayudamos a crecer de forma ordenada, también internacionalmente. Mismo estándar en todos los mercados.",
+      "bullets": [
+        "Definición del modelo, SLA y KPIs",
+        "Selección y homologación de red",
+        "Repuestos, logística y stock óptimo",
+        "Despliegue multi-país con control central"
+      ],
+      "tagline": "De diseñar el servicio a hacerlo funcionar a escala."
+    }
+  ]
+}

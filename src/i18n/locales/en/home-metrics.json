@@ -1,0 +1,13 @@
+{
+  "title": "This is what we do every day.",
+  "lead": "Model applied at some of the leading retailers, manufacturers and insurers in Spain and Europe.",
+  "tag": "wg-os :: metrics.live",
+  "items": [
+    { "v": "+150K", "l": "Cases handled / year", "c": "Operations" },
+    { "v": "+400", "l": "Service partners in network", "c": "Coverage" },
+    { "v": "50 years", "l": "Of operational experience", "c": "Track record" },
+    { "v": "4 hubs", "l": "Madrid · Barcelona · Valencia · Canary Islands", "c": "Presence" },
+    { "v": "Multi-country", "l": "International operations", "c": "Scale" },
+    { "v": "+25 years", "l": "Of relationship with key clients", "c": "Trust" }
+  ]
+}

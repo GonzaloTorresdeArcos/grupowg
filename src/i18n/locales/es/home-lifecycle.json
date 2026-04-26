@@ -1,0 +1,37 @@
+{
+  "eyebrow1": "02 · Service Lifecycle",
+  "title": "Un flujo único, <1>de principio a fin</1>.",
+  "lead": "Desde el primer contacto hasta el cierre, cada fase del servicio está diseñada, conectada y medida. No son procesos independientes: es un sistema que funciona de forma integrada.",
+  "stages": [
+    { "t": "Entrada de demanda", "d": "Captura unificada por todos los canales." },
+    { "t": "Diagnóstico y decisión", "d": "Validación técnica, no triage administrativo." },
+    { "t": "Asignación de red", "d": "Al recurso correcto: capacidad, marca, geografía." },
+    { "t": "Ejecución del servicio", "d": "Operación coordinada en tiempo real." },
+    { "t": "Gestión de repuestos", "d": "Stock inteligente, OEM, compatibilidad validada." },
+    { "t": "Coordinación logística", "d": "Entrega, recogida, devolución sincronizadas." },
+    { "t": "Soporte e inteligencia", "d": "Conocimiento técnico aplicado a cada caso." },
+    { "t": "Cierre y validación", "d": "Resolución verificada con el cliente final." },
+    { "t": "Control y analítica", "d": "Trazabilidad y métricas extremo a extremo." }
+  ],
+  "eyebrow2": "03 · Cómo funciona",
+  "subtitle": "Cada capa del servicio, <1>bajo control</1>.",
+  "hasLabel": "Cada capa tiene",
+  "has": [
+    "Un responsable claro.",
+    "Unos KPIs definidos.",
+    "Un impacto directo en coste, calidad y tiempo."
+  ],
+  "enablesLabel": "Esto permite",
+  "enables": [
+    "Tomar decisiones con criterio.",
+    "Detectar desviaciones rápidamente.",
+    "Mejorar el rendimiento de forma continua."
+  ],
+  "synthesis": "Diseñado para funcionar como un sistema, <1>no como áreas aisladas</1>.",
+  "kpis": [
+    { "t": "Ownership claro", "d": "Un responsable definido por capa del servicio." },
+    { "t": "KPIs de negocio", "d": "Métricas alineadas a coste, calidad y tiempo." },
+    { "t": "Control real", "d": "Detección temprana de desviaciones y mejora continua." },
+    { "t": "Operación → resultado", "d": "Conexión directa entre ejecución y outcome." }
+  ]
+}

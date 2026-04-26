@@ -1,0 +1,11 @@
+{
+  "eyebrow": "02 · El problema",
+  "title": "Hoy el servicio postventa <1>no funciona como un sistema</1>.",
+  "items": [
+    { "t": "Múltiples proveedores sin coordinación", "d": "Operación fragmentada, responsabilidades difusas, escalados que se pierden." },
+    { "t": "Sistemas desconectados", "d": "Datos en silos. Sin trazabilidad real entre incidencia, ejecución y cierre." },
+    { "t": "Decisiones sin criterio técnico", "d": "Asignaciones por geografía o tarifa, no por capacidad real ni conocimiento de producto." },
+    { "t": "Falta de visibilidad", "d": "El cliente final no sabe qué pasa con su caso. Tú tampoco." }
+  ],
+  "result": "Resultado: <1>más coste · más incidencias · peor experiencia.</1>"
+}

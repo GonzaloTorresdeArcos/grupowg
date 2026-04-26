@@ -1,0 +1,40 @@
+{
+  "eyebrow": "08 · Solutions",
+  "title": "Trois façons d'<1>activer le système</1>.",
+  "viewDetail": "Voir le détail",
+  "cards": [
+    {
+      "sub": "Nous le faisons pour vous",
+      "d": "Nous gérons le service après-vente de bout en bout. Nous prenons en charge toute l'opération pour que le service tourne avec qualité, rapidité et contrôle.",
+      "bullets": [
+        "Accueil et diagnostic",
+        "Affectation au réseau technique",
+        "Gestion des interventions",
+        "Coordination logistique et pièces"
+      ],
+      "tagline": "Vous externalisez le service. Nous l'opérons."
+    },
+    {
+      "sub": "Nous le pilotons avec vous",
+      "d": "Nous pilotons et améliorons le service lorsque plusieurs prestataires interviennent. Toute l'information dans une vue unique pour décider.",
+      "bullets": [
+        "Tableaux de bord clairs et maîtrise des coûts",
+        "Comparaison réelle entre prestataires",
+        "Détection de problèmes et améliorations",
+        "KPIs alignés au business"
+      ],
+      "tagline": "Une vue unique pour tout le service."
+    },
+    {
+      "sub": "Nous vous accompagnons dans votre expansion",
+      "d": "Nous concevons le service et l'aidons à croître de manière ordonnée, à l'international aussi. Même standard sur tous les marchés.",
+      "bullets": [
+        "Définition du modèle, SLA et KPIs",
+        "Sélection et homologation du réseau",
+        "Pièces, logistique et stock optimal",
+        "Déploiement multi-pays avec contrôle central"
+      ],
+      "tagline": "De la conception du service à son fonctionnement à grande échelle."
+    }
+  ]
+}

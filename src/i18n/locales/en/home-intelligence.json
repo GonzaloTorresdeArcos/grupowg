@@ -1,0 +1,58 @@
+{
+  "eyebrow": "02 · Intelligence layers",
+  "title": "What makes the system <1>different</1>.",
+  "lead": "On top of the Core and modules, WG Service OS adds intelligence layers that continuously improve service performance.",
+  "tagline": "We don't just execute: we understand, optimise and improve the system.",
+  "layers": [
+    {
+      "bullets": [
+        "Assisted diagnosis",
+        "Technical validation of interventions",
+        "Reduction of diagnostic errors",
+        "First Time Fix improvement",
+        "Expert support for complex cases"
+      ],
+      "closing": "We replace structure with intelligence. We know when something is wrong and how to fix it."
+    },
+    {
+      "bullets": [
+        "Detection of recurring failures",
+        "Analysis by SKU and component",
+        "Identification of endemic breakdowns",
+        "Impact on cost, TAT and quality",
+        "Technical report generation"
+      ],
+      "closing": "We turn service into business information."
+    },
+    {
+      "bullets": [
+        "Components with systematic failure",
+        "Failure threshold control (% per part or model)",
+        "Triggering credit processes with the manufacturer",
+        "Traceability of related cases"
+      ],
+      "closing": "Failure stops being just a cost. It becomes a recovery and improvement opportunity."
+    },
+    {
+      "bullets": [
+        "Spare parts planning based on historicals",
+        "Optimal stock levels",
+        "Optimisation of orders to manufacturers",
+        "Initial parts coverage (% supply)",
+        "Real demand ↔ supply alignment"
+      ],
+      "closing": "Parts stop being a bottleneck. They become an efficiency lever."
+    },
+    {
+      "bullets": [
+        "Data-driven automated decisions",
+        "Smart workflows",
+        "End-to-end orchestration",
+        "Rules and continuous learning",
+        "Closed-loop execution"
+      ],
+      "closing": "We don't automate isolated tasks. We automate outcomes."
+    }
+  ],
+  "synthesis": "Every interaction generates information. Every decision improves the system. <1>Every improvement impacts cost, quality and time.</1>"
+}

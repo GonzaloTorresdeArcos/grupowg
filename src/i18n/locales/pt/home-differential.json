@@ -1,0 +1,10 @@
+{
+  "eyebrow": "04 · Diferencial",
+  "title": "Controlo · conhecimento · execução.",
+  "lead": "Três camadas inseparáveis que sustentam cada operação.",
+  "items": [
+    { "t": "Controlo end-to-end", "d": "Visão completa de cada incidente: da entrada ao fecho, com dados em tempo real e responsabilidade única." },
+    { "t": "Conhecimento técnico", "d": "Diagnóstico real, validação de causa, critério de produto. Decisões baseadas em dados, não em suposições." },
+    { "t": "Execução integrada", "d": "Operação, peças, logística e rede de SAT orquestradas como um único fluxo. Sem fricção, sem handoffs cegos." }
+  ]
+}

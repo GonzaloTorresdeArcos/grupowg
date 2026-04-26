@@ -1,0 +1,14 @@
+{
+  "eyebrow": "13 · About us",
+  "title": {
+    "line1": "We are not just operators.",
+    "line2": "We are not traditional consultants.",
+    "line3": "We are the combination of execution, control and technical knowledge."
+  },
+  "lead": "We operate when needed. We control when it's critical. And we bring judgement throughout.",
+  "pillars": [
+    { "label": "Execution", "text": "50 years stepping into real operations." },
+    { "label": "Control", "text": "Data, system, end-to-end traceability." },
+    { "label": "Judgement", "text": "Real technical knowledge, not generic playbooks." }
+  ]
+}
