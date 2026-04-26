@@ -619,7 +619,7 @@ const Inscripcion = () => {
                   />
                 )}
               </Field>
-              <Field label="Provincia" error={errs1.provincia_fiscal}>
+              <Field label="Provincia" error={errs1.provincia_fiscal} className="md:col-span-2">
                 <select
                   className="input-base"
                   value={s1.provincia_fiscal}
