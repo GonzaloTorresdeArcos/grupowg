@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { StickyMobileCTA } from "./StickyMobileCTA";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { RouteBoundary } from "./RouteBoundary";
 import { useEffect } from "react";
 import { buildBreadcrumbJsonLd, buildCrumbs } from "@/lib/breadcrumbs";
 
