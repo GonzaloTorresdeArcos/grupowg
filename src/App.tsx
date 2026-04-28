@@ -79,10 +79,24 @@ const App = () => (
               </Route>
 
               {/* Debug i18n (no listado, no indexado) */}
-              <Route path="/portal-i18n-debug" element={<PortalI18nDebug />} />
+              <Route
+                path="/portal-i18n-debug"
+                element={
+                  <RouteBoundary>
+                    <PortalI18nDebug />
+                  </RouteBoundary>
+                }
+              />
 
               {/* Portal del colaborador */}
-              <Route path="/portal/login" element={<PortalLogin />} />
+              <Route
+                path="/portal/login"
+                element={
+                  <RouteBoundary>
+                    <PortalLogin />
+                  </RouteBoundary>
+                }
+              />
               <Route
                 element={
                   <ProtectedRoute>
