@@ -14,5 +14,11 @@
     "execute": "We do it for you",
     "controlTower": "We control it with you",
     "scale": "We support your expansion"
+  },
+  "errors": {
+    "routeTitle": "We couldn't load this section",
+    "routeDescription": "An unexpected error occurred while preparing the content. You can retry or go back home.",
+    "retry": "Retry",
+    "backHome": "Back to home"
   }
 }

@@ -14,5 +14,11 @@
     "execute": "Fazemo-lo por si",
     "controlTower": "Controlamo-lo consigo",
     "scale": "Acompanhamos a sua expansão"
+  },
+  "errors": {
+    "routeTitle": "Não foi possível carregar esta secção",
+    "routeDescription": "Ocorreu um erro inesperado ao preparar o conteúdo. Pode tentar de novo ou voltar ao início.",
+    "retry": "Tentar de novo",
+    "backHome": "Voltar ao início"
   }
 }

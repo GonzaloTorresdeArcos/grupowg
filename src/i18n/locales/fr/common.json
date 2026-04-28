@@ -14,5 +14,11 @@
     "execute": "Nous le faisons pour vous",
     "controlTower": "Nous le pilotons avec vous",
     "scale": "Nous accompagnons votre expansion"
+  },
+  "errors": {
+    "routeTitle": "Impossible de charger cette section",
+    "routeDescription": "Une erreur inattendue est survenue lors de la préparation du contenu. Vous pouvez réessayer ou revenir à l'accueil.",
+    "retry": "Réessayer",
+    "backHome": "Retour à l'accueil"
   }
 }
