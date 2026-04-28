@@ -3,14 +3,15 @@ import { Cog, Eye, Globe, Layers3, Database, Workflow } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 
 const MODULE_META = [
-  { code: "MOD/01", icon: Cog, name: "WG Execute" },
-  { code: "MOD/02", icon: Eye, name: "WG Control Tower" },
-  { code: "MOD/03", icon: Globe, name: "WG Scale" },
-];
+  { code: "MOD/01", icon: Cog, key: "execute" },
+  { code: "MOD/02", icon: Eye, key: "controlTower" },
+  { code: "MOD/03", icon: Globe, key: "scale" },
+] as const;
 const PILLAR_ICONS = [Database, Workflow, Layers3];
 
 export const PlatformBlock = () => {
   const { t } = useTranslation("home-platform");
+  const { t: tCommon } = useTranslation("common");
   const capabilities = t("capabilities", { returnObjects: true }) as string[];
   const modules = t("modules", { returnObjects: true }) as {
     sub: string;
@@ -83,7 +84,7 @@ export const PlatformBlock = () => {
                         </div>
                         <span className="font-mono text-[10px] text-foreground/40">{meta.code}</span>
                       </div>
-                      <p className="heading-tight text-foreground text-lg">{meta.name}</p>
+                      <p className="heading-tight text-foreground text-lg">{tCommon(`solutionNames.${meta.key}`)}</p>
                       <p className="mt-1 text-xs text-teal/90 font-medium">{m.sub}</p>
                       <ul className="mt-4 space-y-1.5">
                         {m.bullets.map((b) => (

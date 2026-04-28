@@ -3,15 +3,16 @@ import { ArrowUpRight, Cog, Eye, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 
-// Datos no traducibles (nombres de producto en EN siempre, iconos, códigos)
+// Datos no traducibles (iconos, códigos). El nombre se traduce vía common.solutionNames.
 const META = [
-  { icon: Cog, code: "WG/01", name: "WG Execute", featured: false },
-  { icon: Eye, code: "WG/02", name: "WG Control Tower", featured: true },
-  { icon: Globe, code: "WG/03", name: "WG Scale", featured: false },
-];
+  { key: "execute", icon: Cog, code: "WG/01", featured: false },
+  { key: "controlTower", icon: Eye, code: "WG/02", featured: true },
+  { key: "scale", icon: Globe, code: "WG/03", featured: false },
+] as const;
 
 export const SolutionsBlock = () => {
   const { t } = useTranslation("home-solutions");
+  const { t: tCommon } = useTranslation("common");
   const cards = t("cards", { returnObjects: true }) as {
     sub: string;
     d: string;
@@ -36,8 +37,9 @@ export const SolutionsBlock = () => {
           {cards.map((c, i) => {
             const meta = META[i];
             const Icon = meta.icon;
+            const name = tCommon(`solutionNames.${meta.key}`);
             return (
-              <Reveal key={meta.name} delay={i * 100}>
+              <Reveal key={meta.key} delay={i * 100}>
                 <div
                   className={`group h-full rounded-2xl border ${
                     meta.featured
@@ -51,7 +53,7 @@ export const SolutionsBlock = () => {
                     </div>
                     <span className="font-mono text-xs text-foreground/30">{meta.code}</span>
                   </div>
-                  <h3 className="heading-tight text-foreground text-2xl md:text-3xl">{meta.name}</h3>
+                  <h3 className="heading-tight text-foreground text-2xl md:text-3xl">{name}</h3>
                   <p className="mt-2 text-teal text-sm font-medium">{c.sub}</p>
                   <p className="mt-5 text-muted-foreground leading-relaxed text-[15px]">{c.d}</p>
                   <ul className="mt-8 space-y-2 border-t border-foreground/10 pt-6">
