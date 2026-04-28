@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/site/Reveal";
-import legacyImg from "@/assets/legacy.jpg";
+import legacyImg from "@/assets/legacy.webp";
 
 export const Legacy = () => (
   <section className="relative py-32 md:py-44 bg-ink text-bone overflow-hidden">
