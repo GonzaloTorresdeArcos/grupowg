@@ -1,20 +1,20 @@
 {
-  "logoAlt": "Início Grupo Warranty Global",
-  "openMenu": "Abrir menu",
-  "closeMenu": "Fechar menu",
-  "navigation": "Navegação",
-  "ctaContact": "Solicitar informação",
+  "logoAlt": "Inicio Grupo Warranty Global",
+  "openMenu": "Abrir menú",
+  "closeMenu": "Cerrar menú",
+  "navigation": "Navegación",
+  "ctaContact": "Solicitar información",
   "languageLabel": "Idioma",
   "nav": {
     "/": "Grupo WG",
     "/modelo": "Modelo",
-    "/soluciones": "Soluções",
+    "/soluciones": "Soluciones",
     "/plataforma": "Plataforma",
-    "/experiencia": "Experiência",
-    "/industrias": "Indústrias",
+    "/experiencia": "Experiencia",
+    "/industrias": "Industrias",
     "/wg-network": "WG Network",
     "/contacto": "Contacto",
-    "/legal/privacidad": "Privacidade",
+    "/legal/privacidad": "Privacidad",
     "/legal/aviso-legal": "Aviso legal"
   }
 }

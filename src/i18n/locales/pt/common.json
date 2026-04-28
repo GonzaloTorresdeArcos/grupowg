@@ -1,24 +1,24 @@
 {
-  "loading": "A carregar…",
+  "loading": "Cargando…",
   "save": "Guardar",
   "cancel": "Cancelar",
-  "back": "Voltar",
-  "next": "Seguinte",
+  "back": "Volver",
+  "next": "Siguiente",
   "send": "Enviar",
   "edit": "Editar",
-  "close": "Fechar",
+  "close": "Cerrar",
   "contactCta": "Contactar",
-  "requestInfo": "Solicitar informação",
-  "talkToTeam": "Falar com a nossa equipa",
+  "requestInfo": "Solicitar información",
+  "talkToTeam": "Hablar con nuestro equipo",
   "solutionNames": {
-    "execute": "Fazemo-lo por si",
-    "controlTower": "Controlamo-lo consigo",
-    "scale": "Acompanhamos a sua expansão"
+    "execute": "Lo hacemos por ti",
+    "controlTower": "Lo controlamos contigo",
+    "scale": "Te acompañamos en tu expansión"
   },
   "errors": {
-    "routeTitle": "Não foi possível carregar esta secção",
-    "routeDescription": "Ocorreu um erro inesperado ao preparar o conteúdo. Pode tentar de novo ou voltar ao início.",
-    "retry": "Tentar de novo",
-    "backHome": "Voltar ao início"
+    "routeTitle": "No hemos podido cargar esta sección",
+    "routeDescription": "Ha ocurrido un error inesperado al preparar el contenido. Puedes reintentar o volver al inicio.",
+    "retry": "Reintentar",
+    "backHome": "Volver al inicio"
   }
 }

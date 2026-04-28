@@ -1,62 +1,62 @@
 {
-  "eyebrow": "01 · Como funciona",
-  "title": "Uma arquitetura modular. <1>Um único sistema.</1>",
-  "lead": "Integramos os sistemas existentes para capturar informação, tomar decisões e coordenar a execução em tempo real. A tecnologia não é um fim: transforma o serviço num sistema executável e controlável.",
+  "eyebrow": "01 · Cómo funciona",
+  "title": "Una arquitectura modular. <1>Un único sistema.</1>",
+  "lead": "Integramos los sistemas existentes para capturar información, tomar decisiones y coordinar la ejecución en tiempo real. La tecnología no es un fin: convierte el servicio en un sistema ejecutable y controlable.",
   "capabilitiesLabel": "Capacidades",
-  "capabilitiesSub": "L3 · O que torna possível",
+  "capabilitiesSub": "L3 · Lo que hace posible",
   "capabilities": [
-    "Capturamos informação desde o primeiro contacto",
-    "Integramos canais de atendimento com a rede técnica",
-    "Sincronizamos a operação de ponta a ponta",
-    "Automatizamos decisões onde acrescenta valor"
+    "Capturamos información desde el primer contacto",
+    "Integramos canales de atención con la red técnica",
+    "Sincronizamos la operación de principio a fin",
+    "Automatizamos decisiones donde aporta valor"
   ],
   "modulesLabel": "Módulos",
-  "modulesSub": "L2 · Como se ativa",
+  "modulesSub": "L2 · Cómo se activa",
   "modules": [
     {
-      "sub": "Operação completa",
+      "sub": "Operación completa",
       "bullets": [
-        "Atendimento e diagnóstico",
-        "Atribuição de rede",
-        "Gestão de intervenções",
-        "Coordenação logística",
-        "Gestão de peças"
+        "Atención y diagnóstico",
+        "Asignación de red",
+        "Gestión de intervenciones",
+        "Coordinación logística",
+        "Gestión de repuestos"
       ],
-      "tagline": "Externalização com controlo"
+      "tagline": "Externalización con control"
     },
     {
-      "sub": "Camada de controlo transversal",
+      "sub": "Capa de control transversal",
       "bullets": [
-        "Consolidação de dados",
-        "KPIs (custo, TAT, FTF)",
-        "Comparativa de fornecedores",
-        "Alertas e desvios"
+        "Consolidación de datos",
+        "KPIs (coste, TAT, FTF)",
+        "Comparativa de proveedores",
+        "Alertas y desviaciones"
       ],
-      "tagline": "Uma visão única para decidir"
+      "tagline": "Una única visión para decidir"
     },
     {
-      "sub": "Desenho e implementação",
+      "sub": "Diseño y despliegue",
       "bullets": [
-        "Definição do service lifecycle",
-        "Seleção e homologação de rede",
-        "Desenho operativo e logístico",
-        "Implementação multipaís"
+        "Definición del service lifecycle",
+        "Selección y homologación de red",
+        "Diseño operativo y logístico",
+        "Despliegue multi-país"
       ],
-      "tagline": "Desenhar o serviço e fazê-lo funcionar à escala"
+      "tagline": "Diseñar el servicio y hacerlo funcionar a escala"
     }
   ],
   "coreLabel": "Core",
-  "coreSub": "L1 · O motor",
-  "coreTitle": "WG Service OS Core orquestra o service lifecycle end-to-end",
+  "coreSub": "L1 · El motor",
+  "coreTitle": "WG Service OS Core orquesta el service lifecycle end-to-end",
   "coreBullets": [
-    "Liga front, operação, rede técnica, logística e controlo",
-    "Assegura rastreabilidade completa de cada intervenção",
-    "Integra os sistemas existentes do cliente sem os substituir"
+    "Conecta front, operación, red técnica, logística y control",
+    "Asegura trazabilidad completa de cada intervención",
+    "Integra los sistemas existentes del cliente sin sustituirlos"
   ],
-  "coreClosing": "A única fonte de verdade do serviço.",
+  "coreClosing": "La única fuente de verdad del servicio.",
   "pillars": [
-    { "t": "Uma base única", "d": "Toda a informação do serviço num mesmo lugar." },
-    { "t": "Um sistema único", "d": "Operação, controlo e inteligência ligadas." },
-    { "t": "Controlo total", "d": "Visibilidade e decisão em cada etapa do lifecycle." }
+    { "t": "Una única base", "d": "Toda la información del servicio en un mismo lugar." },
+    { "t": "Un único sistema", "d": "Operación, control e inteligencia conectadas." },
+    { "t": "Control total", "d": "Visibilidad y decisión en cada etapa del lifecycle." }
   ]
 }

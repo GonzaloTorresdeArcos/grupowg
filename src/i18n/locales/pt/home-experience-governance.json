@@ -1,20 +1,20 @@
 {
-  "eyebrow": "03 · Camadas transversais",
-  "titleA": "Experiência e governo,",
-  "titleB": "por desenho",
+  "eyebrow": "03 · Capas transversales",
+  "titleA": "Experiencia y gobierno,",
+  "titleB": "por diseño",
   "layers": [
-    { "title": "Camada de experiência", "sub": "A experiência como resultado do sistema", "bullets": ["Captura desde o primeiro contacto", "Coerência em todo o journey", "Medição baseada em desempenho (TAT, FTF)"], "closing": "A experiência não se gere. Constrói-se a partir do sistema." },
-    { "title": "Camada de governo", "sub": "Controlo e cumprimento estrutural", "bullets": ["Homologação de rede técnica", "Controlo documental", "Cumprimento contratual", "Gestão de riscos"], "closing": "Garantimos que o sistema não só funciona. Cumpre." }
+    { "title": "Capa de experiencia", "sub": "La experiencia como resultado del sistema", "bullets": ["Captura desde el primer contacto", "Coherencia en todo el journey", "Medición basada en rendimiento (TAT, FTF)"], "closing": "La experiencia no se gestiona. Se construye desde el sistema." },
+    { "title": "Capa de gobierno", "sub": "Control y cumplimiento estructural", "bullets": ["Homologación de red técnica", "Control documental", "Cumplimiento contractual", "Gestión de riesgos"], "closing": "Aseguramos que el sistema no solo funciona. Cumple." }
   ],
-  "flowEyebrow": "04 · Da incidência à resolução",
-  "flowTitleA": "Quatro momentos.",
-  "flowTitleB": "Um único fluxo",
+  "flowEyebrow": "04 · De la incidencia a la resolución",
+  "flowTitleA": "Cuatro momentos.",
+  "flowTitleB": "Un único flujo",
   "flow": [
-    { "t": "Entrada", "d": "Interação" },
-    { "t": "Decisão", "d": "Sistema" },
-    { "t": "Execução", "d": "Operação" },
-    { "t": "Controlo", "d": "Seguimento" }
+    { "t": "Entrada", "d": "Interacción" },
+    { "t": "Decisión", "d": "Sistema" },
+    { "t": "Ejecución", "d": "Operación" },
+    { "t": "Control", "d": "Seguimiento" }
   ],
-  "flowClosingA": "Cada interação não só resolve um caso.",
-  "flowClosingB": "Melhora o sistema."
+  "flowClosingA": "Cada interacción no solo resuelve un caso.",
+  "flowClosingB": "Mejora el sistema."
 }

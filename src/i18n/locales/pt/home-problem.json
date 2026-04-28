@@ -1,11 +1,11 @@
 {
-  "eyebrow": "02 · O problema",
-  "title": "Hoje, o serviço pós-venda <1>não funciona como um sistema</1>.",
+  "eyebrow": "02 · El problema",
+  "title": "Hoy el servicio postventa <1>no funciona como un sistema</1>.",
   "items": [
-    { "t": "Vários fornecedores sem coordenação", "d": "Operação fragmentada, responsabilidades difusas, escalonamentos que se perdem." },
-    { "t": "Sistemas desconectados", "d": "Dados em silos. Sem rastreabilidade real entre incidente, execução e fecho." },
-    { "t": "Decisões sem critério técnico", "d": "Atribuições por geografia ou tarifa, não por capacidade real nem conhecimento de produto." },
-    { "t": "Falta de visibilidade", "d": "O cliente final não sabe o que se passa com o seu caso. Você também não." }
+    { "t": "Múltiples proveedores sin coordinación", "d": "Operación fragmentada, responsabilidades difusas, escalados que se pierden." },
+    { "t": "Sistemas desconectados", "d": "Datos en silos. Sin trazabilidad real entre incidencia, ejecución y cierre." },
+    { "t": "Decisiones sin criterio técnico", "d": "Asignaciones por geografía o tarifa, no por capacidad real ni conocimiento de producto." },
+    { "t": "Falta de visibilidad", "d": "El cliente final no sabe qué pasa con su caso. Tú tampoco." }
   ],
-  "result": "Resultado: <1>mais custo · mais incidentes · pior experiência.</1>"
+  "result": "Resultado: <1>más coste · más incidencias · peor experiencia.</1>"
 }

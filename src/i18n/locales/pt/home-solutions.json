@@ -1,40 +1,40 @@
 {
-  "eyebrow": "08 · Soluções",
-  "title": "Três formas de <1>ativar o sistema</1>.",
-  "viewDetail": "Ver detalhe",
+  "eyebrow": "08 · Soluciones",
+  "title": "Tres formas de <1>activar el sistema</1>.",
+  "viewDetail": "Ver detalle",
   "cards": [
     {
-      "sub": "Fazemo-lo por si",
-      "d": "Gerimos o serviço pós-venda de ponta a ponta. Tratamos de toda a operação para que o serviço funcione com qualidade, rapidez e controlo.",
+      "sub": "Lo hacemos por ti",
+      "d": "Gestionamos el servicio postventa de principio a fin. Nos encargamos de toda la operación para que el servicio funcione con calidad, rapidez y control.",
       "bullets": [
-        "Atendimento e diagnóstico",
-        "Atribuição de rede técnica",
-        "Gestão de intervenções",
-        "Coordenação logística e de peças"
+        "Atención y diagnóstico",
+        "Asignación de red técnica",
+        "Gestión de intervenciones",
+        "Coordinación logística y repuestos"
       ],
-      "tagline": "Externaliza o serviço. Nós operamo-lo."
+      "tagline": "Externalizas el servicio. Nosotros lo operamos."
     },
     {
-      "sub": "Controlamo-lo consigo",
-      "d": "Controlamos e melhoramos o serviço quando intervêm vários fornecedores. Integramos toda a informação numa visão única para decidir.",
+      "sub": "Lo controlamos contigo",
+      "d": "Controlamos y mejoramos el servicio cuando intervienen varios proveedores. Integramos toda la información en una visión única para tomar decisiones.",
       "bullets": [
-        "Dashboards claros e controlo de custos",
-        "Comparativa real entre fornecedores",
-        "Deteção de problemas e melhorias",
-        "KPIs alinhados ao negócio"
+        "Dashboards claros y control de costes",
+        "Comparativa real entre proveedores",
+        "Detección de problemas y mejoras",
+        "KPIs alineados a negocio"
       ],
-      "tagline": "Uma única visão para todo o serviço."
+      "tagline": "Una única visión para todo el servicio."
     },
     {
-      "sub": "Acompanhamo-lo na expansão",
-      "d": "Desenhamos o serviço e ajudamos a fazê-lo crescer de forma ordenada, também internacionalmente. O mesmo padrão em todos os mercados.",
+      "sub": "Te acompañamos en tu expansión",
+      "d": "Diseñamos el servicio y lo ayudamos a crecer de forma ordenada, también internacionalmente. Mismo estándar en todos los mercados.",
       "bullets": [
-        "Definição do modelo, SLA e KPIs",
-        "Seleção e homologação de rede",
-        "Peças, logística e stock ótimo",
-        "Implementação multipaís com controlo central"
+        "Definición del modelo, SLA y KPIs",
+        "Selección y homologación de red",
+        "Repuestos, logística y stock óptimo",
+        "Despliegue multi-país con control central"
       ],
-      "tagline": "De desenhar o serviço a fazê-lo funcionar à escala."
+      "tagline": "De diseñar el servicio a hacerlo funcionar a escala."
     }
   ]
 }
