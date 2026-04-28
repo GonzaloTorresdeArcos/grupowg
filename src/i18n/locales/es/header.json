@@ -6,7 +6,7 @@
   "ctaContact": "Solicitar información",
   "languageLabel": "Idioma",
   "nav": {
-    "/grupo": "Grupo WG",
+    "/": "Grupo WG",
     "/modelo": "Modelo",
     "/soluciones": "Soluciones",
     "/plataforma": "Plataforma",
