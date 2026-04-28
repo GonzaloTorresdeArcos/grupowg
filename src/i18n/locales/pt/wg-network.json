@@ -1,65 +1,65 @@
 {
   "seo": {
     "title": "WG Professional Network · Grupo Warranty Global",
-    "description": "Uma rede de serviços técnicos profissionais com respaldo, ferramentas e proteção. 50 anos a entrar nas casas das pessoas."
+    "description": "Una red de servicios técnicos profesionales con respaldo, herramientas y protección. 50 años entrando en las casas de la gente."
   },
   "hero": {
     "eyebrow": "WG Professional Network",
-    "title1": "Trata-se das pessoas.",
-    "title2": "Trata-se de vós.",
-    "intro": "Um compromisso com a nossa rede de serviços técnicos. 50 anos a entrar nas casas das pessoas e a resolver problemas reais. A rede não são logos nem processos: são vocês.",
+    "title1": "Se trata de la gente.",
+    "title2": "Se trata de vosotros.",
+    "intro": "Un compromiso con nuestra red de servicios técnicos. 50 años entrando en las casas de la gente y resolviendo problemas reales. La red no son logos ni procesos: sois vosotros.",
     "list": [
-      "— Os que madrugam.",
-      "— Os que conduzem centenas de quilómetros.",
-      "— Os que dão a cara quando algo falha.",
-      "— Os que resolvem o que mais ninguém sabe resolver."
+      "— Los que madrugáis.",
+      "— Los que conducís cientos de kilómetros.",
+      "— Los que dais la cara cuando algo falla.",
+      "— Los que resolvéis lo que nadie más sabe resolver."
     ],
-    "manifesto": "O Grupo WG funciona graças a vocês.",
-    "cta": "Junte-se à WG Professional Network"
+    "manifesto": "Grupo WG funciona gracias a vosotros.",
+    "cta": "Únete a WG Professional Network"
   },
   "layers": {
-    "eyebrow": "O plano",
-    "title": "Um plano estruturado em 3 camadas.",
-    "layerLabel": "Camada",
+    "eyebrow": "El plan",
+    "title": "Un plan estructurado en 3 capas.",
+    "layerLabel": "Capa",
     "items": [
-      { "n": "01", "t": "Aliviar pressão", "d": "Peças a preço de grossista e processos ágeis, menos atrito operacional." },
-      { "n": "02", "t": "Fazer crescer", "d": "Equipamentos novos a preço competitivo, garantias alargadas e novas gamas e linhas de receita." },
-      { "n": "03", "t": "Proteger", "d": "Seguros coletivos, saúde, vida, proteção jurídica, proteção de rendimentos, poupança, PRL, compliance e documentação." }
+      { "n": "01", "t": "Aliviar presión", "d": "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa." },
+      { "n": "02", "t": "Hacer crecer", "d": "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos." },
+      { "n": "03", "t": "Proteger", "d": "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación." }
     ]
   },
   "benefits": {
-    "eyebrow": "Benefícios",
-    "title": "Protegemos a sério.",
-    "subtitle": "Porque não importa só o trabalho. Importam vocês.",
+    "eyebrow": "Beneficios",
+    "title": "Protegemos de verdad.",
+    "subtitle": "Porque no solo importa el trabajo. Importáis vosotros.",
     "items": [
-      { "t": "Seguros coletivos", "d": "Condições preferenciais para profissionais e equipas." },
-      { "t": "Proteção jurídica", "d": "Aconselhamento legal em incidentes, reclamações e conflitos." },
-      { "t": "Proteção de rendimentos", "d": "Tranquilidade financeira em caso de baixa, acidente ou interrupção." },
-      { "t": "Saúde", "d": "Coberturas médicas para profissionais e famílias." },
-      { "t": "Vida", "d": "Proteção familiar e segurança económica." },
-      { "t": "Planos de poupança", "d": "Soluções de poupança e previdência." },
-      { "t": "PRL", "d": "Prevenção de riscos e conformidade em segurança laboral." },
-      { "t": "Compliance assistido", "d": "Onboarding documental, validação e seguimento normativo." },
-      { "t": "Documentação", "d": "Tudo em ordem, atualizado e rastreável." },
-      { "t": "Produto novo", "d": "Acesso a produto novo em condições vantajosas." },
-      { "t": "Peças a preço de custo", "d": "Material sem margem para melhorar competitividade e tesouraria." },
-      { "t": "Oportunidades comerciais", "d": "Ativações com fabricantes, distribuidores e programas de garantia alargada." }
+      { "t": "Seguros colectivos", "d": "Condiciones preferentes para profesionales y equipos." },
+      { "t": "Protección jurídica", "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos." },
+      { "t": "Protección de ingresos", "d": "Tranquilidad financiera ante baja, accidente o interrupción de actividad." },
+      { "t": "Salud", "d": "Coberturas médicas para profesionales y familias." },
+      { "t": "Vida", "d": "Protección familiar y seguridad económica." },
+      { "t": "Planes de ahorro", "d": "Soluciones de ahorro y previsión." },
+      { "t": "PRL", "d": "Prevención de riesgos y cumplimiento en seguridad laboral." },
+      { "t": "Compliance asistido", "d": "Alta documental, validación y seguimiento normativo." },
+      { "t": "Documentación", "d": "Todo en regla, actualizado y trazable." },
+      { "t": "Producto nuevo", "d": "Acceso a producto nuevo en condiciones ventajosas." },
+      { "t": "Repuestos a coste", "d": "Material sin margen para mejorar competitividad y caja." },
+      { "t": "Oportunidades comerciales", "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida." }
     ],
-    "outro": "Queremos que trabalhem tranquilos. Queremos-vos cobertos e seguros."
+    "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
   },
   "commitments": {
-    "eyebrow": "Inegociáveis",
-    "title": "3 compromissos inegociáveis.",
+    "eyebrow": "Innegociables",
+    "title": "3 compromisos innegociables.",
     "items": [
-      { "n": "1", "t": "Peças a preço de grossista", "d": "Para que possam competir, crescer e respirar no dia a dia." },
-      { "n": "2", "t": "Garantias alargadas e equipamentos ao melhor preço", "d": "Para terem rendimentos recorrentes e construírem clientes fiéis." },
-      { "n": "3", "t": "Seguros coletivos", "d": "Para que estejam protegidos como merecem." }
+      { "n": "1", "t": "Repuestos a coste mayorista", "d": "Para que podáis competir, crecer y respirar en el día a día." },
+      { "n": "2", "t": "Garantías extendidas y equipos al mejor precio", "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
+      { "n": "3", "t": "Seguros colectivos", "d": "Para que estéis protegidos como merecéis." }
     ],
-    "outro": "O resto construiremos juntos, conforme as vossas necessidades e apetite."
+    "outro": "El resto lo construiremos juntos, según vuestras necesidades y apetito."
   },
   "finalCta": {
-    "title": "Junte-se à WG Professional Network.",
-    "subtitle": "Um único processo para ativar trabalho, proteção e crescimento.",
-    "cta": "Iniciar inscrição"
+    "title": "Únete a WG Professional Network.",
+    "subtitle": "Un único proceso para activar trabajo, protección y crecimiento.",
+    "cta": "Comenzar inscripción"
   }
 }

@@ -1,56 +1,56 @@
 {
-  "seo": { "title": "Soluções · Três formas de ativar o sistema de serviço", "description": "Três formas de ativar o sistema de serviço: fazemo-lo por si (operação end-to-end), controlamo-lo consigo (visão única multi-fornecedor) e acompanhamos a sua expansão (implementação internacional com controlo)." },
-  "hero": { "titleA": "Três formas de", "titleB": "ativar o sistema", "subtitle": "Fazemo-lo por si, controlamo-lo consigo ou acompanhamos a sua expansão. Escolhe o grau de envolvimento; nós garantimos que o serviço funciona com qualidade, controlo e consistência.", "cta": "Solicitar informação" },
-  "intro": { "titleA": "Três módulos.", "titleB": "A mesma plataforma", "titleC": ".", "lead": "Escolhes o grau de envolvimento segundo o teu modelo operativo." },
+  "seo": { "title": "Soluciones · Tres formas de activar el sistema de servicio", "description": "Tres formas de activar el sistema de servicio: lo hacemos por ti (operación end-to-end), lo controlamos contigo (visión única multi-proveedor) y te acompañamos en tu expansión (despliegue internacional con control)." },
+  "hero": { "titleA": "Tres formas de", "titleB": "activar el sistema", "subtitle": "Lo hacemos por ti, lo controlamos contigo o te acompañamos en tu expansión. Eliges el grado de implicación; nosotros aseguramos que el servicio funcione con calidad, control y consistencia.", "cta": "Solicitar información" },
+  "intro": { "titleA": "Tres módulos.", "titleB": "Una misma plataforma", "titleC": ".", "lead": "Eliges el grado de implicación según tu modelo operativo." },
   "modules": {
     "execute": {
-      "tagline": "Fazemo-lo por si",
-      "intro": "Gerimos o serviço pós-venda de ponta a ponta. Tratamos de toda a operação para garantir que o serviço funciona com qualidade, rapidez e controlo.",
-      "bullets": ["Atendimento e diagnóstico", "Atribuição de rede técnica", "Gestão de intervenções", "Coordenação logística", "Gestão de peças (quando aplicável)", "Controlo completo do serviço"],
-      "closing": "Externaliza o serviço. Nós operamo-lo."
+      "tagline": "Lo hacemos por ti",
+      "intro": "Gestionamos el servicio postventa de principio a fin. Nos encargamos de toda la operación para asegurar que el servicio funcione con calidad, rapidez y control.",
+      "bullets": ["Atención y diagnóstico", "Asignación de red técnica", "Gestión de intervenciones", "Coordinación logística", "Gestión de repuestos (cuando aplica)", "Control completo del servicio"],
+      "closing": "Externalizas el servicio. Nosotros lo operamos."
     },
     "controlTower": {
-      "tagline": "Controlamo-lo consigo",
-      "intro": "Controlamos e melhoramos o serviço quando intervêm vários fornecedores. Integramos toda a informação e damos uma visão única para decidir.",
+      "tagline": "Lo controlamos contigo",
+      "intro": "Controlamos y mejoramos el servicio cuando intervienen varios proveedores. Integramos toda la información y damos una visión única para tomar decisiones.",
       "pillars": [
-        { "title": "O que fazemos", "items": ["Integramos dados de operação própria e redes externas", "Dashboards claros e controlo de custos", "Comparações reais entre fornecedores"] },
-        { "title": "O que obtém", "items": ["Visão completa de todo o serviço", "Deteção de problemas e ineficiências", "Identificação de melhorias e alavancas"] }
+        { "title": "Qué hacemos", "items": ["Integramos datos de operación propia y redes externas", "Dashboards claros y control de costes", "Comparativas reales entre proveedores"] },
+        { "title": "Qué obtienes", "items": ["Visión completa de todo el servicio", "Detección de problemas e ineficiencias", "Identificación de mejoras y palancas"] }
       ],
-      "outcomes": { "from": "Gerir fornecedores", "to": "Gerir o desempenho do serviço" },
-      "closing": "Uma única visão para todo o serviço."
+      "outcomes": { "from": "Gestionar proveedores", "to": "Gestionar el rendimiento del servicio" },
+      "closing": "Una única visión para todo el servicio."
     },
     "scale": {
-      "tagline": "Acompanhamo-lo na sua expansão",
-      "intro": "Desenhamos o serviço e ajudamo-lo a crescer de forma ordenada, também internacionalmente. Mesmo padrão, mesmos KPIs, em todos os mercados.",
+      "tagline": "Te acompañamos en tu expansión",
+      "intro": "Diseñamos el servicio y lo ayudamos a crecer de forma ordenada, también internacionalmente. Mismo estándar, mismos KPIs, en todos los mercados.",
       "pillars": [
-        { "title": "Definição do modelo", "items": ["Como funciona o serviço end-to-end", "SLA e KPIs por etapa", "Organização e controlo"] },
-        { "title": "Rede de serviço", "items": ["Seleção e homologação de técnicos", "Fluxos: domicílio vs oficina", "Padrões operativos comuns"] },
-        { "title": "Peças e logística", "items": ["Planeamento de necessidades", "Stock baseado em histórico", "Otimização de compras e logística"] },
-        { "title": "Implementação internacional", "items": ["Implementação multi-país", "Mesmos processos e critérios", "Controlo central + adaptação local"] }
+        { "title": "Definición del modelo", "items": ["Cómo funciona el servicio end-to-end", "SLA y KPIs por etapa", "Organización y control"] },
+        { "title": "Red de servicio", "items": ["Selección y homologación de técnicos", "Flujos: domicilio vs taller", "Estándares operativos comunes"] },
+        { "title": "Repuestos y logística", "items": ["Planificación de necesidades", "Stock basado en histórico", "Optimización de compras y logística"] },
+        { "title": "Despliegue internacional", "items": ["Implantación multi-país", "Mismos procesos y criterios", "Control central + adaptación local"] }
       ],
-      "outcomes": { "from": "Crescer sem estrutura", "to": "Escalar com controlo e consistência" },
-      "closing": "De desenhar o serviço a fazê-lo funcionar à escala."
+      "outcomes": { "from": "Crecer sin estructura", "to": "Escalar con control y consistencia" },
+      "closing": "De diseñar el servicio a hacerlo funcionar a escala."
     }
   },
-  "outcomeChange": "A mudança",
+  "outcomeChange": "El cambio",
   "capabilities": {
-    "eyebrow": "02 · Capacidades do sistema",
-    "titleA": "A inteligência que",
-    "titleB": "atravessa",
-    "titleC": "cada solução.",
-    "lead": "Três capacidades transversais, ativas nas três modalidades.",
+    "eyebrow": "02 · Capacidades del sistema",
+    "titleA": "La inteligencia que",
+    "titleB": "recorre",
+    "titleC": "cada solución.",
+    "lead": "Tres capacidades transversales activas en las tres modalidades.",
     "items": [
-      { "title": "Inteligência técnica", "lead": "Convertemos o conhecimento técnico em decisões práticas.", "bullets": ["Recolhemos e organizamos incidências", "Apoiamos o diagnóstico", "Damos suporte em casos complexos", "Melhoramos a resolução à primeira"], "closing": "Sabemos quando algo está mal e como corrigi-lo." },
-      { "title": "Inteligência de produto", "lead": "Convertemos o serviço em informação útil para produto e compras.", "bullets": ["Detetamos falhas recorrentes", "Analisamos comportamento por produto", "Medimos impacto em custo e qualidade", "Geramos relatórios claros"], "closing": "Cada incidência traz informação para melhorar o produto." },
-      { "title": "Controlo e cumprimento do serviço", "lead": "Garantimos que todo o sistema funciona e cumpre.", "bullets": ["Validamos a rede técnica", "Controlamos a documentação", "Verificamos o cumprimento de acordos", "Reduzimos riscos operativos"], "closing": "O serviço não só acontece. Funciona como deve." }
+      { "title": "Inteligencia técnica", "lead": "Convertimos el conocimiento técnico en decisiones prácticas.", "bullets": ["Recogemos y organizamos incidencias", "Apoyamos el diagnóstico", "Damos soporte en casos complejos", "Mejoramos la resolución a la primera"], "closing": "Sabemos cuándo algo está mal y cómo corregirlo." },
+      { "title": "Inteligencia de producto", "lead": "Convertimos el servicio en información útil para producto y compras.", "bullets": ["Detectamos fallos recurrentes", "Analizamos comportamiento por producto", "Medimos impacto en coste y calidad", "Generamos informes claros"], "closing": "Cada incidencia aporta información para mejorar el producto." },
+      { "title": "Control y cumplimiento del servicio", "lead": "Aseguramos que todo el sistema funciona y cumple.", "bullets": ["Validamos la red técnica", "Controlamos la documentación", "Verificamos el cumplimiento de acuerdos", "Reducimos riesgos operativos"], "closing": "No solo ocurre el servicio. Funciona como debe." }
     ]
   },
   "ctaFinal": {
-    "eyebrow": "Por onde começar?",
-    "titleA": "Falamos da sua operação e escolhemos o",
+    "eyebrow": "¿Por dónde empezar?",
+    "titleA": "Hablamos de tu operación y elegimos el",
     "titleB": "módulo",
-    "titleC": "que encaixa.",
-    "ctaPrimary": "Solicitar informação",
-    "ctaSecondary": "Ver a plataforma"
+    "titleC": "que encaja.",
+    "ctaPrimary": "Solicitar información",
+    "ctaSecondary": "Ver la plataforma"
   }
 }

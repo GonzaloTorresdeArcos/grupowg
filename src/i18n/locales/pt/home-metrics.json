@@ -1,13 +1,13 @@
 {
-  "title": "É isto que fazemos todos os dias.",
-  "lead": "Modelo aplicado em alguns dos principais retalhistas, fabricantes e seguradoras de Espanha e da Europa.",
+  "title": "Esto es lo que hacemos cada día.",
+  "lead": "Modelo aplicado en algunos de los principales retailers, fabricantes y aseguradoras de España y Europa.",
   "tag": "wg-os :: metrics.live",
   "items": [
-    { "v": "+150K", "l": "Ocorrências geridas / ano", "c": "Operação" },
-    { "v": "+400", "l": "Serviços técnicos em rede", "c": "Cobertura" },
-    { "v": "50 anos", "l": "De experiência operativa", "c": "Trajetória" },
-    { "v": "4 hubs", "l": "Madrid · Barcelona · Valência · Canárias", "c": "Presença" },
-    { "v": "Multipaís", "l": "Operação internacional", "c": "Escala" },
-    { "v": "+25 anos", "l": "De relação com clientes-chave", "c": "Confiança" }
+    { "v": "+150K", "l": "Incidencias gestionadas / año", "c": "Operación" },
+    { "v": "+400", "l": "Servicios técnicos en red", "c": "Cobertura" },
+    { "v": "50 años", "l": "De experiencia operativa", "c": "Trayectoria" },
+    { "v": "4 hubs", "l": "Madrid · Barcelona · Valencia · Canarias", "c": "Presencia" },
+    { "v": "Multi-país", "l": "Operación internacional", "c": "Escala" },
+    { "v": "+25 años", "l": "De relación con clientes clave", "c": "Confianza" }
   ]
 }

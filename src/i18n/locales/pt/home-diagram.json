@@ -1,5 +1,5 @@
 {
-  "liveBadge": "fluxo em direto",
+  "liveBadge": "flujo en vivo",
   "tag": "wg-os :: lifecycle.svc",
-  "nodes": ["Entrada", "Diagnóstico", "Atribuição", "Execução", "Controlo"]
+  "nodes": ["Entrada", "Diagnóstico", "Asignación", "Ejecución", "Control"]
 }

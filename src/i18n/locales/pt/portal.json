@@ -1,215 +1,215 @@
 {
   "seo": {
-    "loginTitle": "Portal do colaborador · Grupo Warranty Global",
-    "loginDescription": "Aceda à sua atividade, calendário, documentos e faturação.",
-    "dashboardTitle": "Resumo · Portal WG"
+    "loginTitle": "Portal del colaborador · Grupo Warranty Global",
+    "loginDescription": "Accede a tu actividad, calendario, documentos y facturación.",
+    "dashboardTitle": "Resumen · Portal WG"
   },
   "login": {
-    "back": "Voltar ao site",
+    "back": "Volver a la web",
     "eyebrow": "WG Professional Network",
-    "title": "Portal do colaborador",
-    "subtitle": "Aceda à sua atividade, calendário, documentos e faturação.",
-    "tabs": { "signin": "Entrar", "signup": "Criar conta" },
+    "title": "Portal del colaborador",
+    "subtitle": "Accede a tu actividad, calendario, documentos y facturación.",
+    "tabs": { "signin": "Entrar", "signup": "Crear cuenta" },
     "fields": {
       "email": "Email",
-      "password": "Palavra-passe",
-      "name": "Nome",
-      "namePlaceholder": "O seu nome",
-      "emailPlaceholder": "voce@empresa.com",
-      "applicationEmail": "Email da candidatura",
-      "applicationHelp": "Use o mesmo email com que se inscreveu na WG Network."
+      "password": "Contraseña",
+      "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
+      "emailPlaceholder": "tu@empresa.com",
+      "applicationEmail": "Email de la solicitud",
+      "applicationHelp": "Usa el mismo email con el que te inscribiste en WG Network."
     },
     "submit": {
-      "signin": "Entrar no portal",
-      "signup": "Criar conta"
+      "signin": "Entrar al portal",
+      "signup": "Crear cuenta"
     },
-    "divider": "ou continue com",
+    "divider": "o continúa con",
     "google": "Google",
-    "footer": "Ainda não faz parte da rede?",
-    "footerLink": "Inscreva-se aqui",
+    "footer": "¿Aún no eres parte de la red?",
+    "footerLink": "Inscríbete aquí",
     "toasts": {
-      "signinError": "Não foi possível iniciar sessão",
-      "signinOk": "Bem-vindo de volta",
-      "signupError": "Não foi possível criar a conta",
-      "signupOk": "Conta criada",
-      "signupOkDesc": "Vinculámos a sua conta à sua candidatura automaticamente.",
-      "googleError": "Erro com o Google",
-      "signedOut": "Sessão terminada"
+      "signinError": "No se pudo iniciar sesión",
+      "signinOk": "Bienvenido de nuevo",
+      "signupError": "No se pudo crear la cuenta",
+      "signupOk": "Cuenta creada",
+      "signupOkDesc": "Vinculamos tu cuenta a tu solicitud automáticamente.",
+      "googleError": "Error con Google",
+      "signedOut": "Sesión cerrada"
     }
   },
   "nav": {
     "section": "WG Network",
     "title": "Portal SAT",
-    "summary": "Resumo",
-    "calendar": "Calendário",
+    "summary": "Resumen",
+    "calendar": "Calendario",
     "documents": "Documentos",
-    "billing": "Faturação",
+    "billing": "Facturación",
     "profile": "Perfil",
-    "ops": "Operações",
-    "incidences": "Incidências",
-    "signOut": "Terminar sessão",
+    "ops": "Operaciones",
+    "incidences": "Incidencias",
+    "signOut": "Cerrar sesión",
     "fallbackName": "Colaborador"
   },
   "dashboard": {
-    "eyebrow": "Resumo",
-    "greeting": "Olá",
-    "subtitle": "A sua atividade na WG Network · Últimos 30 dias",
+    "eyebrow": "Resumen",
+    "greeting": "Hola",
+    "subtitle": "Tu actividad en WG Network · Últimos 30 días",
     "assigned": {
-      "eyebrow": "Atribuídas a si",
-      "title": "Incidências em curso"
+      "eyebrow": "Asignadas a ti",
+      "title": "Incidencias en curso"
     },
     "kpis": {
-      "active": "Ativas",
+      "active": "Activas",
       "activeSuffix": "casos",
-      "closed": "Fechadas (mês)",
+      "closed": "Cerradas (mes)",
       "closedSuffix": "casos",
-      "tat": "TAT médio",
-      "tatSuffix": "dias",
-      "rating": "Avaliação",
+      "tat": "TAT medio",
+      "tatSuffix": "días",
+      "rating": "Valoración",
       "ratingSuffix": "/ 5"
     },
     "trend": {
-      "eyebrow": "Atividade",
-      "title": "Incidências e FTF · 12 meses"
+      "eyebrow": "Actividad",
+      "title": "Incidencias y FTF · 12 meses"
     },
     "earnings": {
-      "eyebrow": "Liquidação em curso",
-      "subtitle": "Abril 2025 · {{count}} serviços",
-      "pending": "Pendente de cobrança",
+      "eyebrow": "Liquidación en curso",
+      "subtitle": "Abril 2025 · {{count}} servicios",
+      "pending": "Pendiente cobro",
       "ytd": "Casos YTD",
-      "ftf": "FTF médio",
-      "cta": "Ver faturação"
+      "ftf": "FTF medio",
+      "cta": "Ver facturación"
     },
     "today": {
-      "eyebrow": "Hoje",
-      "title": "Marcações programadas",
+      "eyebrow": "Hoy",
+      "title": "Citas programadas",
       "viewAgenda": "Ver agenda",
-      "empty": "Sem marcações programadas hoje",
+      "empty": "Sin citas programadas hoy",
       "min": "min"
     },
     "backlog": {
       "eyebrow": "Backlog",
-      "title": "Incidências ativas"
+      "title": "Incidencias activas"
     },
     "docAlert": {
-      "title": "Tem 1 documento próximo de vencer e 1 vencido",
-      "subtitle": "Mantenha a sua documentação em dia para continuar a receber atribuições.",
-      "cta": "Rever"
+      "title": "Tienes 1 documento próximo a vencer y 1 vencido",
+      "subtitle": "Mantén tu documentación al día para seguir recibiendo asignaciones.",
+      "cta": "Revisar"
     },
     "status": {
-      "abierta": "Aberta",
-      "en_curso": "Em curso",
-      "esperando_repuesto": "À espera de peça",
-      "cerrada": "Fechada"
+      "abierta": "Abierta",
+      "en_curso": "En curso",
+      "esperando_repuesto": "Esperando repuesto",
+      "cerrada": "Cerrada"
     }
   },
   "calendar": {
     "eyebrow": "Agenda",
-    "title": "Calendário de marcações",
-    "subtitle": "Próximas visitas e instalações.",
-    "today": "Hoje",
-    "legend": { "scheduled": "Agendada", "inProgress": "Em curso", "completed": "Concluída" },
-    "days": ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-    "upcoming": "Próximas marcações",
+    "title": "Calendario de citas",
+    "subtitle": "Próximas visitas e instalaciones.",
+    "today": "Hoy",
+    "legend": { "scheduled": "Programada", "inProgress": "En curso", "completed": "Completada" },
+    "days": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    "upcoming": "Próximas citas",
     "detail": {
       "customer": "Cliente",
-      "address": "Morada",
-      "product": "Produto",
-      "duration": "Duração estimada",
+      "address": "Dirección",
+      "product": "Producto",
+      "duration": "Duración estimada",
       "minutes": "min",
       "viewCase": "Ver caso",
-      "confirmArrival": "Confirmar chegada"
+      "confirmArrival": "Confirmar llegada"
     }
   },
   "documents": {
-    "eyebrow": "Documentação",
-    "title": "Renovação documental",
-    "subtitle": "Mantenha a sua documentação em dia para continuar a operar na rede.",
-    "filters": { "valid": "Válidos", "expiring": "Próximos", "expired": "Vencidos", "missing": "Pendentes", "viewAll": "← Ver todos os documentos" },
-    "status": { "valid": "Válido", "expiring": "Próximo de vencer", "expired": "Vencido", "missing": "Pendente" },
-    "actions": { "download": "Descarregar", "upload": "Carregar", "renew": "Renovar", "cancel": "Cancelar" },
+    "eyebrow": "Documentación",
+    "title": "Renovación documental",
+    "subtitle": "Mantén tu documentación al día para seguir operando en la red.",
+    "filters": { "valid": "Vigentes", "expiring": "Próximos", "expired": "Vencidos", "missing": "Pendientes", "viewAll": "← Ver todos los documentos" },
+    "status": { "valid": "Vigente", "expiring": "Próximo a vencer", "expired": "Vencido", "missing": "Pendiente" },
+    "actions": { "download": "Descargar", "upload": "Subir", "renew": "Renovar", "cancel": "Cancelar" },
     "fields": {
       "issued": "Emitido",
       "expires": "Vence",
-      "file": "Ficheiro (PDF, máx. 10 MB)",
-      "expiresLabel": "Data de vencimento",
-      "expiresHelp": "Avisaremos 60, 30 e 7 dias antes do vencimento."
+      "file": "Archivo (PDF, máx. 10 MB)",
+      "expiresLabel": "Fecha de vencimiento",
+      "expiresHelp": "Te avisaremos 60, 30 y 7 días antes del vencimiento."
     },
-    "dialog": { "uploadTitle": "Carregar documento", "renewTitle": "Renovar documento" },
-    "toasts": { "updated": "Documento atualizado", "updatedDesc": "{{name}} foi renovado com sucesso." }
+    "dialog": { "uploadTitle": "Subir documento", "renewTitle": "Renovar documento" },
+    "toasts": { "updated": "Documento actualizado", "updatedDesc": "{{name}} se ha renovado correctamente." }
   },
   "invoices": {
-    "eyebrow": "Faturação",
-    "title": "Liquidações e faturas",
-    "subtitle": "Histórico dos seus serviços faturados",
-    "summary": { "total": "Total faturado", "paid": "Cobrado", "pending": "Pendente", "average": "Média / serviço" },
-    "tableTitle": "Histórico de liquidações",
-    "columns": { "number": "Número", "period": "Período", "services": "Serviços", "amount": "Valor", "status": "Estado", "actions": "Ações" },
-    "status": { "paid": "Paga", "pending": "Pendente", "overdue": "Vencida" },
+    "eyebrow": "Facturación",
+    "title": "Liquidaciones y facturas",
+    "subtitle": "Histórico de tus servicios facturados",
+    "summary": { "total": "Total facturado", "paid": "Cobrado", "pending": "Pendiente", "average": "Media / servicio" },
+    "tableTitle": "Histórico de liquidaciones",
+    "columns": { "number": "Número", "period": "Periodo", "services": "Servicios", "amount": "Importe", "status": "Estado", "actions": "Acciones" },
+    "status": { "paid": "Pagada", "pending": "Pendiente", "overdue": "Vencida" },
     "detail": {
-      "title": "Liquidação",
-      "issuedOn": "Emitida a",
-      "paidOn": "Paga a",
-      "dueOn": "Vence a",
-      "servicesBilled": "Serviços faturados",
-      "net": "Base tributável",
+      "title": "Liquidación",
+      "issuedOn": "Emitida el",
+      "paidOn": "Pagada el",
+      "dueOn": "Vence el",
+      "servicesBilled": "Servicios facturados",
+      "net": "Base imponible",
       "vat": "IVA (21%)",
       "total": "Total",
-      "viewServices": "Ver detalhe de serviços",
-      "downloadPdf": "Descarregar PDF"
+      "viewServices": "Ver detalle servicios",
+      "downloadPdf": "Descargar PDF"
     },
-    "toasts": { "downloadStarted": "Transferência iniciada" }
+    "toasts": { "downloadStarted": "Descarga iniciada" }
   },
   "profile": {
-    "eyebrow": "Conta",
-    "title": "Dados do colaborador",
-    "subtitle": "Informação da sua conta e empresa",
-    "fields": { "email": "Email", "emailHelp": "O email é gerido a partir do início de sessão.", "fullName": "Nome completo", "company": "Empresa", "phone": "Telefone", "save": "Guardar alterações" },
+    "eyebrow": "Cuenta",
+    "title": "Datos del colaborador",
+    "subtitle": "Información de tu cuenta y empresa",
+    "fields": { "email": "Email", "emailHelp": "El email se gestiona desde el inicio de sesión.", "fullName": "Nombre completo", "company": "Empresa", "phone": "Teléfono", "save": "Guardar cambios" },
     "link": {
-      "title": "Vínculo com a WG Network",
+      "title": "Vinculación con WG Network",
       "linked": "Vinculado",
-      "unlinked": "Sem vínculo",
-      "linkedDesc": "A sua conta está vinculada a uma candidatura aprovada na rede.",
-      "unlinkedDesc": "Não encontrámos uma candidatura ativa com o seu email. Contacte a nossa equipa ou inscreva-se na rede."
+      "unlinked": "Sin vincular",
+      "linkedDesc": "Tu cuenta está vinculada a una solicitud aprobada en la red.",
+      "unlinkedDesc": "No encontramos una solicitud activa con tu email. Contacta con nuestro equipo o inscríbete en la red."
     },
     "admin": {
-      "title": "Acesso administrador",
-      "active": "Tem o papel de administrador. Verá a secção <1>Operações</1> no menu.",
-      "inactive": "Se for o primeiro utilizador do sistema, pode promover-se a administrador para gerir incidências e atribuições.",
-      "cta": "Tornar-me administrador",
-      "loading": "A ativar…"
+      "title": "Acceso administrador",
+      "active": "Tienes rol de administrador. Verás la sección <1>Operaciones</1> en el menú.",
+      "inactive": "Si eres el primer usuario del sistema, puedes promocionarte a administrador para gestionar incidencias y asignaciones.",
+      "cta": "Convertirme en administrador",
+      "loading": "Activando…"
     },
-    "toasts": { "saveError": "Não foi possível guardar", "saved": "Perfil atualizado", "adminOk": "Agora é administrador. Recarregue a página." }
+    "toasts": { "saveError": "No se pudo guardar", "saved": "Perfil actualizado", "adminOk": "Ahora eres administrador. Recarga la página." }
   },
   "incidences": {
-    "eyebrow": "Operações",
-    "title": "Incidências",
-    "subtitle": "Registe avisos e atribua automaticamente ao colaborador ideal.",
-    "detailTitle": "Detalhe da incidência",
-    "newButton": "Nova incidência",
+    "eyebrow": "Operaciones",
+    "title": "Incidencias",
+    "subtitle": "Registra avisos y asigna automáticamente al colaborador idóneo.",
+    "detailTitle": "Detalle de incidencia",
+    "newButton": "Nueva incidencia",
     "filters": { "all": "Todas" },
-    "loading": "A carregar…",
-    "loadingList": "A carregar incidências…",
-    "empty": { "title": "Sem incidências", "subtitle": "Crie uma nova para testar o motor de matching." },
-    "restricted": { "title": "Acesso restrito", "subtitle": "A gestão de incidências está reservada à equipa de operações." },
+    "loading": "Cargando…",
+    "loadingList": "Cargando incidencias…",
+    "empty": { "title": "Sin incidencias", "subtitle": "Crea una nueva para probar el motor de matching." },
+    "restricted": { "title": "Acceso restringido", "subtitle": "La gestión de incidencias está reservada al equipo de operaciones." },
     "form": {
-      "title": "Nova incidência",
+      "title": "Nueva incidencia",
       "customer": "Cliente *",
-      "phone": "Telefone",
+      "phone": "Teléfono",
       "postalCode": "Código postal",
-      "address": "Morada",
-      "city": "Cidade",
-      "province": "Província *",
-      "family": "Família *",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "province": "Provincia *",
+      "family": "Familia *",
       "brand": "Marca",
       "brandPlaceholder": "(opcional)",
-      "urgency": "Urgência",
-      "description": "Descrição",
-      "select": "Selecionar",
+      "urgency": "Urgencia",
+      "description": "Descripción",
+      "select": "Selecciona",
       "cancel": "Cancelar",
-      "submit": "Criar e procurar match",
-      "submitting": "A criar..."
+      "submit": "Crear y buscar match",
+      "submitting": "Creando..."
     },
-    "toasts": { "required": "Cliente, província e família são obrigatórios", "created": "Incidência criada" }
+    "toasts": { "required": "Cliente, provincia y familia son obligatorios", "created": "Incidencia creada" }
   }
 }

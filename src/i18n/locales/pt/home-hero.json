@@ -1,18 +1,18 @@
 {
   "badge": "WG Service OS · v2026",
   "title": {
-    "line1": "Onde os outros terminam,",
-    "line2": "nós começamos"
+    "line1": "Donde otros terminan,",
+    "line2": "nosotros empezamos"
   },
-  "lead": "Transformamos o serviço pós-venda num sistema que funciona <1>sob controlo</1>. Mesmo quando está fragmentado entre vários fornecedores.",
-  "sub": "Integramos operação, experiência do cliente e conhecimento técnico para executar, controlar e otimizar o serviço de ponta a ponta.",
-  "ctaPrimary": "Solicitar informação",
-  "ctaSecondary": "Ver o modelo",
-  "imageAlt": "Técnico de pós-venda a diagnosticar um eletrodoméstico",
-  "liveBadge": "live · sistema operativo ativo",
+  "lead": "Convertimos el servicio postventa en un sistema que funciona <1>bajo control</1>. Incluso cuando está fragmentado entre múltiples proveedores.",
+  "sub": "Integramos operación, experiencia de cliente y conocimiento técnico para ejecutar, controlar y optimizar el servicio de principio a fin.",
+  "ctaPrimary": "Solicitar información",
+  "ctaSecondary": "Ver el modelo",
+  "imageAlt": "Técnico de servicio postventa diagnosticando un electrodoméstico",
+  "liveBadge": "live · sistema operativo activo",
   "stats": {
-    "operation": { "label": "Operação", "value": "+150K", "caption": "ocorrências / ano" },
-    "network": { "label": "Rede", "value": "+400", "caption": "SAT ativos" },
-    "track": { "label": "Trajetória", "value": "50", "caption": "anos de ofício" }
+    "operation": { "label": "Operación", "value": "+150K", "caption": "incidencias / año" },
+    "network": { "label": "Red", "value": "+400", "caption": "SATs activos" },
+    "track": { "label": "Trayectoria", "value": "50", "caption": "años de oficio" }
   }
 }

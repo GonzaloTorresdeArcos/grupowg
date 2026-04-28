@@ -1,14 +1,14 @@
 {
-  "eyebrow": "13 · Sobre nós",
+  "eyebrow": "13 · Sobre nosotros",
   "title": {
-    "line1": "Não somos apenas operadores.",
-    "line2": "Não somos consultores tradicionais.",
-    "line3": "Somos a combinação de execução, controlo e conhecimento técnico."
+    "line1": "No somos solo operadores.",
+    "line2": "No somos consultores tradicionales.",
+    "line3": "Somos la combinación de ejecución, control y conocimiento técnico."
   },
-  "lead": "Operamos quando é preciso. Controlamos quando é crítico. E trazemos critério a todo o momento.",
+  "lead": "Operamos cuando hace falta. Controlamos cuando es crítico. Y aportamos criterio en todo momento.",
   "pillars": [
-    { "label": "Execução", "text": "50 anos a entrar em operações reais." },
-    { "label": "Controlo", "text": "Dados, sistema, rastreabilidade end-to-end." },
-    { "label": "Critério", "text": "Conhecimento técnico real, não playbooks genéricos." }
+    { "label": "Ejecución", "text": "50 años entrando en operaciones reales." },
+    { "label": "Control", "text": "Datos, sistema, trazabilidad extremo a extremo." },
+    { "label": "Criterio", "text": "Conocimiento técnico real, no playbooks genéricos." }
   ]
 }

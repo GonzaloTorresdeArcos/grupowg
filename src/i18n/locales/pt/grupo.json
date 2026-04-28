@@ -1,49 +1,49 @@
 {
   "seo": {
-    "title": "Grupo WG · Onde outros terminam, nós começamos",
-    "description": "O Grupo WG transforma o serviço pós-venda num sistema sob controlo: operação, experiência e conhecimento técnico integrados de ponta a ponta."
+    "title": "Grupo WG · Donde otros terminan, nosotros empezamos",
+    "description": "Grupo WG convierte el servicio postventa en un sistema bajo control: operación, experiencia y conocimiento técnico integrados de principio a fin."
   },
   "hero": {
-    "titleA": "Onde outros terminam,",
-    "titleB": "nós começamos",
-    "subtitleA": "Transformamos o serviço pós-venda num sistema que funciona.",
-    "subtitleB": "Integramos operação, experiência do cliente e conhecimento técnico para executar, controlar e otimizar o serviço",
-    "subtitleC": "de ponta a ponta",
-    "cta": "Falar com a nossa equipa"
+    "titleA": "Donde otros terminan,",
+    "titleB": "nosotros empezamos",
+    "subtitleA": "Convertimos el servicio postventa en un sistema que funciona.",
+    "subtitleB": "Integramos operación, experiencia de cliente y conocimiento técnico para ejecutar, controlar y optimizar el servicio",
+    "subtitleC": "de principio a fin",
+    "cta": "Hablar con nuestro equipo"
   },
   "problem": {
     "eyebrow": "01 · Problema",
-    "titleA": "Hoje o serviço pós-venda",
-    "titleB": "não funciona como um sistema",
+    "titleA": "Hoy el servicio postventa",
+    "titleB": "no funciona como un sistema",
     "items": [
-      "Vários fornecedores a operar sem coordenação.",
-      "Sistemas que não comunicam entre si.",
-      "Decisões sem critério técnico estruturado.",
-      "Falta de visibilidade sobre o que realmente acontece."
+      "Múltiples proveedores operando sin coordinación.",
+      "Sistemas que no se comunican entre sí.",
+      "Decisiones sin criterio técnico estructurado.",
+      "Falta de visibilidad sobre lo que realmente ocurre."
     ],
     "resultLabel": "Resultado",
-    "resultA": "Mais custo, mais incidências e uma",
-    "resultB": "experiência inconsistente"
+    "resultA": "Más coste, más incidencias y una",
+    "resultB": "experiencia inconsistente"
   },
   "solution": {
-    "eyebrow": "02 · Solução",
-    "titleA": "Um único sistema de",
-    "titleB": "controlo e execução",
-    "titleC": "do serviço.",
-    "lead": "Ligamos todos os elementos —pessoas, processos e tecnologia— num fluxo único, coordenado e mensurável.",
-    "quoteA": "Não se trata de gerir partes.",
-    "quoteB": "Trata-se de fazer com que o sistema funcione."
+    "eyebrow": "02 · Solución",
+    "titleA": "Un único sistema de",
+    "titleB": "control y ejecución",
+    "titleC": "del servicio.",
+    "lead": "Conectamos todos los elementos —personas, procesos y tecnología— en un flujo único, coordinado y medible.",
+    "quoteA": "No se trata de gestionar partes.",
+    "quoteB": "Se trata de hacer que el sistema funcione."
   },
   "differential": {
     "eyebrow": "03 · Diferencial",
-    "titleA": "Controlo. Conhecimento.",
-    "titleB": "Execução",
+    "titleA": "Control. Conocimiento.",
+    "titleB": "Ejecución",
     "items": [
-      { "title": "Controlo end-to-end", "desc": "Visão completa do serviço, independentemente de quem o executa." },
-      { "title": "Conhecimento técnico e de produto", "desc": "Validamos a qualidade do serviço e transformamos a atividade em informação útil para melhorar." },
-      { "title": "Execução integrada", "desc": "Desde o primeiro contacto até à resolução, sem fricção." }
+      { "title": "Control end-to-end", "desc": "Visión completa del servicio, independientemente de quién lo ejecute." },
+      { "title": "Conocimiento técnico y de producto", "desc": "Validamos la calidad del servicio y transformamos la actividad en información útil para mejorar." },
+      { "title": "Ejecución integrada", "desc": "Desde el primer contacto hasta la resolución, sin fricción." }
     ],
-    "ctaPrimary": "Ver o modelo",
-    "ctaSecondary": "Falar com a nossa equipa"
+    "ctaPrimary": "Ver el modelo",
+    "ctaSecondary": "Hablar con nuestro equipo"
   }
 }
