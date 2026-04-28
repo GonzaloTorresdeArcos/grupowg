@@ -54,7 +54,6 @@ export const SolutionsBlock = () => {
                     <span className="font-mono text-xs text-foreground/30">{meta.code}</span>
                   </div>
                   <h3 className="heading-tight text-foreground text-2xl md:text-3xl">{name}</h3>
-                  <p className="mt-2 text-teal text-sm font-medium">{c.sub}</p>
                   <p className="mt-5 text-muted-foreground leading-relaxed text-[15px]">{c.d}</p>
                   <ul className="mt-8 space-y-2 border-t border-foreground/10 pt-6">
                     {c.bullets.map((b) => (
