@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
