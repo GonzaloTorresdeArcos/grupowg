@@ -2,6 +2,11 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./i18n";
+import { initBlankScreenDetector } from "@/lib/blank-screen-detector";
+
+if (import.meta.env.DEV) {
+  initBlankScreenDetector();
+}
 
 // Logging global de errores no capturados (ayuda a localizar "r is not a function")
 window.addEventListener("error", (event) => {
