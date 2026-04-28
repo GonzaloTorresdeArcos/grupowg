@@ -96,9 +96,6 @@ export const SolutionsDetailBlock = () => {
                       <Icon className="h-5 w-5 text-teal" />
                     </div>
                     <h3 className="heading-tight text-foreground text-2xl">{tCommon(`solutionNames.${m.key}`)}</h3>
-                    <p className="mt-1 text-teal text-sm font-medium">
-                      {t(`modules.${m.key}.tagline`)}
-                    </p>
                     <p className="mt-5 text-sm text-muted-foreground leading-relaxed line-clamp-3">
                       {t(`modules.${m.key}.intro`)}
                     </p>
