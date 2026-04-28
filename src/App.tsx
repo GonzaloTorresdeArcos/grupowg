@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,6 +8,7 @@ import { Layout } from "@/components/site/Layout";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/portal/ProtectedRoute";
 import { PortalLayout } from "@/components/portal/PortalLayout";
+import { RouteBoundary } from "@/components/site/RouteBoundary";
 
 // Páginas públicas (lazy → code-splitting por ruta)
 const Index = lazy(() => import("./pages/Index.tsx"));
