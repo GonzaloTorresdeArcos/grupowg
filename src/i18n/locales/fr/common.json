@@ -9,5 +9,10 @@
   "close": "Fermer",
   "contactCta": "Contacter",
   "requestInfo": "Demander des informations",
-  "talkToTeam": "Parler à notre équipe"
+  "talkToTeam": "Parler à notre équipe",
+  "solutionNames": {
+    "execute": "Nous le faisons pour vous",
+    "controlTower": "Nous le pilotons avec vous",
+    "scale": "Nous accompagnons votre expansion"
+  }
 }

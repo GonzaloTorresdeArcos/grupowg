@@ -1,6 +1,6 @@
 {
-  "seo": { "title": "Solutions · WG Execute · Control Tower · Scale", "description": "Trois façons d'activer le système de service : WG Execute (nous l'opérons pour vous), WG Control Tower (vision unique multi-prestataires) et WG Scale (déploiement international maîtrisé)." },
-  "hero": { "titleA": "Trois façons d'", "titleB": "activer le système", "subtitle": "Execute, Control Tower et Scale. Vous choisissez le niveau d'implication ; nous garantissons que le service fonctionne avec qualité, contrôle et cohérence.", "cta": "Demander des informations" },
+  "seo": { "title": "Solutions · Trois façons d'activer le système de service", "description": "Trois façons d'activer le système de service : nous le faisons pour vous (opération de bout en bout), nous le pilotons avec vous (vision unique multi-prestataires) et nous accompagnons votre expansion (déploiement international maîtrisé)." },
+  "hero": { "titleA": "Trois façons d'", "titleB": "activer le système", "subtitle": "Nous le faisons pour vous, nous le pilotons avec vous ou nous accompagnons votre expansion. Vous choisissez le niveau d'implication ; nous garantissons que le service fonctionne avec qualité, contrôle et cohérence.", "cta": "Demander des informations" },
   "intro": { "titleA": "Trois modules.", "titleB": "Une seule plateforme", "titleC": ".", "lead": "Vous choisissez le niveau d'implication selon votre modèle opérationnel." },
   "modules": {
     "execute": {
@@ -38,7 +38,7 @@
     "titleA": "L'intelligence qui",
     "titleB": "traverse",
     "titleC": "chaque solution.",
-    "lead": "Trois capacités transverses, actives dans Execute, Control Tower et Scale.",
+    "lead": "Trois capacités transverses, actives dans les trois modalités.",
     "items": [
       { "title": "Intelligence technique", "lead": "Nous transformons le savoir technique en décisions pratiques.", "bullets": ["Nous collectons et organisons les incidents", "Nous appuyons le diagnostic", "Nous soutenons les cas complexes", "Nous améliorons la résolution au premier passage"], "closing": "Nous savons quand quelque chose ne va pas et comment y remédier." },
       { "title": "Intelligence produit", "lead": "Nous transformons le service en information utile pour le produit et les achats.", "bullets": ["Nous détectons les défaillances récurrentes", "Nous analysons le comportement par produit", "Nous mesurons l'impact sur les coûts et la qualité", "Nous produisons des rapports clairs"], "closing": "Chaque incident apporte de l'information pour améliorer le produit." },

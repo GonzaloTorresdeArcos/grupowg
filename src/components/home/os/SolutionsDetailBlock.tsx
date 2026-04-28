@@ -15,7 +15,6 @@ type ModuleDef = {
   key: ModuleKey;
   code: string;
   icon: typeof Cog;
-  name: string;
   bullets?: { icon: typeof Cog }[];
   pillars?: { icon: typeof Cog }[];
   hasOutcomes: boolean;
@@ -26,7 +25,6 @@ const MODULES: ModuleDef[] = [
     key: "execute",
     code: "WG/01",
     icon: Cog,
-    name: "WG Execute",
     bullets: [
       { icon: Headphones },
       { icon: Users2 },
@@ -41,7 +39,6 @@ const MODULES: ModuleDef[] = [
     key: "controlTower",
     code: "WG/02",
     icon: Eye,
-    name: "WG Control Tower",
     pillars: [{ icon: Database }, { icon: LineChart }],
     hasOutcomes: true,
   },
@@ -49,7 +46,6 @@ const MODULES: ModuleDef[] = [
     key: "scale",
     code: "WG/03",
     icon: Globe,
-    name: "WG Scale",
     pillars: [{ icon: Layers }, { icon: Network }, { icon: Boxes }, { icon: MapPin }],
     hasOutcomes: true,
   },
@@ -59,6 +55,7 @@ const CAPABILITY_ICONS = [Wrench, LineChart, ShieldCheck];
 
 export const SolutionsDetailBlock = () => {
   const { t } = useTranslation("soluciones");
+  const { t: tCommon } = useTranslation("common");
 
   const capabilities = (t("capabilities.items", { returnObjects: true }) as Array<{
     title: string;
@@ -98,7 +95,7 @@ export const SolutionsDetailBlock = () => {
                     <div className="h-12 w-12 rounded-xl bg-teal/10 border border-teal/30 flex items-center justify-center mb-6">
                       <Icon className="h-5 w-5 text-teal" />
                     </div>
-                    <h3 className="heading-tight text-foreground text-2xl">{m.name}</h3>
+                    <h3 className="heading-tight text-foreground text-2xl">{tCommon(`solutionNames.${m.key}`)}</h3>
                     <p className="mt-1 text-teal text-sm font-medium">
                       {t(`modules.${m.key}.tagline`)}
                     </p>
@@ -151,7 +148,7 @@ export const SolutionsDetailBlock = () => {
                       <Icon className="h-6 w-6 text-teal" />
                     </div>
                     <h3 className="heading-display text-foreground text-3xl md:text-5xl text-balance leading-[1.05]">
-                      {m.name}
+                      {tCommon(`solutionNames.${m.key}`)}
                     </h3>
                     <p className="mt-3 text-teal text-lg font-medium italic">
                       {t(`modules.${m.key}.tagline`)}

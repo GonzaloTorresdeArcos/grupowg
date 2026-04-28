@@ -1,5 +1,5 @@
 {
-  "seo": { "title": "WG Service OS · After-sales service platform", "description": "WG Service OS: the system that connects, executes and controls all after-sales service. Core, modules (Execute, Control Tower, Scale) and intelligence layers (technical, product, RMA, supply, automation)." },
+  "seo": { "title": "WG Service OS · After-sales service platform", "description": "WG Service OS: the system that connects, executes and controls all after-sales service. Core, modules (we do it for you, we control it with you, we support your expansion) and intelligence layers (technical, product, RMA, supply, automation)." },
   "hero": { "titleA": "WG Service OS.", "titleB": "The system", "titleC": "that connects, executes and controls.", "subtitle": "After-sales service is not a sum of parts. It is a system that must run in a coordinated way. We integrate operations, control and intelligence into one single platform to execute, measure and optimize end to end.", "cta": "Talk to our team" },
   "closing": { "lineOne": "One platform. One system.", "lineTwo": "Full control of the service." }
 }
