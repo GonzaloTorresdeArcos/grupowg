@@ -30,50 +30,11 @@ export default defineConfig(({ mode }) => ({
     // Páginas con assets pesados (network.jpg) elevan el umbral; lo subimos para
     // evitar warnings ruidosos sin perder visibilidad de regresiones reales.
     chunkSizeWarningLimit: 1500,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return undefined;
-
-          // Núcleo React + router + query → un único vendor compartido.
-          if (
-            id.includes("/react/") ||
-            id.includes("/react-dom/") ||
-            id.includes("/scheduler/") ||
-            id.includes("react-router") ||
-            id.includes("@tanstack/")
-          ) {
-            return "vendor-react";
-          }
-
-          // Radix UI (todos los @radix-ui/*) en su propio chunk.
-          if (id.includes("@radix-ui/")) return "vendor-radix";
-
-          // i18n
-          if (id.includes("i18next") || id.includes("react-i18next")) {
-            return "vendor-i18n";
-          }
-
-          // Supabase
-          if (id.includes("@supabase/")) return "vendor-supabase";
-
-          // Animaciones
-          if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) {
-            return "vendor-motion";
-          }
-
-          // PDF / canvas (pesados, sólo en exportaciones)
-          if (id.includes("html2canvas") || id.includes("jspdf") || id.includes("dompurify")) {
-            return "vendor-pdf";
-          }
-
-          // Iconos
-          if (id.includes("lucide-react")) return "vendor-icons";
-
-          // Resto de dependencias → vendor genérico.
-          return "vendor";
-        },
-      },
-    },
+    // NOTA: NO usar `manualChunks` para separar React de las librerías que lo
+    // consumen (Radix, i18n, etc.). Rollup no garantiza el orden de carga
+    // entre chunks "hermanos" y produce el clásico
+    // `Cannot read properties of undefined (reading 'createContext')`
+    // en producción (pantalla negra). Dejamos que Vite haga el splitting
+    // natural a partir de los `lazy()` por ruta en App.tsx.
   },
 }));
