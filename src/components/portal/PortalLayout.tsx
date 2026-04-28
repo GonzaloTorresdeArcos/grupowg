@@ -17,6 +17,7 @@ export const PortalLayout = () => {
   const { profile, user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   const collaboratorNav = [
