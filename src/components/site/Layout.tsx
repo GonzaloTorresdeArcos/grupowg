@@ -59,7 +59,9 @@ export const Layout = () => {
       <Header dark={!isLight} />
       <main className="flex-1 relative">
         {showBreadcrumbs && <Breadcrumbs dark={!isLight} />}
-        <Outlet />
+        <RouteBoundary key={pathname}>
+          <Outlet />
+        </RouteBoundary>
       </main>
       <Footer dark={!isLight} />
       <StickyMobileCTA />
