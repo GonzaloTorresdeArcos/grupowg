@@ -1,6 +1,6 @@
 {
-  "seo": { "title": "Soluciones · WG Execute · Control Tower · Scale", "description": "Tres formas de activar el sistema de servicio: WG Execute (lo operamos por ti), WG Control Tower (visión única multi-proveedor) y WG Scale (despliegue internacional con control)." },
-  "hero": { "titleA": "Tres formas de", "titleB": "activar el sistema", "subtitle": "Execute, Control Tower y Scale. Eliges el grado de implicación; nosotros aseguramos que el servicio funcione con calidad, control y consistencia.", "cta": "Solicitar información" },
+  "seo": { "title": "Soluciones · Tres formas de activar el sistema de servicio", "description": "Tres formas de activar el sistema de servicio: lo hacemos por ti (operación end-to-end), lo controlamos contigo (visión única multi-proveedor) y te acompañamos en tu expansión (despliegue internacional con control)." },
+  "hero": { "titleA": "Tres formas de", "titleB": "activar el sistema", "subtitle": "Lo hacemos por ti, lo controlamos contigo o te acompañamos en tu expansión. Eliges el grado de implicación; nosotros aseguramos que el servicio funcione con calidad, control y consistencia.", "cta": "Solicitar información" },
   "intro": { "titleA": "Tres módulos.", "titleB": "Una misma plataforma", "titleC": ".", "lead": "Eliges el grado de implicación según tu modelo operativo." },
   "modules": {
     "execute": {
@@ -38,7 +38,7 @@
     "titleA": "La inteligencia que",
     "titleB": "recorre",
     "titleC": "cada solución.",
-    "lead": "Tres capacidades transversales activas en Execute, Control Tower y Scale.",
+    "lead": "Tres capacidades transversales activas en las tres modalidades.",
     "items": [
       { "title": "Inteligencia técnica", "lead": "Convertimos el conocimiento técnico en decisiones prácticas.", "bullets": ["Recogemos y organizamos incidencias", "Apoyamos el diagnóstico", "Damos soporte en casos complejos", "Mejoramos la resolución a la primera"], "closing": "Sabemos cuándo algo está mal y cómo corregirlo." },
       { "title": "Inteligencia de producto", "lead": "Convertimos el servicio en información útil para producto y compras.", "bullets": ["Detectamos fallos recurrentes", "Analizamos comportamiento por producto", "Medimos impacto en coste y calidad", "Generamos informes claros"], "closing": "Cada incidencia aporta información para mejorar el producto." },

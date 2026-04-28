@@ -1,6 +1,6 @@
 {
-  "seo": { "title": "Solutions · WG Execute · Control Tower · Scale", "description": "Three ways to activate the service system: WG Execute (we run it for you), WG Control Tower (single view across providers) and WG Scale (international rollout under control)." },
-  "hero": { "titleA": "Three ways to", "titleB": "activate the system", "subtitle": "Execute, Control Tower and Scale. You choose the level of involvement; we make sure the service works with quality, control and consistency.", "cta": "Request information" },
+  "seo": { "title": "Solutions · Three ways to activate the service system", "description": "Three ways to activate the service system: we do it for you (end-to-end operation), we control it with you (single view across providers) and we support your expansion (international rollout under control)." },
+  "hero": { "titleA": "Three ways to", "titleB": "activate the system", "subtitle": "We do it for you, we control it with you or we support your expansion. You choose the level of involvement; we make sure the service works with quality, control and consistency.", "cta": "Request information" },
   "intro": { "titleA": "Three modules.", "titleB": "One platform", "titleC": ".", "lead": "You choose the level of involvement according to your operating model." },
   "modules": {
     "execute": {
@@ -38,7 +38,7 @@
     "titleA": "The intelligence that",
     "titleB": "runs through",
     "titleC": "every solution.",
-    "lead": "Three cross-cutting capabilities, active across Execute, Control Tower and Scale.",
+    "lead": "Three cross-cutting capabilities, active across the three offerings.",
     "items": [
       { "title": "Technical intelligence", "lead": "We turn technical knowledge into practical decisions.", "bullets": ["We collect and organize incidents", "We support diagnosis", "We support complex cases", "We improve first-time fix"], "closing": "We know when something is off and how to fix it." },
       { "title": "Product intelligence", "lead": "We turn the service into useful information for product and procurement.", "bullets": ["We detect recurring failures", "We analyze product behavior", "We measure impact on cost and quality", "We deliver clear reports"], "closing": "Every incident informs how to improve the product." },
