@@ -12,6 +12,7 @@ const Index = () => {
 
   useEffect(() => {
     document.title = t("seo.title");
+
     let m = document.querySelector('meta[name="description"]');
     if (!m) {
       m = document.createElement("meta");
@@ -19,6 +20,35 @@ const Index = () => {
       document.head.appendChild(m);
     }
     m.setAttribute("content", t("seo.description"));
+
+    // Canonical -> siempre la home "/"
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "https://grupowg.com";
+    const canonicalHref = `${origin}/`;
+    let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.setAttribute("rel", "canonical");
+      document.head.appendChild(link);
+    }
+    link.setAttribute("href", canonicalHref);
+
+    // OG/Twitter sincronizados con el contenido real de la home
+    const setMeta = (selector: string, attr: string, value: string) => {
+      let el = document.querySelector(selector);
+      if (!el) {
+        el = document.createElement("meta");
+        const [a, v] = selector.replace(/[\[\]"]/g, "").split("=");
+        el.setAttribute(a, v);
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attr, value);
+    };
+    setMeta('meta[property="og:title"]', "content", t("seo.title"));
+    setMeta('meta[name="twitter:title"]', "content", t("seo.title"));
+    setMeta('meta[property="og:description"]', "content", t("seo.description"));
+    setMeta('meta[name="twitter:description"]', "content", t("seo.description"));
+    setMeta('meta[property="og:url"]', "content", canonicalHref);
   }, [t]);
 
   const problemas = t("problem.items", { returnObjects: true }) as string[];
