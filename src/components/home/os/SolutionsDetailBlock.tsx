@@ -147,9 +147,6 @@ export const SolutionsDetailBlock = () => {
                     <h3 className="heading-display text-foreground text-3xl md:text-5xl text-balance leading-[1.05]">
                       {tCommon(`solutionNames.${m.key}`)}
                     </h3>
-                    <p className="mt-3 text-teal text-lg font-medium italic">
-                      {t(`modules.${m.key}.tagline`)}
-                    </p>
                     <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
                       {t(`modules.${m.key}.intro`)}
                     </p>
