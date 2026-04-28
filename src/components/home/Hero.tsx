@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/hero-bg.webp";
 
 export const Hero = () => (
   <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-ink text-bone">

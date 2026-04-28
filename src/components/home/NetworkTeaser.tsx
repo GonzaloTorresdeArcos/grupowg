@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import { Reveal } from "@/components/site/Reveal";
-import networkImg from "@/assets/network.jpg";
+import networkImg from "@/assets/network.webp";
 
 export const NetworkTeaser = () => {
   const { t } = useTranslation("home-network");

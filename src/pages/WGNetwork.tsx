@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Heart, Shield, Wallet, Stethoscope, BookOpen, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, Briefcase, ChevronRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import logo50 from "@/assets/logo-50-light.png";
-import networkImg from "@/assets/network.jpg";
+import networkImg from "@/assets/network.webp";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 

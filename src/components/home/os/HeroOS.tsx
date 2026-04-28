@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import { ServiceOSDiagram } from "./ServiceOSDiagram";
-import heroPhoto from "@/assets/hero-technician.jpg";
+import heroPhoto from "@/assets/hero-technician.webp";
 
 export const HeroOS = () => {
   const { t } = useTranslation("home-hero");
