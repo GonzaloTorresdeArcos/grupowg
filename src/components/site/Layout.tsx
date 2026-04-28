@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { StickyMobileCTA } from "./StickyMobileCTA";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { RouteBoundary } from "./RouteBoundary";
 import { useEffect } from "react";
 import { buildBreadcrumbJsonLd, buildCrumbs } from "@/lib/breadcrumbs";
 
@@ -58,7 +59,9 @@ export const Layout = () => {
       <Header dark={!isLight} />
       <main className="flex-1 relative">
         {showBreadcrumbs && <Breadcrumbs dark={!isLight} />}
-        <Outlet />
+        <RouteBoundary key={pathname}>
+          <Outlet />
+        </RouteBoundary>
       </main>
       <Footer dark={!isLight} />
       <StickyMobileCTA />

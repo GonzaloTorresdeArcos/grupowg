@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
@@ -16,6 +17,7 @@ export const PortalLayout = () => {
   const { profile, user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   const collaboratorNav = [
@@ -166,7 +168,9 @@ export const PortalLayout = () => {
 
       <main className="flex-1 min-w-0 lg:px-0 px-0 pt-14 lg:pt-0">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
-          <Outlet />
+          <RouteBoundary key={pathname}>
+            <Outlet />
+          </RouteBoundary>
         </div>
       </main>
     </div>
