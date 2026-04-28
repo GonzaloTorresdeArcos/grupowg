@@ -11,7 +11,7 @@
     "network": "Professional network"
   },
   "items": {
-    "/grupo": "WG Group",
+    "/": "WG Group",
     "/modelo": "Model",
     "/soluciones": "Solutions",
     "/plataforma": "Platform",

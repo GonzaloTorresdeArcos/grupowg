@@ -8,7 +8,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/portal/ProtectedRoute";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import Index from "./pages/Index.tsx";
-import Grupo from "./pages/Grupo.tsx";
 import QueHacemos from "./pages/QueHacemos.tsx";
 import Soluciones from "./pages/Soluciones.tsx";
 import Marcas from "./pages/Marcas.tsx";
@@ -57,7 +56,7 @@ const App = () => (
                 <Route path="/plataforma" element={<Plataforma />} />
                 <Route path="/industrias" element={<Industrias />} />
                 <Route path="/experiencia" element={<Experiencia />} />
-                <Route path="/grupo" element={<Grupo />} />
+                
                 <Route path="/que-hacemos" element={<QueHacemos />} />
                 <Route path="/soluciones" element={<Soluciones />} />
                 <Route path="/marcas" element={<Marcas />} />

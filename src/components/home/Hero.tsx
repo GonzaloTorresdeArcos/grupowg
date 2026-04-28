@@ -43,7 +43,7 @@ export const Hero = () => (
             y servicio postventa.
           </p>
           <div className="md:col-span-5 flex flex-wrap gap-3 md:justify-end">
-            <Link to="/grupo" className="btn-on-dark">
+            <Link to="/" className="btn-on-dark">
               Conócenos
               <ArrowRight className="h-4 w-4" />
             </Link>

@@ -22,7 +22,6 @@ export type NavGroup = {
  * (filtrando los que no pertenecen a ese grupo).
  */
 export const primaryNav: NavItem[] = [
-  { to: "/grupo", label: "Grupo WG" },
   { to: "/modelo", label: "Modelo" },
   { to: "/soluciones", label: "Soluciones" },
   { to: "/plataforma", label: "Plataforma" },
@@ -50,14 +49,14 @@ export const footerNav: NavGroup[] = [
     id: "system",
     label: "Sistema",
     items: primaryNav.filter(
-      (item) => !["/grupo", "/wg-network"].includes(item.to),
+      (item) => !["/wg-network"].includes(item.to),
     ),
   },
   {
     id: "company",
     label: "Compañía",
     items: [
-      { to: "/grupo", label: "Grupo WG" },
+      { to: "/", label: "Grupo WG" },
       { to: "/marcas", label: "Marcas" },
       { to: "/50-aniversario", label: "50 aniversario" },
       { to: "/contacto", label: "Contacto" },

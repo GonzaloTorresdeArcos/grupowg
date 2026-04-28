@@ -11,7 +11,7 @@
     "network": "Red profesional"
   },
   "items": {
-    "/grupo": "Grupo WG",
+    "/": "Grupo WG",
     "/modelo": "Modelo",
     "/soluciones": "Soluciones",
     "/plataforma": "Plataforma",

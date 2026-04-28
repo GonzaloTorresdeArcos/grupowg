@@ -7,7 +7,7 @@
   "configureCookies": "Configurar cookies",
   "groups": { "system": "Sistema", "company": "Empresa", "network": "Rede profissional" },
   "items": {
-    "/grupo": "Grupo WG", "/modelo": "Modelo", "/soluciones": "Soluções", "/plataforma": "Plataforma",
+    "/": "Grupo WG", "/modelo": "Modelo", "/soluciones": "Soluções", "/plataforma": "Plataforma",
     "/experiencia": "Experiência", "/industrias": "Indústrias", "/wg-network": "WG Professional Network",
     "/wg-network/inscripcion": "Junta-te à rede", "/portal/login": "Acesso colaboradores",
     "/marcas": "Marcas", "/50-aniversario": "50 anos", "/contacto": "Contacto",
