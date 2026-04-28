@@ -60,25 +60,23 @@ const ErrorFallback = ({
   error: Error | null;
   onReset: () => void;
 }) => {
-  // Intenta usar i18n si está disponible; si falla, muestra textos por defecto.
-  let title = "No hemos podido cargar esta sección";
-  let description =
-    "Ha ocurrido un error inesperado al preparar el contenido. Puedes reintentar o volver al inicio.";
-  let retry = "Reintentar";
-  let home = "Volver al inicio";
+  // Defaults seguros si i18n aún no está inicializado.
+  const defaults = {
+    title: "No hemos podido cargar esta sección",
+    description:
+      "Ha ocurrido un error inesperado al preparar el contenido. Puedes reintentar o volver al inicio.",
+    retry: "Reintentar",
+    home: "Volver al inicio",
+  };
 
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { t, i18n } = useTranslation("common");
-    if (i18n?.isInitialized) {
-      title = t("errors.routeTitle", title);
-      description = t("errors.routeDescription", description);
-      retry = t("errors.retry", retry);
-      home = t("errors.backHome", home);
-    }
-  } catch {
-    /* fallback a textos por defecto */
-  }
+  const { t, i18n } = useTranslation("common");
+  const ready = i18n?.isInitialized;
+  const title = ready ? t("errors.routeTitle", defaults.title) : defaults.title;
+  const description = ready
+    ? t("errors.routeDescription", defaults.description)
+    : defaults.description;
+  const retry = ready ? t("errors.retry", defaults.retry) : defaults.retry;
+  const home = ready ? t("errors.backHome", defaults.home) : defaults.home;
 
   return (
     <div
