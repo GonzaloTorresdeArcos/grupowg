@@ -26,7 +26,7 @@ export const Layout = () => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
 
-  const isLight = LIGHT_PATHS.some((p) => pathname.startsWith(p));
+  const isLight = pathname === "/" || LIGHT_PATHS.some((p) => p !== "/" && pathname.startsWith(p));
   const showBreadcrumbs =
     !HIDE_BREADCRUMBS.includes(pathname) && !pathname.startsWith("/portal");
 
