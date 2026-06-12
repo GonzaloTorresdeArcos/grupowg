@@ -15,7 +15,7 @@ const Index = lazy(() => import("./pages/Index.tsx"));
 const QueHacemos = lazy(() => import("./pages/QueHacemos.tsx"));
 const Soluciones = lazy(() => import("./pages/Soluciones.tsx"));
 const Marcas = lazy(() => import("./pages/Marcas.tsx"));
-const Modelo = lazy(() => import("./pages/Modelo.tsx"));
+
 const ServiceOS = lazy(() => import("./pages/portal/ServiceOS.tsx"));
 const Industrias = lazy(() => import("./pages/Industrias.tsx"));
 const Experiencia = lazy(() => import("./pages/Experiencia.tsx"));
