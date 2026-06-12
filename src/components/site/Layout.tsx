@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { buildBreadcrumbJsonLd, buildCrumbs } from "@/lib/breadcrumbs";
 
 // Rutas que mantienen tema CLARO (look antiguo): WG Network + Inscripción
-const LIGHT_PATHS = ["/wg-network"];
+const LIGHT_PATHS = ["/wg-network", "/"];
 
 // Rutas en las que NO mostramos breadcrumbs (home + portal)
 const HIDE_BREADCRUMBS = ["/", "/portal"];
