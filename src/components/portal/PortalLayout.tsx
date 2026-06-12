@@ -59,24 +59,56 @@ export const PortalLayout = () => {
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {collaboratorNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={(item as { end?: boolean }).end}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-                  isActive
-                    ? "bg-ink text-bone font-medium"
-                    : "text-ink/70 hover:text-ink hover:bg-muted",
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" strokeWidth={1.75} />
-              {item.label}
-            </NavLink>
-          ))}
+          {showCollaboratorNav && (
+            <>
+              <p className="px-3 pt-1 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                WG Network
+              </p>
+              {collaboratorNav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={(item as { end?: boolean }).end}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                      isActive
+                        ? "bg-ink text-bone font-medium"
+                        : "text-ink/70 hover:text-ink hover:bg-muted",
+                    )
+                  }
+                >
+                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
+                  {item.label}
+                </NavLink>
+              ))}
+            </>
+          )}
+
+          {showClientNav && (
+            <>
+              <p className="px-3 pt-4 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                Clientes
+              </p>
+              {clientNav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                      isActive
+                        ? "bg-ink text-bone font-medium"
+                        : "text-ink/70 hover:text-ink hover:bg-muted",
+                    )
+                  }
+                >
+                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
+                  {item.label}
+                </NavLink>
+              ))}
+            </>
+          )}
 
           {isAdmin && (
             <>
@@ -103,6 +135,7 @@ export const PortalLayout = () => {
             </>
           )}
         </nav>
+
 
         <div className="p-3 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-3 rounded-lg bg-muted/40 mb-2">
