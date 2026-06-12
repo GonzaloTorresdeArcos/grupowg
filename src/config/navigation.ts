@@ -22,7 +22,6 @@ export type NavGroup = {
  * (filtrando los que no pertenecen a ese grupo).
  */
 export const primaryNav: NavItem[] = [
-  { to: "/modelo", label: "Modelo" },
   { to: "/soluciones", label: "Soluciones" },
   { to: "/experiencia", label: "Experiencia" },
   { to: "/industrias", label: "Industrias" },
