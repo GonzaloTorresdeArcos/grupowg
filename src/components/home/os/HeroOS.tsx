@@ -20,7 +20,7 @@ export const HeroOS = () => {
           <h1 className="heading-display text-bone text-[clamp(2.5rem,7.2vw,6.5rem)] animate-fade-up">
             {t("title.line1")}
             <br />
-            <span className="text-teal italic font-normal">{t("title.line2")}</span>.
+            <span className="text-teal font-normal">{t("title.line2")}</span>.
           </h1>
 
           <p className="mt-8 font-display text-2xl md:text-[1.75rem] text-bone/90 max-w-2xl text-balance leading-snug">

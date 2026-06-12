@@ -28,7 +28,7 @@ export const GroupStructure = () => (
           <p className="eyebrow mb-4">05 · Estructura</p>
           <h2 className="heading-display text-ink text-4xl md:text-5xl text-balance">
             Un grupo. Tres especializaciones.{" "}
-            <span className="text-teal italic font-normal">Una misma forma de responder.</span>
+            <span className="text-teal font-normal">Una misma forma de responder.</span>
           </h2>
         </div>
       </Reveal>
