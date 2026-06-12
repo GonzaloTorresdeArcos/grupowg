@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { buildBreadcrumbJsonLd, buildCrumbs } from "@/lib/breadcrumbs";
 
 // Rutas que mantienen tema CLARO (look antiguo): WG Network + Inscripción
-const LIGHT_PATHS = ["/wg-network"];
+const LIGHT_PATHS = ["/wg-network", "/"];
 
 // Rutas en las que NO mostramos breadcrumbs (home + portal)
 const HIDE_BREADCRUMBS = ["/", "/portal"];
@@ -26,7 +26,7 @@ export const Layout = () => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
 
-  const isLight = LIGHT_PATHS.some((p) => pathname.startsWith(p));
+  const isLight = pathname === "/" || LIGHT_PATHS.some((p) => p !== "/" && pathname.startsWith(p));
   const showBreadcrumbs =
     !HIDE_BREADCRUMBS.includes(pathname) && !pathname.startsWith("/portal");
 
