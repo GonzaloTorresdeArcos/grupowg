@@ -8,6 +8,7 @@ import {
   ArrowUpRight, ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
 
 type ModuleKey = "execute" | "controlTower" | "scale";
 
