@@ -120,17 +120,17 @@ const Index = () => {
       </section>
 
       {/* SOLUCIÓN */}
-      <section className="section-padding bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
+      <section className="section-padding bg-background text-foreground relative overflow-hidden border-t border-foreground/5">
         <div className="absolute inset-0 bg-grid bg-grid-fade opacity-25" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,hsl(var(--teal)/0.12),transparent_60%)]" />
         <div className="container-tight relative">
           <Reveal>
-            <p className="eyebrow-mono mb-4 text-bone/60">{t("solution.eyebrow")}</p>
-            <h2 className="heading-display text-bone text-4xl md:text-6xl max-w-4xl text-balance">
+            <p className="eyebrow-mono mb-4 text-foreground/60">{t("solution.eyebrow")}</p>
+            <h2 className="heading-display text-foreground text-4xl md:text-6xl max-w-4xl text-balance">
               {t("solution.titleA")}{" "}
               <span className="text-teal italic">{t("solution.titleB")}</span> {t("solution.titleC")}
             </h2>
-            <p className="mt-8 max-w-2xl text-bone/70 text-lg leading-relaxed">
+            <p className="mt-8 max-w-2xl text-foreground/70 text-lg leading-relaxed">
               {t("solution.lead")}
             </p>
           </Reveal>
@@ -138,7 +138,7 @@ const Index = () => {
           <Reveal delay={200}>
             <div className="mt-14 flex items-center gap-5 max-w-3xl">
               <Workflow className="h-8 w-8 text-teal flex-shrink-0" />
-              <p className="font-display text-2xl md:text-3xl text-bone/90 leading-snug text-balance">
+              <p className="font-display text-2xl md:text-3xl text-foreground/90 leading-snug text-balance">
                 {t("solution.quoteA")}{" "}
                 <span className="text-teal italic">{t("solution.quoteB")}</span>
               </p>
