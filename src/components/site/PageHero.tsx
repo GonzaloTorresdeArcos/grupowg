@@ -10,7 +10,7 @@ interface PageHeroProps {
 }
 
 export const PageHero = ({ eyebrow, title, subtitle, cta }: PageHeroProps) => (
-  <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 bg-background overflow-hidden">
+  <section className="relative pt-56 md:pt-72 pb-20 md:pb-28 bg-background overflow-hidden">
     <div className="absolute inset-0 bg-grid bg-grid-fade opacity-30 pointer-events-none" />
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--teal)/0.08),transparent_60%)] pointer-events-none" />
     <div className="container-tight relative">
