@@ -177,7 +177,11 @@ export const PortalLayout = () => {
             className="bg-card border-b border-border px-3 py-4 space-y-1"
             onClick={(e) => e.stopPropagation()}
           >
-            {[...collaboratorNav, ...(isAdmin ? adminNav : [])].map((item) => (
+            {[
+              ...(showCollaboratorNav ? collaboratorNav : []),
+              ...(showClientNav ? clientNav : []),
+              ...(isAdmin ? adminNav : []),
+            ].map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
