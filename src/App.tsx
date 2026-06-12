@@ -16,7 +16,7 @@ const QueHacemos = lazy(() => import("./pages/QueHacemos.tsx"));
 const Soluciones = lazy(() => import("./pages/Soluciones.tsx"));
 const Marcas = lazy(() => import("./pages/Marcas.tsx"));
 const Modelo = lazy(() => import("./pages/Modelo.tsx"));
-const Plataforma = lazy(() => import("./pages/Plataforma.tsx"));
+const ServiceOS = lazy(() => import("./pages/portal/ServiceOS.tsx"));
 const Industrias = lazy(() => import("./pages/Industrias.tsx"));
 const Experiencia = lazy(() => import("./pages/Experiencia.tsx"));
 const WGNetwork = lazy(() => import("./pages/WGNetwork.tsx"));
@@ -62,7 +62,7 @@ const App = () => (
                 <Route path="/grupo" element={<Navigate to="/" replace />} />
                 <Route path="/grupo/*" element={<Navigate to="/" replace />} />
                 <Route path="/modelo" element={<Modelo />} />
-                <Route path="/plataforma" element={<Plataforma />} />
+                <Route path="/plataforma" element={<Navigate to="/" replace />} />
                 <Route path="/industrias" element={<Industrias />} />
                 <Route path="/experiencia" element={<Experiencia />} />
                 
@@ -107,6 +107,7 @@ const App = () => (
                 }
               >
                 <Route path="/portal" element={<PortalDashboard />} />
+                <Route path="/portal/service-os" element={<ServiceOS />} />
                 <Route path="/portal/calendario" element={<PortalCalendar />} />
                 <Route path="/portal/documentos" element={<PortalDocuments />} />
                 <Route path="/portal/facturacion" element={<PortalInvoices />} />
