@@ -13,12 +13,12 @@ export const ClosingBlock = ({ lineOne, lineTwo }: ClosingBlockProps = {}) => {
   const finalLineOne = lineOne ?? t("default.lineOne");
   const finalLineTwo = lineTwo ?? t("default.lineTwo");
   return (
-    <section className="closing-padding bg-ink text-bone relative overflow-hidden border-t border-foreground/5">
+    <section className="closing-padding bg-background text-foreground relative overflow-hidden border-t border-foreground/5">
       <div className="absolute inset-0 bg-grid bg-grid-fade opacity-30" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--teal)/0.18),transparent_60%)]" />
       <div className="container-tight relative text-center">
         <Reveal>
-          <h2 className="heading-display text-bone text-4xl md:text-6xl lg:text-7xl max-w-4xl mx-auto text-balance leading-[1.05]">
+          <h2 className="heading-display text-foreground text-4xl md:text-6xl lg:text-7xl max-w-4xl mx-auto text-balance leading-[1.05]">
             {finalLineOne}
             <br />
             <span className="text-teal italic">{finalLineTwo}</span>

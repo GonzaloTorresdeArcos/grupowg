@@ -829,7 +829,7 @@ const Contacto = () => {
           <div className="md:col-span-7">
             {sent ? (
               <Reveal>
-                <div className="rounded-3xl bg-ink text-bone p-8 md:p-12 relative overflow-hidden">
+                <div className="rounded-3xl bg-foreground text-background p-8 md:p-12 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--teal)/0.18),transparent_60%)] pointer-events-none" />
                   <div className="relative">
                     <div className="h-12 w-12 rounded-full bg-teal flex items-center justify-center mb-6">

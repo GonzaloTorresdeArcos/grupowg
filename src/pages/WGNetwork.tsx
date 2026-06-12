@@ -29,21 +29,21 @@ const WGNetwork = () => {
   return (
     <>
       {/* HERO manifiesto */}
-      <section className="relative min-h-[90svh] flex items-center bg-ink text-bone overflow-hidden pt-32">
+      <section className="relative min-h-[90svh] flex items-center bg-background text-foreground overflow-hidden pt-32">
         <img src={networkImg} alt="" width={1600} height={1024} className="absolute inset-0 h-full w-full object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/60 to-ink" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
         <div className="container-tight relative z-10 py-20">
           <Reveal>
             <p className="eyebrow text-teal-soft mb-6">{t("hero.eyebrow")}</p>
-            <h1 className="heading-display text-bone text-[clamp(2.5rem,8vw,7.5rem)] max-w-5xl">
+            <h1 className="heading-display text-foreground text-[clamp(2.5rem,8vw,7.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
               <span className="font-normal text-teal">{t("hero.title2")}</span>
             </h1>
-            <p className="mt-10 max-w-2xl text-lg md:text-xl text-bone/70 leading-relaxed">
+            <p className="mt-10 max-w-2xl text-lg md:text-xl text-foreground/70 leading-relaxed">
               {t("hero.intro")}
             </p>
-            <ul className="mt-10 space-y-2 text-lg text-bone">
+            <ul className="mt-10 space-y-2 text-lg text-foreground">
               {heroList.map((line, i) => (
                 <li key={i}>{line}</li>
               ))}
@@ -77,7 +77,7 @@ const WGNetwork = () => {
               {layers.map((l, i) => (
                 <Reveal key={l.n} delay={i * 120}>
                   <div className="relative">
-                    <div className="hidden md:flex items-center justify-center h-24 w-24 rounded-full bg-ink text-bone font-display text-2xl mb-8 relative z-10 ring-8 ring-bone">
+                    <div className="hidden md:flex items-center justify-center h-24 w-24 rounded-full bg-background text-foreground font-display text-2xl mb-8 relative z-10 ring-8 ring-bone">
                       {l.n}
                     </div>
                     <p className="md:hidden eyebrow mb-3">{t("layers.layerLabel")} {l.n}</p>
@@ -132,33 +132,33 @@ const WGNetwork = () => {
       </section>
 
       {/* 3 compromisos */}
-      <section className="relative py-24 md:py-32 bg-ink text-bone overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-background text-foreground overflow-hidden">
         <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-0 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
         <div className="container-tight relative">
           <Reveal>
             <div className="max-w-3xl mb-16">
               <p className="eyebrow text-teal-soft mb-4">{t("commitments.eyebrow")}</p>
-              <h2 className="heading-display text-bone text-4xl md:text-6xl text-balance">
+              <h2 className="heading-display text-foreground text-4xl md:text-6xl text-balance">
                 {t("commitments.title")}
               </h2>
             </div>
           </Reveal>
 
-          <div className="space-y-px bg-bone/10 border border-bone/10 rounded-2xl overflow-hidden">
+          <div className="space-y-px bg-muted/50 border border-border rounded-2xl overflow-hidden">
             {commitments.map((c, i) => (
               <Reveal key={c.n} delay={i * 100}>
-                <div className="bg-ink p-8 md:p-12 grid gap-6 md:grid-cols-12 items-center group hover:bg-ink-soft transition-colors">
+                <div className="bg-background p-8 md:p-12 grid gap-6 md:grid-cols-12 items-center group hover:bg-ink-soft transition-colors">
                   <p className="md:col-span-1 font-display text-5xl text-teal">{c.n}</p>
-                  <h3 className="md:col-span-4 font-display text-3xl text-bone">{c.t}</h3>
-                  <p className="md:col-span-6 text-bone/70 leading-relaxed">{c.d}</p>
-                  <ChevronRight className="md:col-span-1 h-6 w-6 text-bone/40 transition-all group-hover:text-teal group-hover:translate-x-1" />
+                  <h3 className="md:col-span-4 font-display text-3xl text-foreground">{c.t}</h3>
+                  <p className="md:col-span-6 text-foreground/70 leading-relaxed">{c.d}</p>
+                  <ChevronRight className="md:col-span-1 h-6 w-6 text-foreground/40 transition-all group-hover:text-teal group-hover:translate-x-1" />
                 </div>
               </Reveal>
             ))}
           </div>
 
           <Reveal>
-            <p className="mt-12 font-display italic text-xl md:text-2xl text-bone/80 max-w-3xl mx-auto text-center">
+            <p className="mt-12 font-display italic text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto text-center">
               {t("commitments.outro")}
             </p>
           </Reveal>
@@ -169,11 +169,11 @@ const WGNetwork = () => {
       <section className="py-24 md:py-32 bg-bone">
         <div className="container-tight">
           <Reveal>
-            <div className="rounded-3xl bg-gradient-ink p-10 md:p-20 text-bone text-center">
+            <div className="rounded-3xl bg-gradient-ink p-10 md:p-20 text-foreground text-center">
               <h2 className="heading-display text-4xl md:text-6xl max-w-3xl mx-auto text-balance">
                 {t("finalCta.title")}
               </h2>
-              <p className="mt-6 text-bone/70 max-w-xl mx-auto">
+              <p className="mt-6 text-foreground/70 max-w-xl mx-auto">
                 {t("finalCta.subtitle")}
               </p>
               <Link to="/wg-network/inscripcion" className="mt-10 inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-medium text-ink hover:gap-3 transition-all">

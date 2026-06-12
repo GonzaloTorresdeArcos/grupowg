@@ -25,13 +25,13 @@ export const ServiceOSDiagram = ({ compact = false }: Props) => {
   return (
     <div
       className={cn(
-        "relative w-full rounded-2xl border border-foreground/10 bg-ink/85 backdrop-blur-md overflow-hidden",
+        "relative w-full rounded-2xl border border-foreground/10 bg-background/90 backdrop-blur-md overflow-hidden",
         compact ? "p-4" : "p-8 md:p-12",
       )}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="badge-os">{t("liveBadge")}</div>
-        <p className="font-mono text-[10px] text-bone/40 uppercase tracking-[0.18em]">
+        <p className="font-mono text-[10px] text-foreground/40 uppercase tracking-[0.18em]">
           {t("tag")}
         </p>
       </div>
@@ -93,7 +93,7 @@ export const ServiceOSDiagram = ({ compact = false }: Props) => {
               className="absolute -translate-x-1/2 translate-y-3 text-center"
               style={{ left: `${n.x}%`, top: `${n.y}%` }}
             >
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone/70">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/70">
                 {n.label}
               </p>
             </div>
@@ -104,7 +104,7 @@ export const ServiceOSDiagram = ({ compact = false }: Props) => {
           {nodes.map((n) => (
             <p
               key={n.label}
-              className="font-mono text-[9px] uppercase tracking-[0.15em] text-bone/60 text-center truncate"
+              className="font-mono text-[9px] uppercase tracking-[0.15em] text-foreground/60 text-center truncate"
             >
               {n.label}
             </p>
