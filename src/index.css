@@ -11,56 +11,56 @@
 
 @layer base {
   :root {
-    /* Surfaces */
-    --bone: 40 30% 97%;
-    --background: 215 55% 5%;            /* deep navy-black */
-    --foreground: 40 30% 97%;             /* bone */
+    /* Surfaces — Apple-style: clean white canvas, near-black text */
+    --bone: 0 0% 100%;
+    --background: 0 0% 100%;              /* pure white */
+    --foreground: 0 0% 9%;                /* near-black */
 
-    /* Brand */
-    --ink: 215 55% 5%;                    /* very deep navy */
-    --ink-soft: 215 35% 14%;
-    --ink-elevated: 215 35% 9%;           /* card surface on dark */
+    /* Brand — ink stays dark for any explicit dark section (hero overlays etc.) */
+    --ink: 0 0% 7%;
+    --ink-soft: 0 0% 18%;
+    --ink-elevated: 0 0% 98%;             /* light card surface */
 
-    --teal: 178 70% 48%;                  /* bright technical teal accent */
-    --teal-soft: 178 50% 70%;
-    --teal-deep: 195 65% 22%;
-    --teal-glow: 178 90% 55%;
+    --teal: 178 55% 38%;                  /* muted technical accent */
+    --teal-soft: 178 35% 60%;
+    --teal-deep: 195 55% 25%;
+    --teal-glow: 178 70% 50%;
 
     /* Components */
-    --card: 215 35% 9%;
-    --card-foreground: 40 30% 97%;
-    --popover: 215 35% 9%;
-    --popover-foreground: 40 30% 97%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 178 70% 48%;
-    --primary-foreground: 215 55% 5%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 30% 12%;
-    --secondary-foreground: 40 30% 97%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 215 25% 14%;
-    --muted-foreground: 215 12% 62%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 178 70% 48%;
-    --accent-foreground: 215 55% 5%;
+    --accent: 178 55% 38%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 16%;
-    --input: 215 25% 16%;
-    --ring: 178 70% 48%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 9%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 215 35% 9%;
-    --sidebar-foreground: 40 30% 90%;
-    --sidebar-primary: 178 70% 48%;
-    --sidebar-primary-foreground: 215 55% 5%;
-    --sidebar-accent: 215 30% 14%;
-    --sidebar-accent-foreground: 40 30% 95%;
-    --sidebar-border: 215 25% 16%;
-    --sidebar-ring: 178 70% 48%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 0 0% 9%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 0 0% 9%;
   }
 
   /* Light scope for WG Network, Inscripción, Portal — keeps the existing look */
