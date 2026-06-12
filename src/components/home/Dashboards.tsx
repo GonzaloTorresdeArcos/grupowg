@@ -110,7 +110,7 @@ export const Dashboards = () => {
           <p className="eyebrow text-teal mb-4">04 · Cuadros de mando</p>
           <h2 className="heading-display text-bone text-4xl md:text-6xl text-balance">
             El servicio que no se mide{" "}
-            <span className="text-teal italic font-normal">no se gobierna.</span>
+            <span className="text-teal font-normal">no se gobierna.</span>
           </h2>
           <p className="mt-6 text-base md:text-lg text-bone/70 max-w-2xl leading-relaxed">
             Un ejemplo del cuadro de mando que entregamos a cliente: KPIs financieros y operativos,

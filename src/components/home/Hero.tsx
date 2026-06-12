@@ -29,7 +29,7 @@ export const Hero = () => (
         <h1 className="heading-display text-bone text-[clamp(2.75rem,9vw,8.5rem)] animate-fade-up">
           Donde otros terminan,
           <br />
-          <span className="text-teal italic font-normal">nosotros empezamos</span>.
+          <span className="text-teal font-normal">nosotros empezamos</span>.
         </h1>
 
         <p className="mt-8 font-display text-2xl md:text-3xl text-bone/90 max-w-3xl text-balance">

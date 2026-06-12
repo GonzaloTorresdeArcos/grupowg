@@ -38,7 +38,7 @@ const WGNetwork = () => {
             <h1 className="heading-display text-bone text-[clamp(2.5rem,8vw,7.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
-              <span className="italic font-normal text-teal">{t("hero.title2")}</span>
+              <span className="font-normal text-teal">{t("hero.title2")}</span>
             </h1>
             <p className="mt-10 max-w-2xl text-lg md:text-xl text-bone/70 leading-relaxed">
               {t("hero.intro")}

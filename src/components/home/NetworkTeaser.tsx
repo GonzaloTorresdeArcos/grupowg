@@ -16,7 +16,7 @@ export const NetworkTeaser = () => {
             <Trans
               i18nKey="title"
               t={t}
-              components={[<span key="0" className="italic font-normal text-teal" />]}
+              components={[<span key="0" className="font-normal text-teal" />]}
             />
           </h2>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">{t("lead")}</p>

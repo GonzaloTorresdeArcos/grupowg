@@ -49,7 +49,7 @@ export const Solutions = () => (
           <p className="eyebrow mb-4">03 · Soluciones</p>
           <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
             Resolver no es una parte del proceso.{" "}
-            <span className="text-teal italic font-normal">Es el proceso.</span>
+            <span className="text-teal font-normal">Es el proceso.</span>
           </h2>
         </div>
       </Reveal>
@@ -79,7 +79,7 @@ export const Solutions = () => (
               <p className="eyebrow text-teal mb-5">Fortaleza · Consultoría postventa</p>
               <h3 className="heading-display text-3xl md:text-5xl text-bone text-balance leading-[1.05]">
                 No solo operamos el servicio.{" "}
-                <span className="text-teal italic font-normal">Lo medimos, lo gobernamos y lo mejoramos.</span>
+                <span className="text-teal font-normal">Lo medimos, lo gobernamos y lo mejoramos.</span>
               </h3>
               <p className="mt-6 text-base md:text-lg text-bone/70 max-w-xl leading-relaxed">
                 Implantamos un modelo de medición end-to-end que conecta cada etapa operativa con su impacto económico.
