@@ -7,7 +7,7 @@ import heroPhoto from "@/assets/hero-technician.webp";
 export const HeroOS = () => {
   const { t } = useTranslation("home-hero");
   return (
-    <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-background text-foreground pt-32 pb-16">
+    <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-background text-foreground pt-56 md:pt-64 pb-16">
       {/* Background grid */}
       <div className="absolute inset-0 bg-grid bg-grid-fade opacity-50" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--teal)/0.15),transparent_60%)]" />
