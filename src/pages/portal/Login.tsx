@@ -104,66 +104,33 @@ const PortalLogin = () => {
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
-            <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
-              <TabsList className="grid grid-cols-2 w-full mb-6">
-                <TabsTrigger value="signin">{t("login.tabs.signin")}</TabsTrigger>
-                <TabsTrigger value="signup">{t("login.tabs.signup")}</TabsTrigger>
-              </TabsList>
+            <div className="mb-6">
+              <p className="font-display text-xl text-ink">Área privada</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                El acceso es por invitación. Si no tienes cuenta, contacta con tu responsable comercial.
+              </p>
+            </div>
 
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">{t("login.fields.email")}</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signin-email" name="email" type="email" required placeholder={t("login.fields.emailPlaceholder")} className="pl-9" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">{t("login.fields.password")}</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signin-password" name="password" type="password" required minLength={6} className="pl-9" />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signin")}
-                  </Button>
-                </form>
-              </TabsContent>
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signin-email">{t("login.fields.email")}</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input id="signin-email" name="email" type="email" required placeholder={t("login.fields.emailPlaceholder")} className="pl-9" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signin-password">{t("login.fields.password")}</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input id="signin-password" name="password" type="password" required minLength={6} className="pl-9" />
+                </div>
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signin")}
+              </Button>
+            </form>
 
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">{t("login.fields.name")}</Label>
-                    <div className="relative">
-                      <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signup-name" name="name" required placeholder={t("login.fields.namePlaceholder")} className="pl-9" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">{t("login.fields.applicationEmail")}</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signup-email" name="email" type="email" required placeholder={t("login.fields.emailPlaceholder")} className="pl-9" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {t("login.fields.applicationHelp")}
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">{t("login.fields.password")}</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input id="signup-password" name="password" type="password" required minLength={6} className="pl-9" />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signup")}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
