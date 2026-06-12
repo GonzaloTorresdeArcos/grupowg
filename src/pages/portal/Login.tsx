@@ -6,9 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Loader2, Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
+import { Loader2, Mail, Lock, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const PortalLogin = () => {
@@ -17,7 +16,6 @@ const PortalLogin = () => {
   const location = useLocation();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"signin" | "signup">("signin");
 
   const from = (location.state as { from?: string } | null)?.from || "/portal";
 
@@ -48,28 +46,6 @@ const PortalLogin = () => {
     navigate(from, { replace: true });
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email: String(fd.get("email")),
-      password: String(fd.get("password")),
-      options: {
-        emailRedirectTo: `${window.location.origin}/portal`,
-        data: { full_name: String(fd.get("name")) },
-      },
-    });
-    setLoading(false);
-    if (error) {
-      toast.error(t("login.toasts.signupError"), { description: error.message });
-      return;
-    }
-    toast.success(t("login.toasts.signupOk"), {
-      description: t("login.toasts.signupOkDesc"),
-    });
-    navigate(from, { replace: true });
-  };
 
   const handleGoogle = async () => {
     setLoading(true);
