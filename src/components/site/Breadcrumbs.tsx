@@ -32,7 +32,7 @@ export const Breadcrumbs = ({ dark = true }: BreadcrumbsProps) => {
     <nav
       aria-label={t("ariaLabel")}
       className={cn(
-        "absolute left-0 right-0 top-[68px] md:top-[76px] z-10 container-tight pt-3 pb-2 text-xs pointer-events-none",
+        "absolute left-0 right-0 top-[168px] md:top-[224px] z-10 container-tight pt-3 pb-2 text-xs pointer-events-none",
         baseText,
       )}
     >
