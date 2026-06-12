@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight, Inbox,
+  LogOut, Menu, X, ChevronRight, Inbox, Cpu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 export const PortalLayout = () => {
   const { t } = useTranslation("portal");
   const { profile, user, signOut } = useAuth();
-  const { isAdmin } = useUserRole();
+  const { isAdmin, isClient, isCollaborator } = useUserRole();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
@@ -28,9 +28,17 @@ export const PortalLayout = () => {
     { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
   ];
 
+  const clientNav = [
+    { to: "/portal/service-os", label: "Service OS", icon: Cpu },
+  ];
+
   const adminNav = [
     { to: "/portal/incidencias", label: t("nav.incidences"), icon: Inbox },
   ];
+
+  // Si el usuario es sólo cliente (sin rol colaborador), no mostramos la navegación de colaborador.
+  const showCollaboratorNav = isCollaborator;
+  const showClientNav = isClient;
 
   const handleSignOut = async () => {
     await signOut();
