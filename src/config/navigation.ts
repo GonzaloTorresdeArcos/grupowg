@@ -48,7 +48,7 @@ export const footerNav: NavGroup[] = [
     id: "system",
     label: "Sistema",
     items: primaryNav.filter(
-      (item) => !["/wg-network"].includes(item.to),
+      (item) => !["/portal/login"].includes(item.to),
     ),
   },
   {
