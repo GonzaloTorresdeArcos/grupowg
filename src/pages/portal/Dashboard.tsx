@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useUserRole } from "@/hooks/useUserRole";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -43,6 +44,13 @@ const PortalDashboard = () => {
                  i18n.language?.startsWith("pt") ? "pt-PT" :
                  i18n.language?.startsWith("fr") ? "fr-FR" : "en-GB";
   const { profile, user } = useAuth();
+  const { isClient, isCollaborator, loading: roleLoading } = useUserRole();
+
+  // Cliente sin rol colaborador → redirige a su zona privada
+  if (!roleLoading && isClient && !isCollaborator) {
+    return <Navigate to="/portal/service-os" replace />;
+  }
+
   const todayAppts = mockAppointments
     .filter((a) => new Date(a.scheduledAt).toDateString() === new Date().toDateString())
     .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));

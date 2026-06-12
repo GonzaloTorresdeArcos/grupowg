@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight, Inbox,
+  LogOut, Menu, X, ChevronRight, Inbox, Cpu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 export const PortalLayout = () => {
   const { t } = useTranslation("portal");
   const { profile, user, signOut } = useAuth();
-  const { isAdmin } = useUserRole();
+  const { isAdmin, isClient, isCollaborator } = useUserRole();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
@@ -28,9 +28,17 @@ export const PortalLayout = () => {
     { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
   ];
 
+  const clientNav = [
+    { to: "/portal/service-os", label: "Service OS", icon: Cpu },
+  ];
+
   const adminNav = [
     { to: "/portal/incidencias", label: t("nav.incidences"), icon: Inbox },
   ];
+
+  // Si el usuario es sólo cliente (sin rol colaborador), no mostramos la navegación de colaborador.
+  const showCollaboratorNav = isCollaborator;
+  const showClientNav = isClient;
 
   const handleSignOut = async () => {
     await signOut();
@@ -51,24 +59,56 @@ export const PortalLayout = () => {
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {collaboratorNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={(item as { end?: boolean }).end}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-                  isActive
-                    ? "bg-ink text-bone font-medium"
-                    : "text-ink/70 hover:text-ink hover:bg-muted",
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" strokeWidth={1.75} />
-              {item.label}
-            </NavLink>
-          ))}
+          {showCollaboratorNav && (
+            <>
+              <p className="px-3 pt-1 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                WG Network
+              </p>
+              {collaboratorNav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={(item as { end?: boolean }).end}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                      isActive
+                        ? "bg-ink text-bone font-medium"
+                        : "text-ink/70 hover:text-ink hover:bg-muted",
+                    )
+                  }
+                >
+                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
+                  {item.label}
+                </NavLink>
+              ))}
+            </>
+          )}
+
+          {showClientNav && (
+            <>
+              <p className="px-3 pt-4 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                Clientes
+              </p>
+              {clientNav.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                      isActive
+                        ? "bg-ink text-bone font-medium"
+                        : "text-ink/70 hover:text-ink hover:bg-muted",
+                    )
+                  }
+                >
+                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
+                  {item.label}
+                </NavLink>
+              ))}
+            </>
+          )}
 
           {isAdmin && (
             <>
@@ -95,6 +135,7 @@ export const PortalLayout = () => {
             </>
           )}
         </nav>
+
 
         <div className="p-3 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-3 rounded-lg bg-muted/40 mb-2">
@@ -136,7 +177,11 @@ export const PortalLayout = () => {
             className="bg-card border-b border-border px-3 py-4 space-y-1"
             onClick={(e) => e.stopPropagation()}
           >
-            {[...collaboratorNav, ...(isAdmin ? adminNav : [])].map((item) => (
+            {[
+              ...(showCollaboratorNav ? collaboratorNav : []),
+              ...(showClientNav ? clientNav : []),
+              ...(isAdmin ? adminNav : []),
+            ].map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

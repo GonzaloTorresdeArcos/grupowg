@@ -24,7 +24,6 @@ export type NavGroup = {
 export const primaryNav: NavItem[] = [
   { to: "/modelo", label: "Modelo" },
   { to: "/soluciones", label: "Soluciones" },
-  { to: "/plataforma", label: "Plataforma" },
   { to: "/experiencia", label: "Experiencia" },
   { to: "/industrias", label: "Industrias" },
   { to: "/wg-network", label: "WG Network" },
@@ -68,7 +67,7 @@ export const footerNav: NavGroup[] = [
     items: [
       { to: "/wg-network", label: "WG Professional Network" },
       { to: "/wg-network/inscripcion", label: "Únete a la red" },
-      { to: "/portal/login", label: "Acceso colaboradores" },
+      { to: "/portal/login", label: "Área privada" },
     ],
   },
 ];

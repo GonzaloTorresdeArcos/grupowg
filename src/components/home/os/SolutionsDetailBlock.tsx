@@ -305,7 +305,7 @@ export const SolutionsDetailBlock = () => {
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/plataforma"
+                  to="/contacto"
                   className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-teal transition-colors"
                 >
                   {t("ctaFinal.ctaSecondary")}
