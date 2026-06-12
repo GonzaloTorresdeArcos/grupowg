@@ -136,7 +136,7 @@
     @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-teal;
   }
   .heading-display {
-    @apply font-display font-light tracking-[-0.02em] leading-[1.02];
+    @apply font-display font-semibold tracking-[-0.025em] leading-[1.02];
   }
   .heading-tight {
     @apply font-sans font-semibold tracking-[-0.02em] leading-[1.05];
