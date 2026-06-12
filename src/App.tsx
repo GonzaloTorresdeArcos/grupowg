@@ -15,7 +15,7 @@ const Index = lazy(() => import("./pages/Index.tsx"));
 const QueHacemos = lazy(() => import("./pages/QueHacemos.tsx"));
 const Soluciones = lazy(() => import("./pages/Soluciones.tsx"));
 const Marcas = lazy(() => import("./pages/Marcas.tsx"));
-const Modelo = lazy(() => import("./pages/Modelo.tsx"));
+
 const ServiceOS = lazy(() => import("./pages/portal/ServiceOS.tsx"));
 const Industrias = lazy(() => import("./pages/Industrias.tsx"));
 const Experiencia = lazy(() => import("./pages/Experiencia.tsx"));
@@ -61,7 +61,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/grupo" element={<Navigate to="/" replace />} />
                 <Route path="/grupo/*" element={<Navigate to="/" replace />} />
-                <Route path="/modelo" element={<Modelo />} />
+                <Route path="/modelo" element={<Navigate to="/soluciones" replace />} />
                 <Route path="/plataforma" element={<Navigate to="/" replace />} />
                 <Route path="/industrias" element={<Industrias />} />
                 <Route path="/experiencia" element={<Experiencia />} />

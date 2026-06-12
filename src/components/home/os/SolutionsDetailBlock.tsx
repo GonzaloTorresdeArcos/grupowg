@@ -8,6 +8,7 @@ import {
   ArrowUpRight, ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LifecycleBlock } from "@/components/home/os/LifecycleBlock";
 
 type ModuleKey = "execute" | "controlTower" | "scale";
 
@@ -235,8 +236,12 @@ export const SolutionsDetailBlock = () => {
         );
       })}
 
+      {/* Sistema Warranty Global — flujo de 9 etapas */}
+      <LifecycleBlock />
+
       {/* Capacidades del sistema */}
       <section className="py-24 md:py-32 bg-ink-elevated border-y border-foreground/5">
+
         <div className="container-tight">
           <Reveal>
             <p className="eyebrow-mono mb-4">{t("capabilities.eyebrow")}</p>
