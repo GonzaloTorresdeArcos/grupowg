@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["'Inter'", "system-ui", "sans-serif"],
-        display: ["'Fraunces'", "Georgia", "serif"],
+        sans: ['"Helvetica Neue"', "Helvetica", "Arial", "system-ui", "sans-serif"],
+        display: ['"Helvetica Neue"', "Helvetica", "Arial", "system-ui", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       colors: {
