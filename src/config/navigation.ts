@@ -67,7 +67,7 @@ export const footerNav: NavGroup[] = [
     items: [
       { to: "/wg-network", label: "WG Professional Network" },
       { to: "/wg-network/inscripcion", label: "Únete a la red" },
-      { to: "/portal/login", label: "Acceso colaboradores" },
+      { to: "/portal/login", label: "Área privada" },
     ],
   },
 ];
