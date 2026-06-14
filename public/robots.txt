@@ -15,4 +15,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://grupowg.com/sitemap.xml
+Sitemap: https://grupowg.lovable.app/sitemap.xml
