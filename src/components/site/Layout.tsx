@@ -26,6 +26,30 @@ export const Layout = () => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
 
+  // Canonical + og:url per route (self-referencing).
+  useEffect(() => {
+    const CANONICAL_BASE = "https://grupowg.lovable.app";
+    const path = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+    const href = `${CANONICAL_BASE}${path}`;
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", href);
+
+    let ogUrl = document.querySelector('meta[property="og:url"]') as HTMLMetaElement | null;
+    if (!ogUrl) {
+      ogUrl = document.createElement("meta");
+      ogUrl.setAttribute("property", "og:url");
+      document.head.appendChild(ogUrl);
+    }
+    ogUrl.setAttribute("content", href);
+  }, [pathname]);
+
+
   const isLight = true;
   const showBreadcrumbs =
     !HIDE_BREADCRUMBS.includes(pathname) && !pathname.startsWith("/portal");
