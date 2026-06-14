@@ -1,0 +1,27 @@
+# Grupo WG
+
+> Grupo WG — Service OS para experiencia de cliente, operaciones de campo y red de colaboradores. 50 años de trayectoria al servicio de marcas e industrias.
+
+Grupo WG diseña y opera un Service OS que integra plataforma, inteligencia, gobierno y red de colaboradores para entregar experiencias de cliente medibles a lo largo de todo el ciclo de vida del producto y del servicio.
+
+## Pages
+
+- [Inicio](/): Visión general del Service OS de Grupo WG.
+- [Grupo](/grupo): Quiénes somos, historia y estructura del grupo.
+- [Qué hacemos](/que-hacemos): Capacidades y propuesta de valor.
+- [Soluciones](/soluciones): Soluciones por necesidad de negocio.
+- [Industrias](/industrias): Sectores e industrias a las que servimos.
+- [Experiencia](/experiencia): Método y gobierno de experiencia de cliente.
+- [Marcas](/marcas): Marcas y partners con los que trabajamos.
+- [WG Network](/wg-network): Red de colaboradores de campo.
+- [Inscripción WG Network](/wg-network/inscripcion): Alta de colaboradores en la red.
+- [50 Aniversario](/50-aniversario): 50 años de Grupo WG.
+- [Contacto](/contacto): Cómo contactar con Grupo WG.
+
+## Optional
+
+- [Aviso legal](/legal/aviso-legal): Información legal.
+- [Privacidad](/legal/privacidad): Política de privacidad.
+- [Cookies](/legal/cookies): Política de cookies.
+- [Accesibilidad](/legal/accesibilidad): Declaración de accesibilidad.
+- [Estado de accesibilidad](/legal/accesibilidad/estado): Estado actual de accesibilidad.
