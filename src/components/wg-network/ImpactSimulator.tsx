@@ -28,6 +28,7 @@ import {
 import { GAMAS } from "@/lib/gamas-taxonomy";
 import { PROVINCIAS } from "@/lib/spain-provinces";
 import { DISTRITOS_PT } from "@/lib/portugal-distritos";
+import { resolveZona } from "@/lib/zona-resolver";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
@@ -107,6 +108,10 @@ export const ImpactSimulator = () => {
     inputs.pais === "ES"
       ? /^\d{5}$/.test(inputs.cp)
       : /^\d{4}(-\d{3})?$/.test(inputs.cp);
+  const zonaMatch = useMemo(
+    () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
+    [cpValid, inputs.pais, inputs.cp, inputs.provincia],
+  );
 
   const rows = [
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
@@ -283,7 +288,16 @@ export const ImpactSimulator = () => {
                   placeholder={inputs.pais === "ES" ? "28001" : "1000-001"}
                   className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
                 />
-                {cpValid && (
+                {cpValid && zonaMatch && (
+                  <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>
+                      {zonaMatch.cabecera} · {zonaMatch.level2 ?? zonaMatch.level1}
+                      {" — "}actividad WG en tu zona
+                    </span>
+                  </p>
+                )}
+                {cpValid && !zonaMatch && (
                   <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4" /> {t("sim.inputs.cpOk")}
                   </p>
