@@ -169,7 +169,7 @@ export const PortalLayout = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {[
-              ...(showCollaboratorNav ? collaboratorNav : []),
+              ...(showCollaboratorNav ? [...operaNav, ...negocioNav, ...profileNav] : []),
               ...(showClientNav ? clientNav : []),
               ...(isAdmin ? adminNav : []),
             ].map((item) => (
