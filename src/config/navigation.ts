@@ -25,6 +25,8 @@ export const primaryNav: NavItem[] = [
   { to: "/soluciones", label: "Soluciones" },
   { to: "/experiencia", label: "Experiencia" },
   { to: "/industrias", label: "Industrias" },
+  { to: "/wg-network", label: "WG Network" },
+  { to: "/wg-network/inscripcion", label: "Únete a la red" },
   { to: "/portal/login", label: "Área privada" },
 ];
 
