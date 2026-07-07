@@ -112,6 +112,15 @@ export const ImpactSimulator = () => {
     () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
     [cpValid, inputs.pais, inputs.cp, inputs.provincia],
   );
+  const zonasProvincia = useMemo(
+    () =>
+      inputs.provincia
+        ? inputs.pais === "ES"
+          ? getZonasES(inputs.provincia)
+          : getZonasPT(inputs.provincia)
+        : [],
+    [inputs.pais, inputs.provincia],
+  );
 
   const rows = [
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
