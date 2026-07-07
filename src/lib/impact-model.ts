@@ -108,7 +108,7 @@ export function computeImpact(inputs: ImpactInputs): ImpactResult {
     repPriceSum += rep * (PRICE_BY_GAMA[g] ?? 38);
   }
   const wgMes = Math.max(0, inputs.intervencionesWGMes || 0);
-  const descuento = Math.min(0.8, Math.max(0.4, inputs.descuentoRepuesto || 0.6));
+  const descuento = Math.min(0.7, Math.max(0.4, inputs.descuentoRepuesto || 0.6));
   const pctFueraGarantia = inputs.pctFueraGarantia ?? 0.4;
 
   const repAnio = repMes * 12, insAnio = insMes * 12, wgAnio = wgMes * 12;
