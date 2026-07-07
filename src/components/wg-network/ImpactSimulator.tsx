@@ -74,6 +74,22 @@ const PERFIL_TITLES: Record<Perfil, { title: string; subtitle: string }> = {
   },
 };
 
+const VolRow = ({ label, Icon, value, ticket, onChange }: { label: string; Icon: LucideIcon; value: number; ticket?: number; onChange: (n: number) => void }) => (
+  <div className="flex items-center justify-between gap-2">
+    <span className="flex items-center gap-1.5 text-sm text-ink">
+      <Icon className="h-4 w-4 text-teal" strokeWidth={1.5} /> {label}
+      {ticket ? <span className="text-xs text-muted-foreground">~{ticket}€</span> : null}
+    </span>
+    <div className="flex items-center gap-1">
+      <button type="button" onClick={() => onChange(Math.max(0, value - 5))} className="h-7 w-7 rounded-lg border border-border text-ink hover:border-ink flex items-center justify-center leading-none">−</button>
+      <input type="text" inputMode="numeric" value={value}
+        onChange={(e) => onChange(Math.max(0, parseInt(e.target.value.replace(/\D/g, "") || "0", 10)))}
+        className="w-12 text-center rounded-lg border border-border bg-background py-1.5 text-sm font-display" />
+      <button type="button" onClick={() => onChange(value + 5)} className="h-7 w-7 rounded-lg border border-border text-ink hover:border-ink flex items-center justify-center leading-none">+</button>
+    </div>
+  </div>
+);
+
 export const ImpactSimulator = () => {
   const { t } = useTranslation("wg-network");
   const navigate = useNavigate();
@@ -81,17 +97,7 @@ export const ImpactSimulator = () => {
   const [inputs, setInputs] = useState<ImpactInputs>(DEFAULT_INPUTS);
   const [showAssumptions, setShowAssumptions] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const ticketOverride = useRef(false);
   const wgOverride = useRef(false);
-
-  // Autopropuesta de ticket cuando cambia perfil/gamas y el usuario no lo tocó.
-  useEffect(() => {
-    if (ticketOverride.current) return;
-    setInputs((prev) => ({
-      ...prev,
-      ticketMedio: ticketSugerido(prev.perfil, prev.gamas),
-    }));
-  }, [inputs.perfil, inputs.gamas]);
 
   // Autopropuesta de avisos WG asignables cuando cambian las gamas.
   useEffect(() => {
@@ -101,6 +107,25 @@ export const ImpactSimulator = () => {
       intervencionesWGMes: defaultWGAsignables(prev.gamas),
     }));
   }, [inputs.gamas]);
+
+  // Normaliza volúmenes al cambiar de perfil o gamas.
+  useEffect(() => {
+    setInputs((prev) => {
+      const volumenes: Record<string, { rep: number; ins: number }> = {};
+      for (const g of prev.gamas) {
+        const v = prev.volumenes[g] ?? defaultLinea(prev.perfil);
+        volumenes[g] = {
+          rep: prev.perfil === "instalador" ? 0 : (v.rep > 0 ? v.rep : 20),
+          ins: prev.perfil === "sat" ? 0 : (v.ins > 0 ? v.ins : 10),
+        };
+      }
+      return { ...prev, volumenes };
+    });
+  }, [inputs.perfil]);
+
+  const setVol = (gama: string, field: "rep" | "ins", val: number) =>
+    setInputs((prev) => ({ ...prev, volumenes: { ...prev.volumenes, [gama]: { ...(prev.volumenes[gama] ?? { rep: 0, ins: 0 }), [field]: Math.max(0, val) } } }));
+
 
   const result = useMemo(() => computeImpact(inputs), [inputs]);
   const animatedTotal = useCountUp(result.impactoTotal);
