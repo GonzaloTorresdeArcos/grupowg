@@ -288,7 +288,16 @@ export const ImpactSimulator = () => {
                   placeholder={inputs.pais === "ES" ? "28001" : "1000-001"}
                   className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
                 />
-                {cpValid && (
+                {cpValid && zonaMatch && (
+                  <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>
+                      {zonaMatch.cabecera} · {zonaMatch.level2 ?? zonaMatch.level1}
+                      {" — "}actividad WG en tu zona
+                    </span>
+                  </p>
+                )}
+                {cpValid && !zonaMatch && (
                   <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4" /> {t("sim.inputs.cpOk")}
                   </p>
