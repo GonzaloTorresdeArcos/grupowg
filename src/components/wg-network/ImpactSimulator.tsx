@@ -487,7 +487,7 @@ export const ImpactSimulator = () => {
                   <div>
                     <div className="flex justify-between items-baseline">
                       <label className="text-sm font-medium text-ink">
-                        Descuento en repuesto
+                        Descuento OEM en repuesto
                       </label>
                       <span className="font-display text-lg text-ink">
                         {Math.round(inputs.descuentoRepuesto * 100)}%
@@ -496,7 +496,7 @@ export const ImpactSimulator = () => {
                     <Slider
                       className="mt-3"
                       min={40}
-                      max={80}
+                      max={70}
                       step={5}
                       value={[Math.round(inputs.descuentoRepuesto * 100)]}
                       onValueChange={([v]) => setInputs({ ...inputs, descuentoRepuesto: v / 100 })}
