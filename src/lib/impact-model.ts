@@ -108,7 +108,7 @@ export function computeImpact(inputs: ImpactInputs): ImpactResult {
     repPriceSum += rep * (PRICE_BY_GAMA[g] ?? 38);
   }
   const wgMes = Math.max(0, inputs.intervencionesWGMes || 0);
-  const descuento = Math.min(0.8, Math.max(0.4, inputs.descuentoRepuesto || 0.6));
+  const descuento = Math.min(0.7, Math.max(0.4, inputs.descuentoRepuesto || 0.6));
   const pctFueraGarantia = inputs.pctFueraGarantia ?? 0.4;
 
   const repAnio = repMes * 12, insAnio = insMes * 12, wgAnio = wgMes * 12;
@@ -136,7 +136,7 @@ export function computeImpact(inputs: ImpactInputs): ImpactResult {
 export const ASSUMPTIONS_LIST = [
   { key: "PART_ATTACH_RATE", value: `${Math.round(PART_ATTACH_RATE * 100)}%` },
   { key: "PART_AVG_COST", value: `${PART_AVG_COST} €` },
-  { key: "DESCUENTO_REPUESTO", value: "40% – 80% (ajustable)" },
+  { key: "DESCUENTO_REPUESTO", value: "40% – 70% (ajustable)" },
   { key: "NOT_WORTH_REPAIR", value: `${Math.round(NOT_WORTH_REPAIR * 100)}%` },
   { key: "SUBSTITUTION_CONV", value: `${Math.round(SUBSTITUTION_CONV * 100)}%` },
   { key: "WARRANTY_ATTACH", value: `${Math.round(WARRANTY_ATTACH * 100)}%` },
