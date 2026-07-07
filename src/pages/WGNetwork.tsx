@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Heart, Shield, Wallet, Stethoscope, BookOpen, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, Briefcase, ChevronRight } from "lucide-react";
+import { ArrowUpRight, Heart, Shield, Wallet, Stethoscope, BookOpen, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, Briefcase, ChevronRight, ArrowDown } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
+import { ImpactSimulator } from "@/components/wg-network/ImpactSimulator";
+import { NativeAppBlock } from "@/components/wg-network/NativeAppBlock";
 import logo50 from "@/assets/logo-50-light.png";
 import networkImg from "@/assets/network.webp";
 import { useEffect } from "react";
