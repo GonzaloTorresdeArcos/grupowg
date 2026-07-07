@@ -371,56 +371,42 @@ export const ImpactSimulator = () => {
                 </div>
               </div>
 
-              {/* Intervenciones propias */}
+              {/* Volúmenes por gama y actividad */}
               <div>
-                <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">
-                    Lo que ya reparas/instalas al mes
-                  </label>
-                  <span className="font-display text-lg text-ink">
-                    {inputs.intervencionesPropiasMes}
-                  </span>
-                </div>
-                <Slider
-                  className="mt-3"
-                  min={10}
-                  max={300}
-                  step={5}
-                  value={[inputs.intervencionesPropiasMes]}
-                  onValueChange={([v]) =>
-                    setInputs({ ...inputs, intervencionesPropiasMes: v })
-                  }
-                />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Al margen de WG. Tu volumen actual.
-                </p>
-              </div>
-
-              {/* Ticket medio */}
-              <div>
-                <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">
-                    Ticket medio
-                  </label>
-                  <span className="font-display text-lg text-ink">{inputs.ticketMedio} €</span>
-                </div>
-                <Slider
-                  className="mt-3"
-                  min={15}
-                  max={300}
-                  step={1}
-                  value={[inputs.ticketMedio]}
-                  onValueChange={([v]) => {
-                    ticketOverride.current = true;
-                    setInputs({ ...inputs, ticketMedio: v });
-                  }}
-                />
-                {!ticketOverride.current && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Sugerido a partir de tu perfil y gamas.
-                  </p>
+                <label className="text-sm font-medium text-ink">
+                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : inputs.perfil === "instalador" ? "Lo que instalas al mes" : "Lo que reparas e instalas al mes"}
+                </label>
+                {inputs.gamas.length === 0 ? (
+                  <p className="mt-2 text-sm text-muted-foreground">Selecciona al menos una gama arriba.</p>
+                ) : (
+                  <div className="mt-2 space-y-2">
+                    {inputs.gamas.map((code) => {
+                      const gama = GAMAS.find((x) => x.code === code);
+                      const v = inputs.volumenes[code] ?? { rep: 0, ins: 0 };
+                      const showRep = inputs.perfil !== "instalador";
+                      const showIns = inputs.perfil !== "sat";
+                      return (
+                        <div key={code} className="rounded-xl border border-border bg-background p-3">
+                          <p className="text-sm font-medium text-ink mb-2">{gama?.label ?? code}</p>
+                          <div className="space-y-2">
+                            {showRep && (
+                              <VolRow label="Reparaciones" Icon={Wrench} value={v.rep} ticket={PRICE_BY_GAMA[code]} onChange={(n) => setVol(code, "rep", n)} />
+                            )}
+                            {showIns && (
+                              <VolRow label="Instalaciones" Icon={PackagePlus} value={v.ins} ticket={INSTALL_PRICE_BY_GAMA[code]} onChange={(n) => setVol(code, "ins", n)} />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div className="flex justify-between text-xs text-muted-foreground pt-1">
+                      <span>Total: {result.reparacionesMes + result.instalacionesMes} intervenciones/mes</span>
+                      {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
+                    </div>
+                  </div>
                 )}
               </div>
+
 
               {/* Advanced */}
               <button
