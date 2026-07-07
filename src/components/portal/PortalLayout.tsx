@@ -70,27 +70,9 @@ export const PortalLayout = () => {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {showCollaboratorNav && (
             <>
-              <p className="px-3 pt-1 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                WG Network
-              </p>
-              {collaboratorNav.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={(item as { end?: boolean }).end}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-                      isActive
-                        ? "bg-ink text-bone font-medium"
-                        : "text-ink/70 hover:text-ink hover:bg-muted",
-                    )
-                  }
-                >
-                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                  {item.label}
-                </NavLink>
-              ))}
+              <NavGroup label={t("nav.groupOpera")} items={operaNav} />
+              <NavGroup label={t("nav.groupBusiness")} items={negocioNav} />
+              <NavGroup label={t("nav.groupAccount")} items={profileNav} />
             </>
           )}
 
