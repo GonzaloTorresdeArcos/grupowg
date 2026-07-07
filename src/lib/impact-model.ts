@@ -1,79 +1,34 @@
 /**
  * WG Network — Modelo de impacto económico para SATs E INSTALADORES.
- *
- * Refleja las palancas reales del plan WG: (a) trabajo asignado por WG,
- * (b) repuesto a coste con descuento negociable 40–80%, (c) venta de
- * equipos con margen por gama, (d) garantías extendidas con comisión,
- * (e) tiempo convertido en dinero con la app IA.
- *
- * TODAS las constantes están documentadas. Ajustables por el CTIO.
+ * Volúmenes por gama y por actividad (reparación / instalación).
+ * Palancas: (a) trabajo WG, (b) repuesto a coste, (c) venta de equipos,
+ * (d) garantías, (e) tiempo→dinero. Constantes ajustables por el CTIO.
  */
 
-// ─── Precios medios por gama (€) — REPARACIÓN (SAT) ───────────────
-// Mano de obra + desplazamiento típicos de la red WG.
 export const PRICE_BY_GAMA: Record<string, number> = {
-  blanca: 38,
-  marron: 42,
-  pae: 45,
-  confort: 45,
-  movilidad: 40,
-  electronica: 40,
-  profesional: 85,
+  blanca: 38, marron: 42, pae: 45, confort: 45, movilidad: 40, electronica: 40, profesional: 85,
 };
-
-// ─── Precios medios por gama (€) — INSTALACIÓN (Instalador) ───────
-// A/C, encastres, TV, etc. Tickets bastante más altos.
 export const INSTALL_PRICE_BY_GAMA: Record<string, number> = {
-  blanca: 55,
-  marron: 50,
-  pae: 45,
-  confort: 200,
-  movilidad: 40,
-  electronica: 40,
-  profesional: 120,
+  blanca: 55, marron: 50, pae: 45, confort: 200, movilidad: 40, electronica: 40, profesional: 120,
 };
-
-// ─── Margen medio por equipo vendido (€) por gama (venta sustitución)
 export const EQUIPO_MARGIN_BY_GAMA: Record<string, number> = {
-  blanca: 130,
-  marron: 190,
-  pae: 70,
-  confort: 150,
-  movilidad: 110,
-  electronica: 120,
-  profesional: 300,
+  blanca: 130, marron: 190, pae: 70, confort: 150, movilidad: 110, electronica: 120, profesional: 300,
 };
 
-// ─── Repuesto a coste ─────────────────────────────────────────────
-/** % de intervenciones que consumen al menos una pieza. */
 export const PART_ATTACH_RATE = 0.55;
-/** Coste medio de la pieza en canal WG (€). */
 export const PART_AVG_COST = 45;
-
-// ─── Venta de equipos ─────────────────────────────────────────────
-/** % de reparaciones donde no compensa reparar. */
 export const NOT_WORTH_REPAIR = 0.22;
-/** % de esas donde el cliente acepta comprar equipo al SAT/instalador. */
 export const SUBSTITUTION_CONV = 0.35;
-
-// ─── Garantías extendidas y seguros ──────────────────────────────
-/** % de intervenciones donde se coloca una garantía/seguro. */
 export const WARRANTY_ATTACH = 0.08;
-/** Comisión media por póliza colocada (€). */
 export const WARRANTY_COMMISSION = 25;
-
-// ─── Tiempo ganado con la app IA ─────────────────────────────────
-/** Minutos ahorrados por intervención frente a papel/procesos actuales. */
 export const MINUTES_SAVED_PER_JOB = 12;
-/** Valor de la hora del técnico (€/h). */
 export const HOUR_VALUE = 18;
-
-// ─── Caja (pago a 15 días vs. media del sector) ──────────────────
-/** Meses de facturación liberados al cobrar a 15 días en vez de a ~60. */
 export const CASH_FLOAT_MONTHS = 1.5;
 
 export type Perfil = "sat" | "instalador" | "ambos";
 export type Pais = "ES" | "PT";
+
+export interface LineaVolumen { rep: number; ins: number }
 
 export interface ImpactInputs {
   perfil: Perfil;
@@ -81,10 +36,9 @@ export interface ImpactInputs {
   provincia?: string;
   cp: string;
   gamas: string[];
-  intervencionesPropiasMes: number;
+  volumenes: Record<string, LineaVolumen>;
   intervencionesWGMes: number;
-  ticketMedio: number;
-  descuentoRepuesto: number; // 0.40 .. 0.80
+  descuentoRepuesto: number;
   pctFueraGarantia?: number;
   tecnicos?: number;
 }
@@ -99,6 +53,9 @@ export interface ImpactResult {
   facturacionActual: number;
   multiplicador: number;
   cajaLiberada: number;
+  reparacionesMes: number;
+  instalacionesMes: number;
+  ticketMedio: number;
 }
 
 export const DEFAULT_INPUTS: ImpactInputs = {
@@ -107,22 +64,15 @@ export const DEFAULT_INPUTS: ImpactInputs = {
   provincia: "",
   cp: "",
   gamas: ["blanca"],
-  intervencionesPropiasMes: 60,
+  volumenes: { blanca: { rep: 40, ins: 0 } },
   intervencionesWGMes: 15,
-  ticketMedio: 38,
   descuentoRepuesto: 0.6,
   pctFueraGarantia: 0.4,
   tecnicos: 1,
 };
 
-const avg = (nums: number[]): number =>
-  nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
+const avg = (nums: number[]): number => (nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : 0);
 
-/**
- * Ticket sugerido según perfil y mix de gamas seleccionadas.
- * "sat" usa PRICE_BY_GAMA. "instalador" usa INSTALL_PRICE_BY_GAMA.
- * "ambos" promedia ambos. Si no hay gamas, 38 €.
- */
 export function ticketSugerido(perfil: Perfil, gamas: string[]): number {
   if (!gamas.length) return 38;
   const rep = gamas.map((g) => PRICE_BY_GAMA[g] ?? 38);
@@ -132,61 +82,55 @@ export function ticketSugerido(perfil: Perfil, gamas: string[]): number {
   return Math.round((avg(rep) + avg(ins)) / 2);
 }
 
-/** Margen medio por equipo según mix de gamas. Default 130 €. */
 export function equipoMargenMedio(gamas: string[]): number {
   if (!gamas.length) return 130;
   return avg(gamas.map((g) => EQUIPO_MARGIN_BY_GAMA[g] ?? 130));
 }
 
-/** Estimación por defecto de avisos WG asignables/mes = min(80, 15 * nGamas). */
 export function defaultWGAsignables(gamas: string[]): number {
   return Math.min(80, 15 * Math.max(1, gamas.length));
 }
 
+/** Volumen por defecto de una gama según perfil. */
+export function defaultLinea(perfil: Perfil): LineaVolumen {
+  return { rep: perfil === "instalador" ? 0 : 20, ins: perfil === "sat" ? 0 : 10 };
+}
+
 export function computeImpact(inputs: ImpactInputs): ImpactResult {
-  const propiasMes = Math.max(0, inputs.intervencionesPropiasMes || 0);
+  const gamas = inputs.gamas;
+  let repMes = 0, insMes = 0, factMesRep = 0, factMesIns = 0, repPriceSum = 0;
+  for (const g of gamas) {
+    const v = inputs.volumenes[g] ?? { rep: 0, ins: 0 };
+    const rep = Math.max(0, v.rep || 0), ins = Math.max(0, v.ins || 0);
+    repMes += rep; insMes += ins;
+    factMesRep += rep * (PRICE_BY_GAMA[g] ?? 38);
+    factMesIns += ins * (INSTALL_PRICE_BY_GAMA[g] ?? 45);
+    repPriceSum += rep * (PRICE_BY_GAMA[g] ?? 38);
+  }
   const wgMes = Math.max(0, inputs.intervencionesWGMes || 0);
-  const ticketMedio = Math.max(0, inputs.ticketMedio || 0);
   const descuento = Math.min(0.8, Math.max(0.4, inputs.descuentoRepuesto || 0.6));
   const pctFueraGarantia = inputs.pctFueraGarantia ?? 0.4;
 
-  const propiasAnio = propiasMes * 12;
-  const wgAnio = wgMes * 12;
-  const totalAnio = propiasAnio + wgAnio;
+  const repAnio = repMes * 12, insAnio = insMes * 12, wgAnio = wgMes * 12;
+  const totalAnio = repAnio + insAnio + wgAnio;
+  const repBaseAnio = repAnio + wgAnio;
 
-  const ingresoWG = wgAnio * ticketMedio;
-  const ahorroRepuesto = totalAnio * PART_ATTACH_RATE * (PART_AVG_COST * descuento);
-  const ingresoEquipos =
-    totalAnio *
-    pctFueraGarantia *
-    NOT_WORTH_REPAIR *
-    SUBSTITUTION_CONV *
-    equipoMargenMedio(inputs.gamas);
+  const avgRepTicket = repMes > 0 ? repPriceSum / repMes : (gamas.length ? avg(gamas.map((g) => PRICE_BY_GAMA[g] ?? 38)) : 38);
+
+  const ingresoWG = wgAnio * avgRepTicket;
+  const ahorroRepuesto = repBaseAnio * PART_ATTACH_RATE * (PART_AVG_COST * descuento);
+  const ingresoEquipos = repBaseAnio * pctFueraGarantia * NOT_WORTH_REPAIR * SUBSTITUTION_CONV * equipoMargenMedio(gamas);
   const ingresoGarantias = totalAnio * WARRANTY_ATTACH * WARRANTY_COMMISSION;
   const ahorroTiempo = totalAnio * (MINUTES_SAVED_PER_JOB / 60) * HOUR_VALUE;
+  const impactoTotal = ingresoWG + ahorroRepuesto + ingresoEquipos + ingresoGarantias + ahorroTiempo;
 
-  const impactoTotal =
-    ingresoWG + ahorroRepuesto + ingresoEquipos + ingresoGarantias + ahorroTiempo;
+  const facturacionActual = (factMesRep + factMesIns) * 12;
+  const multiplicador = facturacionActual > 0 ? (facturacionActual + impactoTotal) / facturacionActual : 1 + (impactoTotal > 0 ? 1 : 0);
+  const cajaLiberada = wgMes * avgRepTicket * CASH_FLOAT_MONTHS;
+  const propiasMes = repMes + insMes;
+  const ticketMedio = propiasMes > 0 ? (factMesRep + factMesIns) / propiasMes : avgRepTicket;
 
-  const facturacionActual = propiasAnio * ticketMedio;
-  const multiplicador =
-    facturacionActual > 0
-      ? (facturacionActual + impactoTotal) / facturacionActual
-      : 1 + (impactoTotal > 0 ? 1 : 0);
-
-  const cajaLiberada = wgMes * ticketMedio * CASH_FLOAT_MONTHS;
-
-  return {
-    ingresoWG,
-    ahorroRepuesto,
-    ingresoEquipos,
-    ingresoGarantias,
-    ahorroTiempo,
-    impactoTotal,
-    facturacionActual,
-    multiplicador,
-    cajaLiberada,
-  };
+  return { ingresoWG, ahorroRepuesto, ingresoEquipos, ingresoGarantias, ahorroTiempo, impactoTotal, facturacionActual, multiplicador, cajaLiberada, reparacionesMes: repMes, instalacionesMes: insMes, ticketMedio };
 }
 
 export const ASSUMPTIONS_LIST = [

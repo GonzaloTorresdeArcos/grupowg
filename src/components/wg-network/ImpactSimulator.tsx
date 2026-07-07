@@ -12,6 +12,7 @@ import {
   MapPin,
   CheckCircle2,
   Copy,
+  type LucideIcon,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,9 @@ import {
   computeImpact,
   DEFAULT_INPUTS,
   defaultWGAsignables,
-  ticketSugerido,
+  defaultLinea,
+  PRICE_BY_GAMA,
+  INSTALL_PRICE_BY_GAMA,
   type ImpactInputs,
   type Perfil,
   type Pais,
@@ -71,6 +74,22 @@ const PERFIL_TITLES: Record<Perfil, { title: string; subtitle: string }> = {
   },
 };
 
+const VolRow = ({ label, Icon, value, ticket, onChange }: { label: string; Icon: LucideIcon; value: number; ticket?: number; onChange: (n: number) => void }) => (
+  <div className="flex items-center justify-between gap-2">
+    <span className="flex items-center gap-1.5 text-sm text-ink">
+      <Icon className="h-4 w-4 text-teal" strokeWidth={1.5} /> {label}
+      {ticket ? <span className="text-xs text-muted-foreground">~{ticket}€</span> : null}
+    </span>
+    <div className="flex items-center gap-1">
+      <button type="button" onClick={() => onChange(Math.max(0, value - 5))} className="h-7 w-7 rounded-lg border border-border text-ink hover:border-ink flex items-center justify-center leading-none">−</button>
+      <input type="text" inputMode="numeric" value={value}
+        onChange={(e) => onChange(Math.max(0, parseInt(e.target.value.replace(/\D/g, "") || "0", 10)))}
+        className="w-12 text-center rounded-lg border border-border bg-background py-1.5 text-sm font-display" />
+      <button type="button" onClick={() => onChange(value + 5)} className="h-7 w-7 rounded-lg border border-border text-ink hover:border-ink flex items-center justify-center leading-none">+</button>
+    </div>
+  </div>
+);
+
 export const ImpactSimulator = () => {
   const { t } = useTranslation("wg-network");
   const navigate = useNavigate();
@@ -78,17 +97,7 @@ export const ImpactSimulator = () => {
   const [inputs, setInputs] = useState<ImpactInputs>(DEFAULT_INPUTS);
   const [showAssumptions, setShowAssumptions] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const ticketOverride = useRef(false);
   const wgOverride = useRef(false);
-
-  // Autopropuesta de ticket cuando cambia perfil/gamas y el usuario no lo tocó.
-  useEffect(() => {
-    if (ticketOverride.current) return;
-    setInputs((prev) => ({
-      ...prev,
-      ticketMedio: ticketSugerido(prev.perfil, prev.gamas),
-    }));
-  }, [inputs.perfil, inputs.gamas]);
 
   // Autopropuesta de avisos WG asignables cuando cambian las gamas.
   useEffect(() => {
@@ -98,6 +107,25 @@ export const ImpactSimulator = () => {
       intervencionesWGMes: defaultWGAsignables(prev.gamas),
     }));
   }, [inputs.gamas]);
+
+  // Normaliza volúmenes al cambiar de perfil o gamas.
+  useEffect(() => {
+    setInputs((prev) => {
+      const volumenes: Record<string, { rep: number; ins: number }> = {};
+      for (const g of prev.gamas) {
+        const v = prev.volumenes[g] ?? defaultLinea(prev.perfil);
+        volumenes[g] = {
+          rep: prev.perfil === "instalador" ? 0 : (v.rep > 0 ? v.rep : 20),
+          ins: prev.perfil === "sat" ? 0 : (v.ins > 0 ? v.ins : 10),
+        };
+      }
+      return { ...prev, volumenes };
+    });
+  }, [inputs.perfil]);
+
+  const setVol = (gama: string, field: "rep" | "ins", val: number) =>
+    setInputs((prev) => ({ ...prev, volumenes: { ...prev.volumenes, [gama]: { ...(prev.volumenes[gama] ?? { rep: 0, ins: 0 }), [field]: Math.max(0, val) } } }));
+
 
   const result = useMemo(() => computeImpact(inputs), [inputs]);
   const animatedTotal = useCountUp(result.impactoTotal);
@@ -156,7 +184,11 @@ export const ImpactSimulator = () => {
     setInputs((prev) => {
       const has = prev.gamas.includes(code);
       const next = has ? prev.gamas.filter((g) => g !== code) : [...prev.gamas, code];
-      return { ...prev, gamas: next.length ? next : prev.gamas };
+      if (!next.length) return prev;
+      const volumenes = { ...prev.volumenes };
+      if (has) delete volumenes[code];
+      else if (!volumenes[code]) volumenes[code] = defaultLinea(prev.perfil);
+      return { ...prev, gamas: next, volumenes };
     });
   };
 
@@ -180,8 +212,8 @@ export const ImpactSimulator = () => {
           email: lead.email,
           telefono: lead.telefono,
           cp: inputs.cp,
-          intervenciones_mes: inputs.intervencionesPropiasMes,
-          ticket_medio: inputs.ticketMedio,
+          intervenciones_mes: result.reparacionesMes + result.instalacionesMes,
+          ticket_medio: Math.round(result.ticketMedio),
           gama: inputs.gamas[0] ?? null,
           impacto_total: result.impactoTotal,
           multiplicador: result.multiplicador,
@@ -191,10 +223,12 @@ export const ImpactSimulator = () => {
             pais: inputs.pais,
             provincia: inputs.provincia,
             gamas: inputs.gamas,
-            intervencionesPropiasMes: inputs.intervencionesPropiasMes,
+            volumenes: inputs.volumenes,
+            reparacionesMes: result.reparacionesMes,
+            instalacionesMes: result.instalacionesMes,
             intervencionesWGMes: inputs.intervencionesWGMes,
             descuentoRepuesto: inputs.descuentoRepuesto,
-            ticketMedio: inputs.ticketMedio,
+            ticketMedio: Math.round(result.ticketMedio),
             ingresoWG: result.ingresoWG,
             ahorroRepuesto: result.ahorroRepuesto,
             ingresoEquipos: result.ingresoEquipos,
@@ -337,56 +371,42 @@ export const ImpactSimulator = () => {
                 </div>
               </div>
 
-              {/* Intervenciones propias */}
+              {/* Volúmenes por gama y actividad */}
               <div>
-                <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">
-                    Lo que ya reparas/instalas al mes
-                  </label>
-                  <span className="font-display text-lg text-ink">
-                    {inputs.intervencionesPropiasMes}
-                  </span>
-                </div>
-                <Slider
-                  className="mt-3"
-                  min={10}
-                  max={300}
-                  step={5}
-                  value={[inputs.intervencionesPropiasMes]}
-                  onValueChange={([v]) =>
-                    setInputs({ ...inputs, intervencionesPropiasMes: v })
-                  }
-                />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Al margen de WG. Tu volumen actual.
-                </p>
-              </div>
-
-              {/* Ticket medio */}
-              <div>
-                <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">
-                    Ticket medio
-                  </label>
-                  <span className="font-display text-lg text-ink">{inputs.ticketMedio} €</span>
-                </div>
-                <Slider
-                  className="mt-3"
-                  min={15}
-                  max={300}
-                  step={1}
-                  value={[inputs.ticketMedio]}
-                  onValueChange={([v]) => {
-                    ticketOverride.current = true;
-                    setInputs({ ...inputs, ticketMedio: v });
-                  }}
-                />
-                {!ticketOverride.current && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Sugerido a partir de tu perfil y gamas.
-                  </p>
+                <label className="text-sm font-medium text-ink">
+                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : inputs.perfil === "instalador" ? "Lo que instalas al mes" : "Lo que reparas e instalas al mes"}
+                </label>
+                {inputs.gamas.length === 0 ? (
+                  <p className="mt-2 text-sm text-muted-foreground">Selecciona al menos una gama arriba.</p>
+                ) : (
+                  <div className="mt-2 space-y-2">
+                    {inputs.gamas.map((code) => {
+                      const gama = GAMAS.find((x) => x.code === code);
+                      const v = inputs.volumenes[code] ?? { rep: 0, ins: 0 };
+                      const showRep = inputs.perfil !== "instalador";
+                      const showIns = inputs.perfil !== "sat";
+                      return (
+                        <div key={code} className="rounded-xl border border-border bg-background p-3">
+                          <p className="text-sm font-medium text-ink mb-2">{gama?.label ?? code}</p>
+                          <div className="space-y-2">
+                            {showRep && (
+                              <VolRow label="Reparaciones" Icon={Wrench} value={v.rep} ticket={PRICE_BY_GAMA[code]} onChange={(n) => setVol(code, "rep", n)} />
+                            )}
+                            {showIns && (
+                              <VolRow label="Instalaciones" Icon={PackagePlus} value={v.ins} ticket={INSTALL_PRICE_BY_GAMA[code]} onChange={(n) => setVol(code, "ins", n)} />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div className="flex justify-between text-xs text-muted-foreground pt-1">
+                      <span>Total: {result.reparacionesMes + result.instalacionesMes} intervenciones/mes</span>
+                      {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
+                    </div>
+                  </div>
                 )}
               </div>
+
 
               {/* Advanced */}
               <button
