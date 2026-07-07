@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight, Inbox, Cpu, Package, Store, ShieldCheck,
+  LogOut, Menu, X, ChevronRight, Inbox, Cpu, Package, Store, ShieldCheck, TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,6 +43,7 @@ export const PortalLayout = () => {
 
   const adminNav = [
     { to: "/portal/incidencias", label: t("nav.incidences"), icon: Inbox },
+    { to: "/portal/leads", label: t("nav.leads"), icon: TrendingUp },
   ];
 
   // Si el usuario es sólo cliente (sin rol colaborador), no mostramos la navegación de colaborador.

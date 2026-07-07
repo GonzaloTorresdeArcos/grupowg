@@ -119,6 +119,7 @@ const App = () => (
                 <Route path="/portal/garantias" element={<PortalGarantias />} />
                 <Route path="/portal/incidencias" element={<PortalIncidencias />} />
                 <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
+                <Route path="/portal/leads" element={<PortalLeads />} />
               </Route>
 
               <Route element={<Layout />}>
