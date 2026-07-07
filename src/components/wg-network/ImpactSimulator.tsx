@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ArrowUpRight, ChevronDown, Wrench, PackagePlus, ShieldCheck, Clock, MapPin, CheckCircle2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ASSUMPTIONS_LIST,
   computeImpact,
