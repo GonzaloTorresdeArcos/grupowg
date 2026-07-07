@@ -94,11 +94,16 @@ const Inscripcion = () => {
   const [done, setDone] = useState(false);
 
   // Step 1
-  const [s1, setS1] = useState({
-    razon_social: "", nombre_comercial: "", cif_nif: "", tipo_colaborador: "",
-    persona_contacto: "", email: "", telefono: "",
-    direccion_fiscal: "",
-    codigo_postal: "", localidad: "", provincia_fiscal: "",
+  const [s1, setS1] = useState(() => {
+    let qp: URLSearchParams | null = null;
+    try { qp = new URLSearchParams(typeof window !== "undefined" ? window.location.search : ""); } catch { qp = null; }
+    const g = (k: string) => (qp?.get(k) ?? "").toString().slice(0, 250);
+    return {
+      razon_social: "", nombre_comercial: g("empresa"), cif_nif: "", tipo_colaborador: "",
+      persona_contacto: g("nombre"), email: g("email"), telefono: g("tel"),
+      direccion_fiscal: "",
+      codigo_postal: /^\d{5}$/.test(g("cp")) ? g("cp") : "", localidad: "", provincia_fiscal: "",
+    };
   });
   const [errs1, setErrs1] = useState<Record<string, string>>({});
   const [emailVerified, setEmailVerified] = useState(false);

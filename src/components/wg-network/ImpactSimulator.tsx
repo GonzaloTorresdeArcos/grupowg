@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ArrowUpRight, ChevronDown, Wrench, PackagePlus, ShieldCheck, Clock, MapPin, CheckCircle2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ASSUMPTIONS_LIST,
   computeImpact,
@@ -67,15 +68,49 @@ export const ImpactSimulator = () => {
 
   // ── Lead capture ──
   const [lead, setLead] = useState({ nombre: "", empresa: "", email: "", telefono: "" });
-  const submitLead = (e: React.FormEvent) => {
+  const submitLead = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!lead.nombre || !lead.email) {
       toast.error(t("sim.capture.errRequired"));
       return;
     }
+
+    // Fire-and-forget persist to Supabase — never block navigation on it.
+    try {
+      await supabase.functions.invoke("submit-lead", {
+        body: {
+          nombre: lead.nombre,
+          empresa: lead.empresa,
+          email: lead.email,
+          telefono: lead.telefono,
+          cp: inputs.cp,
+          intervenciones_mes: inputs.intervencionesMes,
+          ticket_medio: inputs.ticketMedio,
+          gama: inputs.gamaPrincipal,
+          impacto_total: result.impactoTotal,
+          multiplicador: result.multiplicador,
+          caja_liberada: result.cajaLiberada,
+          breakdown: {
+            ahorroRepuesto: result.ahorroRepuesto,
+            ingresoEquipos: result.ingresoEquipos,
+            ingresoGarantias: result.ingresoGarantias,
+            ahorroTiempo: result.ahorroTiempo,
+          },
+        },
+      });
+    } catch (err) {
+      console.warn("[submit-lead] non-blocking error", err);
+    }
+
     toast.success(t("sim.capture.success"));
-    const qs = cpValid ? `?cp=${encodeURIComponent(inputs.cp)}` : "";
-    setTimeout(() => navigate(`/wg-network/inscripcion${qs}`), 400);
+    const params = new URLSearchParams();
+    if (cpValid) params.set("cp", inputs.cp);
+    if (lead.email) params.set("email", lead.email);
+    if (lead.nombre) params.set("nombre", lead.nombre);
+    if (lead.empresa) params.set("empresa", lead.empresa);
+    if (lead.telefono) params.set("tel", lead.telefono);
+    const qs = params.toString();
+    setTimeout(() => navigate(`/wg-network/inscripcion${qs ? `?${qs}` : ""}`), 400);
   };
 
   return (
