@@ -212,3 +212,29 @@ export const PortalLayout = () => {
     </div>
   );
 };
+
+type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; end?: boolean };
+
+const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
+  <div className="pb-2">
+    <p className="px-3 pt-3 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+      {label}
+    </p>
+    {items.map((item) => (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        end={item.end}
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+            isActive ? "bg-ink text-bone font-medium" : "text-ink/70 hover:text-ink hover:bg-muted",
+          )
+        }
+      >
+        <item.icon className="h-4 w-4" strokeWidth={1.75} />
+        {item.label}
+      </NavLink>
+    ))}
+  </div>
+);
