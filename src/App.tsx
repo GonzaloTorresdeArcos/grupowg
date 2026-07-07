@@ -40,6 +40,9 @@ const PortalProfile = lazy(() => import("./pages/portal/Profile.tsx"));
 const PortalIncidencias = lazy(() => import("./pages/portal/Incidencias.tsx"));
 const PortalIncidenciaDetail = lazy(() => import("./pages/portal/IncidenciaDetail.tsx"));
 const PortalI18nDebug = lazy(() => import("./pages/PortalI18nDebug.tsx"));
+const PortalRepuestos = lazy(() => import("./pages/portal/Repuestos.tsx"));
+const PortalEquipos = lazy(() => import("./pages/portal/Equipos.tsx"));
+const PortalGarantias = lazy(() => import("./pages/portal/Garantias.tsx"));
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
 import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
@@ -112,6 +115,9 @@ const App = () => (
                 <Route path="/portal/documentos" element={<PortalDocuments />} />
                 <Route path="/portal/facturacion" element={<PortalInvoices />} />
                 <Route path="/portal/perfil" element={<PortalProfile />} />
+                <Route path="/portal/repuestos" element={<PortalRepuestos />} />
+                <Route path="/portal/equipos" element={<PortalEquipos />} />
+                <Route path="/portal/garantias" element={<PortalGarantias />} />
                 <Route path="/portal/incidencias" element={<PortalIncidencias />} />
                 <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
               </Route>

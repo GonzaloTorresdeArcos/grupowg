@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight, Inbox, Cpu,
+  LogOut, Menu, X, ChevronRight, Inbox, Cpu, Package, Store, ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,11 +20,20 @@ export const PortalLayout = () => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
-  const collaboratorNav = [
+  const operaNav = [
     { to: "/portal", label: t("nav.summary"), icon: LayoutDashboard, end: true },
     { to: "/portal/calendario", label: t("nav.calendar"), icon: Calendar },
     { to: "/portal/documentos", label: t("nav.documents"), icon: FileText },
     { to: "/portal/facturacion", label: t("nav.billing"), icon: Receipt },
+  ];
+
+  const negocioNav = [
+    { to: "/portal/repuestos", label: t("nav.parts"), icon: Package },
+    { to: "/portal/equipos", label: t("nav.equipment"), icon: Store },
+    { to: "/portal/garantias", label: t("nav.warranties"), icon: ShieldCheck },
+  ];
+
+  const profileNav = [
     { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
   ];
 
@@ -61,27 +70,9 @@ export const PortalLayout = () => {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {showCollaboratorNav && (
             <>
-              <p className="px-3 pt-1 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                WG Network
-              </p>
-              {collaboratorNav.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={(item as { end?: boolean }).end}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-                      isActive
-                        ? "bg-ink text-bone font-medium"
-                        : "text-ink/70 hover:text-ink hover:bg-muted",
-                    )
-                  }
-                >
-                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                  {item.label}
-                </NavLink>
-              ))}
+              <NavGroup label={t("nav.groupOpera")} items={operaNav} />
+              <NavGroup label={t("nav.groupBusiness")} items={negocioNav} />
+              <NavGroup label={t("nav.groupAccount")} items={profileNav} />
             </>
           )}
 
@@ -178,7 +169,7 @@ export const PortalLayout = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {[
-              ...(showCollaboratorNav ? collaboratorNav : []),
+              ...(showCollaboratorNav ? [...operaNav, ...negocioNav, ...profileNav] : []),
               ...(showClientNav ? clientNav : []),
               ...(isAdmin ? adminNav : []),
             ].map((item) => (
@@ -221,3 +212,29 @@ export const PortalLayout = () => {
     </div>
   );
 };
+
+type NavItem = { to: string; label: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number | string }>; end?: boolean };
+
+const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
+  <div className="pb-2">
+    <p className="px-3 pt-3 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+      {label}
+    </p>
+    {items.map((item) => (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        end={item.end}
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+            isActive ? "bg-ink text-bone font-medium" : "text-ink/70 hover:text-ink hover:bg-muted",
+          )
+        }
+      >
+        <item.icon className="h-4 w-4" strokeWidth={1.75} />
+        {item.label}
+      </NavLink>
+    ))}
+  </div>
+);

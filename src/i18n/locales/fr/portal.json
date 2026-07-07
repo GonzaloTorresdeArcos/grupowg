@@ -9,7 +9,10 @@
     "eyebrow": "WG Professional Network",
     "title": "Portail collaborateur",
     "subtitle": "Accédez à votre activité, calendrier, documents et facturation.",
-    "tabs": { "signin": "Se connecter", "signup": "Créer un compte" },
+    "tabs": {
+      "signin": "Se connecter",
+      "signup": "Créer un compte"
+    },
     "fields": {
       "email": "Email",
       "password": "Mot de passe",
@@ -48,7 +51,13 @@
     "ops": "Opérations",
     "incidences": "Tickets",
     "signOut": "Se déconnecter",
-    "fallbackName": "Collaborateur"
+    "fallbackName": "Collaborateur",
+    "groupOpera": "Opera",
+    "groupBusiness": "Mi negocio",
+    "groupAccount": "Cuenta",
+    "parts": "Repuesto a coste",
+    "equipment": "Tienda de equipos",
+    "warranties": "Garantías y seguros"
   },
   "dashboard": {
     "eyebrow": "Vue d'ensemble",
@@ -108,8 +117,20 @@
     "title": "Calendrier des rendez-vous",
     "subtitle": "Prochaines visites et installations.",
     "today": "Aujourd'hui",
-    "legend": { "scheduled": "Programmé", "inProgress": "En cours", "completed": "Terminé" },
-    "days": ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+    "legend": {
+      "scheduled": "Programmé",
+      "inProgress": "En cours",
+      "completed": "Terminé"
+    },
+    "days": [
+      "Lun",
+      "Mar",
+      "Mer",
+      "Jeu",
+      "Ven",
+      "Sam",
+      "Dim"
+    ],
     "upcoming": "Prochains rendez-vous",
     "detail": {
       "customer": "Client",
@@ -125,9 +146,25 @@
     "eyebrow": "Documentation",
     "title": "Renouvellement documentaire",
     "subtitle": "Maintenez vos documents à jour pour continuer à opérer dans le réseau.",
-    "filters": { "valid": "Valides", "expiring": "Bientôt expirés", "expired": "Expirés", "missing": "En attente", "viewAll": "← Voir tous les documents" },
-    "status": { "valid": "Valide", "expiring": "Bientôt expiré", "expired": "Expiré", "missing": "En attente" },
-    "actions": { "download": "Télécharger", "upload": "Téléverser", "renew": "Renouveler", "cancel": "Annuler" },
+    "filters": {
+      "valid": "Valides",
+      "expiring": "Bientôt expirés",
+      "expired": "Expirés",
+      "missing": "En attente",
+      "viewAll": "← Voir tous les documents"
+    },
+    "status": {
+      "valid": "Valide",
+      "expiring": "Bientôt expiré",
+      "expired": "Expiré",
+      "missing": "En attente"
+    },
+    "actions": {
+      "download": "Télécharger",
+      "upload": "Téléverser",
+      "renew": "Renouveler",
+      "cancel": "Annuler"
+    },
     "fields": {
       "issued": "Émis",
       "expires": "Expire",
@@ -135,17 +172,39 @@
       "expiresLabel": "Date d'expiration",
       "expiresHelp": "Nous vous préviendrons 60, 30 et 7 jours avant l'expiration."
     },
-    "dialog": { "uploadTitle": "Téléverser un document", "renewTitle": "Renouveler le document" },
-    "toasts": { "updated": "Document mis à jour", "updatedDesc": "{{name}} a été renouvelé avec succès." }
+    "dialog": {
+      "uploadTitle": "Téléverser un document",
+      "renewTitle": "Renouveler le document"
+    },
+    "toasts": {
+      "updated": "Document mis à jour",
+      "updatedDesc": "{{name}} a été renouvelé avec succès."
+    }
   },
   "invoices": {
     "eyebrow": "Facturation",
     "title": "Règlements et factures",
     "subtitle": "Historique de vos services facturés",
-    "summary": { "total": "Total facturé", "paid": "Encaissé", "pending": "En attente", "average": "Moy. / service" },
+    "summary": {
+      "total": "Total facturé",
+      "paid": "Encaissé",
+      "pending": "En attente",
+      "average": "Moy. / service"
+    },
     "tableTitle": "Historique des règlements",
-    "columns": { "number": "Numéro", "period": "Période", "services": "Services", "amount": "Montant", "status": "Statut", "actions": "Actions" },
-    "status": { "paid": "Payée", "pending": "En attente", "overdue": "En retard" },
+    "columns": {
+      "number": "Numéro",
+      "period": "Période",
+      "services": "Services",
+      "amount": "Montant",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "status": {
+      "paid": "Payée",
+      "pending": "En attente",
+      "overdue": "En retard"
+    },
     "detail": {
       "title": "Règlement",
       "issuedOn": "Émise le",
@@ -158,13 +217,22 @@
       "viewServices": "Voir le détail des services",
       "downloadPdf": "Télécharger PDF"
     },
-    "toasts": { "downloadStarted": "Téléchargement lancé" }
+    "toasts": {
+      "downloadStarted": "Téléchargement lancé"
+    }
   },
   "profile": {
     "eyebrow": "Compte",
     "title": "Données du collaborateur",
     "subtitle": "Informations de votre compte et entreprise",
-    "fields": { "email": "Email", "emailHelp": "L'email est géré depuis la connexion.", "fullName": "Nom complet", "company": "Entreprise", "phone": "Téléphone", "save": "Enregistrer" },
+    "fields": {
+      "email": "Email",
+      "emailHelp": "L'email est géré depuis la connexion.",
+      "fullName": "Nom complet",
+      "company": "Entreprise",
+      "phone": "Téléphone",
+      "save": "Enregistrer"
+    },
     "link": {
       "title": "Liaison avec WG Network",
       "linked": "Lié",
@@ -179,7 +247,11 @@
       "cta": "Devenir administrateur",
       "loading": "Activation…"
     },
-    "toasts": { "saveError": "Enregistrement impossible", "saved": "Profil mis à jour", "adminOk": "Vous êtes maintenant administrateur. Rechargez la page." }
+    "toasts": {
+      "saveError": "Enregistrement impossible",
+      "saved": "Profil mis à jour",
+      "adminOk": "Vous êtes maintenant administrateur. Rechargez la page."
+    }
   },
   "incidences": {
     "eyebrow": "Opérations",
@@ -187,11 +259,19 @@
     "subtitle": "Enregistrez les avis et affectez automatiquement le meilleur collaborateur.",
     "detailTitle": "Détail du ticket",
     "newButton": "Nouveau ticket",
-    "filters": { "all": "Tous" },
+    "filters": {
+      "all": "Tous"
+    },
     "loading": "Chargement…",
     "loadingList": "Chargement des tickets…",
-    "empty": { "title": "Aucun ticket", "subtitle": "Créez-en un pour tester le moteur de matching." },
-    "restricted": { "title": "Accès restreint", "subtitle": "La gestion des tickets est réservée à l'équipe d'opérations." },
+    "empty": {
+      "title": "Aucun ticket",
+      "subtitle": "Créez-en un pour tester le moteur de matching."
+    },
+    "restricted": {
+      "title": "Accès restreint",
+      "subtitle": "La gestion des tickets est réservée à l'équipe d'opérations."
+    },
     "form": {
       "title": "Nouveau ticket",
       "customer": "Client *",
@@ -210,6 +290,9 @@
       "submit": "Créer et trouver un match",
       "submitting": "Création..."
     },
-    "toasts": { "required": "Client, province et famille sont requis", "created": "Ticket créé" }
+    "toasts": {
+      "required": "Client, province et famille sont requis",
+      "created": "Ticket créé"
+    }
   }
 }
