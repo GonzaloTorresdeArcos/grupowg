@@ -184,7 +184,11 @@ export const ImpactSimulator = () => {
     setInputs((prev) => {
       const has = prev.gamas.includes(code);
       const next = has ? prev.gamas.filter((g) => g !== code) : [...prev.gamas, code];
-      return { ...prev, gamas: next.length ? next : prev.gamas };
+      if (!next.length) return prev;
+      const volumenes = { ...prev.volumenes };
+      if (has) delete volumenes[code];
+      else if (!volumenes[code]) volumenes[code] = defaultLinea(prev.perfil);
+      return { ...prev, gamas: next, volumenes };
     });
   };
 
