@@ -1,27 +1,18 @@
-# Grupo WG
+# WG Professional Network
 
-> Grupo WG — Service OS para experiencia de cliente, operaciones de campo y red de colaboradores. 50 años de trayectoria al servicio de marcas e industrias.
-
-Grupo WG diseña y opera un Service OS que integra plataforma, inteligencia, gobierno y red de colaboradores para entregar experiencias de cliente medibles a lo largo de todo el ciclo de vida del producto y del servicio.
+> Red de servicios técnicos profesionales de Grupo Warranty Global (Grupo WG). 50 años entrando en las casas de la gente y resolviendo problemas reales. Este sitio está centrado exclusivamente en la red: simulador de impacto, alta de colaboradores y portal privado.
 
 ## Pages
 
-- [Inicio](/): Visión general del Service OS de Grupo WG.
-- [Grupo](/grupo): Quiénes somos, historia y estructura del grupo.
-- [Qué hacemos](/que-hacemos): Capacidades y propuesta de valor.
-- [Soluciones](/soluciones): Soluciones por necesidad de negocio.
-- [Industrias](/industrias): Sectores e industrias a las que servimos.
-- [Experiencia](/experiencia): Método y gobierno de experiencia de cliente.
-- [Marcas](/marcas): Marcas y partners con los que trabajamos.
-- [WG Network](/wg-network): Red de colaboradores de campo.
-- [Inscripción WG Network](/wg-network/inscripcion): Alta de colaboradores en la red.
-- [50 Aniversario](/50-aniversario): 50 años de Grupo WG.
-- [Contacto](/contacto): Cómo contactar con Grupo WG.
+- [Inicio · WG Network](/): El plan de la red, simulador de impacto, app nativa de IA, capas del plan y compromisos.
+- [Únete a la red](/wg-network/inscripcion): Alta de SATs, instaladores y colaboradores en WG Professional Network.
+- [Área privada](/portal/login): Acceso al portal del colaborador.
+- [Contacto](/contacto): Cómo contactar con el equipo de la red.
 
 ## Optional
 
-- [Aviso legal](/legal/aviso-legal): Información legal.
-- [Privacidad](/legal/privacidad): Política de privacidad.
-- [Cookies](/legal/cookies): Política de cookies.
-- [Accesibilidad](/legal/accesibilidad): Declaración de accesibilidad.
-- [Estado de accesibilidad](/legal/accesibilidad/estado): Estado actual de accesibilidad.
+- [Aviso legal](/legal/aviso-legal)
+- [Privacidad](/legal/privacidad)
+- [Cookies](/legal/cookies)
+- [Accesibilidad](/legal/accesibilidad)
+- [Estado de accesibilidad](/legal/accesibilidad/estado)
