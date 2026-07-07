@@ -171,7 +171,7 @@ export const ImpactSimulator = () => {
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
     {
       icon: Wrench,
-      label: `Repuesto a coste (–${Math.round(inputs.descuentoRepuesto * 100)}%)`,
+      label: `Repuesto OEM (–${Math.round(inputs.descuentoRepuesto * 100)}%)`,
       value: result.ahorroRepuesto,
       color: "bg-teal-deep",
     },
