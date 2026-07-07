@@ -106,19 +106,37 @@ export const ImpactSimulator = () => {
     inputs.pais === "ES"
       ? /^\d{5}$/.test(inputs.cp)
       : /^\d{4}(-\d{3})?$/.test(inputs.cp);
-  const zonaMatch = useMemo(
-    () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
-    [cpValid, inputs.pais, inputs.cp, inputs.provincia],
-  );
-  const zonasProvincia = useMemo(
-    () =>
-      inputs.provincia
-        ? inputs.pais === "ES"
-          ? getZonasES(inputs.provincia)
-          : getZonasPT(inputs.provincia)
-        : [],
-    [inputs.pais, inputs.provincia],
-  );
+  const [radioKm, setRadioKm] = useState(25);
+  const [coords, setCoords] = useState<{ munis: string[]; cps: Record<string, [number, number, number]> } | null>(null);
+  const [copiedCP, setCopiedCP] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    setCoords(null);
+    fetch(`/cp-coords-${inputs.pais.toLowerCase()}.json`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setCoords(d); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [inputs.pais]);
+  const cobertura = useMemo(() => {
+    if (!coords || !cpValid) return null;
+    const key = inputs.pais === "ES" ? inputs.cp : inputs.cp.slice(0, 4);
+    const center = coords.cps[key];
+    if (!center) return null;
+    const R = Math.PI / 180;
+    const dkm = (aLat: number, aLng: number, bLat: number, bLng: number) => {
+      const la = ((aLat + bLat) / 2) * R;
+      return 6371 * Math.hypot((bLng - aLng) * R * Math.cos(la), (bLat - aLat) * R);
+    };
+    const covered: string[] = [];
+    const munis = new Set<number>();
+    for (const k in coords.cps) {
+      const v = coords.cps[k];
+      if (dkm(center[0], center[1], v[0], v[1]) <= radioKm) { covered.push(k); munis.add(v[2]); }
+    }
+    const muniNames = [...munis].map((i) => coords.munis[i]).filter(Boolean).sort((a, b) => a.localeCompare(b));
+    return { covered: covered.sort(), muniNames };
+  }, [coords, cpValid, inputs.cp, inputs.pais, radioKm]);
 
   const rows = [
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
