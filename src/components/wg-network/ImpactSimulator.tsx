@@ -11,6 +11,7 @@ import {
   Wrench,
   MapPin,
   CheckCircle2,
+  Copy,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
