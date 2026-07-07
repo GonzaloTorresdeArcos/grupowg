@@ -73,6 +73,8 @@ const WGNetwork = () => {
       {/* App nativa de IA */}
       <NativeAppBlock />
 
+      <EscalaOperativa />
+
 
 
       {/* 3 capas */}
