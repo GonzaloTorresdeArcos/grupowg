@@ -1,7 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowUpRight, ChevronDown, Wrench, PackagePlus, ShieldCheck, Clock, MapPin, CheckCircle2 } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronDown,
+  Briefcase,
+  PackagePlus,
+  ShieldCheck,
+  Clock,
+  Wrench,
+  MapPin,
+  CheckCircle2,
+} from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,41 +19,58 @@ import {
   ASSUMPTIONS_LIST,
   computeImpact,
   DEFAULT_INPUTS,
-  type Gama,
+  defaultWGAsignables,
+  ticketSugerido,
   type ImpactInputs,
+  type Perfil,
+  type Pais,
 } from "@/lib/impact-model";
+import { GAMAS } from "@/lib/gamas-taxonomy";
+import { PROVINCIAS } from "@/lib/spain-provinces";
+import { DISTRITOS_PT } from "@/lib/portugal-distritos";
 import { useTranslation } from "react-i18next";
-
-const gamas: { id: Gama; label: string }[] = [
-  { id: "blanca", label: "Blanca" },
-  { id: "marron", label: "Marrón" },
-  { id: "clima", label: "Clima" },
-  { id: "pae", label: "PAE" },
-  { id: "movilidad", label: "Movilidad" },
-  { id: "multi", label: "Multi" },
-];
 
 const fmt = (n: number) =>
   new Intl.NumberFormat("es-ES", { maximumFractionDigits: 0 }).format(Math.round(n));
 
 function useCountUp(target: number, duration = 900) {
   const [value, setValue] = useState(0);
+  const prev = useRef(0);
   useEffect(() => {
     let raf = 0;
     const start = performance.now();
-    const from = value;
+    const from = prev.current;
     const step = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      setValue(from + (target - from) * eased);
+      const v = from + (target - from) * eased;
+      setValue(v);
       if (t < 1) raf = requestAnimationFrame(step);
+      else prev.current = target;
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target]);
+  }, [target, duration]);
   return value;
 }
+
+const PERFIL_TITLES: Record<Perfil, { title: string; subtitle: string }> = {
+  sat: {
+    title: "Mete 4 datos. Mira lo que WG puede hacer por tu SAT.",
+    subtitle:
+      "Dos minutos. Sin registros. Cálculo con tarifas reales de la red WG.",
+  },
+  instalador: {
+    title: "Mete 4 datos. Mira lo que WG puede hacer por tu negocio de instalación.",
+    subtitle:
+      "Dos minutos. Sin registros. Cálculo con tickets reales de instalación.",
+  },
+  ambos: {
+    title: "Repares o instales, mira lo que WG puede hacer por tu negocio.",
+    subtitle:
+      "Dos minutos. Sin registros. Basado en la operación real de la red WG.",
+  },
+};
 
 export const ImpactSimulator = () => {
   const { t } = useTranslation("wg-network");
@@ -52,19 +79,58 @@ export const ImpactSimulator = () => {
   const [inputs, setInputs] = useState<ImpactInputs>(DEFAULT_INPUTS);
   const [showAssumptions, setShowAssumptions] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const ticketOverride = useRef(false);
+  const wgOverride = useRef(false);
+
+  // Autopropuesta de ticket cuando cambia perfil/gamas y el usuario no lo tocó.
+  useEffect(() => {
+    if (ticketOverride.current) return;
+    setInputs((prev) => ({
+      ...prev,
+      ticketMedio: ticketSugerido(prev.perfil, prev.gamas),
+    }));
+  }, [inputs.perfil, inputs.gamas]);
+
+  // Autopropuesta de avisos WG asignables cuando cambian las gamas.
+  useEffect(() => {
+    if (wgOverride.current) return;
+    setInputs((prev) => ({
+      ...prev,
+      intervencionesWGMes: defaultWGAsignables(prev.gamas),
+    }));
+  }, [inputs.gamas]);
 
   const result = useMemo(() => computeImpact(inputs), [inputs]);
   const animatedTotal = useCountUp(result.impactoTotal);
 
-  const cpValid = /^\d{5}$/.test(inputs.cp);
+  const cpValid =
+    inputs.pais === "ES"
+      ? /^\d{5}$/.test(inputs.cp)
+      : /^\d{4}(-\d{3})?$/.test(inputs.cp);
 
   const rows = [
-    { icon: Wrench, label: t("sim.rows.repuesto"), value: result.ahorroRepuesto, color: "bg-teal" },
-    { icon: PackagePlus, label: t("sim.rows.equipos"), value: result.ingresoEquipos, color: "bg-teal-deep" },
-    { icon: ShieldCheck, label: t("sim.rows.garantias"), value: result.ingresoGarantias, color: "bg-teal-soft" },
-    { icon: Clock, label: t("sim.rows.tiempo"), value: result.ahorroTiempo, color: "bg-ink-soft" },
+    { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
+    {
+      icon: Wrench,
+      label: `Repuesto a coste (–${Math.round(inputs.descuentoRepuesto * 100)}%)`,
+      value: result.ahorroRepuesto,
+      color: "bg-teal-deep",
+    },
+    { icon: PackagePlus, label: "Venta de equipos", value: result.ingresoEquipos, color: "bg-teal-soft" },
+    { icon: ShieldCheck, label: "Garantías extendidas", value: result.ingresoGarantias, color: "bg-ink-soft" },
+    { icon: Clock, label: t("sim.rows.tiempo"), value: result.ahorroTiempo, color: "bg-muted" },
   ];
   const maxRow = Math.max(...rows.map((r) => r.value), 1);
+
+  const toggleGama = (code: string) => {
+    setInputs((prev) => {
+      const has = prev.gamas.includes(code);
+      const next = has ? prev.gamas.filter((g) => g !== code) : [...prev.gamas, code];
+      return { ...prev, gamas: next.length ? next : prev.gamas };
+    });
+  };
+
+  const provOptions = inputs.pais === "ES" ? PROVINCIAS : DISTRITOS_PT;
 
   // ── Lead capture ──
   const [lead, setLead] = useState({ nombre: "", empresa: "", email: "", telefono: "" });
@@ -75,7 +141,6 @@ export const ImpactSimulator = () => {
       return;
     }
 
-    // Fire-and-forget persist to Supabase — never block navigation on it.
     try {
       await supabase.functions.invoke("submit-lead", {
         body: {
@@ -84,13 +149,22 @@ export const ImpactSimulator = () => {
           email: lead.email,
           telefono: lead.telefono,
           cp: inputs.cp,
-          intervenciones_mes: inputs.intervencionesMes,
+          intervenciones_mes: inputs.intervencionesPropiasMes,
           ticket_medio: inputs.ticketMedio,
-          gama: inputs.gamaPrincipal,
+          gama: inputs.gamas[0] ?? null,
           impacto_total: result.impactoTotal,
           multiplicador: result.multiplicador,
           caja_liberada: result.cajaLiberada,
           breakdown: {
+            perfil: inputs.perfil,
+            pais: inputs.pais,
+            provincia: inputs.provincia,
+            gamas: inputs.gamas,
+            intervencionesPropiasMes: inputs.intervencionesPropiasMes,
+            intervencionesWGMes: inputs.intervencionesWGMes,
+            descuentoRepuesto: inputs.descuentoRepuesto,
+            ticketMedio: inputs.ticketMedio,
+            ingresoWG: result.ingresoWG,
             ahorroRepuesto: result.ahorroRepuesto,
             ingresoEquipos: result.ingresoEquipos,
             ingresoGarantias: result.ingresoGarantias,
@@ -113,35 +187,100 @@ export const ImpactSimulator = () => {
     setTimeout(() => navigate(`/wg-network/inscripcion${qs ? `?${qs}` : ""}`), 400);
   };
 
+  const perfilCopy = PERFIL_TITLES[inputs.perfil];
+
   return (
     <section id="simulador" className="scroll-mt-24 py-20 md:py-28 bg-bone">
       <div className="container-tight">
         <div className="max-w-3xl mb-12">
           <p className="eyebrow mb-3">{t("sim.eyebrow")}</p>
           <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
-            {t("sim.title")}
+            {perfilCopy.title}
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">{t("sim.subtitle")}</p>
+          <p className="mt-4 text-lg text-muted-foreground">{perfilCopy.subtitle}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-5">
           {/* Inputs */}
           <div className="lg:col-span-2 rounded-3xl bg-card border border-border p-6 md:p-8 shadow-sm">
-            <h3 className="font-display text-xl text-ink mb-6">{t("sim.inputs.title")}</h3>
+            <h3 className="font-display text-xl text-ink mb-6">Tu negocio hoy</h3>
 
             <div className="space-y-6">
-              {/* CP */}
+              {/* Perfil */}
+              <div>
+                <label className="text-sm font-medium text-ink">Perfil</label>
+                <div className="mt-2 grid grid-cols-3 rounded-full bg-muted p-1">
+                  {(["sat", "instalador", "ambos"] as Perfil[]).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setInputs({ ...inputs, perfil: p })}
+                      className={cn(
+                        "rounded-full px-3 py-1.5 text-sm font-medium transition-colors capitalize",
+                        inputs.perfil === p
+                          ? "bg-ink text-background"
+                          : "text-muted-foreground hover:text-ink"
+                      )}
+                    >
+                      {p === "sat" ? "SAT" : p === "instalador" ? "Instalador" : "Ambos"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Cobertura: país + provincia + CP */}
               <div>
                 <label className="text-sm font-medium text-ink flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-teal" /> {t("sim.inputs.cp")}
+                  <MapPin className="h-4 w-4 text-teal" /> Cobertura
                 </label>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {(["ES", "PT"] as Pais[]).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() =>
+                        setInputs({ ...inputs, pais: p, provincia: "", cp: "" })
+                      }
+                      className={cn(
+                        "rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
+                        inputs.pais === p
+                          ? "bg-ink text-background border-ink"
+                          : "bg-background text-ink border-border hover:border-ink"
+                      )}
+                    >
+                      {p === "ES" ? "🇪🇸 España" : "🇵🇹 Portugal"}
+                    </button>
+                  ))}
+                </div>
+                <select
+                  value={inputs.provincia ?? ""}
+                  onChange={(e) => setInputs({ ...inputs, provincia: e.target.value })}
+                  className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
+                >
+                  <option value="">
+                    {inputs.pais === "ES" ? "Selecciona provincia…" : "Seleciona distrito…"}
+                  </option>
+                  {provOptions.map((o) => (
+                    <option key={o.code} value={o.code}>
+                      {o.name}
+                    </option>
+                  ))}
+                </select>
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={5}
+                  maxLength={inputs.pais === "ES" ? 5 : 8}
                   value={inputs.cp}
-                  onChange={(e) => setInputs({ ...inputs, cp: e.target.value.replace(/\D/g, "") })}
-                  placeholder="28001"
+                  onChange={(e) =>
+                    setInputs({
+                      ...inputs,
+                      cp:
+                        inputs.pais === "ES"
+                          ? e.target.value.replace(/\D/g, "")
+                          : e.target.value.replace(/[^\d-]/g, ""),
+                    })
+                  }
+                  placeholder={inputs.pais === "ES" ? "28001" : "1000-001"}
                   className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
                 />
                 {cpValid && (
@@ -151,58 +290,80 @@ export const ImpactSimulator = () => {
                 )}
               </div>
 
-              {/* Intervenciones */}
+              {/* Gamas (multi) */}
+              <div>
+                <label className="text-sm font-medium text-ink">Gamas en las que trabajas</label>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {GAMAS.map((g) => {
+                    const active = inputs.gamas.includes(g.code);
+                    return (
+                      <button
+                        key={g.code}
+                        type="button"
+                        onClick={() => toggleGama(g.code)}
+                        className={cn(
+                          "rounded-full border px-3 py-1.5 text-sm transition-colors",
+                          active
+                            ? "bg-ink text-background border-ink"
+                            : "bg-background text-ink border-border hover:border-ink"
+                        )}
+                      >
+                        {g.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Intervenciones propias */}
               <div>
                 <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">{t("sim.inputs.intervenciones")}</label>
-                  <span className="font-display text-lg text-ink">{inputs.intervencionesMes}</span>
+                  <label className="text-sm font-medium text-ink">
+                    Lo que ya reparas/instalas al mes
+                  </label>
+                  <span className="font-display text-lg text-ink">
+                    {inputs.intervencionesPropiasMes}
+                  </span>
                 </div>
                 <Slider
                   className="mt-3"
                   min={10}
                   max={300}
                   step={5}
-                  value={[inputs.intervencionesMes]}
-                  onValueChange={([v]) => setInputs({ ...inputs, intervencionesMes: v })}
+                  value={[inputs.intervencionesPropiasMes]}
+                  onValueChange={([v]) =>
+                    setInputs({ ...inputs, intervencionesPropiasMes: v })
+                  }
                 />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Al margen de WG. Tu volumen actual.
+                </p>
               </div>
 
               {/* Ticket medio */}
               <div>
                 <div className="flex justify-between items-baseline">
-                  <label className="text-sm font-medium text-ink">{t("sim.inputs.ticket")}</label>
+                  <label className="text-sm font-medium text-ink">
+                    Ticket medio
+                  </label>
                   <span className="font-display text-lg text-ink">{inputs.ticketMedio} €</span>
                 </div>
                 <Slider
                   className="mt-3"
                   min={15}
-                  max={150}
+                  max={300}
                   step={1}
                   value={[inputs.ticketMedio]}
-                  onValueChange={([v]) => setInputs({ ...inputs, ticketMedio: v })}
+                  onValueChange={([v]) => {
+                    ticketOverride.current = true;
+                    setInputs({ ...inputs, ticketMedio: v });
+                  }}
                 />
-              </div>
-
-              {/* Gama */}
-              <div>
-                <label className="text-sm font-medium text-ink">{t("sim.inputs.gama")}</label>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {gamas.map((g) => (
-                    <button
-                      key={g.id}
-                      type="button"
-                      onClick={() => setInputs({ ...inputs, gamaPrincipal: g.id })}
-                      className={cn(
-                        "rounded-full border px-4 py-1.5 text-sm transition-colors",
-                        inputs.gamaPrincipal === g.id
-                          ? "bg-ink text-background border-ink"
-                          : "bg-background text-ink border-border hover:border-ink"
-                      )}
-                    >
-                      {g.label}
-                    </button>
-                  ))}
-                </div>
+                {!ticketOverride.current && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Sugerido a partir de tu perfil y gamas.
+                  </p>
+                )}
               </div>
 
               {/* Advanced */}
@@ -218,16 +379,44 @@ export const ImpactSimulator = () => {
                 <div className="space-y-5 pt-2 border-t border-border">
                   <div>
                     <div className="flex justify-between items-baseline">
-                      <label className="text-sm font-medium text-ink">{t("sim.inputs.tecnicos")}</label>
-                      <span className="font-display text-lg text-ink">{inputs.tecnicos}</span>
+                      <label className="text-sm font-medium text-ink">
+                        Avisos WG asignables / mes
+                      </label>
+                      <span className="font-display text-lg text-ink">
+                        {inputs.intervencionesWGMes}
+                      </span>
                     </div>
                     <Slider
                       className="mt-3"
-                      min={1}
-                      max={20}
-                      step={1}
-                      value={[inputs.tecnicos ?? 1]}
-                      onValueChange={([v]) => setInputs({ ...inputs, tecnicos: v })}
+                      min={0}
+                      max={200}
+                      step={5}
+                      value={[inputs.intervencionesWGMes]}
+                      onValueChange={([v]) => {
+                        wgOverride.current = true;
+                        setInputs({ ...inputs, intervencionesWGMes: v });
+                      }}
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Estimación — se conectará a nuestra base de datos de avisos.
+                    </p>
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-baseline">
+                      <label className="text-sm font-medium text-ink">
+                        Descuento en repuesto
+                      </label>
+                      <span className="font-display text-lg text-ink">
+                        {Math.round(inputs.descuentoRepuesto * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      className="mt-3"
+                      min={40}
+                      max={80}
+                      step={5}
+                      value={[Math.round(inputs.descuentoRepuesto * 100)]}
+                      onValueChange={([v]) => setInputs({ ...inputs, descuentoRepuesto: v / 100 })}
                     />
                   </div>
                   <div>
@@ -244,6 +433,20 @@ export const ImpactSimulator = () => {
                       step={5}
                       value={[Math.round((inputs.pctFueraGarantia ?? 0.4) * 100)]}
                       onValueChange={([v]) => setInputs({ ...inputs, pctFueraGarantia: v / 100 })}
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-baseline">
+                      <label className="text-sm font-medium text-ink">{t("sim.inputs.tecnicos")}</label>
+                      <span className="font-display text-lg text-ink">{inputs.tecnicos}</span>
+                    </div>
+                    <Slider
+                      className="mt-3"
+                      min={1}
+                      max={20}
+                      step={1}
+                      value={[inputs.tecnicos ?? 1]}
+                      onValueChange={([v]) => setInputs({ ...inputs, tecnicos: v })}
                     />
                   </div>
                 </div>
