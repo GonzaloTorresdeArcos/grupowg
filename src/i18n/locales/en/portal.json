@@ -57,7 +57,8 @@
     "groupAccount": "Cuenta",
     "parts": "Repuesto a coste",
     "equipment": "Tienda de equipos",
-    "warranties": "Garantías y seguros"
+    "warranties": "Garantías y seguros",
+    "leads": "Captación"
   },
   "dashboard": {
     "eyebrow": "Overview",
@@ -293,6 +294,49 @@
     "toasts": {
       "required": "Customer, province and family are required",
       "created": "Case created"
+    }
+  },
+  "leads": {
+    "eyebrow": "Operaciones",
+    "title": "Captación",
+    "subtitle": "Leads del simulador de impacto y conversión a alta.",
+    "loading": "Cargando…",
+    "loadingList": "Cargando leads…",
+    "searchPlaceholder": "Buscar por nombre o email…",
+    "restricted": {
+      "title": "Acceso restringido",
+      "subtitle": "El cuadro de captación está reservado al equipo de operaciones."
+    },
+    "kpis": {
+      "total": "Leads totales",
+      "avg": "Impacto medio estimado",
+      "pipeline": "Pipeline estimado",
+      "conversion": "Conversión a alta"
+    },
+    "chart": {
+      "title": "Leads por semana (últimas 12)"
+    },
+    "filters": {
+      "all": "Todos",
+      "converted": "Convertidos",
+      "pending": "Sin convertir"
+    },
+    "cols": {
+      "date": "Fecha",
+      "who": "Nombre / Empresa",
+      "contact": "Contacto",
+      "zone": "CP · Gama",
+      "ops": "Interv./m · Ticket",
+      "impact": "Impacto",
+      "status": "Estado"
+    },
+    "status": {
+      "converted": "Alta completada",
+      "pending": "Lead"
+    },
+    "empty": {
+      "title": "Sin leads",
+      "subtitle": "Cuando alguien complete el simulador, aparecerá aquí."
     }
   }
 }

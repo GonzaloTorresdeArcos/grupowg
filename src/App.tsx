@@ -30,6 +30,7 @@ const PortalDocuments = lazy(() => import("./pages/portal/Documents.tsx"));
 const PortalInvoices = lazy(() => import("./pages/portal/Invoices.tsx"));
 const PortalProfile = lazy(() => import("./pages/portal/Profile.tsx"));
 const PortalIncidencias = lazy(() => import("./pages/portal/Incidencias.tsx"));
+const PortalLeads = lazy(() => import("./pages/portal/Leads.tsx"));
 const PortalIncidenciaDetail = lazy(() => import("./pages/portal/IncidenciaDetail.tsx"));
 const PortalI18nDebug = lazy(() => import("./pages/PortalI18nDebug.tsx"));
 const PortalRepuestos = lazy(() => import("./pages/portal/Repuestos.tsx"));
@@ -118,6 +119,7 @@ const App = () => (
                 <Route path="/portal/garantias" element={<PortalGarantias />} />
                 <Route path="/portal/incidencias" element={<PortalIncidencias />} />
                 <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
+                <Route path="/portal/leads" element={<PortalLeads />} />
               </Route>
 
               <Route element={<Layout />}>
