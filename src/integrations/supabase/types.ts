@@ -649,6 +649,63 @@ export type Database = {
           },
         ]
       }
+      wg_network_leads: {
+        Row: {
+          breakdown: Json | null
+          caja_liberada: number | null
+          cp: string | null
+          created_at: string
+          email: string
+          empresa: string | null
+          gama: string | null
+          id: string
+          impacto_total: number | null
+          intervenciones_mes: number | null
+          multiplicador: number | null
+          nombre: string | null
+          source: string | null
+          telefono: string | null
+          ticket_medio: number | null
+          user_agent: string | null
+        }
+        Insert: {
+          breakdown?: Json | null
+          caja_liberada?: number | null
+          cp?: string | null
+          created_at?: string
+          email: string
+          empresa?: string | null
+          gama?: string | null
+          id?: string
+          impacto_total?: number | null
+          intervenciones_mes?: number | null
+          multiplicador?: number | null
+          nombre?: string | null
+          source?: string | null
+          telefono?: string | null
+          ticket_medio?: number | null
+          user_agent?: string | null
+        }
+        Update: {
+          breakdown?: Json | null
+          caja_liberada?: number | null
+          cp?: string | null
+          created_at?: string
+          email?: string
+          empresa?: string | null
+          gama?: string | null
+          id?: string
+          impacto_total?: number | null
+          intervenciones_mes?: number | null
+          multiplicador?: number | null
+          nombre?: string | null
+          source?: string | null
+          telefono?: string | null
+          ticket_medio?: number | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       wg_otp_codes: {
         Row: {
           attempts: number
