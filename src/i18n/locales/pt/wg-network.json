@@ -22,9 +22,21 @@
     "title": "Un plan estructurado en 3 capas.",
     "layerLabel": "Capa",
     "items": [
-      { "n": "01", "t": "Aliviar presión", "d": "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa." },
-      { "n": "02", "t": "Hacer crecer", "d": "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos." },
-      { "n": "03", "t": "Proteger", "d": "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación." }
+      {
+        "n": "01",
+        "t": "Aliviar presión",
+        "d": "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa."
+      },
+      {
+        "n": "02",
+        "t": "Hacer crecer",
+        "d": "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos."
+      },
+      {
+        "n": "03",
+        "t": "Proteger",
+        "d": "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación."
+      }
     ]
   },
   "benefits": {
@@ -32,18 +44,54 @@
     "title": "Protegemos de verdad.",
     "subtitle": "Porque no solo importa el trabajo. Importáis vosotros.",
     "items": [
-      { "t": "Seguros colectivos", "d": "Condiciones preferentes para profesionales y equipos." },
-      { "t": "Protección jurídica", "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos." },
-      { "t": "Protección de ingresos", "d": "Tranquilidad financiera ante baja, accidente o interrupción de actividad." },
-      { "t": "Salud", "d": "Coberturas médicas para profesionales y familias." },
-      { "t": "Vida", "d": "Protección familiar y seguridad económica." },
-      { "t": "Planes de ahorro", "d": "Soluciones de ahorro y previsión." },
-      { "t": "PRL", "d": "Prevención de riesgos y cumplimiento en seguridad laboral." },
-      { "t": "Compliance asistido", "d": "Alta documental, validación y seguimiento normativo." },
-      { "t": "Documentación", "d": "Todo en regla, actualizado y trazable." },
-      { "t": "Producto nuevo", "d": "Acceso a producto nuevo en condiciones ventajosas." },
-      { "t": "Repuestos a coste", "d": "Material sin margen para mejorar competitividad y caja." },
-      { "t": "Oportunidades comerciales", "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida." }
+      {
+        "t": "Seguros colectivos",
+        "d": "Condiciones preferentes para profesionales y equipos."
+      },
+      {
+        "t": "Protección jurídica",
+        "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos."
+      },
+      {
+        "t": "Protección de ingresos",
+        "d": "Tranquilidad financiera ante baja, accidente o interrupción de actividad."
+      },
+      {
+        "t": "Salud",
+        "d": "Coberturas médicas para profesionales y familias."
+      },
+      {
+        "t": "Vida",
+        "d": "Protección familiar y seguridad económica."
+      },
+      {
+        "t": "Planes de ahorro",
+        "d": "Soluciones de ahorro y previsión."
+      },
+      {
+        "t": "PRL",
+        "d": "Prevención de riesgos y cumplimiento en seguridad laboral."
+      },
+      {
+        "t": "Compliance asistido",
+        "d": "Alta documental, validación y seguimiento normativo."
+      },
+      {
+        "t": "Documentación",
+        "d": "Todo en regla, actualizado y trazable."
+      },
+      {
+        "t": "Producto nuevo",
+        "d": "Acceso a producto nuevo en condiciones ventajosas."
+      },
+      {
+        "t": "Repuestos a coste",
+        "d": "Material sin margen para mejorar competitividad y caja."
+      },
+      {
+        "t": "Oportunidades comerciales",
+        "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida."
+      }
     ],
     "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
   },
@@ -51,9 +99,21 @@
     "eyebrow": "Innegociables",
     "title": "3 compromisos innegociables.",
     "items": [
-      { "n": "1", "t": "Repuestos a coste mayorista", "d": "Para que podáis competir, crecer y respirar en el día a día." },
-      { "n": "2", "t": "Garantías extendidas y equipos al mejor precio", "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
-      { "n": "3", "t": "Seguros colectivos", "d": "Para que estéis protegidos como merecéis." }
+      {
+        "n": "1",
+        "t": "Repuestos a coste mayorista",
+        "d": "Para que podáis competir, crecer y respirar en el día a día."
+      },
+      {
+        "n": "2",
+        "t": "Garantías extendidas y equipos al mejor precio",
+        "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles."
+      },
+      {
+        "n": "3",
+        "t": "Seguros colectivos",
+        "d": "Para que estéis protegidos como merecéis."
+      }
     ],
     "outro": "El resto lo construiremos juntos, según vuestras necesidades y apetito."
   },
@@ -61,5 +121,67 @@
     "title": "Únete a WG Professional Network.",
     "subtitle": "Un único proceso para activar trabajo, protección y crecimiento.",
     "cta": "Comenzar inscripción"
+  },
+  "sim": {
+    "eyebrow": "Simulador de impacto",
+    "title": "Mete 4 datos. Mira lo que WG puede hacer por tu negocio.",
+    "subtitle": "Dos minutos. Sin registros. Ajustable. Basado en benchmarks reales de la red WG.",
+    "inputs": {
+      "title": "Tu negocio hoy",
+      "cp": "Código postal",
+      "cpOk": "Zona con actividad WG — encajas en la red.",
+      "intervenciones": "Intervenciones al mes",
+      "ticket": "Ticket medio",
+      "gama": "Gama principal",
+      "advanced": "Supuestos avanzados",
+      "tecnicos": "Técnicos en tu equipo",
+      "fuera": "% intervenciones fuera de garantía"
+    },
+    "rows": {
+      "repuesto": "Repuesto a coste",
+      "equipos": "Venta de equipos",
+      "garantias": "Garantías y seguros",
+      "tiempo": "Tiempo convertido en dinero"
+    },
+    "result": {
+      "eyebrow": "Impacto anual estimado",
+      "perYear": "/ año",
+      "overCurrent": "sobre tu facturación actual",
+      "cashLabel": "Caja liberada al año",
+      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "assumptions": "Ver supuestos usados",
+      "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
+    },
+    "capture": {
+      "eyebrow": "Desbloquea tu informe completo",
+      "title": "Ya has visto lo que WG puede hacer por tu negocio.",
+      "subtitle": "Termina tu alta en 5 minutos y actívalo.",
+      "nombre": "Nombre",
+      "empresa": "Empresa",
+      "email": "Email",
+      "telefono": "Teléfono",
+      "cta": "Entrar en la red",
+      "success": "Recibido. Continuamos con tu alta.",
+      "errRequired": "Nombre y email son obligatorios."
+    }
+  },
+  "app": {
+    "eyebrow": "Tu día a día, sin fricción",
+    "title": "No es una web. Es tu negocio funcionando solo.",
+    "subtitle": "Una app nativa de IA, pensada por SATs para SATs. Herramientas de verdad para el trabajo de verdad.",
+    "items": [
+      "Agenda inteligente que ordena tu ruta del día.",
+      "Habla en vez de escribir: dictas y la IA rellena el parte.",
+      "Foto al nº de serie con validación de legibilidad automática.",
+      "Ubicación automática: no reescribes direcciones.",
+      "El cliente final firma con el dedo y recibe su parte al instante.",
+      "Quien te encarga el aviso lo recibe en el mismo momento.",
+      "Todo se archiva listo para facturar.",
+      "Repuesto a coste con las mejores condiciones de las centrales de recambio.",
+      "Producto para vender cuando reparar no compensa.",
+      "Garantías y seguros con comisión.",
+      "Pago a 15 días.",
+      "Protección para ti y tu negocio."
+    ]
   }
 }
