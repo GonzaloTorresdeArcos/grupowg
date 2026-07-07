@@ -40,6 +40,9 @@ const PortalProfile = lazy(() => import("./pages/portal/Profile.tsx"));
 const PortalIncidencias = lazy(() => import("./pages/portal/Incidencias.tsx"));
 const PortalIncidenciaDetail = lazy(() => import("./pages/portal/IncidenciaDetail.tsx"));
 const PortalI18nDebug = lazy(() => import("./pages/PortalI18nDebug.tsx"));
+const PortalRepuestos = lazy(() => import("./pages/portal/Repuestos.tsx"));
+const PortalEquipos = lazy(() => import("./pages/portal/Equipos.tsx"));
+const PortalGarantias = lazy(() => import("./pages/portal/Garantias.tsx"));
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
 import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
