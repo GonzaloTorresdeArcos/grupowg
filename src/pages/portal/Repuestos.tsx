@@ -77,9 +77,6 @@ const Repuestos = () => {
 
   return (
     <div className="space-y-10">
-      <Helmet>
-        <title>Repuesto a coste · Portal WG</title>
-      </Helmet>
 
       {/* Header */}
       <div>
