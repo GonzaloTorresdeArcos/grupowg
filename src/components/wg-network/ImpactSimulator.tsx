@@ -30,6 +30,7 @@ import {
   type Pais,
 } from "@/lib/impact-model";
 import { GAMAS } from "@/lib/gamas-taxonomy";
+import { MARCAS_POR_GAMA } from "@/lib/marcas-por-gama";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
