@@ -9,7 +9,10 @@
     "eyebrow": "WG Professional Network",
     "title": "Portal del colaborador",
     "subtitle": "Accede a tu actividad, calendario, documentos y facturación.",
-    "tabs": { "signin": "Entrar", "signup": "Crear cuenta" },
+    "tabs": {
+      "signin": "Entrar",
+      "signup": "Crear cuenta"
+    },
     "fields": {
       "email": "Email",
       "password": "Contraseña",
@@ -48,7 +51,13 @@
     "ops": "Operaciones",
     "incidences": "Incidencias",
     "signOut": "Cerrar sesión",
-    "fallbackName": "Colaborador"
+    "fallbackName": "Colaborador",
+    "groupOpera": "Opera",
+    "groupBusiness": "Mi negocio",
+    "groupAccount": "Cuenta",
+    "parts": "Repuesto a coste",
+    "equipment": "Tienda de equipos",
+    "warranties": "Garantías y seguros"
   },
   "dashboard": {
     "eyebrow": "Resumen",
@@ -108,8 +117,20 @@
     "title": "Calendario de citas",
     "subtitle": "Próximas visitas e instalaciones.",
     "today": "Hoy",
-    "legend": { "scheduled": "Programada", "inProgress": "En curso", "completed": "Completada" },
-    "days": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    "legend": {
+      "scheduled": "Programada",
+      "inProgress": "En curso",
+      "completed": "Completada"
+    },
+    "days": [
+      "Lun",
+      "Mar",
+      "Mié",
+      "Jue",
+      "Vie",
+      "Sáb",
+      "Dom"
+    ],
     "upcoming": "Próximas citas",
     "detail": {
       "customer": "Cliente",
@@ -125,9 +146,25 @@
     "eyebrow": "Documentación",
     "title": "Renovación documental",
     "subtitle": "Mantén tu documentación al día para seguir operando en la red.",
-    "filters": { "valid": "Vigentes", "expiring": "Próximos", "expired": "Vencidos", "missing": "Pendientes", "viewAll": "← Ver todos los documentos" },
-    "status": { "valid": "Vigente", "expiring": "Próximo a vencer", "expired": "Vencido", "missing": "Pendiente" },
-    "actions": { "download": "Descargar", "upload": "Subir", "renew": "Renovar", "cancel": "Cancelar" },
+    "filters": {
+      "valid": "Vigentes",
+      "expiring": "Próximos",
+      "expired": "Vencidos",
+      "missing": "Pendientes",
+      "viewAll": "← Ver todos los documentos"
+    },
+    "status": {
+      "valid": "Vigente",
+      "expiring": "Próximo a vencer",
+      "expired": "Vencido",
+      "missing": "Pendiente"
+    },
+    "actions": {
+      "download": "Descargar",
+      "upload": "Subir",
+      "renew": "Renovar",
+      "cancel": "Cancelar"
+    },
     "fields": {
       "issued": "Emitido",
       "expires": "Vence",
@@ -135,17 +172,39 @@
       "expiresLabel": "Fecha de vencimiento",
       "expiresHelp": "Te avisaremos 60, 30 y 7 días antes del vencimiento."
     },
-    "dialog": { "uploadTitle": "Subir documento", "renewTitle": "Renovar documento" },
-    "toasts": { "updated": "Documento actualizado", "updatedDesc": "{{name}} se ha renovado correctamente." }
+    "dialog": {
+      "uploadTitle": "Subir documento",
+      "renewTitle": "Renovar documento"
+    },
+    "toasts": {
+      "updated": "Documento actualizado",
+      "updatedDesc": "{{name}} se ha renovado correctamente."
+    }
   },
   "invoices": {
     "eyebrow": "Facturación",
     "title": "Liquidaciones y facturas",
     "subtitle": "Histórico de tus servicios facturados",
-    "summary": { "total": "Total facturado", "paid": "Cobrado", "pending": "Pendiente", "average": "Media / servicio" },
+    "summary": {
+      "total": "Total facturado",
+      "paid": "Cobrado",
+      "pending": "Pendiente",
+      "average": "Media / servicio"
+    },
     "tableTitle": "Histórico de liquidaciones",
-    "columns": { "number": "Número", "period": "Periodo", "services": "Servicios", "amount": "Importe", "status": "Estado", "actions": "Acciones" },
-    "status": { "paid": "Pagada", "pending": "Pendiente", "overdue": "Vencida" },
+    "columns": {
+      "number": "Número",
+      "period": "Periodo",
+      "services": "Servicios",
+      "amount": "Importe",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "status": {
+      "paid": "Pagada",
+      "pending": "Pendiente",
+      "overdue": "Vencida"
+    },
     "detail": {
       "title": "Liquidación",
       "issuedOn": "Emitida el",
@@ -158,13 +217,22 @@
       "viewServices": "Ver detalle servicios",
       "downloadPdf": "Descargar PDF"
     },
-    "toasts": { "downloadStarted": "Descarga iniciada" }
+    "toasts": {
+      "downloadStarted": "Descarga iniciada"
+    }
   },
   "profile": {
     "eyebrow": "Cuenta",
     "title": "Datos del colaborador",
     "subtitle": "Información de tu cuenta y empresa",
-    "fields": { "email": "Email", "emailHelp": "El email se gestiona desde el inicio de sesión.", "fullName": "Nombre completo", "company": "Empresa", "phone": "Teléfono", "save": "Guardar cambios" },
+    "fields": {
+      "email": "Email",
+      "emailHelp": "El email se gestiona desde el inicio de sesión.",
+      "fullName": "Nombre completo",
+      "company": "Empresa",
+      "phone": "Teléfono",
+      "save": "Guardar cambios"
+    },
     "link": {
       "title": "Vinculación con WG Network",
       "linked": "Vinculado",
@@ -179,7 +247,11 @@
       "cta": "Convertirme en administrador",
       "loading": "Activando…"
     },
-    "toasts": { "saveError": "No se pudo guardar", "saved": "Perfil actualizado", "adminOk": "Ahora eres administrador. Recarga la página." }
+    "toasts": {
+      "saveError": "No se pudo guardar",
+      "saved": "Perfil actualizado",
+      "adminOk": "Ahora eres administrador. Recarga la página."
+    }
   },
   "incidences": {
     "eyebrow": "Operaciones",
@@ -187,11 +259,19 @@
     "subtitle": "Registra avisos y asigna automáticamente al colaborador idóneo.",
     "detailTitle": "Detalle de incidencia",
     "newButton": "Nueva incidencia",
-    "filters": { "all": "Todas" },
+    "filters": {
+      "all": "Todas"
+    },
     "loading": "Cargando…",
     "loadingList": "Cargando incidencias…",
-    "empty": { "title": "Sin incidencias", "subtitle": "Crea una nueva para probar el motor de matching." },
-    "restricted": { "title": "Acceso restringido", "subtitle": "La gestión de incidencias está reservada al equipo de operaciones." },
+    "empty": {
+      "title": "Sin incidencias",
+      "subtitle": "Crea una nueva para probar el motor de matching."
+    },
+    "restricted": {
+      "title": "Acceso restringido",
+      "subtitle": "La gestión de incidencias está reservada al equipo de operaciones."
+    },
     "form": {
       "title": "Nueva incidencia",
       "customer": "Cliente *",
@@ -210,6 +290,9 @@
       "submit": "Crear y buscar match",
       "submitting": "Creando..."
     },
-    "toasts": { "required": "Cliente, provincia y familia son obligatorios", "created": "Incidencia creada" }
+    "toasts": {
+      "required": "Cliente, provincia y familia son obligatorios",
+      "created": "Incidencia creada"
+    }
   }
 }

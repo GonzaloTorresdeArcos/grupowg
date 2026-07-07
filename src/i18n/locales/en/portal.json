@@ -9,7 +9,10 @@
     "eyebrow": "WG Professional Network",
     "title": "Collaborator portal",
     "subtitle": "Access your activity, calendar, documents and billing.",
-    "tabs": { "signin": "Sign in", "signup": "Create account" },
+    "tabs": {
+      "signin": "Sign in",
+      "signup": "Create account"
+    },
     "fields": {
       "email": "Email",
       "password": "Password",
@@ -48,7 +51,13 @@
     "ops": "Operations",
     "incidences": "Cases",
     "signOut": "Sign out",
-    "fallbackName": "Collaborator"
+    "fallbackName": "Collaborator",
+    "groupOpera": "Opera",
+    "groupBusiness": "Mi negocio",
+    "groupAccount": "Cuenta",
+    "parts": "Repuesto a coste",
+    "equipment": "Tienda de equipos",
+    "warranties": "Garantías y seguros"
   },
   "dashboard": {
     "eyebrow": "Overview",
@@ -108,8 +117,20 @@
     "title": "Appointment calendar",
     "subtitle": "Upcoming visits and installations.",
     "today": "Today",
-    "legend": { "scheduled": "Scheduled", "inProgress": "In progress", "completed": "Completed" },
-    "days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "legend": {
+      "scheduled": "Scheduled",
+      "inProgress": "In progress",
+      "completed": "Completed"
+    },
+    "days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
     "upcoming": "Upcoming appointments",
     "detail": {
       "customer": "Customer",
@@ -125,9 +146,25 @@
     "eyebrow": "Documentation",
     "title": "Document renewals",
     "subtitle": "Keep your documentation up to date to keep operating in the network.",
-    "filters": { "valid": "Valid", "expiring": "Expiring", "expired": "Expired", "missing": "Pending", "viewAll": "← View all documents" },
-    "status": { "valid": "Valid", "expiring": "Expiring soon", "expired": "Expired", "missing": "Pending" },
-    "actions": { "download": "Download", "upload": "Upload", "renew": "Renew", "cancel": "Cancel" },
+    "filters": {
+      "valid": "Valid",
+      "expiring": "Expiring",
+      "expired": "Expired",
+      "missing": "Pending",
+      "viewAll": "← View all documents"
+    },
+    "status": {
+      "valid": "Valid",
+      "expiring": "Expiring soon",
+      "expired": "Expired",
+      "missing": "Pending"
+    },
+    "actions": {
+      "download": "Download",
+      "upload": "Upload",
+      "renew": "Renew",
+      "cancel": "Cancel"
+    },
     "fields": {
       "issued": "Issued",
       "expires": "Expires",
@@ -135,17 +172,39 @@
       "expiresLabel": "Expiration date",
       "expiresHelp": "We will notify you 60, 30 and 7 days before expiration."
     },
-    "dialog": { "uploadTitle": "Upload document", "renewTitle": "Renew document" },
-    "toasts": { "updated": "Document updated", "updatedDesc": "{{name}} has been renewed successfully." }
+    "dialog": {
+      "uploadTitle": "Upload document",
+      "renewTitle": "Renew document"
+    },
+    "toasts": {
+      "updated": "Document updated",
+      "updatedDesc": "{{name}} has been renewed successfully."
+    }
   },
   "invoices": {
     "eyebrow": "Billing",
     "title": "Settlements and invoices",
     "subtitle": "History of your billed services",
-    "summary": { "total": "Total billed", "paid": "Paid", "pending": "Pending", "average": "Avg. / service" },
+    "summary": {
+      "total": "Total billed",
+      "paid": "Paid",
+      "pending": "Pending",
+      "average": "Avg. / service"
+    },
     "tableTitle": "Settlement history",
-    "columns": { "number": "Number", "period": "Period", "services": "Services", "amount": "Amount", "status": "Status", "actions": "Actions" },
-    "status": { "paid": "Paid", "pending": "Pending", "overdue": "Overdue" },
+    "columns": {
+      "number": "Number",
+      "period": "Period",
+      "services": "Services",
+      "amount": "Amount",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
     "detail": {
       "title": "Settlement",
       "issuedOn": "Issued on",
@@ -158,13 +217,22 @@
       "viewServices": "View service detail",
       "downloadPdf": "Download PDF"
     },
-    "toasts": { "downloadStarted": "Download started" }
+    "toasts": {
+      "downloadStarted": "Download started"
+    }
   },
   "profile": {
     "eyebrow": "Account",
     "title": "Collaborator details",
     "subtitle": "Your account and company information",
-    "fields": { "email": "Email", "emailHelp": "Email is managed from sign-in.", "fullName": "Full name", "company": "Company", "phone": "Phone", "save": "Save changes" },
+    "fields": {
+      "email": "Email",
+      "emailHelp": "Email is managed from sign-in.",
+      "fullName": "Full name",
+      "company": "Company",
+      "phone": "Phone",
+      "save": "Save changes"
+    },
     "link": {
       "title": "Link with WG Network",
       "linked": "Linked",
@@ -179,7 +247,11 @@
       "cta": "Make me administrator",
       "loading": "Activating…"
     },
-    "toasts": { "saveError": "Could not save", "saved": "Profile updated", "adminOk": "You are now an administrator. Reload the page." }
+    "toasts": {
+      "saveError": "Could not save",
+      "saved": "Profile updated",
+      "adminOk": "You are now an administrator. Reload the page."
+    }
   },
   "incidences": {
     "eyebrow": "Operations",
@@ -187,11 +259,19 @@
     "subtitle": "Register cases and auto-assign the best collaborator.",
     "detailTitle": "Case detail",
     "newButton": "New case",
-    "filters": { "all": "All" },
+    "filters": {
+      "all": "All"
+    },
     "loading": "Loading…",
     "loadingList": "Loading cases…",
-    "empty": { "title": "No cases", "subtitle": "Create a new one to test the matching engine." },
-    "restricted": { "title": "Restricted access", "subtitle": "Case management is reserved for the operations team." },
+    "empty": {
+      "title": "No cases",
+      "subtitle": "Create a new one to test the matching engine."
+    },
+    "restricted": {
+      "title": "Restricted access",
+      "subtitle": "Case management is reserved for the operations team."
+    },
     "form": {
       "title": "New case",
       "customer": "Customer *",
@@ -210,6 +290,9 @@
       "submit": "Create and find match",
       "submitting": "Creating..."
     },
-    "toasts": { "required": "Customer, province and family are required", "created": "Case created" }
+    "toasts": {
+      "required": "Customer, province and family are required",
+      "created": "Case created"
+    }
   }
 }
