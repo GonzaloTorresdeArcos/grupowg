@@ -66,6 +66,10 @@ const WGNetwork = () => {
       {/* Simulador de impacto — protagonista */}
       <ImpactSimulator />
 
+      {/* Calculadora de cobertura por radio */}
+      <CoberturaRadio />
+
+
       {/* App nativa de IA */}
       <NativeAppBlock />
 
