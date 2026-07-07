@@ -20,11 +20,20 @@ export const PortalLayout = () => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
-  const collaboratorNav = [
+  const operaNav = [
     { to: "/portal", label: t("nav.summary"), icon: LayoutDashboard, end: true },
     { to: "/portal/calendario", label: t("nav.calendar"), icon: Calendar },
     { to: "/portal/documentos", label: t("nav.documents"), icon: FileText },
     { to: "/portal/facturacion", label: t("nav.billing"), icon: Receipt },
+  ];
+
+  const negocioNav = [
+    { to: "/portal/repuestos", label: t("nav.parts"), icon: Package },
+    { to: "/portal/equipos", label: t("nav.equipment"), icon: Store },
+    { to: "/portal/garantias", label: t("nav.warranties"), icon: ShieldCheck },
+  ];
+
+  const profileNav = [
     { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
   ];
 
