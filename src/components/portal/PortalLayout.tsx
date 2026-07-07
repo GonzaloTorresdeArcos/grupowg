@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
-  LogOut, Menu, X, ChevronRight, Inbox, Cpu,
+  LogOut, Menu, X, ChevronRight, Inbox, Cpu, Package, Store, ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
