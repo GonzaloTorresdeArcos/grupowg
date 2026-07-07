@@ -22,9 +22,21 @@
     "title": "A plan structured in 3 layers.",
     "layerLabel": "Layer",
     "items": [
-      { "n": "01", "t": "Relieve pressure", "d": "Spare parts at wholesale cost and agile processes, less operational friction." },
-      { "n": "02", "t": "Grow", "d": "New equipment at competitive prices, extended warranties and new categories and revenue lines." },
-      { "n": "03", "t": "Protect", "d": "Collective insurance, health, life, legal protection, income protection, savings, PRL, compliance and documentation." }
+      {
+        "n": "01",
+        "t": "Relieve pressure",
+        "d": "Spare parts at wholesale cost and agile processes, less operational friction."
+      },
+      {
+        "n": "02",
+        "t": "Grow",
+        "d": "New equipment at competitive prices, extended warranties and new categories and revenue lines."
+      },
+      {
+        "n": "03",
+        "t": "Protect",
+        "d": "Collective insurance, health, life, legal protection, income protection, savings, PRL, compliance and documentation."
+      }
     ]
   },
   "benefits": {
@@ -32,18 +44,54 @@
     "title": "We truly protect.",
     "subtitle": "Because it's not just about the work. You matter.",
     "items": [
-      { "t": "Collective insurance", "d": "Preferred conditions for professionals and teams." },
-      { "t": "Legal protection", "d": "Legal advice for incidents, claims and disputes." },
-      { "t": "Income protection", "d": "Financial peace of mind in case of leave, accident or interruption." },
-      { "t": "Health", "d": "Medical coverage for professionals and families." },
-      { "t": "Life", "d": "Family protection and financial security." },
-      { "t": "Savings plans", "d": "Savings and retirement solutions." },
-      { "t": "Occupational risk", "d": "Risk prevention and workplace safety compliance." },
-      { "t": "Assisted compliance", "d": "Document onboarding, validation and regulatory follow-up." },
-      { "t": "Documentation", "d": "Everything in order, up to date and traceable." },
-      { "t": "New product", "d": "Access to new product on advantageous terms." },
-      { "t": "Spare parts at cost", "d": "Material without margin to improve competitiveness and cash flow." },
-      { "t": "Commercial opportunities", "d": "Activations with manufacturers, distributors and extended warranty programmes." }
+      {
+        "t": "Collective insurance",
+        "d": "Preferred conditions for professionals and teams."
+      },
+      {
+        "t": "Legal protection",
+        "d": "Legal advice for incidents, claims and disputes."
+      },
+      {
+        "t": "Income protection",
+        "d": "Financial peace of mind in case of leave, accident or interruption."
+      },
+      {
+        "t": "Health",
+        "d": "Medical coverage for professionals and families."
+      },
+      {
+        "t": "Life",
+        "d": "Family protection and financial security."
+      },
+      {
+        "t": "Savings plans",
+        "d": "Savings and retirement solutions."
+      },
+      {
+        "t": "Occupational risk",
+        "d": "Risk prevention and workplace safety compliance."
+      },
+      {
+        "t": "Assisted compliance",
+        "d": "Document onboarding, validation and regulatory follow-up."
+      },
+      {
+        "t": "Documentation",
+        "d": "Everything in order, up to date and traceable."
+      },
+      {
+        "t": "New product",
+        "d": "Access to new product on advantageous terms."
+      },
+      {
+        "t": "Spare parts at cost",
+        "d": "Material without margin to improve competitiveness and cash flow."
+      },
+      {
+        "t": "Commercial opportunities",
+        "d": "Activations with manufacturers, distributors and extended warranty programmes."
+      }
     ],
     "outro": "We want you to work with peace of mind. We want you covered and safe."
   },
@@ -51,9 +99,21 @@
     "eyebrow": "Non-negotiable",
     "title": "3 non-negotiable commitments.",
     "items": [
-      { "n": "1", "t": "Spare parts at wholesale cost", "d": "So you can compete, grow and breathe in your day-to-day." },
-      { "n": "2", "t": "Extended warranties and equipment at the best price", "d": "So you can have recurring income and build loyal customers." },
-      { "n": "3", "t": "Collective insurance", "d": "So you are protected as you deserve." }
+      {
+        "n": "1",
+        "t": "Spare parts at wholesale cost",
+        "d": "So you can compete, grow and breathe in your day-to-day."
+      },
+      {
+        "n": "2",
+        "t": "Extended warranties and equipment at the best price",
+        "d": "So you can have recurring income and build loyal customers."
+      },
+      {
+        "n": "3",
+        "t": "Collective insurance",
+        "d": "So you are protected as you deserve."
+      }
     ],
     "outro": "We'll build the rest together, based on your needs and appetite."
   },
@@ -61,5 +121,67 @@
     "title": "Join WG Professional Network.",
     "subtitle": "A single process to activate work, protection and growth.",
     "cta": "Start registration"
+  },
+  "sim": {
+    "eyebrow": "Simulador de impacto",
+    "title": "Mete 4 datos. Mira lo que WG puede hacer por tu negocio.",
+    "subtitle": "Dos minutos. Sin registros. Ajustable. Basado en benchmarks reales de la red WG.",
+    "inputs": {
+      "title": "Tu negocio hoy",
+      "cp": "Código postal",
+      "cpOk": "Zona con actividad WG — encajas en la red.",
+      "intervenciones": "Intervenciones al mes",
+      "ticket": "Ticket medio",
+      "gama": "Gama principal",
+      "advanced": "Supuestos avanzados",
+      "tecnicos": "Técnicos en tu equipo",
+      "fuera": "% intervenciones fuera de garantía"
+    },
+    "rows": {
+      "repuesto": "Repuesto a coste",
+      "equipos": "Venta de equipos",
+      "garantias": "Garantías y seguros",
+      "tiempo": "Tiempo convertido en dinero"
+    },
+    "result": {
+      "eyebrow": "Impacto anual estimado",
+      "perYear": "/ año",
+      "overCurrent": "sobre tu facturación actual",
+      "cashLabel": "Caja liberada al año",
+      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "assumptions": "Ver supuestos usados",
+      "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
+    },
+    "capture": {
+      "eyebrow": "Desbloquea tu informe completo",
+      "title": "Ya has visto lo que WG puede hacer por tu negocio.",
+      "subtitle": "Termina tu alta en 5 minutos y actívalo.",
+      "nombre": "Nombre",
+      "empresa": "Empresa",
+      "email": "Email",
+      "telefono": "Teléfono",
+      "cta": "Entrar en la red",
+      "success": "Recibido. Continuamos con tu alta.",
+      "errRequired": "Nombre y email son obligatorios."
+    }
+  },
+  "app": {
+    "eyebrow": "Tu día a día, sin fricción",
+    "title": "No es una web. Es tu negocio funcionando solo.",
+    "subtitle": "Una app nativa de IA, pensada por SATs para SATs. Herramientas de verdad para el trabajo de verdad.",
+    "items": [
+      "Agenda inteligente que ordena tu ruta del día.",
+      "Habla en vez de escribir: dictas y la IA rellena el parte.",
+      "Foto al nº de serie con validación de legibilidad automática.",
+      "Ubicación automática: no reescribes direcciones.",
+      "El cliente final firma con el dedo y recibe su parte al instante.",
+      "Quien te encarga el aviso lo recibe en el mismo momento.",
+      "Todo se archiva listo para facturar.",
+      "Repuesto a coste con las mejores condiciones de las centrales de recambio.",
+      "Producto para vender cuando reparar no compensa.",
+      "Garantías y seguros con comisión.",
+      "Pago a 15 días.",
+      "Protección para ti y tu negocio."
+    ]
   }
 }
