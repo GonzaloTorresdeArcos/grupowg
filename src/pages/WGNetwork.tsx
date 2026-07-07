@@ -30,36 +30,45 @@ const WGNetwork = () => {
 
   return (
     <>
-      {/* HERO manifiesto */}
-      <section className="relative min-h-[90svh] flex items-center bg-background text-foreground overflow-hidden pt-32">
+      {/* HERO manifiesto (compacto) */}
+      <section className="relative flex items-center bg-background text-foreground overflow-hidden pt-32 pb-16 md:pb-24">
         <img src={networkImg} alt="" width={1600} height={1024} className="absolute inset-0 h-full w-full object-cover opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
-        <div className="container-tight relative z-10 py-20">
+        <div className="container-tight relative z-10 py-10">
           <Reveal>
-            <p className="eyebrow text-teal-soft mb-6">{t("hero.eyebrow")}</p>
-            <h1 className="heading-display text-foreground text-[clamp(2.5rem,8vw,7.5rem)] max-w-5xl">
+            <p className="eyebrow text-teal-soft mb-5">{t("hero.eyebrow")}</p>
+            <h1 className="heading-display text-foreground text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
               <span className="font-normal text-teal">{t("hero.title2")}</span>
             </h1>
-            <p className="mt-10 max-w-2xl text-lg md:text-xl text-foreground/70 leading-relaxed">
+            <p className="mt-6 max-w-2xl text-lg md:text-xl text-foreground/70 leading-relaxed">
               {t("hero.intro")}
             </p>
-            <ul className="mt-10 space-y-2 text-lg text-foreground">
-              {heroList.map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
-            <p className="mt-10 font-display italic text-3xl text-teal">
+            <p className="mt-6 font-display italic text-2xl md:text-3xl text-teal">
               {t("hero.manifesto")}
             </p>
-            <Link to="/wg-network/inscripcion" className="mt-12 inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-medium text-ink transition-all hover:gap-3 hover:bg-teal-soft">
-              {t("hero.cta")}
-              <ArrowUpRight className="h-5 w-5" />
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#simulador" className="inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-medium text-ink transition-all hover:gap-3 hover:bg-teal-soft">
+                {t("hero.cta")}
+                <ArrowDown className="h-5 w-5" />
+              </a>
+              <Link to="/wg-network/inscripcion" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-8 py-4 text-base font-medium text-foreground hover:border-foreground transition-all">
+                {t("finalCta.cta")}
+                <ArrowUpRight className="h-5 w-5" />
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>
+
+      {/* Simulador de impacto — protagonista */}
+      <ImpactSimulator />
+
+      {/* App nativa de IA */}
+      <NativeAppBlock />
+
+
 
       {/* 3 capas */}
       <section className="py-24 md:py-32 bg-bone">
