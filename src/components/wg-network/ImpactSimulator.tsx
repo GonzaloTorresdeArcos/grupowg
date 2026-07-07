@@ -27,9 +27,6 @@ import {
   type Pais,
 } from "@/lib/impact-model";
 import { GAMAS } from "@/lib/gamas-taxonomy";
-import { PROVINCIAS } from "@/lib/spain-provinces";
-import { DISTRITOS_PT } from "@/lib/portugal-distritos";
-import { resolveZona, getZonasES, getZonasPT } from "@/lib/zona-resolver";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
