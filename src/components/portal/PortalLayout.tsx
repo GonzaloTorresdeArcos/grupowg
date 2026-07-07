@@ -213,7 +213,7 @@ export const PortalLayout = () => {
   );
 };
 
-type NavItem = { to: string; label: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; end?: boolean };
+type NavItem = { to: string; label: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number | string }>; end?: boolean };
 
 const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
   <div className="pb-2">
