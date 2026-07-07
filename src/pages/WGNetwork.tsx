@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Heart, Shield, Wallet, Stethoscope, BookOpen, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, Briefcase, ChevronRight, ArrowDown } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { ImpactSimulator } from "@/components/wg-network/ImpactSimulator";
-import { CoberturaRadio } from "@/components/wg-network/CoberturaRadio";
+
 import { NativeAppBlock } from "@/components/wg-network/NativeAppBlock";
 import logo50 from "@/assets/logo-50-light.png";
 import networkImg from "@/assets/network.webp";
@@ -66,8 +66,7 @@ const WGNetwork = () => {
       {/* Simulador de impacto — protagonista */}
       <ImpactSimulator />
 
-      {/* Calculadora de cobertura por radio */}
-      <CoberturaRadio />
+
 
 
       {/* App nativa de IA */}

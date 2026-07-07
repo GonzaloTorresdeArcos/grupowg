@@ -11,6 +11,7 @@ import {
   Wrench,
   MapPin,
   CheckCircle2,
+  Copy,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
@@ -26,9 +27,6 @@ import {
   type Pais,
 } from "@/lib/impact-model";
 import { GAMAS } from "@/lib/gamas-taxonomy";
-import { PROVINCIAS } from "@/lib/spain-provinces";
-import { DISTRITOS_PT } from "@/lib/portugal-distritos";
-import { resolveZona, getZonasES, getZonasPT } from "@/lib/zona-resolver";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
@@ -108,19 +106,37 @@ export const ImpactSimulator = () => {
     inputs.pais === "ES"
       ? /^\d{5}$/.test(inputs.cp)
       : /^\d{4}(-\d{3})?$/.test(inputs.cp);
-  const zonaMatch = useMemo(
-    () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
-    [cpValid, inputs.pais, inputs.cp, inputs.provincia],
-  );
-  const zonasProvincia = useMemo(
-    () =>
-      inputs.provincia
-        ? inputs.pais === "ES"
-          ? getZonasES(inputs.provincia)
-          : getZonasPT(inputs.provincia)
-        : [],
-    [inputs.pais, inputs.provincia],
-  );
+  const [radioKm, setRadioKm] = useState(25);
+  const [coords, setCoords] = useState<{ munis: string[]; cps: Record<string, [number, number, number]> } | null>(null);
+  const [copiedCP, setCopiedCP] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    setCoords(null);
+    fetch(`/cp-coords-${inputs.pais.toLowerCase()}.json`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setCoords(d); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [inputs.pais]);
+  const cobertura = useMemo(() => {
+    if (!coords || !cpValid) return null;
+    const key = inputs.pais === "ES" ? inputs.cp : inputs.cp.slice(0, 4);
+    const center = coords.cps[key];
+    if (!center) return null;
+    const R = Math.PI / 180;
+    const dkm = (aLat: number, aLng: number, bLat: number, bLng: number) => {
+      const la = ((aLat + bLat) / 2) * R;
+      return 6371 * Math.hypot((bLng - aLng) * R * Math.cos(la), (bLat - aLat) * R);
+    };
+    const covered: string[] = [];
+    const munis = new Set<number>();
+    for (const k in coords.cps) {
+      const v = coords.cps[k];
+      if (dkm(center[0], center[1], v[0], v[1]) <= radioKm) { covered.push(k); munis.add(v[2]); }
+    }
+    const muniNames = [...munis].map((i) => coords.munis[i]).filter(Boolean).sort((a, b) => a.localeCompare(b));
+    return { covered: covered.sort(), muniNames };
+  }, [coords, cpValid, inputs.cp, inputs.pais, radioKm]);
 
   const rows = [
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
@@ -144,7 +160,8 @@ export const ImpactSimulator = () => {
     });
   };
 
-  const provOptions = inputs.pais === "ES" ? PROVINCIAS : DISTRITOS_PT;
+
+
 
   // ── Lead capture ──
   const [lead, setLead] = useState({ nombre: "", empresa: "", email: "", telefono: "" });
@@ -242,111 +259,58 @@ export const ImpactSimulator = () => {
                 </div>
               </div>
 
-              {/* Cobertura: país + provincia + CP */}
+              {/* Cobertura: país + CP + radio de acción */}
               <div>
                 <label className="text-sm font-medium text-ink flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-teal" /> Cobertura
+                  <MapPin className="h-4 w-4 text-teal" /> Cobertura — tu radio de acción
                 </label>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {(["ES", "PT"] as Pais[]).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() =>
-                        setInputs({ ...inputs, pais: p, provincia: "", cp: "" })
-                      }
-                      className={cn(
-                        "rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
-                        inputs.pais === p
-                          ? "bg-ink text-background border-ink"
-                          : "bg-background text-ink border-border hover:border-ink"
-                      )}
-                    >
+                    <button key={p} type="button"
+                      onClick={() => setInputs({ ...inputs, pais: p, provincia: "", cp: "" })}
+                      className={cn("rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
+                        inputs.pais === p ? "bg-ink text-background border-ink" : "bg-background text-ink border-border hover:border-ink")}>
                       {p === "ES" ? "🇪🇸 España" : "🇵🇹 Portugal"}
                     </button>
                   ))}
                 </div>
-                <select
-                  value={inputs.provincia ?? ""}
-                  onChange={(e) => setInputs({ ...inputs, provincia: e.target.value })}
-                  className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
-                >
-                  <option value="">
-                    {inputs.pais === "ES" ? "Selecciona provincia…" : "Seleciona distrito…"}
-                  </option>
-                  {provOptions.map((o) => (
-                    <option key={o.code} value={o.code}>
-                      {o.name}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={inputs.pais === "ES" ? 5 : 8}
+                <input type="text" inputMode="numeric" maxLength={inputs.pais === "ES" ? 5 : 8}
                   value={inputs.cp}
-                  onChange={(e) =>
-                    setInputs({
-                      ...inputs,
-                      cp:
-                        inputs.pais === "ES"
-                          ? e.target.value.replace(/\D/g, "")
-                          : e.target.value.replace(/[^\d-]/g, ""),
-                    })
-                  }
-                  placeholder={inputs.pais === "ES" ? "28001" : "1000-001"}
-                  className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal"
-                />
-                {cpValid && zonaMatch && (
-                  <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4" />
-                    <span>
-                      {zonaMatch.cabecera} · {zonaMatch.level2 ?? zonaMatch.level1}
-                      {" — "}actividad WG en tu zona
-                    </span>
-                  </p>
-                )}
-                {cpValid && !zonaMatch && (
-                  <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4" /> {t("sim.inputs.cpOk")}
-                  </p>
-                )}
-                {inputs.provincia && zonasProvincia.length > 0 && (
-                  <div className="mt-3 rounded-xl border border-border bg-muted/40 p-3">
-                    <p className="text-xs font-medium text-ink mb-2">
-                      {zonasProvincia.length} zonas operativas WG en{" "}
-                      {provOptions.find((o) => o.code === inputs.provincia)?.name}
+                  onChange={(e) => setInputs({ ...inputs, cp: inputs.pais === "ES" ? e.target.value.replace(/\D/g, "") : e.target.value.replace(/[^\d-]/g, "") })}
+                  placeholder={inputs.pais === "ES" ? "28009" : "1000-001"}
+                  className="mt-2 w-full rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal" />
+                <div className="mt-3 flex justify-between items-baseline">
+                  <span className="text-sm text-muted-foreground">Radio de acción</span>
+                  <span className="font-display text-base text-ink">{radioKm} km</span>
+                </div>
+                <Slider className="mt-2" min={5} max={50} step={1} value={[radioKm]} onValueChange={([v]) => setRadioKm(v)} />
+                {cobertura && (
+                  <div className="mt-3 rounded-xl border border-teal/30 bg-teal/5 p-3">
+                    <p className="text-sm text-ink">
+                      Cubres <span className="font-semibold">{cobertura.covered.length} CP</span> en{" "}
+                      <span className="font-semibold">{cobertura.muniNames.length} municipios</span> a {radioKm} km.
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {zonasProvincia.map((z, i) => {
-                        const active =
-                          !!zonaMatch &&
-                          zonaMatch.cabecera === z.cabecera &&
-                          zonaMatch.card === z.card;
-                        return (
-                          <button
-                            key={`${z.cabecera}-${z.card}-${i}`}
-                            type="button"
-                            onClick={() => setInputs({ ...inputs, cp: z.cps[0] })}
-                            title={`${z.cps.length} CP · ${z.level1}`}
-                            className={cn(
-                              "rounded-full border px-2.5 py-1 text-xs transition-colors",
-                              active
-                                ? "bg-teal text-ink border-teal"
-                                : "bg-background text-muted-foreground border-border hover:border-ink hover:text-ink",
-                            )}
-                          >
-                            {z.cabecera}
-                          </button>
-                        );
-                      })}
+                    <div className="mt-2 flex items-center gap-3 flex-wrap">
+                      <button type="button"
+                        onClick={() => { navigator.clipboard?.writeText(cobertura.covered.join(", ")); setCopiedCP(true); setTimeout(() => setCopiedCP(false), 1500); }}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-teal hover:underline">
+                        {copiedCP ? <><CheckCircle2 className="h-3.5 w-3.5" /> Copiado</> : <><Copy className="h-3.5 w-3.5" /> Copiar lista de CP</>}
+                      </button>
+                      <span className="text-xs text-muted-foreground">línea recta, todas direcciones</span>
                     </div>
-                    <p className="mt-2 text-[11px] text-muted-foreground">
-                      Toca una zona para rellenar un CP de ejemplo, o escribe el tuyo arriba.
-                    </p>
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-xs text-muted-foreground hover:text-ink">Ver municipios</summary>
+                      <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed max-h-32 overflow-y-auto">
+                        {cobertura.muniNames.join(" · ")}
+                      </p>
+                    </details>
                   </div>
                 )}
+                {cpValid && coords && !cobertura && (
+                  <p className="mt-2 text-xs text-muted-foreground">No encontramos ese código postal. Revísalo.</p>
+                )}
               </div>
+
 
               {/* Gamas (multi) */}
               <div>
