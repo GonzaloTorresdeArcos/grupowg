@@ -28,7 +28,7 @@ import {
 import { GAMAS } from "@/lib/gamas-taxonomy";
 import { PROVINCIAS } from "@/lib/spain-provinces";
 import { DISTRITOS_PT } from "@/lib/portugal-distritos";
-import { resolveZona } from "@/lib/zona-resolver";
+import { resolveZona, getZonasES, getZonasPT } from "@/lib/zona-resolver";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
@@ -111,6 +111,15 @@ export const ImpactSimulator = () => {
   const zonaMatch = useMemo(
     () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
     [cpValid, inputs.pais, inputs.cp, inputs.provincia],
+  );
+  const zonasProvincia = useMemo(
+    () =>
+      inputs.provincia
+        ? inputs.pais === "ES"
+          ? getZonasES(inputs.provincia)
+          : getZonasPT(inputs.provincia)
+        : [],
+    [inputs.pais, inputs.provincia],
   );
 
   const rows = [
@@ -301,6 +310,41 @@ export const ImpactSimulator = () => {
                   <p className="mt-2 text-sm text-teal flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4" /> {t("sim.inputs.cpOk")}
                   </p>
+                )}
+                {inputs.provincia && zonasProvincia.length > 0 && (
+                  <div className="mt-3 rounded-xl border border-border bg-muted/40 p-3">
+                    <p className="text-xs font-medium text-ink mb-2">
+                      {zonasProvincia.length} zonas operativas WG en{" "}
+                      {provOptions.find((o) => o.code === inputs.provincia)?.name}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {zonasProvincia.map((z, i) => {
+                        const active =
+                          !!zonaMatch &&
+                          zonaMatch.cabecera === z.cabecera &&
+                          zonaMatch.card === z.card;
+                        return (
+                          <button
+                            key={`${z.cabecera}-${z.card}-${i}`}
+                            type="button"
+                            onClick={() => setInputs({ ...inputs, cp: z.cps[0] })}
+                            title={`${z.cps.length} CP · ${z.level1}`}
+                            className={cn(
+                              "rounded-full border px-2.5 py-1 text-xs transition-colors",
+                              active
+                                ? "bg-teal text-ink border-teal"
+                                : "bg-background text-muted-foreground border-border hover:border-ink hover:text-ink",
+                            )}
+                          >
+                            {z.cabecera}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="mt-2 text-[11px] text-muted-foreground">
+                      Toca una zona para rellenar un CP de ejemplo, o escribe el tuyo arriba.
+                    </p>
+                  </div>
                 )}
               </div>
 
