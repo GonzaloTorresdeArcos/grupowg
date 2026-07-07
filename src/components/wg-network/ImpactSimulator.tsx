@@ -108,6 +108,10 @@ export const ImpactSimulator = () => {
     inputs.pais === "ES"
       ? /^\d{5}$/.test(inputs.cp)
       : /^\d{4}(-\d{3})?$/.test(inputs.cp);
+  const zonaMatch = useMemo(
+    () => (cpValid ? resolveZona(inputs.pais, inputs.cp, inputs.provincia) : null),
+    [cpValid, inputs.pais, inputs.cp, inputs.provincia],
+  );
 
   const rows = [
     { icon: Briefcase, label: "Trabajo que te asigna WG", value: result.ingresoWG, color: "bg-teal" },
