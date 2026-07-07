@@ -4,6 +4,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { ImpactSimulator } from "@/components/wg-network/ImpactSimulator";
 
 import { NativeAppBlock } from "@/components/wg-network/NativeAppBlock";
+import { EscalaOperativa } from "@/components/wg-network/EscalaOperativa";
 import logo50 from "@/assets/logo-50-light.png";
 import networkImg from "@/assets/network.webp";
 import { useEffect } from "react";
@@ -71,6 +72,8 @@ const WGNetwork = () => {
 
       {/* App nativa de IA */}
       <NativeAppBlock />
+
+      <EscalaOperativa />
 
 
 
