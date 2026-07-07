@@ -115,6 +115,9 @@ const App = () => (
                 <Route path="/portal/documentos" element={<PortalDocuments />} />
                 <Route path="/portal/facturacion" element={<PortalInvoices />} />
                 <Route path="/portal/perfil" element={<PortalProfile />} />
+                <Route path="/portal/repuestos" element={<PortalRepuestos />} />
+                <Route path="/portal/equipos" element={<PortalEquipos />} />
+                <Route path="/portal/garantias" element={<PortalGarantias />} />
                 <Route path="/portal/incidencias" element={<PortalIncidencias />} />
                 <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
               </Route>
