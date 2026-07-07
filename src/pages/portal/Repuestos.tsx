@@ -37,6 +37,8 @@ const Repuestos = () => {
   const [cart, setCart] = useState<Line[]>([]);
   const [openCart, setOpenCart] = useState(false);
 
+  useEffect(() => { document.title = "Repuesto a coste · Portal WG"; }, []);
+
   const items = useMemo(() => {
     const qn = q.trim().toLowerCase();
     return MOCK_REPUESTOS.filter((r) => {
