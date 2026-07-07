@@ -160,7 +160,8 @@ export const ImpactSimulator = () => {
     });
   };
 
-  const provOptions = inputs.pais === "ES" ? PROVINCIAS : DISTRITOS_PT;
+
+
 
   // ── Lead capture ──
   const [lead, setLead] = useState({ nombre: "", empresa: "", email: "", telefono: "" });
