@@ -397,6 +397,43 @@ export const ImpactSimulator = () => {
                               <VolRow label="Instalaciones" Icon={PackagePlus} value={v.ins} ticket={INSTALL_PRICE_BY_GAMA[code]} onChange={(n) => setVol(code, "ins", n)} />
                             )}
                           </div>
+                          {(() => {
+                            const m = MARCAS_POR_GAMA[code];
+                            const total = m ? m.confirmadas.length + m.wip.length : 0;
+                            if (!total) return null;
+                            return (
+                              <details className="mt-3 group border-t border-border/60 pt-2">
+                                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center gap-1.5 text-xs font-medium text-teal">
+                                  <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+                                  {total} marcas · SAT oficial –40/–70%
+                                </summary>
+                                <div className="mt-2 space-y-2">
+                                  {m.confirmadas.length > 0 && (
+                                    <div>
+                                      <p className="text-[11px] font-medium text-ink mb-1 flex items-center gap-1">
+                                        <CheckCircle2 className="h-3 w-3 text-teal" /> Descuento confirmado
+                                      </p>
+                                      <div className="flex flex-wrap gap-1">
+                                        {m.confirmadas.map((b) => (
+                                          <span key={b} className="rounded-md bg-teal/10 text-ink text-[11px] px-1.5 py-0.5 border border-teal/30">{b}</span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  {m.wip.length > 0 && (
+                                    <div>
+                                      <p className="text-[11px] font-medium text-muted-foreground mb-1">En incorporación</p>
+                                      <div className="flex flex-wrap gap-1">
+                                        {m.wip.map((b) => (
+                                          <span key={b} className="rounded-md bg-muted text-muted-foreground text-[11px] px-1.5 py-0.5 border border-border">{b}</span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </details>
+                            );
+                          })()}
                         </div>
                       );
                     })}
@@ -404,6 +441,9 @@ export const ImpactSimulator = () => {
                       <span>Total: {result.reparacionesMes + result.instalacionesMes} intervenciones/mes</span>
                       {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
                     </div>
+                    <p className="text-[11px] text-muted-foreground pt-1">
+                      Como SAT oficial accedes al repuesto OEM con –40% a –70%. Descuentos confirmados en Vestel y marcas asociadas; resto en incorporación.
+                    </p>
                   </div>
                 )}
               </div>
