@@ -13,7 +13,7 @@ const STATS = [
 const ESTADOS = [
   {
     label: "Disponible hoy",
-    sub: "Acceso preferente a repuesto y documentación técnica.",
+    sub: "Acceso a repuesto, documentación técnica y condiciones exclusivas para la red WG.",
     dot: "bg-emerald-500",
     bar: "bg-emerald-400",
     gamas: [
