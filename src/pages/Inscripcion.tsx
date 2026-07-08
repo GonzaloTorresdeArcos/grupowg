@@ -829,6 +829,22 @@ const Inscripcion = () => {
             <Field label="Instalación">
               <ChipsMulti opts={instalacionTipos} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
+            {(s1.tipo_colaborador === "Instalador" || instalacionTipos.some((t) => serviciosSel.includes(t))) && (
+              <Field label="Material de instalación">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <button type="button" onClick={() => setMaterialWG("wg")}
+                    className={cn("rounded-xl border p-4 text-left transition-all", materialWG === "wg" ? "border-ink bg-ink text-bone" : "border-border bg-card hover:border-ink/40")}>
+                    <span className="block text-sm font-medium">Que lo ponga WG</span>
+                    <span className={cn("block text-xs mt-1", materialWG === "wg" ? "text-bone/70" : "text-muted-foreground")}>No lo adelantas: lo recoges en punto de venta y se descuenta tras la liquidación (precios ya negociados).</span>
+                  </button>
+                  <button type="button" onClick={() => setMaterialWG("propio")}
+                    className={cn("rounded-xl border p-4 text-left transition-all", materialWG === "propio" ? "border-ink bg-ink text-bone" : "border-border bg-card hover:border-ink/40")}>
+                    <span className="block text-sm font-medium">Lo pongo yo</span>
+                    <span className={cn("block text-xs mt-1", materialWG === "propio" ? "text-bone/70" : "text-muted-foreground")}>Sigues aportando tú el material de instalación.</span>
+                  </button>
+                </div>
+              </Field>
+            )}
             <Field label="Horarios de atención">
               <HorariosSelector value={horarios} onChange={setHorarios} />
             </Field>
