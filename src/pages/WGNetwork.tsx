@@ -163,46 +163,36 @@ const WGNetwork = () => {
       {/* 6 · Pruébalo — Simulador de impacto */}
       <ImpactSimulator />
 
-      {/* 7 · Hoja de ruta — 3 capas */}
-      <section className="py-24 md:py-32 bg-bone">
-        <div className="container-tight">
+      {/* 7 · 3 compromisos innegociables */}
+      <section className="relative py-24 md:py-32 bg-background text-foreground overflow-hidden">
+        <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-0 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
+        <div className="container-tight relative">
           <Reveal>
             <div className="max-w-3xl mb-16">
-              <p className="eyebrow mb-4">{t("layers.eyebrow")}</p>
-              <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
-                {t("layers.title")}
+              <p className="eyebrow text-teal-soft mb-4">{t("commitments.eyebrow")}</p>
+              <h2 className="heading-display text-foreground text-4xl md:text-6xl text-balance">
+                {t("commitments.title")}
               </h2>
             </div>
           </Reveal>
 
-          <div className="relative">
-            <div className="hidden md:block absolute top-12 left-0 right-0 h-px bg-border" />
-            <div className="grid gap-10 md:grid-cols-3">
-              {layers.map((l, i) => (
-                <Reveal key={l.n} delay={i * 120}>
-                  <div className="relative">
-                    <div className="hidden md:flex items-center justify-center h-24 w-24 rounded-full bg-background text-foreground font-display text-2xl mb-8 relative z-10 ring-8 ring-bone">
-                      {l.n}
-                    </div>
-                    <p className="md:hidden eyebrow mb-3">{l.mes ? `${l.mes} · ` : ""}{t("layers.layerLabel")} {l.n}</p>
-                    {l.mes && <p className="hidden md:block eyebrow text-teal-deep mb-2">{l.mes}</p>}
-                    <h3 className="font-display text-3xl text-ink mb-4">{l.t}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{l.d}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+          <div className="space-y-px bg-muted/50 border border-border rounded-2xl overflow-hidden">
+            {commitments.map((c, i) => (
+              <Reveal key={c.n} delay={i * 100}>
+                <div className="bg-background p-8 md:p-12 grid gap-6 md:grid-cols-12 items-center group hover:bg-ink-soft transition-colors">
+                  <p className="md:col-span-1 font-display text-5xl text-teal">{c.n}</p>
+                  <h3 className="md:col-span-4 font-display text-3xl text-foreground">{c.t}</h3>
+                  <p className="md:col-span-6 text-foreground/70 leading-relaxed">{c.d}</p>
+                  <ChevronRight className="md:col-span-1 h-6 w-6 text-foreground/40 transition-all group-hover:text-teal group-hover:translate-x-1" />
+                </div>
+              </Reveal>
+            ))}
           </div>
 
           <Reveal>
-            <div className="mt-20 md:mt-24 max-w-3xl">
-              <h3 className="font-display italic text-3xl md:text-4xl text-ink mb-4 text-balance">
-                {t("layers.outroTitle")}
-              </h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {t("layers.outro")}
-              </p>
-            </div>
+            <p className="mt-12 font-display italic text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto text-center">
+              {t("commitments.outro")}
+            </p>
           </Reveal>
         </div>
       </section>
