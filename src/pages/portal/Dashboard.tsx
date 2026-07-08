@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { STATUS_LABELS, familiaLabel } from "@/lib/catalogos";
+import { ImpactoNegocio } from "@/components/portal/ImpactoNegocio";
+import { CumplimientoPagos } from "@/components/portal/CumplimientoPagos";
 import { useTranslation } from "react-i18next";
 
 const ACTIVE = ["open", "assigned", "in_progress"];
