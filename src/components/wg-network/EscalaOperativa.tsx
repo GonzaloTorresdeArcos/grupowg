@@ -23,9 +23,9 @@ type Eco = { title: string; Icon: LucideIcon; accent: "sky" | "emerald" | "amber
 
 const ECOSISTEMAS: Eco[] = [
   { title: "Retail & Marketplaces", Icon: ShoppingCart, accent: "sky", brands: ["Carrefour", "Alcampo / Auchan", "Makro / Metro", "PcComponentes", "Neumese", "Electro Depot"] },
-  { title: "Fabricantes & OEMs", Icon: Factory, accent: "emerald", brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"] },
+  { title: "Fabricantes", Icon: Factory, accent: "emerald", brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"] },
   { title: "Warranty & Insurance", Icon: ShieldCheck, accent: "amber", brands: ["Assurant", "Plus Ultra", "Seyna", "Companjon", "Caser"] },
-  { title: "Mobility & New Categories", Icon: Bike, accent: "violet", brands: ["Navee", "Esprinet", "Denver", "MT Distribution", "Nilox"] },
+  { title: "Mobility", Icon: Bike, accent: "violet", brands: ["Navee", "Esprinet", "Denver", "MT Distribution", "Nilox"] },
 ];
 
 const ACCENT: Record<Eco["accent"], { bar: string; icon: string }> = {
