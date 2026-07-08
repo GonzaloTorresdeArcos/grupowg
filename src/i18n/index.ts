@@ -1,7 +1,7 @@
 /**
  * Configuración global de i18n.
  *
- * - Idiomas soportados: ES (default), EN, PT, FR.
+ * - Idiomas soportados: ES (default), EN, PT.
  * - Detecta el idioma del navegador en la primera visita; si no es soportado,
  *   cae a ES.
  * - Persiste la elección del usuario en localStorage bajo `wg:lang`.
