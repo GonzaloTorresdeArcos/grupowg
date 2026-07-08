@@ -173,39 +173,6 @@ const WGNetwork = () => {
       {/* 6 · Pruébalo — Simulador de impacto */}
       <ImpactSimulator />
 
-      {/* 7 · 3 compromisos innegociables */}
-      <section className="relative py-24 md:py-32 bg-background text-foreground overflow-hidden">
-        <img src={logo50} alt="" loading="lazy" className="hidden md:block absolute top-0 right-0 w-40 lg:w-56 h-auto opacity-90 z-10" />
-        <div className="container-tight relative">
-          <Reveal>
-            <div className="max-w-3xl mb-16">
-              <p className="eyebrow text-teal-soft mb-4">{t("commitments.eyebrow")}</p>
-              <h2 className="heading-display text-foreground text-4xl md:text-6xl text-balance">
-                {t("commitments.title")}
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="space-y-px bg-muted/50 border border-border rounded-2xl overflow-hidden">
-            {commitments.map((c, i) => (
-              <Reveal key={c.n} delay={i * 100}>
-                <div className="bg-background p-8 md:p-12 grid gap-6 md:grid-cols-12 items-center group hover:bg-ink-soft transition-colors">
-                  <p className="md:col-span-1 font-display text-5xl text-teal">{c.n}</p>
-                  <h3 className="md:col-span-4 font-display text-3xl text-foreground">{c.t}</h3>
-                  <p className="md:col-span-6 text-foreground/70 leading-relaxed">{c.d}</p>
-                  <ChevronRight className="md:col-span-1 h-6 w-6 text-foreground/40 transition-all group-hover:text-teal group-hover:translate-x-1" />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal>
-            <p className="mt-12 font-display italic text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto text-center">
-              {t("commitments.outro")}
-            </p>
-          </Reveal>
-        </div>
-      </section>
 
       {/* 8 · CTA final */}
       <section className="py-24 md:py-32 bg-card">
