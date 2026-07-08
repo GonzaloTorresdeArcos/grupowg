@@ -117,7 +117,7 @@ export const GAMAS: GamaDef[] = [
   },
   {
     code: "confort",
-    label: "Confort",
+    label: "Climatización",
     emoji: "🔷",
     items: [
       { code: "confort.aire", label: "Aire acondicionado (portátil / split)" },
