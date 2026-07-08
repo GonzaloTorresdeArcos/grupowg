@@ -18,13 +18,13 @@
     "cta": "Únete a WG Professional Network"
   },
   "layers": {
-    "eyebrow": "El plan",
-    "title": "Un plan estructurado en 3 capas.",
+    "eyebrow": "Hoja de ruta",
+    "title": "Un plan que se activa por fases.",
     "layerLabel": "Capa",
     "items": [
-      { "n": "01", "t": "Aliviar presión", "d": "Repuestos OEM con 40%–70% de descuento y procesos ágiles, menos fricción operativa." },
-      { "n": "02", "t": "Hacer crecer", "d": "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos." },
-      { "n": "03", "t": "Proteger", "d": "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación." }
+      { "n": "01", "mes": "Junio", "t": "Aliviar presión", "d": "El primer paso: repuestos OEM con 40%–70% de descuento y procesos ágiles. Menos fricción operativa y más caja desde el primer día." },
+      { "n": "02", "mes": "Septiembre", "t": "Hacer crecer", "d": "Nuevas vías de ingreso: equipos nuevos al mejor precio, garantías extendidas con comisión y nuevas gamas y líneas de negocio." },
+      { "n": "03", "mes": "Noviembre", "t": "Proteger", "d": "Cobertura integral: seguros colectivos, salud, vida, protección jurídica y de ingresos, ahorro, PRL, compliance y documentación." }
     ]
   },
   "benefits": {

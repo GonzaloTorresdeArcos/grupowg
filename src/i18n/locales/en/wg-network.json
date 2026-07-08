@@ -18,25 +18,13 @@
     "cta": "Join WG Professional Network"
   },
   "layers": {
-    "eyebrow": "The plan",
-    "title": "A plan structured in 3 layers.",
+    "eyebrow": "Roadmap",
+    "title": "A plan that activates in phases.",
     "layerLabel": "Layer",
     "items": [
-      {
-        "n": "01",
-        "t": "Relieve pressure",
-        "d": "OEM parts with a 40%–70% discount and streamlined processes, less operational friction."
-      },
-      {
-        "n": "02",
-        "t": "Grow",
-        "d": "New equipment at competitive prices, extended warranties and new categories and revenue lines."
-      },
-      {
-        "n": "03",
-        "t": "Protect",
-        "d": "Collective insurance, health, life, legal protection, income protection, savings, PRL, compliance and documentation."
-      }
+      { "n": "01", "mes": "June", "t": "Relieve pressure", "d": "The first step: OEM parts with a 40%–70% discount and streamlined processes. Less operational friction and more cash from day one." },
+      { "n": "02", "mes": "September", "t": "Grow", "d": "New revenue streams: new equipment at the best price, extended warranties for a commission, and new product ranges and business lines." },
+      { "n": "03", "mes": "November", "t": "Protect", "d": "Full cover: group insurance, health, life, legal and income protection, savings, occupational risk, compliance and documentation." }
     ]
   },
   "benefits": {
