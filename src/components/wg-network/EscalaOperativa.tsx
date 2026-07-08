@@ -12,20 +12,29 @@ const STATS = [
 
 const ESTADOS = [
   {
-    label: "Ya disponible",
-    sub: "Ventajas ya operativas para toda la red.",
+    label: "Disponible hoy",
+    sub: "Beneficios ya operativos.",
     dot: "bg-emerald-500",
     bar: "bg-emerald-400",
-    brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sharp", "Sauber", "Toshiba", "JVC", "Hitachi", "Johnson", "Selecline"],
-    more: true,
+    gamas: [
+      { g: "Blanca", brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sauber", "Sharp", "Evvo", "Tegran", "Vanguard", "Konen", "Confortec", "Sunfeel", "Selecline", "Vox", "Bru"] },
+      { g: "Aire acondicionado", brands: ["Johnson"] },
+      { g: "Marrón", brands: ["Toshiba", "JVC", "Electronia", "Hitachi", "Telefunken"] },
+    ],
   },
   {
-    label: "En desarrollo",
-    sub: "Nuevas ventajas en negociación para toda la red.",
+    label: "Próximamente",
+    sub: "Más marcas, más producto y nuevas ventajas.",
     dot: "bg-amber-500",
     bar: "bg-amber-400",
-    brands: ["Carrefour Home", "Bluesky", "Qilive", "Cecotec", "Thomson", "Kromsline", "Makro Professional", "Horeca Select", "Bartscher", "Navee", "Red Bull", "Nilox"],
-    more: true,
+    gamas: [
+      { g: "Blanca", brands: ["Carrefour Home", "Bluesky", "Qilive", "Cecotec", "Kromsline", "Valberg", "Jocel", "Solthermic", "Telefac"] },
+      { g: "Aire acondicionado", brands: ["Klindo", "Climatric", "Cecotec", "Sauber", "Origial"] },
+      { g: "Profesional", brands: ["Horeca Select", "Makro Professional", "Metro Professional", "Mainho", "Bartscher", "Retinna", "Efficol", "Crea"] },
+      { g: "Pequeño aparato", brands: ["Carrefour Home", "Klindo", "Simpl", "Bluesky", "Jocel", "Mandine"] },
+      { g: "Marrón", brands: ["Cecotec", "Thomson", "Onwa", "Origial", "Metz"] },
+      { g: "Movilidad", brands: ["Cecotec", "Navee", "Red Bull", "Reebok", "Alfa Romeo", "Nilox"] },
+    ],
   },
 ];
 
