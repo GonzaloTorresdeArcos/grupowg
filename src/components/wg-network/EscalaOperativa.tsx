@@ -12,20 +12,29 @@ const STATS = [
 
 const ESTADOS = [
   {
-    label: "Ya disponible",
-    sub: "Ventajas ya operativas para toda la red.",
+    label: "Disponible hoy",
+    sub: "Beneficios ya operativos.",
     dot: "bg-emerald-500",
     bar: "bg-emerald-400",
-    brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sharp", "Sauber", "Toshiba", "JVC", "Hitachi", "Johnson", "Selecline"],
-    more: true,
+    gamas: [
+      { g: "Blanca", brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sauber", "Sharp", "Evvo", "Tegran", "Vanguard", "Konen", "Confortec", "Sunfeel", "Selecline", "Vox", "Bru"] },
+      { g: "Aire acondicionado", brands: ["Johnson"] },
+      { g: "Marrón", brands: ["Toshiba", "JVC", "Electronia", "Hitachi", "Telefunken"] },
+    ],
   },
   {
-    label: "En desarrollo",
-    sub: "Nuevas ventajas en negociación para toda la red.",
+    label: "Próximamente",
+    sub: "Más marcas, más producto y nuevas ventajas.",
     dot: "bg-amber-500",
     bar: "bg-amber-400",
-    brands: ["Carrefour Home", "Bluesky", "Qilive", "Cecotec", "Thomson", "Kromsline", "Makro Professional", "Horeca Select", "Bartscher", "Navee", "Red Bull", "Nilox"],
-    more: true,
+    gamas: [
+      { g: "Blanca", brands: ["Carrefour Home", "Bluesky", "Qilive", "Cecotec", "Kromsline", "Valberg", "Jocel", "Solthermic", "Telefac"] },
+      { g: "Aire acondicionado", brands: ["Klindo", "Climatric", "Cecotec", "Sauber", "Origial"] },
+      { g: "Profesional", brands: ["Horeca Select", "Makro Professional", "Metro Professional", "Mainho", "Bartscher", "Retinna", "Efficol", "Crea"] },
+      { g: "Pequeño aparato", brands: ["Carrefour Home", "Klindo", "Simpl", "Bluesky", "Jocel", "Mandine"] },
+      { g: "Marrón", brands: ["Cecotec", "Thomson", "Onwa", "Origial", "Metz"] },
+      { g: "Movilidad", brands: ["Cecotec", "Navee", "Red Bull", "Reebok", "Alfa Romeo", "Nilox"] },
+    ],
   },
 ];
 
@@ -76,22 +85,28 @@ export const EscalaOperativa = () => (
       <Reveal>
         <p className="eyebrow mt-16 mb-6">Marcas gestionadas</p>
       </Reveal>
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="space-y-6">
         {ESTADOS.map((s, i) => (
           <Reveal key={s.label} delay={i * 80}>
-            <div className="rounded-2xl border border-border bg-background overflow-hidden h-full">
+            <div className="rounded-2xl border border-border bg-background overflow-hidden">
               <div className={`h-1 ${s.bar}`} />
-              <div className="p-6">
+              <div className="p-6 md:p-8">
                 <div className="flex items-center gap-2 mb-1">
                   <span className={`h-2.5 w-2.5 rounded-full ${s.dot}`} />
                   <h3 className="font-display text-xl text-ink">{s.label}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">{s.sub}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {s.brands.map((b) => (
-                    <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
+                <p className="text-sm text-muted-foreground mb-6">{s.sub}</p>
+                <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {s.gamas.map((gama) => (
+                    <div key={gama.g}>
+                      <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground mb-2">{gama.g}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {gama.brands.map((b) => (
+                          <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                  {s.more && <span className="rounded-full px-2.5 py-1 text-xs text-muted-foreground">+ más</span>}
                 </div>
               </div>
             </div>
