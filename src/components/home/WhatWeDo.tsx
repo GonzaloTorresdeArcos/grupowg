@@ -1,7 +1,7 @@
 import { Reveal } from "@/components/site/Reveal";
 
 const chips = [
-  "Gama blanca", "Gama marrón", "PAE", "Confort",
+  "Gama blanca", "Gama marrón", "PAE", "Climatización",
   "Movilidad", "Electrónica de consumo", "Repuestos", "Seguros",
 ];
 

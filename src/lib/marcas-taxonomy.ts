@@ -76,7 +76,7 @@ export const MARCAS_BY_GAMA: MarcasPorGama[] = [
   },
   {
     gama: "confort",
-    label: "Confort (clima)",
+    label: "Climatización",
     emoji: "🔷",
     marcas: [
       "Daikin", "Mitsubishi Electric", "Fujitsu", "LG", "Samsung", "Hisense",
