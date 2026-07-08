@@ -337,6 +337,47 @@ export type Database = {
         }
         Relationships: []
       }
+      wg_collaborator_sales: {
+        Row: {
+          amount_margin: number
+          created_at: string
+          id: string
+          incidence_id: string | null
+          kind: string
+          reference: string | null
+          units: number
+          user_id: string
+        }
+        Insert: {
+          amount_margin?: number
+          created_at?: string
+          id?: string
+          incidence_id?: string | null
+          kind: string
+          reference?: string | null
+          units?: number
+          user_id: string
+        }
+        Update: {
+          amount_margin?: number
+          created_at?: string
+          id?: string
+          incidence_id?: string | null
+          kind?: string
+          reference?: string | null
+          units?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wg_collaborator_sales_incidence_id_fkey"
+            columns: ["incidence_id"]
+            isOneToOne: false
+            referencedRelation: "wg_incidences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wg_incidence_messages: {
         Row: {
           body: string
