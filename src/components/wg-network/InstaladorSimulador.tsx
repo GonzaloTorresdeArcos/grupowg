@@ -148,11 +148,22 @@ export const InstaladorSimulador = () => {
           </div>
 
           <div>
-            <div className="flex justify-between items-baseline">
-              <label className="text-sm font-medium text-ink">Instalaciones/día por pareja</label>
-              <span className="font-display text-lg text-ink">{insDia}</span>
+            <label className="text-sm font-medium text-ink">Instalaciones/día por pareja</label>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {[1, 2, 3].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setInsDia(n)}
+                  className={cn(
+                    "rounded-xl border px-3 py-2 text-sm font-medium transition-colors",
+                    insDia === n ? "bg-ink text-background border-ink" : "bg-background text-ink border-border hover:border-ink"
+                  )}
+                >
+                  {n}
+                </button>
+              ))}
             </div>
-            <Slider className="mt-3" min={1} max={6} step={1} value={[insDia]} onValueChange={([v]) => setInsDia(v)} />
           </div>
 
           <div>
