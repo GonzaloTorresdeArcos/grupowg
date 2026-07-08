@@ -4,12 +4,12 @@
     "description": "Una red de servicios técnicos profesionales con respaldo, herramientas y protección. 50 años entrando en las casas de la gente."
   },
   "hero": {
-    "eyebrow": "WG Professional Network",
+    "eyebrow": "Un compromiso con nuestra red de servicios técnicos e instaladores.",
     "audience": "SATs e instaladores · España y Portugal",
     "title1": "Únete a WG Network.",
     "title2": "Gana más. Gestiona menos.",
-    "valueProp": "Cobros rápidos, repuesto OEM, sustituciones y garantías extendidas. Todo desde una plataforma con IA diseñada para SATs e instaladores. Sin cuotas.",
-    "intro": "Un compromiso con nuestra red de servicios técnicos e instaladores. 50 años entrando en las casas de la gente y resolviendo problemas reales.",
+    "valueProp": "Cobros rápidos, repuesto OEM, sustituciones y garantías extendidas. Una sola plataforma con IA para gestionar tu negocio. Sin cuotas.",
+    "intro": "50 años resolviendo problemas en millones de hogares.",
     "list": [
       "Los que madrugáis.",
       "Los que conducís cientos de kilómetros.",
@@ -24,7 +24,7 @@
     ],
     "positioning": "WG no vende equipos ni compite con sus clientes: conectamos al técnico con el catálogo del retailer o la marca.",
     "cta": "Calcula tu impacto",
-    "ctaSecondary": "Únete a la red"
+    "ctaSecondary": "Cómo funciona"
   },
   "layers": {
     "eyebrow": "Hoja de ruta",

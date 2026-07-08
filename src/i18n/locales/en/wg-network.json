@@ -4,12 +4,12 @@
     "description": "A network of professional technical services with backing, tools and protection. 50 years entering people's homes."
   },
   "hero": {
-    "eyebrow": "WG Professional Network",
+    "eyebrow": "A commitment to our network of repair technicians and installers.",
     "audience": "Repair technicians & installers · Spain and Portugal",
     "title1": "Join WG Network.",
     "title2": "Earn more. Manage less.",
-    "valueProp": "Fast payments, OEM parts, replacements and extended warranties. All from an AI platform built for repair technicians and installers. No fees.",
-    "intro": "A commitment to our network of repair technicians and installers. 50 years walking into people's homes and solving real problems.",
+    "valueProp": "Fast payments, OEM parts, replacements and extended warranties. A single AI platform to run your business. No fees.",
+    "intro": "50 years solving problems in millions of homes.",
     "list": [
       "The early risers.",
       "Those who drive hundreds of kilometres.",
@@ -24,7 +24,7 @@
     ],
     "positioning": "WG doesn't sell equipment or compete with its clients: we connect the technician to the retailer's or brand's catalogue.",
     "cta": "Calculate your impact",
-    "ctaSecondary": "Join the network"
+    "ctaSecondary": "How it works"
   },
   "layers": {
     "eyebrow": "Roadmap",

@@ -38,7 +38,7 @@ const WGNetwork = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
         <div className="container-tight relative z-10 py-10">
           <Reveal>
-            <p className="eyebrow text-teal-soft mb-5">{t("hero.eyebrow")}</p>
+            <p className="text-sm md:text-base font-medium text-teal-soft mb-5">{t("hero.eyebrow")}</p>
             <h1 className="heading-display text-foreground text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
@@ -55,10 +55,10 @@ const WGNetwork = () => {
                 {t("hero.cta")}
                 <ArrowDown className="h-5 w-5" />
               </a>
-              <Link to="/wg-network/inscripcion" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-8 py-4 text-base font-medium text-foreground hover:border-foreground transition-all">
+              <a href="#como-funciona" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-8 py-4 text-base font-medium text-foreground hover:border-foreground transition-all">
                 {t("hero.ctaSecondary")}
-                <ArrowUpRight className="h-5 w-5" />
-              </Link>
+                <ArrowDown className="h-5 w-5" />
+              </a>
             </div>
             <p className="mt-8 text-xs text-foreground/50 max-w-2xl leading-relaxed">
               {t("hero.positioning")}
@@ -156,7 +156,9 @@ const WGNetwork = () => {
       </section>
 
       {/* 5 · Cómo — App nativa de IA */}
-      <NativeAppBlock />
+      <div id="como-funciona">
+        <NativeAppBlock />
+      </div>
 
       {/* 6 · Pruébalo — Simulador de impacto */}
       <ImpactSimulator />
