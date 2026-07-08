@@ -450,9 +450,9 @@ export const ImpactSimulator = () => {
 
               {/* Tiempo de resolución → descuento OEM */}
               <div>
-                <label className="text-sm font-medium text-ink">Tiempo de resolución</label>
+                <label className="text-sm font-medium text-ink">Tiempo de resolución (trabajo WG)</label>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Desde que recibes el repuesto. Cuanto antes resuelvas, mayor descuento OEM.
+                  Según cómo resuelvas los avisos que te asigna WG, ganas tu nivel de descuento OEM — aplicado al repuesto de tus reparaciones fuera de garantía.
                 </p>
                 <div className="mt-2 grid grid-cols-4 gap-1.5">
                   {[
