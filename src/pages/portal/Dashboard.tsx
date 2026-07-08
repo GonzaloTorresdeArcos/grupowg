@@ -331,6 +331,8 @@ const PortalDashboard = () => {
         </Card>
       </div>
 
+      <CumplimientoPagos />
+
       {docsAlert > 0 && (
         <Card className="p-5 md:p-6 border-amber-500/30 bg-amber-50/50">
           <div className="flex items-start gap-4">
