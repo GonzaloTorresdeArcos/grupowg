@@ -806,11 +806,12 @@ const Inscripcion = () => {
 
             <div>
               <p className="block text-sm font-medium text-ink mb-3">Zona de cobertura</p>
-              <CoverageMap
-                selected={provinciaCodes}
-                onChange={setProvinciaCodes}
-                excluded={localidadesExcluidas}
-                onExcludedChange={setLocalidadesExcluidas}
+              <p className="text-sm text-muted-foreground mb-3">Tu radio de acción desde tu código postal. Estos son los códigos postales que cubrirás; valídalos.</p>
+              <CoverageRadius
+                cp={s1.codigo_postal}
+                radioKm={radioKm}
+                onRadioChange={setRadioKm}
+                onCoverageChange={(cps, munis) => { setCoberturaCps(cps); setCoberturaMunis(munis); }}
               />
             </div>
 
