@@ -128,6 +128,11 @@ const Inscripcion = () => {
   const [coberturaCps, setCoberturaCps] = useState<string[]>([]);
   const [coberturaMunis, setCoberturaMunis] = useState<string[]>([]);
 
+  useEffect(() => {
+    const codes = Array.from(new Set(coberturaCps.map((c) => c.slice(0, 2)))).sort();
+    setProvinciaCodes(codes);
+  }, [coberturaCps]);
+
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
   const [uploadProgress, setUploadProgress] = useState<Record<string, number | "done" | "error">>({});
