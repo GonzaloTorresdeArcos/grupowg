@@ -726,7 +726,7 @@ const Inscripcion = () => {
                       if (phoneVerified) setPhoneVerified(false);
                     }}
                   >
-                    {Object.values(COUNTRIES).map((c) => (
+                    {PHONE_COUNTRIES.map((c) => (
                       <option key={c.code} value={c.code}>
                         {c.flag} {c.dial} {c.label}
                       </option>
