@@ -1,39 +1,31 @@
-import { MapPin, Check, ShoppingCart, Factory, ShieldCheck, Bike, type LucideIcon } from "lucide-react";
+import { ShoppingCart, Factory, ShieldCheck, Bike, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 
 const STATS = [
-  { n: "75+", l: "Profesionales especializados" },
-  { n: "500+", l: "SATs e instaladores en Iberia" },
-  { n: "100k+", l: "Intervenciones / año" },
-  { n: "6.200+", l: "m² de instalaciones propias" },
-  { n: "35+", l: "Años de experiencia sectorial" },
+  { n: "100k+", l: "Intervenciones al año" },
+  { n: "100+", l: "Marcas con acceso a repuesto OEM e información técnica" },
+  { n: "500+", l: "Servicios Técnicos e Instaladores" },
+  { n: "75+", l: "Profesionales, hotline técnica y programas de formación" },
+  { n: "6.200+", l: "m² · Instalaciones propias y capacidad logística" },
+  { n: "35+", l: "años junto a nuestros principales clientes" },
 ];
 
-const COBERTURA = ["Madrid (HQ)", "Barcelona", "Valencia", "Islas Canarias"];
+const GAMAS: { t: string; brands: string[]; more?: boolean }[] = [
+  { t: "Gama Blanca", brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sharp", "Evo", "Teka", "Sunfeel", "Selecline", "Vox", "Bru"], more: true },
+  { t: "Aire Acondicionado", brands: ["Johnson", "Toshiba", "Hitachi", "Telefunken"], more: true },
+  { t: "Electrónica / Marrón", brands: ["JVC", "Thomson", "Cecotec", "Sauber"], more: true },
+  { t: "Profesional", brands: ["Makro Professional", "Horeca Select", "Bartscher", "Mainho", "Retinna"], more: true },
+  { t: "Mobility", brands: ["Navee", "Red Bull", "Nilox", "Reebok", "Alfa Romeo"], more: true },
+  { t: "Seguros y Garantía", brands: ["Assurant", "Plus Ultra", "Seyna", "Caser", "Companjon"] },
+];
 
-type Eco = { title: string; Icon: LucideIcon; accent: "sky" | "emerald" | "amber" | "violet"; brands: string[]; caps: string[] };
+type Eco = { title: string; Icon: LucideIcon; accent: "sky" | "emerald" | "amber" | "violet"; brands: string[] };
 
 const ECOSISTEMAS: Eco[] = [
-  {
-    title: "Retail & Marketplaces", Icon: ShoppingCart, accent: "sky",
-    brands: ["Carrefour", "Alcampo / Auchan", "Makro / Metro", "PcComponentes", "Neumese", "Electro Depot"],
-    caps: ["Customer Care", "Instalación", "Reparación", "Parts & Logistics", "Replacement", "Refurbished"],
-  },
-  {
-    title: "Fabricantes & OEMs", Icon: Factory, accent: "emerald",
-    brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"],
-    caps: ["Customer Care", "Instalación", "Reparación", "Parts & Logistics", "Quality Intelligence", "Out-of-Warranty"],
-  },
-  {
-    title: "Warranty & Insurance", Icon: ShieldCheck, accent: "amber",
-    brands: ["Assurant", "Plus Ultra", "Seyna", "Companjon"],
-    caps: ["Claims Management", "TPA & Claims Administration", "Coordinación multi-stakeholder", "Repair / Replacement Decisioning", "Programas de garantía y protección", "Service Governance & SLA Control"],
-  },
-  {
-    title: "Mobility & New Categories", Icon: Bike, accent: "violet",
-    brands: ["Navee", "Esprinet", "Denver", "MT Distribution"],
-    caps: ["Patinetes", "Bicicletas eléctricas", "Battery management", "Reparación", "Parts & Logistics", "Quality Intelligence"],
-  },
+  { title: "Retail & Marketplaces", Icon: ShoppingCart, accent: "sky", brands: ["Carrefour", "Alcampo / Auchan", "Makro / Metro", "PcComponentes", "Neumese", "Electro Depot"] },
+  { title: "Fabricantes & OEMs", Icon: Factory, accent: "emerald", brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"] },
+  { title: "Warranty & Insurance", Icon: ShieldCheck, accent: "amber", brands: ["Assurant", "Plus Ultra", "Seyna", "Companjon", "Caser"] },
+  { title: "Mobility & New Categories", Icon: Bike, accent: "violet", brands: ["Navee", "Esprinet", "Denver", "MT Distribution", "Nilox"] },
 ];
 
 const ACCENT: Record<Eco["accent"], { bar: string; icon: string }> = {
@@ -50,14 +42,17 @@ export const EscalaOperativa = () => (
         <div className="max-w-3xl mb-12">
           <p className="eyebrow mb-4">Escala operativa y capacidad de ejecución</p>
           <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
-            No empiezas de cero. Te unes a una operación probada.
+            La fuerza de una gran red
           </h2>
+          <p className="mt-5 text-lg text-muted-foreground">
+            Más clientes, más marcas, más oportunidades.
+          </p>
         </div>
       </Reveal>
 
       {/* Stats */}
       <Reveal>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4 border-y border-border py-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-6 border-y border-border py-10">
           {STATS.map((s) => (
             <div key={s.l} className="text-center md:text-left">
               <p className="font-display text-4xl md:text-5xl text-teal">{s.n}</p>
@@ -67,19 +62,27 @@ export const EscalaOperativa = () => (
         </div>
       </Reveal>
 
-      {/* Cobertura propia */}
+      {/* Marcas por gama */}
       <Reveal>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-ink flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 text-teal" /> Cobertura propia:
-          </span>
-          {COBERTURA.map((c) => (
-            <span key={c} className="rounded-full bg-ink text-background text-xs px-3 py-1">{c}</span>
-          ))}
-        </div>
+        <p className="eyebrow mt-16 mb-6">Marcas y ecosistemas con los que ya trabajamos</p>
       </Reveal>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {GAMAS.map((g, i) => (
+          <Reveal key={g.t} delay={i * 60}>
+            <div className="rounded-2xl border border-border bg-background p-6 h-full">
+              <h3 className="font-display text-lg text-ink mb-4">{g.t}</h3>
+              <div className="flex flex-wrap gap-1.5">
+                {g.brands.map((b) => (
+                  <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
+                ))}
+                {g.more && <span className="rounded-full px-2.5 py-1 text-xs text-muted-foreground">+ más</span>}
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
 
-      {/* Ecosistemas */}
+      {/* Ecosistemas (canales) */}
       <Reveal>
         <p className="eyebrow mt-16 mb-6">Ecosistemas en los que operamos</p>
       </Reveal>
@@ -93,18 +96,11 @@ export const EscalaOperativa = () => (
                   <e.Icon className={`h-5 w-5 ${ACCENT[e.accent].icon}`} strokeWidth={1.75} />
                   <h3 className="font-display text-xl text-ink">{e.title}</h3>
                 </div>
-                <div className="flex flex-wrap gap-1.5 mb-5">
+                <div className="flex flex-wrap gap-1.5">
                   {e.brands.map((b) => (
                     <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
                   ))}
                 </div>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                  {e.caps.map((c) => (
-                    <li key={c} className="flex items-start gap-1.5 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-teal shrink-0 mt-0.5" /> {c}
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
           </Reveal>
