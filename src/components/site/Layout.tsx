@@ -67,7 +67,7 @@ export const Layout = () => {
     if (crumbs.length === 0) return;
 
     const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://grupowg.com";
+      typeof window !== "undefined" ? window.location.origin : "https://grupowg.lovable.app";
 
     const ld = document.createElement("script");
     ld.type = "application/ld+json";
