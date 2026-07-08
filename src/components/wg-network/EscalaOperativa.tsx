@@ -3,7 +3,7 @@ import { Reveal } from "@/components/site/Reveal";
 
 const STATS = [
   { n: "100k+", l: "Intervenciones al año" },
-  { n: "90+", l: "Marcas con repuesto e información técnica" },
+  { n: "90+", l: "Marcas" },
   { n: "500+", l: "Servicios Técnicos e Instaladores" },
   { n: "75+", l: "Profesionales + hotline técnica + formación" },
   { n: "6.200+", l: "m² de infraestructura a tu servicio" },
