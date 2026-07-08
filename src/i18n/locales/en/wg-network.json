@@ -182,18 +182,13 @@
     "title": "No es una web. Es tu negocio funcionando solo.",
     "subtitle": "Una app nativa de IA, pensada por SATs para SATs. Herramientas de verdad para el trabajo de verdad.",
     "items": [
-      "Agenda inteligente que ordena tu ruta del día.",
-      "Habla en vez de escribir: dictas y la IA rellena el parte.",
-      "Foto al nº de serie con validación de legibilidad automática.",
-      "Ubicación automática: no reescribes direcciones.",
-      "El cliente final firma con el dedo y recibe su parte al instante.",
-      "Quien te encarga el aviso lo recibe en el mismo momento.",
-      "Todo se archiva listo para facturar.",
-      "OEM parts at a 40%–70% discount and the best terms from parts distributors.",
-      "Producto para vender cuando reparar no compensa.",
-      "Garantías y seguros con comisión.",
-      "Payment in 7 days from invoice receipt.",
-      "Protección para ti y tu negocio."
+      "Smart scheduling that plans your day's route.",
+      "Speak instead of typing: dictate and the AI fills in the report.",
+      "Photo of the serial number with automatic legibility check.",
+      "Automatic location: no re-typing addresses.",
+      "The end customer signs with a finger and gets their report instantly.",
+      "Whoever assigned the job receives it at the same moment.",
+      "Everything filed and ready to invoice."
     ]
   }
 }
