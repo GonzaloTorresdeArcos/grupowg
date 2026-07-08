@@ -100,10 +100,10 @@ export const MarcasPorGama = () => (
         <div className="max-w-3xl mb-10">
           <p className="eyebrow mb-4">Marcas gestionadas</p>
           <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
-            ¿Reparas estas marcas? Tienes repuesto.
+            Hasta un 70% de descuento en repuesto OEM.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Abre tu gama y comprueba qué marcas tienen repuesto activo hoy y cuáles están en camino.
+            Vinculado a tu nivel de servicio y a tus tiempos de resolución: cuanto antes resuelvas, mejores condiciones obtienes.
           </p>
         </div>
       </Reveal>
