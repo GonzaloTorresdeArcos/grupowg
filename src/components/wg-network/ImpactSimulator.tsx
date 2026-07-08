@@ -480,6 +480,27 @@ export const ImpactSimulator = () => {
                 </div>
               </div>
 
+              {/* % fuera de garantía → base del ahorro en repuesto */}
+              <div>
+                <div className="flex justify-between items-baseline">
+                  <label className="text-sm font-medium text-ink">{t("sim.inputs.fuera")}</label>
+                  <span className="font-display text-lg text-ink">
+                    {Math.round((inputs.pctFueraGarantia ?? 0.4) * 100)}%
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  La parte de tus reparaciones donde facturas el repuesto y aplica el descuento OEM.
+                </p>
+                <Slider
+                  className="mt-3"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={[Math.round((inputs.pctFueraGarantia ?? 0.4) * 100)]}
+                  onValueChange={([v]) => setInputs({ ...inputs, pctFueraGarantia: v / 100 })}
+                />
+              </div>
+
               {/* Advanced */}
               <button
                 type="button"
@@ -514,22 +535,6 @@ export const ImpactSimulator = () => {
                     <p className="mt-1 text-xs text-muted-foreground">
                       Estimación — se conectará a nuestra base de datos de avisos.
                     </p>
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-baseline">
-                      <label className="text-sm font-medium text-ink">{t("sim.inputs.fuera")}</label>
-                      <span className="font-display text-lg text-ink">
-                        {Math.round((inputs.pctFueraGarantia ?? 0.4) * 100)}%
-                      </span>
-                    </div>
-                    <Slider
-                      className="mt-3"
-                      min={0}
-                      max={100}
-                      step={5}
-                      value={[Math.round((inputs.pctFueraGarantia ?? 0.4) * 100)]}
-                      onValueChange={([v]) => setInputs({ ...inputs, pctFueraGarantia: v / 100 })}
-                    />
                   </div>
                   <div>
                     <div className="flex justify-between items-baseline">
