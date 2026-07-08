@@ -124,6 +124,9 @@ const Inscripcion = () => {
   const [capacidad, setCapacidad] = useState("");
   const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
   const [materialWG, setMaterialWG] = useState<"" | "wg" | "propio">("");
+  const [radioKm, setRadioKm] = useState(25);
+  const [coberturaCps, setCoberturaCps] = useState<string[]>([]);
+  const [coberturaMunis, setCoberturaMunis] = useState<string[]>([]);
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
