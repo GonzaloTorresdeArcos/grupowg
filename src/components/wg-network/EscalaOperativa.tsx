@@ -3,10 +3,10 @@ import { Reveal } from "@/components/site/Reveal";
 
 const STATS = [
   { n: "100k+", l: "Intervenciones al año" },
-  { n: "100+", l: "Marcas con acceso a repuesto OEM e información técnica" },
+  { n: "100+", l: "Marcas con repuesto e información técnica" },
   { n: "500+", l: "Servicios Técnicos e Instaladores" },
-  { n: "75+", l: "Profesionales, hotline técnica y programas de formación" },
-  { n: "6.200+", l: "m² · Instalaciones propias y capacidad logística" },
+  { n: "75+", l: "Profesionales + hotline técnica + formación" },
+  { n: "6.200+", l: "m² Instalaciones y capacidad logística" },
   { n: "35+", l: "años junto a nuestros principales clientes" },
 ];
 
