@@ -405,7 +405,7 @@ const Inscripcion = () => {
               horarios,
               capacidad_mensual: capacidad,
               coberturas,
-              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null },
+              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null, cobertura: { centro: s1.codigo_postal, radio_km: radioKm, cps: coberturaCps, municipios: coberturaMunis } },
               documentosSubidos,
             },
           },
