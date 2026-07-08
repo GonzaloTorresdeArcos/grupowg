@@ -8,12 +8,21 @@
     "audience": "Serviços técnicos e instaladores · Espanha e Portugal",
     "title1": "É sobre as pessoas.",
     "title2": "É sobre vocês.",
-    "valueProp": "Recebe em 7 dias. Peças com 40–70% de desconto, substituição com margem e garantias alargadas — com uma app de IA que trata da papelada. Sem quotas.",
-    "intro": "Um compromisso com a nossa rede de serviços técnicos e instaladores. 50 anos a entrar nas casas das pessoas e a resolver problemas reais. A rede não são logótipos nem processos: são vocês.",
-    "list": ["Os que se levantam cedo.", "Os que conduzem centenas de quilómetros.", "Os que dão a cara quando algo falha.", "Os que resolvem o que mais ninguém sabe resolver."],
+    "valueProp": "Recebe em 7 dias. Peças com 40–70% de desconto, substituição de equipamentos com margem, garantias alargadas e menos administração. Tudo gerido a partir de uma plataforma com IA concebida para serviços técnicos e instaladores. Sem quotas.",
+    "intro": "Um compromisso com a nossa rede de serviços técnicos e instaladores. 50 anos a entrar nas casas das pessoas e a resolver problemas reais.",
+    "list": [
+      "Os que se levantam cedo.",
+      "Os que conduzem centenas de quilómetros.",
+      "Os que dão a cara quando algo falha.",
+      "Os que resolvem o que mais ninguém sabe resolver."
+    ],
     "manifesto": "O Grupo WG funciona graças a vocês.",
-    "proof": ["+500 serviços técnicos e instaladores", "+100.000 intervenções/ano", "35 anos de experiência"],
-    "positioning": "A WG não vende equipamentos nem compete com os seus clientes: ligamos o técnico ao catálogo do retalhista ou da marca. A venda — e o cliente — continuam a ser vossos.",
+    "proof": [
+      "+500 serviços técnicos e instaladores",
+      "+100.000 intervenções/ano",
+      "35 anos de experiência"
+    ],
+    "positioning": "A WG não vende equipamentos nem compete com os seus clientes: ligamos o técnico ao catálogo do retalhista ou da marca.",
     "cta": "Calcula o teu impacto",
     "ctaSecondary": "Juntar-me à rede"
   },
@@ -22,9 +31,24 @@
     "title": "Um plano que se ativa por fases.",
     "layerLabel": "Camada",
     "items": [
-      { "n": "01", "mes": "Julho", "t": "Aliviar a pressão", "d": "Pagamento em 7 dias e peças com 40%–70% de desconto. OEM Vestel já ativado." },
-      { "n": "02", "mes": "Outubro", "t": "Fazer crescer", "d": "Equipamentos novos ao melhor preço e garantias alargadas que geram receita recorrente e fidelizam os vossos clientes." },
-      { "n": "03", "mes": "Dezembro", "t": "Ganhar tempo", "d": "A plataforma com IA que automatiza o vosso negócio, incluída sem custo na WG Network: agenda, cobranças, peças, garantias, seguros e compliance numa só app." }
+      {
+        "n": "01",
+        "mes": "Julho",
+        "t": "Aliviar a pressão",
+        "d": "Pagamento em 7 dias e peças com 40%–70% de desconto. OEM Vestel já ativado."
+      },
+      {
+        "n": "02",
+        "mes": "Outubro",
+        "t": "Fazer crescer",
+        "d": "Equipamentos novos ao melhor preço e garantias alargadas que geram receita recorrente e fidelizam os vossos clientes."
+      },
+      {
+        "n": "03",
+        "mes": "Dezembro",
+        "t": "Ganhar tempo",
+        "d": "A plataforma com IA que automatiza o vosso negócio, incluída sem custo na WG Network: agenda, cobranças, peças, garantias, seguros e compliance numa só app."
+      }
     ]
   },
   "benefits": {

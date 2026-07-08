@@ -8,12 +8,21 @@
     "audience": "Repair technicians & installers · Spain and Portugal",
     "title1": "It's about people.",
     "title2": "It's about you.",
-    "valueProp": "Get paid in 7 days. Parts at a 40–70% discount, replacements with margin and extended warranties — with an AI app that handles the paperwork. No fees.",
-    "intro": "A commitment to our network of repair technicians and installers. 50 years walking into people's homes and solving real problems. The network isn't logos or processes: it's you.",
-    "list": ["The early risers.", "Those who drive hundreds of kilometres.", "Those who show up when something fails.", "Those who fix what no one else can."],
+    "valueProp": "Get paid in 7 days. Parts at a 40–70% discount, equipment replacement with margin, extended warranties and less admin. All managed from an AI platform built for repair technicians and installers. No fees.",
+    "intro": "A commitment to our network of repair technicians and installers. 50 years walking into people's homes and solving real problems.",
+    "list": [
+      "The early risers.",
+      "Those who drive hundreds of kilometres.",
+      "Those who show up when something fails.",
+      "Those who fix what no one else can."
+    ],
     "manifesto": "Grupo WG works thanks to you.",
-    "proof": ["+500 technicians & installers", "+100,000 jobs/year", "35 years of experience"],
-    "positioning": "WG doesn't sell equipment or compete with its clients: we connect the technician to the retailer's or brand's catalogue. The sale — and the customer — stay yours.",
+    "proof": [
+      "+500 technicians & installers",
+      "+100,000 jobs/year",
+      "35 years of experience"
+    ],
+    "positioning": "WG doesn't sell equipment or compete with its clients: we connect the technician to the retailer's or brand's catalogue.",
     "cta": "Calculate your impact",
     "ctaSecondary": "Join the network"
   },
@@ -22,9 +31,24 @@
     "title": "A plan that activates in phases.",
     "layerLabel": "Layer",
     "items": [
-      { "n": "01", "mes": "July", "t": "Relieve pressure", "d": "Payment in 7 days and parts with a 40%–70% discount. OEM Vestel already live." },
-      { "n": "02", "mes": "October", "t": "Grow", "d": "New equipment at the best price and extended warranties that generate recurring income and build customer loyalty." },
-      { "n": "03", "mes": "December", "t": "Save time", "d": "The AI platform that automates your business, included at no cost in WG Network: scheduling, payments, parts, warranties, insurance and compliance in a single app." }
+      {
+        "n": "01",
+        "mes": "July",
+        "t": "Relieve pressure",
+        "d": "Payment in 7 days and parts with a 40%–70% discount. OEM Vestel already live."
+      },
+      {
+        "n": "02",
+        "mes": "October",
+        "t": "Grow",
+        "d": "New equipment at the best price and extended warranties that generate recurring income and build customer loyalty."
+      },
+      {
+        "n": "03",
+        "mes": "December",
+        "t": "Save time",
+        "d": "The AI platform that automates your business, included at no cost in WG Network: scheduling, payments, parts, warranties, insurance and compliance in a single app."
+      }
     ]
   },
   "benefits": {

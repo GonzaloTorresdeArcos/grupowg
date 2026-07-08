@@ -8,12 +8,21 @@
     "audience": "SATs e instaladores · España y Portugal",
     "title1": "Se trata de la gente.",
     "title2": "Se trata de vosotros.",
-    "valueProp": "Cobra en 7 días. Repuestos con 40-70% de descuento, sustitución con margen y garantías extendidas — con una app de IA que hace el papeleo. Sin cuotas.",
-    "intro": "Un compromiso con nuestra red de servicios técnicos e instaladores. 50 años entrando en las casas de la gente y resolviendo problemas reales. La red no son logos ni procesos: sois vosotros.",
-    "list": ["Los que madrugáis.", "Los que conducís cientos de kilómetros.", "Los que dais la cara cuando algo falla.", "Los que resolvéis lo que nadie más sabe resolver."],
+    "valueProp": "Cobra en 7 días. Repuestos con 40-70% de descuento, sustitución de equipos con margen, garantías extendidas y menos administración. Todo gestionado desde una plataforma con IA diseñada para servicios técnicos e instaladores. Sin cuotas.",
+    "intro": "Un compromiso con nuestra red de servicios técnicos e instaladores. 50 años entrando en las casas de la gente y resolviendo problemas reales.",
+    "list": [
+      "Los que madrugáis.",
+      "Los que conducís cientos de kilómetros.",
+      "Los que dais la cara cuando algo falla.",
+      "Los que resolvéis lo que nadie más sabe resolver."
+    ],
     "manifesto": "Grupo WG funciona gracias a vosotros.",
-    "proof": ["+500 SATs e instaladores", "+100.000 intervenciones/año", "35 años de experiencia"],
-    "positioning": "WG no vende equipos ni compite con sus clientes: conectamos al técnico con el catálogo del retailer o la marca. La venta —y el cliente— siguen siendo tuyos.",
+    "proof": [
+      "+500 SATs e instaladores",
+      "+100.000 intervenciones/año",
+      "35 años de experiencia"
+    ],
+    "positioning": "WG no vende equipos ni compite con sus clientes: conectamos al técnico con el catálogo del retailer o la marca.",
     "cta": "Calcula tu impacto",
     "ctaSecondary": "Únete a la red"
   },
@@ -22,9 +31,24 @@
     "title": "Un plan que se activa por fases.",
     "layerLabel": "Capa",
     "items": [
-      { "n": "01", "mes": "Julio", "t": "Aliviar presión", "d": "Pago en 7 días y repuestos con un 40%–70% de descuento. OEM Vestel ya activado." },
-      { "n": "02", "mes": "Octubre", "t": "Hacer crecer", "d": "Equipos nuevos al mejor precio y garantías extendidas que generan ingresos recurrentes y fidelizan a vuestros clientes." },
-      { "n": "03", "mes": "Diciembre", "t": "Ganar tiempo", "d": "La plataforma con IA que automatiza vuestro negocio, incluida sin coste en WG Network: agenda, cobros, repuestos, garantías, seguros y compliance en una sola app." }
+      {
+        "n": "01",
+        "mes": "Julio",
+        "t": "Aliviar presión",
+        "d": "Pago en 7 días y repuestos con un 40%–70% de descuento. OEM Vestel ya activado."
+      },
+      {
+        "n": "02",
+        "mes": "Octubre",
+        "t": "Hacer crecer",
+        "d": "Equipos nuevos al mejor precio y garantías extendidas que generan ingresos recurrentes y fidelizan a vuestros clientes."
+      },
+      {
+        "n": "03",
+        "mes": "Diciembre",
+        "t": "Ganar tiempo",
+        "d": "La plataforma con IA que automatiza vuestro negocio, incluida sin coste en WG Network: agenda, cobros, repuestos, garantías, seguros y compliance en una sola app."
+      }
     ]
   },
   "benefits": {
@@ -32,18 +56,54 @@
     "title": "Protegemos de verdad.",
     "subtitle": "Porque no solo importa el trabajo. Importáis vosotros.",
     "items": [
-      { "t": "Seguros colectivos", "d": "Condiciones preferentes para profesionales y equipos." },
-      { "t": "Protección jurídica", "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos." },
-      { "t": "Protección de ingresos", "d": "Tranquilidad financiera ante baja, accidente o interrupción de actividad." },
-      { "t": "Salud", "d": "Coberturas médicas para profesionales y familias." },
-      { "t": "Vida", "d": "Protección familiar y seguridad económica." },
-      { "t": "Planes de ahorro", "d": "Soluciones de ahorro y previsión." },
-      { "t": "PRL", "d": "Prevención de riesgos y cumplimiento en seguridad laboral." },
-      { "t": "Compliance asistido", "d": "Alta documental, validación y seguimiento normativo." },
-      { "t": "Documentación", "d": "Todo en regla, actualizado y trazable." },
-      { "t": "Producto nuevo", "d": "Acceso a producto nuevo en condiciones ventajosas." },
-      { "t": "Repuestos con 40%–70% de descuento", "d": "Repuesto OEM muy por debajo de tarifa para mejorar vuestra competitividad y vuestra caja." },
-      { "t": "Oportunidades comerciales", "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida." }
+      {
+        "t": "Seguros colectivos",
+        "d": "Condiciones preferentes para profesionales y equipos."
+      },
+      {
+        "t": "Protección jurídica",
+        "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos."
+      },
+      {
+        "t": "Protección de ingresos",
+        "d": "Tranquilidad financiera ante baja, accidente o interrupción de actividad."
+      },
+      {
+        "t": "Salud",
+        "d": "Coberturas médicas para profesionales y familias."
+      },
+      {
+        "t": "Vida",
+        "d": "Protección familiar y seguridad económica."
+      },
+      {
+        "t": "Planes de ahorro",
+        "d": "Soluciones de ahorro y previsión."
+      },
+      {
+        "t": "PRL",
+        "d": "Prevención de riesgos y cumplimiento en seguridad laboral."
+      },
+      {
+        "t": "Compliance asistido",
+        "d": "Alta documental, validación y seguimiento normativo."
+      },
+      {
+        "t": "Documentación",
+        "d": "Todo en regla, actualizado y trazable."
+      },
+      {
+        "t": "Producto nuevo",
+        "d": "Acceso a producto nuevo en condiciones ventajosas."
+      },
+      {
+        "t": "Repuestos con 40%–70% de descuento",
+        "d": "Repuesto OEM muy por debajo de tarifa para mejorar vuestra competitividad y vuestra caja."
+      },
+      {
+        "t": "Oportunidades comerciales",
+        "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida."
+      }
     ],
     "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
   },
@@ -51,9 +111,21 @@
     "eyebrow": "Innegociables",
     "title": "3 compromisos innegociables.",
     "items": [
-      { "n": "1", "t": "Pago en 7 días", "d": "Emitís vuestra factura y cobráis en un máximo de 7 días desde su recepción. Sin esperas a fin de mes ni plazos a 60–90 días: liquidez real para que vuestra tesorería respire y compitáis sin financiar vosotros el trabajo." },
-      { "n": "2", "t": "El mejor precio en equipo y repuesto — y garantías que suman", "d": "Equipos nuevos al mejor precio de la red para cuando reparar no compensa, repuestos OEM con un 40%–70% de descuento sobre tarifa y garantías extendidas que ofrecéis con comisión. Más margen por intervención y nuevas vías de ingreso recurrente." },
-      { "n": "3", "t": "Seguros colectivos", "d": "Coberturas de actividad, salud, vida y protección jurídica negociadas en bloque, en directo con compañías de seguros líderes, en condiciones que por vuestra cuenta —como autónomos o pymes— no conseguiríais. Para que trabajéis tranquilos y protegidos." }
+      {
+        "n": "1",
+        "t": "Pago en 7 días",
+        "d": "Emitís vuestra factura y cobráis en un máximo de 7 días desde su recepción. Sin esperas a fin de mes ni plazos a 60–90 días: liquidez real para que vuestra tesorería respire y compitáis sin financiar vosotros el trabajo."
+      },
+      {
+        "n": "2",
+        "t": "El mejor precio en equipo y repuesto — y garantías que suman",
+        "d": "Equipos nuevos al mejor precio de la red para cuando reparar no compensa, repuestos OEM con un 40%–70% de descuento sobre tarifa y garantías extendidas que ofrecéis con comisión. Más margen por intervención y nuevas vías de ingreso recurrente."
+      },
+      {
+        "n": "3",
+        "t": "Seguros colectivos",
+        "d": "Coberturas de actividad, salud, vida y protección jurídica negociadas en bloque, en directo con compañías de seguros líderes, en condiciones que por vuestra cuenta —como autónomos o pymes— no conseguiríais. Para que trabajéis tranquilos y protegidos."
+      }
     ],
     "outro": "El resto lo construiremos juntos, según vuestras necesidades y vuestro ritmo."
   },
