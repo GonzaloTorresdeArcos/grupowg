@@ -288,29 +288,8 @@ export const ImpactSimulator = () => {
             <h3 className="font-display text-xl text-ink mb-6">Tu negocio hoy</h3>
 
             <div className="space-y-6">
-              {/* Perfil */}
-              <div>
-                <label className="text-sm font-medium text-ink">Perfil</label>
-                <div className="mt-2 grid grid-cols-3 rounded-full bg-muted p-1">
-                  {(["sat", "instalador", "ambos"] as Perfil[]).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setInputs({ ...inputs, perfil: p })}
-                      className={cn(
-                        "rounded-full px-3 py-1.5 text-sm font-medium transition-colors capitalize",
-                        inputs.perfil === p
-                          ? "bg-ink text-background"
-                          : "text-muted-foreground hover:text-ink"
-                      )}
-                    >
-                      {p === "sat" ? "SAT" : p === "instalador" ? "Instalador" : "Ambos"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Cobertura: país + CP + radio de acción */}
+
               <div>
                 <label className="text-sm font-medium text-ink flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-teal" /> Cobertura — tu radio de acción
