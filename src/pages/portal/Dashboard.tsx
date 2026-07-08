@@ -162,6 +162,8 @@ const PortalDashboard = () => {
         <KpiCard icon={ClipboardList} label={t("dashboard.kpis.casesYear", { defaultValue: "Casos" })} value={casesYtd} suffix={t("dashboard.kpis.casesYearSuffix", { defaultValue: "este año" })} tone="teal" />
       </div>
 
+      <ImpactoNegocio />
+
       <Card className="p-6 md:p-8">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
