@@ -110,6 +110,51 @@ Deno.serve(async (req) => {
       return json({ error: "invalid_token" }, 400);
     }
 
+    // ---------- Action: attach a document to an existing application ----------
+    if (action === "attach_document") {
+      if (!isStr(application_id, 64)) return json({ error: "invalid_payload" }, 400);
+      const doc = (body as { document?: Record<string, unknown> }).document ?? {};
+      const document_type = isStr(doc.document_type, 100) ? (doc.document_type as string) : null;
+      const file_path = isStr(doc.file_path, 1024) ? (doc.file_path as string) : null;
+      const file_name = isStr(doc.file_name, 500) ? (doc.file_name as string) : null;
+      const file_size = Number.isInteger(doc.file_size) && (doc.file_size as number) >= 0 && (doc.file_size as number) <= 100_000_000
+        ? (doc.file_size as number)
+        : null;
+      if (!document_type || !file_path) return json({ error: "invalid_document" }, 400);
+
+      // Verify ownership: resume_token must correspond to a draft whose email
+      // matches the target application's email.
+      const { data: draftOwn, error: dOwnErr } = await supabase
+        .from("wg_application_drafts")
+        .select("id, email")
+        .eq("resume_token", resume_token)
+        .maybeSingle();
+      if (dOwnErr || !draftOwn) return json({ error: "draft_not_found" }, 404);
+
+      const { data: appRow, error: appLookupErr } = await supabase
+        .from("wg_network_applications")
+        .select("id, email")
+        .eq("id", application_id)
+        .maybeSingle();
+      if (appLookupErr || !appRow) return json({ error: "application_not_found" }, 404);
+      if ((appRow.email ?? "").toLowerCase() !== (draftOwn.email ?? "").toLowerCase()) {
+        return json({ error: "not_owner" }, 403);
+      }
+
+      const { error: docErr } = await supabase.from("wg_network_documents").insert({
+        application_id,
+        document_type,
+        file_path,
+        file_name,
+        file_size,
+      });
+      if (docErr) {
+        console.error("[submit-application][attach_document] insert error", docErr);
+        return json({ error: "internal_error" }, 500);
+      }
+      return json({ ok: true });
+    }
+
     // ---------- Action: register agreement for an existing app ----------
     if (action === "register_agreement") {
       if (!isStr(application_id, 64) || !signature || typeof signature !== "object") {

@@ -414,8 +414,8 @@ const Inscripcion = () => {
 
       const appId: string = submitData.application_id;
 
-      // Upload de documentos (RLS sigue permitiendo INSERT en wg_network_documents
-      // si el application_id existe).
+      // Upload de documentos: subida al storage + registro vía edge function
+      // (que verifica ownership antes de insertar en wg_network_documents).
       const uploads = Object.entries(files).filter(([, f]) => f);
       for (const [docType, file] of uploads) {
         if (!file) continue;
@@ -434,13 +434,23 @@ const Inscripcion = () => {
           setUploadProgress((p) => ({ ...p, [docType]: "error" }));
           continue;
         }
-        await supabase.from("wg_network_documents").insert({
-          application_id: appId,
-          document_type: docType,
-          file_path: path,
-          file_name: file.name,
-          file_size: file.size,
+        const { error: attachErr } = await supabase.functions.invoke("submit-application", {
+          body: {
+            action: "attach_document",
+            resume_token: draft.resume_token,
+            application_id: appId,
+            document: {
+              document_type: docType,
+              file_path: path,
+              file_name: file.name,
+              file_size: file.size,
+            },
+          },
         });
+        if (attachErr) {
+          setUploadProgress((p) => ({ ...p, [docType]: "error" }));
+          continue;
+        }
         setUploadProgress((p) => ({ ...p, [docType]: "done" }));
       }
 

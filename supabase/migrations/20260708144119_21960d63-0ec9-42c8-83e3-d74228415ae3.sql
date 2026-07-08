@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone can create documents for existing application" ON public.wg_network_documents;
