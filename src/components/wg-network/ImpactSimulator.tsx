@@ -448,6 +448,37 @@ export const ImpactSimulator = () => {
                 )}
               </div>
 
+              {/* Tiempo de resolución → descuento OEM */}
+              <div>
+                <label className="text-sm font-medium text-ink">Tiempo de resolución</label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Desde que recibes el repuesto. Cuanto antes resuelvas, mayor descuento OEM.
+                </p>
+                <div className="mt-2 grid grid-cols-4 gap-1.5">
+                  {[
+                    { h: "≤24 h", d: 0.7 },
+                    { h: "≤48 h", d: 0.6 },
+                    { h: "≤72 h", d: 0.5 },
+                    { h: "+72 h", d: 0.4 },
+                  ].map((tier) => {
+                    const active = Math.round(inputs.descuentoRepuesto * 100) === Math.round(tier.d * 100);
+                    return (
+                      <button
+                        key={tier.h}
+                        type="button"
+                        onClick={() => setInputs({ ...inputs, descuentoRepuesto: tier.d })}
+                        className={cn(
+                          "rounded-xl border px-2 py-2 text-center transition-colors",
+                          active ? "bg-ink text-background border-ink" : "bg-background text-ink border-border hover:border-ink"
+                        )}
+                      >
+                        <span className="block text-xs font-medium">{tier.h}</span>
+                        <span className="block text-[11px] opacity-70">–{Math.round(tier.d * 100)}%</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
               {/* Advanced */}
               <button
@@ -483,24 +514,6 @@ export const ImpactSimulator = () => {
                     <p className="mt-1 text-xs text-muted-foreground">
                       Estimación — se conectará a nuestra base de datos de avisos.
                     </p>
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-baseline">
-                      <label className="text-sm font-medium text-ink">
-                        Descuento OEM en repuesto
-                      </label>
-                      <span className="font-display text-lg text-ink">
-                        {Math.round(inputs.descuentoRepuesto * 100)}%
-                      </span>
-                    </div>
-                    <Slider
-                      className="mt-3"
-                      min={40}
-                      max={70}
-                      step={5}
-                      value={[Math.round(inputs.descuentoRepuesto * 100)]}
-                      onValueChange={([v]) => setInputs({ ...inputs, descuentoRepuesto: v / 100 })}
-                    />
                   </div>
                   <div>
                     <div className="flex justify-between items-baseline">
