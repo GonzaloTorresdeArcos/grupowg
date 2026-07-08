@@ -984,7 +984,7 @@ const Inscripcion = () => {
                   <FieldS label="Tipología">
                     <select className="input-base" value={datosSeguros.negocio?.tipologia || ""} onChange={(e) => updateSeguro("negocio","tipologia",e.target.value)}>
                       <option value="">—</option>
-                      <option>Gama blanca</option><option>Electrónica</option><option>Movilidad</option><option>PAE</option><option>Confort</option>
+                      <option>Gama blanca</option><option>Electrónica</option><option>Movilidad</option><option>PAE</option><option>Climatización</option>
                     </select>
                   </FieldS>
                 </Grid2>
