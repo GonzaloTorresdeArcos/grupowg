@@ -193,6 +193,17 @@ const WGNetwork = () => {
               ))}
             </div>
           </div>
+
+          <Reveal>
+            <div className="mt-20 md:mt-24 max-w-3xl">
+              <h3 className="font-display italic text-3xl md:text-4xl text-ink mb-4 text-balance">
+                {t("layers.outroTitle")}
+              </h3>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {t("layers.outro")}
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
