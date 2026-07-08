@@ -98,7 +98,8 @@ const WGNetwork = () => {
                     <div className="hidden md:flex items-center justify-center h-24 w-24 rounded-full bg-background text-foreground font-display text-2xl mb-8 relative z-10 ring-8 ring-bone">
                       {l.n}
                     </div>
-                    <p className="md:hidden eyebrow mb-3">{t("layers.layerLabel")} {l.n}</p>
+                    <p className="md:hidden eyebrow mb-3">{l.mes ? `${l.mes} · ` : ""}{t("layers.layerLabel")} {l.n}</p>
+                    {l.mes && <p className="hidden md:block eyebrow text-teal-deep mb-2">{l.mes}</p>}
                     <h3 className="font-display text-3xl text-ink mb-4">{l.t}</h3>
                     <p className="text-muted-foreground leading-relaxed">{l.d}</p>
                   </div>
