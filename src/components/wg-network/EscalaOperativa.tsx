@@ -83,7 +83,7 @@ export const EscalaOperativa = () => (
 
       {/* Marcas: estado */}
       <Reveal>
-        <p className="eyebrow mt-16 mb-6">Marcas gestionadas</p>
+        <p className="eyebrow mt-16 mb-6">Marcas con acceso a repuesto OEM</p>
       </Reveal>
       <div className="space-y-6">
         {ESTADOS.map((s, i) => (
