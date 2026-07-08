@@ -64,10 +64,7 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 2 · Marcas por gama (gancho SAT) */}
-      <MarcasPorGama />
-
-      {/* 3 · Hoja de ruta — 3 capas */}
+      {/* 2 · Hoja de ruta — 3 capas */}
       <section className="py-24 md:py-32 bg-bone">
         <div className="container-tight">
           <Reveal>
@@ -110,6 +107,10 @@ const WGNetwork = () => {
           </Reveal>
         </div>
       </section>
+
+      {/* 3 · Marcas por gama (gancho SAT) */}
+      <MarcasPorGama />
+
 
       {/* 4 · Cómo — App nativa de IA */}
       <div id="como-funciona">
