@@ -13,7 +13,7 @@ const STATS = [
 const ESTADOS = [
   {
     label: "Disponible hoy",
-    sub: "Beneficios ya operativos.",
+    sub: "Acceso preferente a repuesto y documentación técnica.",
     dot: "bg-emerald-500",
     bar: "bg-emerald-400",
     gamas: [
