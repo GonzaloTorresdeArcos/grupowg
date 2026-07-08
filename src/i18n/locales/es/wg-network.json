@@ -22,9 +22,9 @@
     "title": "Un plan que se activa por fases.",
     "layerLabel": "Capa",
     "items": [
-      { "n": "01", "mes": "Junio", "t": "Aliviar presión", "d": "El primer paso: repuestos OEM con 40%–70% de descuento y procesos ágiles. Menos fricción operativa y más caja desde el primer día." },
-      { "n": "02", "mes": "Septiembre", "t": "Hacer crecer", "d": "Nuevas vías de ingreso: equipos nuevos al mejor precio, garantías extendidas con comisión y nuevas gamas y líneas de negocio." },
-      { "n": "03", "mes": "Noviembre", "t": "Proteger", "d": "Cobertura integral: seguros colectivos, salud, vida, protección jurídica y de ingresos, ahorro, PRL, compliance y documentación." }
+      { "n": "01", "mes": "Julio", "t": "Aliviar presión", "d": "Pago en 7 días y repuestos con un 40%–70% de descuento. OEM Vestel ya activado." },
+      { "n": "02", "mes": "Octubre", "t": "Hacer crecer", "d": "Equipos nuevos al mejor precio y garantías extendidas que generan ingresos recurrentes y fidelizan a vuestros clientes." },
+      { "n": "03", "mes": "Diciembre", "t": "Ganar tiempo", "d": "La plataforma con IA que automatiza vuestro negocio, incluida sin coste en WG Network: agenda, cobros, repuestos, garantías, seguros y compliance en una sola app." }
     ]
   },
   "benefits": {

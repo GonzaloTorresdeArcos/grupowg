@@ -22,9 +22,9 @@
     "title": "A plan that activates in phases.",
     "layerLabel": "Layer",
     "items": [
-      { "n": "01", "mes": "June", "t": "Relieve pressure", "d": "The first step: OEM parts with a 40%–70% discount and streamlined processes. Less operational friction and more cash from day one." },
-      { "n": "02", "mes": "September", "t": "Grow", "d": "New revenue streams: new equipment at the best price, extended warranties for a commission, and new product ranges and business lines." },
-      { "n": "03", "mes": "November", "t": "Protect", "d": "Full cover: group insurance, health, life, legal and income protection, savings, occupational risk, compliance and documentation." }
+      { "n": "01", "mes": "July", "t": "Relieve pressure", "d": "Payment in 7 days and parts with a 40%–70% discount. OEM Vestel already live." },
+      { "n": "02", "mes": "October", "t": "Grow", "d": "New equipment at the best price and extended warranties that generate recurring income and build customer loyalty." },
+      { "n": "03", "mes": "December", "t": "Save time", "d": "The AI platform that automates your business, included at no cost in WG Network: scheduling, payments, parts, warranties, insurance and compliance in a single app." }
     ]
   },
   "benefits": {

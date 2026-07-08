@@ -22,9 +22,9 @@
     "title": "Um plano que se ativa por fases.",
     "layerLabel": "Camada",
     "items": [
-      { "n": "01", "mes": "Junho", "t": "Aliviar a pressão", "d": "O primeiro passo: peças OEM com 40%–70% de desconto e processos ágeis. Menos fricção operacional e mais tesouraria desde o primeiro dia." },
-      { "n": "02", "mes": "Setembro", "t": "Fazer crescer", "d": "Novas fontes de receita: equipamentos novos ao melhor preço, garantias alargadas com comissão e novas gamas e linhas de negócio." },
-      { "n": "03", "mes": "Novembro", "t": "Proteger", "d": "Cobertura integral: seguros coletivos, saúde, vida, proteção jurídica e de rendimentos, poupança, SST, compliance e documentação." }
+      { "n": "01", "mes": "Julho", "t": "Aliviar a pressão", "d": "Pagamento em 7 dias e peças com 40%–70% de desconto. OEM Vestel já ativado." },
+      { "n": "02", "mes": "Outubro", "t": "Fazer crescer", "d": "Equipamentos novos ao melhor preço e garantias alargadas que geram receita recorrente e fidelizam os vossos clientes." },
+      { "n": "03", "mes": "Dezembro", "t": "Ganhar tempo", "d": "A plataforma com IA que automatiza o vosso negócio, incluída sem custo na WG Network: agenda, cobranças, peças, garantias, seguros e compliance numa só app." }
     ]
   },
   "benefits": {
