@@ -22,6 +22,9 @@ export const COUNTRIES: Record<CountryPhone["code"], CountryPhone> = {
   OTHER: { code: "OTHER", dial: "+", label: "Otro país", flag: "🌐" },
 };
 
+/** Países cuyo prefijo se ofrece en el alta (la red opera solo en ES y PT). */
+export const PHONE_COUNTRIES: CountryPhone[] = [COUNTRIES.ES, COUNTRIES.PT];
+
 /** Devuelve el país más probable para un CP dado o null si no podemos inferir. */
 export function countryFromPostalCode(cp: string): CountryPhone | null {
   const raw = (cp ?? "").trim();

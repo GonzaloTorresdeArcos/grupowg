@@ -1,7 +1,7 @@
 /**
  * Configuración global de i18n.
  *
- * - Idiomas soportados: ES (default), EN, PT, FR.
+ * - Idiomas soportados: ES (default), EN, PT.
  * - Detecta el idioma del navegador en la primera visita; si no es soportado,
  *   cae a ES.
  * - Persiste la elección del usuario en localStorage bajo `wg:lang`.
@@ -126,50 +126,14 @@ import ptAniversario from "./locales/pt/aniversario.json";
 import ptWgNetwork from "./locales/pt/wg-network.json";
 import ptPortal from "./locales/pt/portal.json";
 
-// ---------- FR ----------
-import frCommon from "./locales/fr/common.json";
-import frHeader from "./locales/fr/header.json";
-import frFooter from "./locales/fr/footer.json";
-import frBreadcrumbs from "./locales/fr/breadcrumbs.json";
-import frLegal from "./locales/fr/legal.json";
-import frContacto from "./locales/fr/contacto.json";
-import frHomeHero from "./locales/fr/home-hero.json";
-import frHomeProblem from "./locales/fr/home-problem.json";
-import frHomeSolution from "./locales/fr/home-solution.json";
-import frHomeDifferential from "./locales/fr/home-differential.json";
-import frHomeServiceos from "./locales/fr/home-serviceos.json";
-import frHomeMetrics from "./locales/fr/home-metrics.json";
-import frHomeLifecycle from "./locales/fr/home-lifecycle.json";
-import frHomeSolutions from "./locales/fr/home-solutions.json";
-import frHomePlatform from "./locales/fr/home-platform.json";
-import frHomeIntelligence from "./locales/fr/home-intelligence.json";
-import frHomeIndustries from "./locales/fr/home-industries.json";
-import frHomeExperience from "./locales/fr/home-experience.json";
-import frHomeNetwork from "./locales/fr/home-network.json";
-import frHomeAbout from "./locales/fr/home-about.json";
-import frHomeClosing from "./locales/fr/home-closing.json";
-import frHomeDiagram from "./locales/fr/home-diagram.json";
-import frHomeExperienceMethod from "./locales/fr/home-experience-method.json";
-import frHomeExperienceGov from "./locales/fr/home-experience-governance.json";
-import frGrupo from "./locales/fr/grupo.json";
-import frModelo from "./locales/fr/modelo.json";
-import frSoluciones from "./locales/fr/soluciones.json";
-import frPlataforma from "./locales/fr/plataforma.json";
-import frIndustrias from "./locales/fr/industrias.json";
-import frExperiencia from "./locales/fr/experiencia.json";
-import frMarcas from "./locales/fr/marcas.json";
-import frAniversario from "./locales/fr/aniversario.json";
-import frWgNetwork from "./locales/fr/wg-network.json";
-import frPortal from "./locales/fr/portal.json";
 
-export const SUPPORTED_LANGS = ["es", "en", "pt", "fr"] as const;
+export const SUPPORTED_LANGS = ["es", "en", "pt"] as const;
 export type AppLang = (typeof SUPPORTED_LANGS)[number];
 
 export const LANG_LABELS: Record<AppLang, string> = {
   es: "Español",
   en: "English",
   pt: "Português",
-  fr: "Français",
 };
 
 const buildBundle = (b: {
@@ -269,21 +233,6 @@ i18n
         industrias: ptIndustrias, experiencia: ptExperiencia, marcas: ptMarcas, aniversario: ptAniversario,
         wgNetwork: ptWgNetwork, portal: ptPortal,
         legal: ptLegal,
-      }),
-      fr: buildBundle({
-        common: frCommon, header: frHeader, footer: frFooter, breadcrumbs: frBreadcrumbs, contacto: frContacto,
-        homeHero: frHomeHero, homeProblem: frHomeProblem, homeSolution: frHomeSolution,
-        homeDifferential: frHomeDifferential, homeServiceos: frHomeServiceos,
-        homeMetrics: frHomeMetrics, homeLifecycle: frHomeLifecycle, homeSolutions: frHomeSolutions,
-        homePlatform: frHomePlatform, homeIntelligence: frHomeIntelligence,
-        homeIndustries: frHomeIndustries, homeExperience: frHomeExperience,
-        homeNetwork: frHomeNetwork, homeAbout: frHomeAbout, homeClosing: frHomeClosing,
-        homeDiagram: frHomeDiagram, homeExperienceMethod: frHomeExperienceMethod,
-        homeExperienceGov: frHomeExperienceGov,
-        grupo: frGrupo, modelo: frModelo, soluciones: frSoluciones, plataforma: frPlataforma,
-        industrias: frIndustrias, experiencia: frExperiencia, marcas: frMarcas, aniversario: frAniversario,
-        wgNetwork: frWgNetwork, portal: frPortal,
-        legal: frLegal,
       }),
     },
     fallbackLng: "es",
