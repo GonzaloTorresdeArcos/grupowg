@@ -28,8 +28,6 @@ const WGNetwork = () => {
   const layers = t("layers.items", { returnObjects: true }) as LayerItem[];
   const benefits = t("benefits.items", { returnObjects: true }) as BenefitItem[];
   const commitments = t("commitments.items", { returnObjects: true }) as CommitmentItem[];
-  const heroList = t("hero.list", { returnObjects: true }) as string[];
-  const heroProof = t("hero.proof", { returnObjects: true }) as string[];
   
 
   return (
