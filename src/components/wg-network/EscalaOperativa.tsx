@@ -10,13 +10,23 @@ const STATS = [
   { n: "35+", l: "años junto a nuestros principales clientes" },
 ];
 
-const GAMAS: { t: string; brands: string[]; more?: boolean }[] = [
-  { t: "Gama Blanca", brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sharp", "Evo", "Teka", "Sunfeel", "Selecline", "Vox", "Bru"], more: true },
-  { t: "Aire Acondicionado", brands: ["Johnson", "Toshiba", "Hitachi", "Telefunken"], more: true },
-  { t: "Electrónica / Marrón", brands: ["JVC", "Thomson", "Cecotec", "Sauber"], more: true },
-  { t: "Profesional", brands: ["Makro Professional", "Horeca Select", "Bartscher", "Mainho", "Retinna"], more: true },
-  { t: "Mobility", brands: ["Navee", "Red Bull", "Nilox", "Reebok", "Alfa Romeo"], more: true },
-  { t: "Seguros y Garantía", brands: ["Assurant", "Plus Ultra", "Seyna", "Caser", "Companjon"] },
+const ESTADOS = [
+  {
+    label: "Ya disponible",
+    sub: "Ventajas ya operativas para toda la red.",
+    dot: "bg-emerald-500",
+    bar: "bg-emerald-400",
+    brands: ["Vestel", "New Pol", "Daewoo", "Icecool", "Telefunken", "Sharp", "Sauber", "Toshiba", "JVC", "Hitachi", "Johnson", "Selecline"],
+    more: true,
+  },
+  {
+    label: "En desarrollo",
+    sub: "Nuevas ventajas en negociación para toda la red.",
+    dot: "bg-amber-500",
+    bar: "bg-amber-400",
+    brands: ["Carrefour Home", "Bluesky", "Qilive", "Cecotec", "Thomson", "Kromsline", "Makro Professional", "Horeca Select", "Bartscher", "Navee", "Red Bull", "Nilox"],
+    more: true,
+  },
 ];
 
 type Eco = { title: string; Icon: LucideIcon; accent: "sky" | "emerald" | "amber" | "violet"; brands: string[] };
