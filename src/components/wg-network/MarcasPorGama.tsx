@@ -103,7 +103,7 @@ export const MarcasPorGama = () => (
             Hasta un 70% de descuento en repuesto OEM.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Vinculado a tu nivel de servicio y a tus tiempos de resolución: cuanto antes resuelvas, mejores condiciones obtienes.
+            Cuanto mejor resuelvas el trabajo que te asigna WG, mayor descuento OEM en el repuesto de tus reparaciones fuera de garantía.
           </p>
         </div>
       </Reveal>

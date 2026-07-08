@@ -442,7 +442,7 @@ export const ImpactSimulator = () => {
                       {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
                     </div>
                     <p className="text-[11px] text-muted-foreground pt-1">
-                      Como SAT oficial accedes al repuesto OEM con hasta un –70% de descuento según tu nivel de servicio. Descuentos confirmados en Vestel y marcas asociadas; resto en incorporación.
+                      El descuento OEM (hasta –70% según tu nivel de servicio) aplica al repuesto de tus reparaciones fuera de garantía; en garantía, el repuesto va sin cargo. Confirmado en Vestel y marcas asociadas; resto en incorporación.
                     </p>
                   </div>
                 )}
@@ -450,9 +450,9 @@ export const ImpactSimulator = () => {
 
               {/* Tiempo de resolución → descuento OEM */}
               <div>
-                <label className="text-sm font-medium text-ink">Tiempo de resolución</label>
+                <label className="text-sm font-medium text-ink">Tiempo de resolución (trabajo WG)</label>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Desde que recibes el repuesto. Cuanto antes resuelvas, mayor descuento OEM.
+                  Según cómo resuelvas los avisos que te asigna WG, ganas tu nivel de descuento OEM — aplicado al repuesto de tus reparaciones fuera de garantía.
                 </p>
                 <div className="mt-2 grid grid-cols-4 gap-1.5">
                   {[

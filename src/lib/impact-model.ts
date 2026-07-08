@@ -118,7 +118,7 @@ export function computeImpact(inputs: ImpactInputs): ImpactResult {
   const avgRepTicket = repMes > 0 ? repPriceSum / repMes : (gamas.length ? avg(gamas.map((g) => PRICE_BY_GAMA[g] ?? 38)) : 38);
 
   const ingresoWG = wgAnio * avgRepTicket;
-  const ahorroRepuesto = repBaseAnio * PART_ATTACH_RATE * (PART_AVG_COST * descuento);
+  const ahorroRepuesto = repAnio * pctFueraGarantia * PART_ATTACH_RATE * (PART_AVG_COST * descuento);
   const ingresoEquipos = repBaseAnio * pctFueraGarantia * NOT_WORTH_REPAIR * SUBSTITUTION_CONV * equipoMargenMedio(gamas);
   const ingresoGarantias = totalAnio * WARRANTY_ATTACH * WARRANTY_COMMISSION;
   const ahorroTiempo = totalAnio * (MINUTES_SAVED_PER_JOB / 60) * HOUR_VALUE;
