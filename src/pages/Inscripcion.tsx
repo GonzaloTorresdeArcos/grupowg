@@ -177,6 +177,7 @@ const Inscripcion = () => {
     if (d.horarios) setHorarios(d.horarios);
     if (d.capacidad) setCapacidad(d.capacidad);
     if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
+    if (d.materialWG) setMaterialWG(d.materialWG);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
