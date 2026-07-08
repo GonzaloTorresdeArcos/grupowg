@@ -55,10 +55,10 @@ const WGNetwork = () => {
                 {t("hero.cta")}
                 <ArrowDown className="h-5 w-5" />
               </a>
-              <Link to="/wg-network/inscripcion" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-8 py-4 text-base font-medium text-foreground hover:border-foreground transition-all">
+              <a href="#como-funciona" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-8 py-4 text-base font-medium text-foreground hover:border-foreground transition-all">
                 {t("hero.ctaSecondary")}
-                <ArrowUpRight className="h-5 w-5" />
-              </Link>
+                <ArrowDown className="h-5 w-5" />
+              </a>
             </div>
             <p className="mt-8 text-xs text-foreground/50 max-w-2xl leading-relaxed">
               {t("hero.positioning")}
