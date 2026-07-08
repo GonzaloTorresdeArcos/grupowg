@@ -6,7 +6,7 @@ const STATS = [
   { n: "90+", l: "Marcas con repuesto e información técnica" },
   { n: "500+", l: "Servicios Técnicos e Instaladores" },
   { n: "75+", l: "Profesionales + hotline técnica + formación" },
-  { n: "6.200+", l: "m² de infraestructura al servicio de la red" },
+  { n: "6.200+", l: "m² de infraestructura a tu servicio" },
   { n: "35+", l: "años junto a nuestros principales clientes" },
 ];
 
