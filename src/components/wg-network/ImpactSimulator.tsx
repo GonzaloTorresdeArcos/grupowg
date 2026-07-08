@@ -405,7 +405,7 @@ export const ImpactSimulator = () => {
                               <details className="mt-3 group border-t border-border/60 pt-2">
                                 <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center gap-1.5 text-xs font-medium text-teal">
                                   <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
-                                  {total} marcas · SAT oficial –40/–70%
+                                  {total} marcas · SAT oficial hasta –70%
                                 </summary>
                                 <div className="mt-2 space-y-2">
                                   {m.confirmadas.length > 0 && (
