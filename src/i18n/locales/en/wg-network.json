@@ -25,7 +25,7 @@
       {
         "n": "01",
         "t": "Relieve pressure",
-        "d": "Spare parts at wholesale cost and agile processes, less operational friction."
+        "d": "OEM parts with a 40%–70% discount and streamlined processes, less operational friction."
       },
       {
         "n": "02",
@@ -85,8 +85,8 @@
         "d": "Access to new product on advantageous terms."
       },
       {
-        "t": "Spare parts at cost",
-        "d": "Material without margin to improve competitiveness and cash flow."
+        "t": "Parts at a 40%–70% discount",
+        "d": "OEM parts well below list price to boost your competitiveness and cash flow."
       },
       {
         "t": "Commercial opportunities",
@@ -101,21 +101,21 @@
     "items": [
       {
         "n": "1",
-        "t": "Spare parts at wholesale cost",
-        "d": "So you can compete, grow and breathe in your day-to-day."
+        "t": "Payment in 7 days",
+        "d": "You issue your invoice and get paid within 7 days of receipt. No waiting for month-end or 60–90 day terms: real liquidity so your cash flow can breathe and you compete without financing the work yourself."
       },
       {
         "n": "2",
-        "t": "Extended warranties and equipment at the best price",
-        "d": "So you can have recurring income and build loyal customers."
+        "t": "The best price on equipment and parts — plus warranties that add up",
+        "d": "New equipment at the network's best price when a repair isn't worth it, OEM parts with a 40%–70% discount off list price, and extended warranties you offer for a commission. More margin per job and new recurring revenue."
       },
       {
         "n": "3",
-        "t": "Collective insurance",
-        "d": "So you are protected as you deserve."
+        "t": "Group insurance",
+        "d": "Business, health, life and legal-protection cover negotiated as a block, directly with leading insurers, on terms you couldn't get on your own as a sole trader or small business. So you can work with peace of mind, fully protected."
       }
     ],
-    "outro": "We'll build the rest together, based on your needs and appetite."
+    "outro": "The rest we'll build together, at your pace and to your needs."
   },
   "finalCta": {
     "title": "Join WG Professional Network.",
@@ -138,7 +138,7 @@
       "fuera": "% intervenciones fuera de garantía"
     },
     "rows": {
-      "repuesto": "Repuesto a coste",
+      "repuesto": "OEM parts savings",
       "equipos": "Venta de equipos",
       "garantias": "Garantías y seguros",
       "tiempo": "Tiempo convertido en dinero"
@@ -148,7 +148,7 @@
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
       "cashLabel": "Caja liberada al año",
-      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "cashNote": "With payment in 7 days vs. the sector average.",
       "assumptions": "Ver supuestos usados",
       "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
     },
@@ -177,10 +177,10 @@
       "El cliente final firma con el dedo y recibe su parte al instante.",
       "Quien te encarga el aviso lo recibe en el mismo momento.",
       "Todo se archiva listo para facturar.",
-      "Repuesto a coste con las mejores condiciones de las centrales de recambio.",
+      "OEM parts at a 40%–70% discount and the best terms from parts distributors.",
       "Producto para vender cuando reparar no compensa.",
       "Garantías y seguros con comisión.",
-      "Pago a 15 días.",
+      "Payment in 7 days from invoice receipt.",
       "Protección para ti y tu negocio."
     ]
   }

@@ -25,7 +25,7 @@
       {
         "n": "01",
         "t": "Aliviar presión",
-        "d": "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa."
+        "d": "Peças OEM com 40%–70% de desconto e processos ágeis, menos fricção operacional."
       },
       {
         "n": "02",
@@ -85,8 +85,8 @@
         "d": "Acceso a producto nuevo en condiciones ventajosas."
       },
       {
-        "t": "Repuestos a coste",
-        "d": "Material sin margen para mejorar competitividad y caja."
+        "t": "Peças com 40%–70% de desconto",
+        "d": "Peças OEM muito abaixo da tarifa para melhorar a vossa competitividade e a vossa tesouraria."
       },
       {
         "t": "Oportunidades comerciales",
@@ -96,26 +96,26 @@
     "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
   },
   "commitments": {
-    "eyebrow": "Innegociables",
-    "title": "3 compromisos innegociables.",
+    "eyebrow": "Inegociáveis",
+    "title": "3 compromissos inegociáveis.",
     "items": [
       {
         "n": "1",
-        "t": "Repuestos a coste mayorista",
-        "d": "Para que podáis competir, crecer y respirar en el día a día."
+        "t": "Pagamento em 7 dias",
+        "d": "Emitem a vossa fatura e recebem num prazo máximo de 7 dias após a receção. Sem esperar pelo fim do mês nem prazos a 60–90 dias: liquidez real para a vossa tesouraria respirar e competirem sem financiarem vocês o trabalho."
       },
       {
         "n": "2",
-        "t": "Garantías extendidas y equipos al mejor precio",
-        "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles."
+        "t": "O melhor preço em equipamento e peças — e garantias que somam",
+        "d": "Equipamentos novos ao melhor preço da rede quando reparar não compensa, peças OEM com 40%–70% de desconto sobre a tarifa e garantias alargadas que oferecem com comissão. Mais margem por intervenção e novas fontes de receita recorrente."
       },
       {
         "n": "3",
-        "t": "Seguros colectivos",
-        "d": "Para que estéis protegidos como merecéis."
+        "t": "Seguros coletivos",
+        "d": "Coberturas de atividade, saúde, vida e proteção jurídica negociadas em bloco, diretamente com companhias de seguros líderes, em condições que por conta própria —como profissionais independentes ou PME— não conseguiriam. Para trabalharem tranquilos e protegidos."
       }
     ],
-    "outro": "El resto lo construiremos juntos, según vuestras necesidades y apetito."
+    "outro": "O resto construímos juntos, ao vosso ritmo e conforme as vossas necessidades."
   },
   "finalCta": {
     "title": "Únete a WG Professional Network.",
@@ -138,7 +138,7 @@
       "fuera": "% intervenciones fuera de garantía"
     },
     "rows": {
-      "repuesto": "Repuesto a coste",
+      "repuesto": "Poupança em peças OEM",
       "equipos": "Venta de equipos",
       "garantias": "Garantías y seguros",
       "tiempo": "Tiempo convertido en dinero"
@@ -148,7 +148,7 @@
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
       "cashLabel": "Caja liberada al año",
-      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "cashNote": "Com pagamento em 7 dias vs. média do setor.",
       "assumptions": "Ver supuestos usados",
       "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
     },
@@ -177,10 +177,10 @@
       "El cliente final firma con el dedo y recibe su parte al instante.",
       "Quien te encarga el aviso lo recibe en el mismo momento.",
       "Todo se archiva listo para facturar.",
-      "Repuesto a coste con las mejores condiciones de las centrales de recambio.",
+      "Peças OEM com 40%–70% de desconto e as melhores condições das centrais de peças.",
       "Producto para vender cuando reparar no compensa.",
       "Garantías y seguros con comisión.",
-      "Pago a 15 días.",
+      "Pagamento em 7 dias após receção da fatura.",
       "Protección para ti y tu negocio."
     ]
   }

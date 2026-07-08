@@ -22,7 +22,7 @@
     "title": "Un plan estructurado en 3 capas.",
     "layerLabel": "Capa",
     "items": [
-      { "n": "01", "t": "Aliviar presión", "d": "Repuestos a coste mayorista y procesos ágiles, menos fricción operativa." },
+      { "n": "01", "t": "Aliviar presión", "d": "Repuestos OEM con 40%–70% de descuento y procesos ágiles, menos fricción operativa." },
       { "n": "02", "t": "Hacer crecer", "d": "Equipos nuevos a precio competitivo, garantías extendidas y nuevas gamas y líneas de ingresos." },
       { "n": "03", "t": "Proteger", "d": "Seguros colectivos, salud, vida, protección jurídica, protección de ingresos, ahorro, PRL, compliance y documentación." }
     ]
@@ -42,7 +42,7 @@
       { "t": "Compliance asistido", "d": "Alta documental, validación y seguimiento normativo." },
       { "t": "Documentación", "d": "Todo en regla, actualizado y trazable." },
       { "t": "Producto nuevo", "d": "Acceso a producto nuevo en condiciones ventajosas." },
-      { "t": "Repuestos a coste", "d": "Material sin margen para mejorar competitividad y caja." },
+      { "t": "Repuestos con 40%–70% de descuento", "d": "Repuesto OEM muy por debajo de tarifa para mejorar vuestra competitividad y vuestra caja." },
       { "t": "Oportunidades comerciales", "d": "Activaciones con fabricantes, distribuidores y programas de garantía extendida." }
     ],
     "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
@@ -51,11 +51,11 @@
     "eyebrow": "Innegociables",
     "title": "3 compromisos innegociables.",
     "items": [
-      { "n": "1", "t": "Repuestos a coste mayorista", "d": "Para que podáis competir, crecer y respirar en el día a día." },
-      { "n": "2", "t": "Garantías extendidas y equipos al mejor precio", "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
-      { "n": "3", "t": "Seguros colectivos", "d": "Para que estéis protegidos como merecéis." }
+      { "n": "1", "t": "Pago en 7 días", "d": "Emitís vuestra factura y cobráis en un máximo de 7 días desde su recepción. Sin esperas a fin de mes ni plazos a 60–90 días: liquidez real para que vuestra tesorería respire y compitáis sin financiar vosotros el trabajo." },
+      { "n": "2", "t": "El mejor precio en equipo y repuesto — y garantías que suman", "d": "Equipos nuevos al mejor precio de la red para cuando reparar no compensa, repuestos OEM con un 40%–70% de descuento sobre tarifa y garantías extendidas que ofrecéis con comisión. Más margen por intervención y nuevas vías de ingreso recurrente." },
+      { "n": "3", "t": "Seguros colectivos", "d": "Coberturas de actividad, salud, vida y protección jurídica negociadas en bloque, en directo con compañías de seguros líderes, en condiciones que por vuestra cuenta —como autónomos o pymes— no conseguiríais. Para que trabajéis tranquilos y protegidos." }
     ],
-    "outro": "El resto lo construiremos juntos, según vuestras necesidades y apetito."
+    "outro": "El resto lo construiremos juntos, según vuestras necesidades y vuestro ritmo."
   },
   "finalCta": {
     "title": "Únete a WG Professional Network.",
@@ -78,7 +78,7 @@
       "fuera": "% intervenciones fuera de garantía"
     },
     "rows": {
-      "repuesto": "Repuesto a coste",
+      "repuesto": "Ahorro en repuesto OEM",
       "equipos": "Venta de equipos",
       "garantias": "Garantías y seguros",
       "tiempo": "Tiempo convertido en dinero"
@@ -88,7 +88,7 @@
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
       "cashLabel": "Caja liberada al año",
-      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "cashNote": "Con pago en 7 días vs. media del sector.",
       "assumptions": "Ver supuestos usados",
       "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
     },
@@ -117,10 +117,10 @@
       "El cliente final firma con el dedo y recibe su parte al instante.",
       "Quien te encarga el aviso lo recibe en el mismo momento.",
       "Todo se archiva listo para facturar.",
-      "Repuesto a coste con las mejores condiciones de las centrales de recambio.",
+      "Repuesto OEM con 40%–70% de descuento y las mejores condiciones de las centrales de recambio.",
       "Producto para vender cuando reparar no compensa.",
       "Garantías y seguros con comisión.",
-      "Pago a 15 días.",
+      "Pago en 7 días tras recepción de factura.",
       "Protección para ti y tu negocio."
     ]
   }
