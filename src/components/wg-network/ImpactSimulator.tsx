@@ -370,7 +370,7 @@ export const ImpactSimulator = () => {
               {/* Volúmenes por gama y actividad */}
               <div>
                 <label className="text-sm font-medium text-ink">
-                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : inputs.perfil === "instalador" ? "Lo que instalas al mes" : "Lo que reparas e instalas al mes"}
+                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : "Lo que reparas e instalas al mes"}
                 </label>
                 {inputs.gamas.length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">Selecciona al menos una gama arriba.</p>
