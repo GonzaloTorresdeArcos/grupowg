@@ -72,20 +72,27 @@ export const EscalaOperativa = () => (
         </div>
       </Reveal>
 
-      {/* Marcas por gama */}
+      {/* Marcas: estado */}
       <Reveal>
-        <p className="eyebrow mt-16 mb-6">Marcas y ecosistemas con los que ya trabajamos</p>
+        <p className="eyebrow mt-16 mb-6">Marcas gestionadas</p>
       </Reveal>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {GAMAS.map((g, i) => (
-          <Reveal key={g.t} delay={i * 60}>
-            <div className="rounded-2xl border border-border bg-background p-6 h-full">
-              <h3 className="font-display text-lg text-ink mb-4">{g.t}</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {g.brands.map((b) => (
-                  <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
-                ))}
-                {g.more && <span className="rounded-full px-2.5 py-1 text-xs text-muted-foreground">+ más</span>}
+      <div className="grid gap-5 md:grid-cols-2">
+        {ESTADOS.map((s, i) => (
+          <Reveal key={s.label} delay={i * 80}>
+            <div className="rounded-2xl border border-border bg-background overflow-hidden h-full">
+              <div className={`h-1 ${s.bar}`} />
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`h-2.5 w-2.5 rounded-full ${s.dot}`} />
+                  <h3 className="font-display text-xl text-ink">{s.label}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">{s.sub}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {s.brands.map((b) => (
+                    <span key={b} className="rounded-full border border-border bg-card px-2.5 py-1 text-xs text-ink">{b}</span>
+                  ))}
+                  {s.more && <span className="rounded-full px-2.5 py-1 text-xs text-muted-foreground">+ más</span>}
+                </div>
               </div>
             </div>
           </Reveal>
