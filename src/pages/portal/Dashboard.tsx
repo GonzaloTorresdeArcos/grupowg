@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { STATUS_LABELS, familiaLabel } from "@/lib/catalogos";
+import { ImpactoNegocio } from "@/components/portal/ImpactoNegocio";
+import { CumplimientoPagos } from "@/components/portal/CumplimientoPagos";
 import { useTranslation } from "react-i18next";
 
 const ACTIVE = ["open", "assigned", "in_progress"];
@@ -159,6 +161,8 @@ const PortalDashboard = () => {
         <KpiCard icon={Timer} label={t("dashboard.kpis.tat")} value={tatDays === null ? "—" : tatDays.toFixed(1)} suffix={tatDays === null ? "" : t("dashboard.kpis.tatSuffix")} tone="ink" />
         <KpiCard icon={ClipboardList} label={t("dashboard.kpis.casesYear", { defaultValue: "Casos" })} value={casesYtd} suffix={t("dashboard.kpis.casesYearSuffix", { defaultValue: "este año" })} tone="teal" />
       </div>
+
+      <ImpactoNegocio />
 
       <Card className="p-6 md:p-8">
         <div className="flex items-center justify-between mb-5">
@@ -326,6 +330,8 @@ const PortalDashboard = () => {
           )}
         </Card>
       </div>
+
+      <CumplimientoPagos />
 
       {docsAlert > 0 && (
         <Card className="p-5 md:p-6 border-amber-500/30 bg-amber-50/50">
