@@ -442,7 +442,7 @@ export const ImpactSimulator = () => {
                       {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
                     </div>
                     <p className="text-[11px] text-muted-foreground pt-1">
-                      Como SAT oficial accedes al repuesto OEM con hasta un –70% de descuento según tu nivel de servicio. Descuentos confirmados en Vestel y marcas asociadas; resto en incorporación.
+                      El descuento OEM (hasta –70% según tu nivel de servicio) aplica al repuesto de tus reparaciones fuera de garantía; en garantía, el repuesto va sin cargo. Confirmado en Vestel y marcas asociadas; resto en incorporación.
                     </p>
                   </div>
                 )}
