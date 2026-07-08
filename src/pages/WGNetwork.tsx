@@ -114,7 +114,12 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 4 · Detalle plegable — Beneficios (coberturas) */}
+      {/* 4 · Cómo — App nativa de IA */}
+      <div id="como-funciona">
+        <NativeAppBlock />
+      </div>
+
+      {/* 5 · Detalle plegable — Beneficios (coberturas) */}
       <section className="py-24 md:py-32 bg-secondary">
         <div className="container-tight">
           <Reveal>
@@ -165,10 +170,6 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 5 · Cómo — App nativa de IA */}
-      <div id="como-funciona">
-        <NativeAppBlock />
-      </div>
 
       {/* 6 · Pruébalo — Simulador de impacto */}
       <ImpactSimulator />
