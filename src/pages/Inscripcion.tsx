@@ -396,7 +396,7 @@ const Inscripcion = () => {
               telefono: composeE164(phoneCountry.dial, s1.telefono),
               provincias: provinciasText,
               provincias_codes: provinciaCodes,
-              zona_cobertura: provinciasText,
+              zona_cobertura: coberturaCps.length ? `Radio ${radioKm} km desde ${s1.codigo_postal} · ${coberturaCps.length} CP · ${provinciasText}` : provinciasText,
               familias_producto: familiasSel,
               marcas_trabajadas: marcas,
               marcas_codes: Array.from(new Set(marcasDetalle.map((d) => d.code.split(":")[1]))),
