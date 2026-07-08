@@ -115,13 +115,10 @@ const WGNetwork = () => {
       <MarcasPorGama />
 
 
-      {/* 4 · Cómo — App nativa de IA */}
+      {/* 5 · Cómo — App nativa de IA */}
       <div id="como-funciona">
         <NativeAppBlock />
       </div>
-
-      {/* 5 · Pruébalo — Simulador de impacto */}
-      <ImpactSimulator />
 
       {/* 6 · Experiencia y capacidad — KPIs + Ecosistemas */}
       <EscalaOperativa />
