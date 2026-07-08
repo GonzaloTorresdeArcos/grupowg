@@ -5,17 +5,17 @@
   },
   "hero": {
     "eyebrow": "WG Professional Network",
-    "title1": "Se trata de la gente.",
-    "title2": "Se trata de vosotros.",
-    "intro": "Un compromiso con nuestra red de servicios técnicos. 50 años entrando en las casas de la gente y resolviendo problemas reales. La red no son logos ni procesos: sois vosotros.",
-    "list": [
-      "— Los que madrugáis.",
-      "— Los que conducís cientos de kilómetros.",
-      "— Los que dais la cara cuando algo falla.",
-      "— Los que resolvéis lo que nadie más sabe resolver."
-    ],
-    "manifesto": "Grupo WG funciona gracias a vosotros.",
-    "cta": "Únete a WG Professional Network"
+    "audience": "Serviços técnicos e instaladores · Espanha e Portugal",
+    "title1": "É sobre as pessoas.",
+    "title2": "É sobre vocês.",
+    "valueProp": "Recebe em 7 dias. Peças com 40–70% de desconto, substituição com margem e garantias alargadas — com uma app de IA que trata da papelada. Sem quotas.",
+    "intro": "Um compromisso com a nossa rede de serviços técnicos e instaladores. 50 anos a entrar nas casas das pessoas e a resolver problemas reais. A rede não são logótipos nem processos: são vocês.",
+    "list": ["Os que se levantam cedo.", "Os que conduzem centenas de quilómetros.", "Os que dão a cara quando algo falha.", "Os que resolvem o que mais ninguém sabe resolver."],
+    "manifesto": "O Grupo WG funciona graças a vocês.",
+    "proof": ["+500 serviços técnicos e instaladores", "+100.000 intervenções/ano", "35 anos de experiência"],
+    "positioning": "A WG não vende equipamentos nem compete com os seus clientes: ligamos o técnico ao catálogo do retalhista ou da marca. A venda — e o cliente — continuam a ser vossos.",
+    "cta": "Calcula o teu impacto",
+    "ctaSecondary": "Juntar-me à rede"
   },
   "layers": {
     "eyebrow": "Roteiro",

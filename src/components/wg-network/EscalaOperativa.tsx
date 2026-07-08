@@ -3,7 +3,7 @@ import { Reveal } from "@/components/site/Reveal";
 
 const STATS = [
   { n: "75+", l: "Profesionales especializados" },
-  { n: "350+", l: "SATs gestionados en Iberia" },
+  { n: "500+", l: "SATs e instaladores en Iberia" },
   { n: "100k+", l: "Intervenciones / año" },
   { n: "6.200+", l: "m² de instalaciones propias" },
   { n: "35+", l: "Años de experiencia sectorial" },

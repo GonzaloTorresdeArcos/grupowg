@@ -5,17 +5,17 @@
   },
   "hero": {
     "eyebrow": "WG Professional Network",
-    "title1": "It's about the people.",
+    "audience": "Repair technicians & installers · Spain and Portugal",
+    "title1": "It's about people.",
     "title2": "It's about you.",
-    "intro": "A commitment to our technical services network. 50 years entering people's homes and solving real problems. The network is not logos or processes: it's you.",
-    "list": [
-      "— Those who get up early.",
-      "— Those who drive hundreds of kilometres.",
-      "— Those who show up when something fails.",
-      "— Those who solve what nobody else can solve."
-    ],
+    "valueProp": "Get paid in 7 days. Parts at a 40–70% discount, replacements with margin and extended warranties — with an AI app that handles the paperwork. No fees.",
+    "intro": "A commitment to our network of repair technicians and installers. 50 years walking into people's homes and solving real problems. The network isn't logos or processes: it's you.",
+    "list": ["The early risers.", "Those who drive hundreds of kilometres.", "Those who show up when something fails.", "Those who fix what no one else can."],
     "manifesto": "Grupo WG works thanks to you.",
-    "cta": "Join WG Professional Network"
+    "proof": ["+500 technicians & installers", "+100,000 jobs/year", "35 years of experience"],
+    "positioning": "WG doesn't sell equipment or compete with its clients: we connect the technician to the retailer's or brand's catalogue. The sale — and the customer — stay yours.",
+    "cta": "Calculate your impact",
+    "ctaSecondary": "Join the network"
   },
   "layers": {
     "eyebrow": "Roadmap",
