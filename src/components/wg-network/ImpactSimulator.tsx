@@ -267,6 +267,21 @@ export const ImpactSimulator = () => {
           <p className="mt-4 text-lg text-muted-foreground">{perfilCopy.subtitle}</p>
         </div>
 
+        <div className="mb-8">
+          <div className="inline-grid grid-cols-3 rounded-full bg-muted p-1">
+            {(["sat", "instalador", "ambos"] as Perfil[]).map((p) => (
+              <button key={p} type="button" onClick={() => setInputs({ ...inputs, perfil: p })}
+                className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors", inputs.perfil === p ? "bg-ink text-background" : "text-muted-foreground hover:text-ink")}>
+                {p === "sat" ? "SAT" : p === "instalador" ? "Instalador" : "Ambos"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {inputs.perfil === "instalador" ? (
+          <InstaladorSimulador />
+        ) : (
+        <>
         <div className="grid gap-6 lg:grid-cols-5">
           {/* Inputs */}
           <div className="lg:col-span-2 rounded-3xl bg-card border border-border p-6 md:p-8 shadow-sm">
