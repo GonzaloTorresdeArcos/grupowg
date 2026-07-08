@@ -127,14 +127,13 @@ import ptWgNetwork from "./locales/pt/wg-network.json";
 import ptPortal from "./locales/pt/portal.json";
 
 
-export const SUPPORTED_LANGS = ["es", "en", "pt", "fr"] as const;
+export const SUPPORTED_LANGS = ["es", "en", "pt"] as const;
 export type AppLang = (typeof SUPPORTED_LANGS)[number];
 
 export const LANG_LABELS: Record<AppLang, string> = {
   es: "Español",
   en: "English",
   pt: "Português",
-  fr: "Français",
 };
 
 const buildBundle = (b: {
