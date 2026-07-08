@@ -108,7 +108,10 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 3 · Marcas por gama (gancho SAT) */}
+      {/* 3 · Pruébalo — Simulador de impacto */}
+      <ImpactSimulator />
+
+      {/* 4 · Marcas por gama (gancho SAT) */}
       <MarcasPorGama />
 
 
