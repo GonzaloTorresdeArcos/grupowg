@@ -38,8 +38,7 @@ const WGNetwork = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
         <div className="container-tight relative z-10 py-10">
           <Reveal>
-            <p className="eyebrow text-teal-soft mb-3">{t("hero.eyebrow")}</p>
-            <p className="text-sm font-medium text-foreground/60 mb-5">{t("hero.audience")}</p>
+            <p className="eyebrow text-teal-soft mb-5">{t("hero.eyebrow")}</p>
             <h1 className="heading-display text-foreground text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
@@ -51,16 +50,6 @@ const WGNetwork = () => {
             <p className="mt-4 max-w-2xl text-base text-foreground/60 leading-relaxed">
               {t("hero.intro")}
             </p>
-            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 max-w-3xl">
-              {heroList.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm text-foreground/70">
-                  <span className="h-1.5 w-1.5 rounded-full bg-teal shrink-0" />{item}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 font-display italic text-2xl md:text-3xl text-teal">
-              {t("hero.manifesto")}
-            </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#simulador" className="inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-medium text-ink transition-all hover:gap-3 hover:bg-teal-soft">
                 {t("hero.cta")}
@@ -71,12 +60,7 @@ const WGNetwork = () => {
                 <ArrowUpRight className="h-5 w-5" />
               </Link>
             </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-foreground/10 pt-6 max-w-3xl">
-              {heroProof.map((p) => (
-                <span key={p} className="text-sm font-medium text-foreground/80">{p}</span>
-              ))}
-            </div>
-            <p className="mt-6 text-xs text-foreground/50 max-w-2xl leading-relaxed">
+            <p className="mt-8 text-xs text-foreground/50 max-w-2xl leading-relaxed">
               {t("hero.positioning")}
             </p>
           </Reveal>
