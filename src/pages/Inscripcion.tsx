@@ -123,6 +123,7 @@ const Inscripcion = () => {
   const [horarios, setHorarios] = useState("");
   const [capacidad, setCapacidad] = useState("");
   const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
+  const [materialWG, setMaterialWG] = useState<"" | "wg" | "propio">("");
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
@@ -176,6 +177,7 @@ const Inscripcion = () => {
     if (d.horarios) setHorarios(d.horarios);
     if (d.capacidad) setCapacidad(d.capacidad);
     if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
+    if (d.materialWG) setMaterialWG(d.materialWG);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
@@ -195,11 +197,11 @@ const Inscripcion = () => {
       current_step: step,
       form_data: {
         s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad,
-        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni,
+        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, step]);
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
@@ -392,7 +394,7 @@ const Inscripcion = () => {
               horarios,
               capacidad_mensual: capacidad,
               coberturas,
-              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle },
+              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null },
               documentosSubidos,
             },
           },
@@ -827,6 +829,22 @@ const Inscripcion = () => {
             <Field label="Instalación">
               <ChipsMulti opts={instalacionTipos} value={serviciosSel} onChange={(v) => toggle(serviciosSel, v, setServiciosSel)} />
             </Field>
+            {(s1.tipo_colaborador === "Instalador" || instalacionTipos.some((t) => serviciosSel.includes(t))) && (
+              <Field label="Material de instalación">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <button type="button" onClick={() => setMaterialWG("wg")}
+                    className={cn("rounded-xl border p-4 text-left transition-all", materialWG === "wg" ? "border-ink bg-ink text-bone" : "border-border bg-card hover:border-ink/40")}>
+                    <span className="block text-sm font-medium">Que lo ponga WG</span>
+                    <span className={cn("block text-xs mt-1", materialWG === "wg" ? "text-bone/70" : "text-muted-foreground")}>No lo adelantas: lo recoges en punto de venta y se descuenta tras la liquidación (precios ya negociados).</span>
+                  </button>
+                  <button type="button" onClick={() => setMaterialWG("propio")}
+                    className={cn("rounded-xl border p-4 text-left transition-all", materialWG === "propio" ? "border-ink bg-ink text-bone" : "border-border bg-card hover:border-ink/40")}>
+                    <span className="block text-sm font-medium">Lo pongo yo</span>
+                    <span className={cn("block text-xs mt-1", materialWG === "propio" ? "text-bone/70" : "text-muted-foreground")}>Sigues aportando tú el material de instalación.</span>
+                  </button>
+                </div>
+              </Field>
+            )}
             <Field label="Horarios de atención">
               <HorariosSelector value={horarios} onChange={setHorarios} />
             </Field>
