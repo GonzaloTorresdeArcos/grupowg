@@ -667,6 +667,8 @@ export const ImpactSimulator = () => {
             </form>
           </div>
         </div>
+        </>
+        )}
       </div>
     </section>
   );
