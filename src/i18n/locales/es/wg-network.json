@@ -27,29 +27,31 @@
     "ctaSecondary": "Cómo funciona"
   },
   "layers": {
-    "eyebrow": "Hoja de ruta",
-    "title": "Un plan que se activa por fases.",
-    "layerLabel": "Capa",
+    "eyebrow": "Hoja de ruta WG Network",
+    "title": "Tres compromisos. Un plan que se activa por fases.",
+    "layerLabel": "Fase",
     "items": [
       {
         "n": "01",
         "mes": "Julio",
         "t": "Aliviar presión",
-        "d": "Pago en 7 días y repuestos con un 40%–70% de descuento. OEM Vestel ya activado."
+        "d": "Pago en 7 días y repuesto OEM. Hasta un 70% de descuento en función del nivel de servicio y los tiempos de resolución. Cuanto antes resolváis, más ganáis."
       },
       {
         "n": "02",
         "mes": "Octubre",
         "t": "Hacer crecer",
-        "d": "Equipos nuevos al mejor precio y garantías extendidas que generan ingresos recurrentes y fidelizan a vuestros clientes."
+        "d": "Equipos nuevos para cuando reparar no compensa y garantías extendidas que generan nuevos ingresos, más margen y clientes más fieles."
       },
       {
         "n": "03",
         "mes": "Diciembre",
         "t": "Ganar tiempo",
-        "d": "La plataforma con IA que automatiza vuestro negocio, incluida sin coste en WG Network: agenda, cobros, repuestos, garantías, seguros y compliance en una sola app."
+        "d": "Todo tu negocio en una sola app impulsada por IA. Agenda, partes, cobros, repuestos, garantías, seguros y documentación en un único lugar."
       }
-    ]
+    ],
+    "outroTitle": "Esto es solo el principio.",
+    "outro": "Porque creemos que quienes cuidan de nuestros clientes merecen las mismas herramientas, ventajas y oportunidades que las grandes organizaciones."
   },
   "benefits": {
     "eyebrow": "Beneficios",
