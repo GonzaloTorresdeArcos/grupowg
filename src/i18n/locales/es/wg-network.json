@@ -78,7 +78,7 @@
       "fuera": "% intervenciones fuera de garantía"
     },
     "rows": {
-      "repuesto": "Repuesto a coste",
+      "repuesto": "Ahorro en repuesto OEM",
       "equipos": "Venta de equipos",
       "garantias": "Garantías y seguros",
       "tiempo": "Tiempo convertido en dinero"
@@ -88,7 +88,7 @@
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
       "cashLabel": "Caja liberada al año",
-      "cashNote": "Con pago a 15 días vs. media del sector.",
+      "cashNote": "Con pago en 7 días vs. media del sector.",
       "assumptions": "Ver supuestos usados",
       "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
     },
