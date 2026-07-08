@@ -31,6 +31,7 @@ import {
 } from "@/lib/impact-model";
 import { GAMAS } from "@/lib/gamas-taxonomy";
 import { MARCAS_POR_GAMA } from "@/lib/marcas-por-gama";
+import { InstaladorSimulador } from "@/components/wg-network/InstaladorSimulador";
 import { useTranslation } from "react-i18next";
 
 const fmt = (n: number) =>
@@ -266,35 +267,29 @@ export const ImpactSimulator = () => {
           <p className="mt-4 text-lg text-muted-foreground">{perfilCopy.subtitle}</p>
         </div>
 
+        <div className="mb-8">
+          <div className="inline-grid grid-cols-3 rounded-full bg-muted p-1">
+            {(["sat", "instalador", "ambos"] as Perfil[]).map((p) => (
+              <button key={p} type="button" onClick={() => setInputs({ ...inputs, perfil: p })}
+                className={cn("rounded-full px-4 py-1.5 text-sm font-medium transition-colors", inputs.perfil === p ? "bg-ink text-background" : "text-muted-foreground hover:text-ink")}>
+                {p === "sat" ? "SAT" : p === "instalador" ? "Instalador" : "Ambos"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {inputs.perfil === "instalador" ? (
+          <InstaladorSimulador />
+        ) : (
+        <>
         <div className="grid gap-6 lg:grid-cols-5">
           {/* Inputs */}
           <div className="lg:col-span-2 rounded-3xl bg-card border border-border p-6 md:p-8 shadow-sm">
             <h3 className="font-display text-xl text-ink mb-6">Tu negocio hoy</h3>
 
             <div className="space-y-6">
-              {/* Perfil */}
-              <div>
-                <label className="text-sm font-medium text-ink">Perfil</label>
-                <div className="mt-2 grid grid-cols-3 rounded-full bg-muted p-1">
-                  {(["sat", "instalador", "ambos"] as Perfil[]).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setInputs({ ...inputs, perfil: p })}
-                      className={cn(
-                        "rounded-full px-3 py-1.5 text-sm font-medium transition-colors capitalize",
-                        inputs.perfil === p
-                          ? "bg-ink text-background"
-                          : "text-muted-foreground hover:text-ink"
-                      )}
-                    >
-                      {p === "sat" ? "SAT" : p === "instalador" ? "Instalador" : "Ambos"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Cobertura: país + CP + radio de acción */}
+
               <div>
                 <label className="text-sm font-medium text-ink flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-teal" /> Cobertura — tu radio de acción
@@ -375,7 +370,7 @@ export const ImpactSimulator = () => {
               {/* Volúmenes por gama y actividad */}
               <div>
                 <label className="text-sm font-medium text-ink">
-                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : inputs.perfil === "instalador" ? "Lo que instalas al mes" : "Lo que reparas e instalas al mes"}
+                  {inputs.perfil === "sat" ? "Lo que reparas al mes" : "Lo que reparas e instalas al mes"}
                 </label>
                 {inputs.gamas.length === 0 ? (
                   <p className="mt-2 text-sm text-muted-foreground">Selecciona al menos una gama arriba.</p>
@@ -672,6 +667,8 @@ export const ImpactSimulator = () => {
             </form>
           </div>
         </div>
+        </>
+        )}
       </div>
     </section>
   );
