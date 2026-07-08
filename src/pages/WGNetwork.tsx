@@ -2,10 +2,9 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Heart, Shield, Wallet, Stethoscope, BookOpen, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, Briefcase, ChevronRight, ArrowDown } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
 import { ImpactSimulator } from "@/components/wg-network/ImpactSimulator";
-
 import { NativeAppBlock } from "@/components/wg-network/NativeAppBlock";
 import { EscalaOperativa } from "@/components/wg-network/EscalaOperativa";
-import logo50 from "@/assets/logo-50-light.png";
+import { MarcasPorGama } from "@/components/wg-network/MarcasPorGama";
 import networkImg from "@/assets/network.webp";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +13,6 @@ const benefitIcons = [Shield, Briefcase, Wallet, Stethoscope, Heart, PiggyBank, 
 
 type LayerItem = { n: string; mes?: string; t: string; d: string };
 type BenefitItem = { t: string; d: string };
-type CommitmentItem = { n: string; t: string; d: string };
 
 const WGNetwork = () => {
   const { t } = useTranslation("wg-network");
@@ -28,11 +26,10 @@ const WGNetwork = () => {
 
   const layers = t("layers.items", { returnObjects: true }) as LayerItem[];
   const benefits = t("benefits.items", { returnObjects: true }) as BenefitItem[];
-  const commitments = t("commitments.items", { returnObjects: true }) as CommitmentItem[];
 
   return (
     <>
-      {/* 1 · HERO manifiesto */}
+      {/* 1 · HERO */}
       <section className="relative flex items-center bg-background text-foreground overflow-hidden pt-32 pb-16 md:pb-24">
         <img src={networkImg} alt="" width={1600} height={1024} className="absolute inset-0 h-full w-full object-cover opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
@@ -67,8 +64,8 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 2 · Credibilidad — Escala operativa */}
-      <EscalaOperativa />
+      {/* 2 · Marcas por gama (gancho SAT) */}
+      <MarcasPorGama />
 
       {/* 3 · Hoja de ruta — 3 capas */}
       <section className="py-24 md:py-32 bg-bone">
@@ -119,7 +116,13 @@ const WGNetwork = () => {
         <NativeAppBlock />
       </div>
 
-      {/* 5 · Detalle plegable — Beneficios (coberturas) */}
+      {/* 5 · Pruébalo — Simulador de impacto */}
+      <ImpactSimulator />
+
+      {/* 6 · Experiencia y capacidad — KPIs + Ecosistemas */}
+      <EscalaOperativa />
+
+      {/* 7 · Detalle plegable — Beneficios (coberturas) */}
       <section className="py-24 md:py-32 bg-secondary">
         <div className="container-tight">
           <Reveal>
@@ -169,11 +172,6 @@ const WGNetwork = () => {
           )}
         </div>
       </section>
-
-
-      {/* 6 · Pruébalo — Simulador de impacto */}
-      <ImpactSimulator />
-
 
       {/* 8 · CTA final */}
       <section className="py-24 md:py-32 bg-card">
