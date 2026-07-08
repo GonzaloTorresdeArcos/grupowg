@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useDraft } from "@/hooks/useDraft";
 import { CifInput } from "@/components/inscripcion/CifInput";
 import { OtpVerification } from "@/components/inscripcion/OtpVerification";
-import { CoverageMap } from "@/components/inscripcion/CoverageMap";
+import { CoverageRadius } from "@/components/inscripcion/CoverageRadius";
 import { SignaturePad } from "@/components/inscripcion/SignaturePad";
 import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
