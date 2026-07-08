@@ -25,7 +25,7 @@ import {
 } from "@/lib/agreement-pdf";
 import { validateSpanishDoc } from "@/lib/cif-validation";
 import { provinciaByCode, PROVINCIAS } from "@/lib/spain-provinces";
-import { COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
+import { COUNTRIES, PHONE_COUNTRIES, countryFromPostalCode, composeE164, sanitizeLocalNumber, type CountryPhone } from "@/lib/phone-prefix";
 import { ErrorLogger } from "@/components/site/ErrorLogger";
 import { GamasSelector } from "@/components/inscripcion/GamasSelector";
 import { MarcasSelector } from "@/components/inscripcion/MarcasSelector";
