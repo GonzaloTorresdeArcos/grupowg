@@ -156,7 +156,9 @@ const WGNetwork = () => {
       </section>
 
       {/* 5 · Cómo — App nativa de IA */}
-      <NativeAppBlock />
+      <div id="como-funciona">
+        <NativeAppBlock />
+      </div>
 
       {/* 6 · Pruébalo — Simulador de impacto */}
       <ImpactSimulator />
