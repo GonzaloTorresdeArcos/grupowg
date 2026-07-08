@@ -442,7 +442,7 @@ export const ImpactSimulator = () => {
                       {inputs.perfil === "ambos" && <span>{result.reparacionesMes} rep · {result.instalacionesMes} inst</span>}
                     </div>
                     <p className="text-[11px] text-muted-foreground pt-1">
-                      Como SAT oficial accedes al repuesto OEM con –40% a –70%. Descuentos confirmados en Vestel y marcas asociadas; resto en incorporación.
+                      Como SAT oficial accedes al repuesto OEM con hasta un –70% de descuento según tu nivel de servicio. Descuentos confirmados en Vestel y marcas asociadas; resto en incorporación.
                     </p>
                   </div>
                 )}
