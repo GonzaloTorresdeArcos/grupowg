@@ -123,6 +123,7 @@ const Inscripcion = () => {
   const [horarios, setHorarios] = useState("");
   const [capacidad, setCapacidad] = useState("");
   const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
+  const [materialWG, setMaterialWG] = useState<"" | "wg" | "propio">("");
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
