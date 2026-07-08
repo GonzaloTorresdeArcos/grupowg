@@ -394,7 +394,7 @@ const Inscripcion = () => {
               horarios,
               capacidad_mensual: capacidad,
               coberturas,
-              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle },
+              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null },
               documentosSubidos,
             },
           },
