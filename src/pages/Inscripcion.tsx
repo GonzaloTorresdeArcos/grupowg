@@ -203,11 +203,11 @@ const Inscripcion = () => {
       current_step: step,
       form_data: {
         s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad,
-        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG,
+        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, radioKm, coberturaCps, coberturaMunis,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, radioKm, coberturaCps, coberturaMunis, step]);
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
