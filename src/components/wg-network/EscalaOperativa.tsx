@@ -40,7 +40,7 @@ export const EscalaOperativa = () => (
     <div className="container-tight">
       <Reveal>
         <div className="max-w-3xl mb-12">
-          <p className="eyebrow mb-4">Escala operativa y capacidad de ejecución</p>
+          <p className="eyebrow mb-4">Experiencia y capacidad</p>
           <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
             La fuerza de una gran red
           </h2>
