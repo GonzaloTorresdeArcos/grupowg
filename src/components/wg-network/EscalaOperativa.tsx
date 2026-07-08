@@ -3,10 +3,10 @@ import { Reveal } from "@/components/site/Reveal";
 
 const STATS = [
   { n: "100k+", l: "Intervenciones al año" },
-  { n: "100+", l: "Marcas con acceso a repuesto OEM e información técnica" },
+  { n: "100+", l: "Marcas con repuesto e información técnica" },
   { n: "500+", l: "Servicios Técnicos e Instaladores" },
-  { n: "75+", l: "Profesionales, hotline técnica y programas de formación" },
-  { n: "6.200+", l: "m² · Instalaciones propias y capacidad logística" },
+  { n: "75+", l: "Profesionales + hotline técnica + formación" },
+  { n: "6.200+", l: "m² Instalaciones y capacidad logística" },
   { n: "35+", l: "años junto a nuestros principales clientes" },
 ];
 
@@ -23,9 +23,9 @@ type Eco = { title: string; Icon: LucideIcon; accent: "sky" | "emerald" | "amber
 
 const ECOSISTEMAS: Eco[] = [
   { title: "Retail & Marketplaces", Icon: ShoppingCart, accent: "sky", brands: ["Carrefour", "Alcampo / Auchan", "Makro / Metro", "PcComponentes", "Neumese", "Electro Depot"] },
-  { title: "Fabricantes & OEMs", Icon: Factory, accent: "emerald", brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"] },
+  { title: "Fabricantes", Icon: Factory, accent: "emerald", brands: ["Vestel", "Cecotec", "Thomson", "Sauber", "Evvo", "Melchioni"] },
   { title: "Warranty & Insurance", Icon: ShieldCheck, accent: "amber", brands: ["Assurant", "Plus Ultra", "Seyna", "Companjon", "Caser"] },
-  { title: "Mobility & New Categories", Icon: Bike, accent: "violet", brands: ["Navee", "Esprinet", "Denver", "MT Distribution", "Nilox"] },
+  { title: "Mobility", Icon: Bike, accent: "violet", brands: ["Navee", "Esprinet", "Denver", "MT Distribution", "Nilox"] },
 ];
 
 const ACCENT: Record<Eco["accent"], { bar: string; icon: string }> = {
