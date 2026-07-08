@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 const benefitIcons = [Shield, Briefcase, Wallet, Stethoscope, Heart, PiggyBank, HardHat, FileCheck2, FolderCheck, Package, Wrench, BookOpen];
 
-type LayerItem = { n: string; t: string; d: string };
+type LayerItem = { n: string; mes?: string; t: string; d: string };
 type BenefitItem = { t: string; d: string };
 type CommitmentItem = { n: string; t: string; d: string };
 
