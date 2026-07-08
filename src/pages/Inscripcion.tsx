@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useDraft } from "@/hooks/useDraft";
 import { CifInput } from "@/components/inscripcion/CifInput";
 import { OtpVerification } from "@/components/inscripcion/OtpVerification";
-import { CoverageMap } from "@/components/inscripcion/CoverageMap";
+import { CoverageRadius } from "@/components/inscripcion/CoverageRadius";
 import { SignaturePad } from "@/components/inscripcion/SignaturePad";
 import { ScoringBadge } from "@/components/inscripcion/ScoringBadge";
 import { computeScoring } from "@/lib/scoring";
@@ -124,6 +124,14 @@ const Inscripcion = () => {
   const [capacidad, setCapacidad] = useState("");
   const [localidadesExcluidas, setLocalidadesExcluidas] = useState<string[]>([]);
   const [materialWG, setMaterialWG] = useState<"" | "wg" | "propio">("");
+  const [radioKm, setRadioKm] = useState(25);
+  const [coberturaCps, setCoberturaCps] = useState<string[]>([]);
+  const [coberturaMunis, setCoberturaMunis] = useState<string[]>([]);
+
+  useEffect(() => {
+    const codes = Array.from(new Set(coberturaCps.map((c) => c.slice(0, 2)))).sort();
+    setProvinciaCodes(codes);
+  }, [coberturaCps]);
 
   // Step 3 — docs
   const [files, setFiles] = useState<Record<string, File | null>>({});
@@ -178,6 +186,9 @@ const Inscripcion = () => {
     if (d.capacidad) setCapacidad(d.capacidad);
     if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
     if (d.materialWG) setMaterialWG(d.materialWG);
+    if (typeof d.radioKm === "number") setRadioKm(d.radioKm);
+    if (Array.isArray(d.coberturaCps)) setCoberturaCps(d.coberturaCps);
+    if (Array.isArray(d.coberturaMunis)) setCoberturaMunis(d.coberturaMunis);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
@@ -197,11 +208,11 @@ const Inscripcion = () => {
       current_step: step,
       form_data: {
         s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad,
-        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG,
+        localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, radioKm, coberturaCps, coberturaMunis,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, step]);
+  }, [s1, provinciaCodes, familiasSel, marcas, marcasDetalle, tecnicos, serviciosSel, horarios, capacidad, localidadesExcluidas, coberturas, datosSeguros, signerName, signerDni, materialWG, radioKm, coberturaCps, coberturaMunis, step]);
 
   // Autocompletado de localidad y provincia a partir del CP español.
   // Provincia se infiere de los 2 primeros dígitos (códigos 01-52 == PROVINCIAS).
@@ -385,7 +396,7 @@ const Inscripcion = () => {
               telefono: composeE164(phoneCountry.dial, s1.telefono),
               provincias: provinciasText,
               provincias_codes: provinciaCodes,
-              zona_cobertura: provinciasText,
+              zona_cobertura: coberturaCps.length ? `Radio ${radioKm} km desde ${s1.codigo_postal} · ${coberturaCps.length} CP · ${provinciasText}` : provinciasText,
               familias_producto: familiasSel,
               marcas_trabajadas: marcas,
               marcas_codes: Array.from(new Set(marcasDetalle.map((d) => d.code.split(":")[1]))),
@@ -394,7 +405,7 @@ const Inscripcion = () => {
               horarios,
               capacidad_mensual: capacidad,
               coberturas,
-              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null },
+              datos_seguros: { ...datosSeguros, marcas_detalle: marcasDetalle, material_instalacion: materialWG || null, cobertura: { centro: s1.codigo_postal, radio_km: radioKm, cps: coberturaCps, municipios: coberturaMunis } },
               documentosSubidos,
             },
           },
@@ -795,11 +806,12 @@ const Inscripcion = () => {
 
             <div>
               <p className="block text-sm font-medium text-ink mb-3">Zona de cobertura</p>
-              <CoverageMap
-                selected={provinciaCodes}
-                onChange={setProvinciaCodes}
-                excluded={localidadesExcluidas}
-                onExcludedChange={setLocalidadesExcluidas}
+              <p className="text-sm text-muted-foreground mb-3">Tu radio de acción desde tu código postal. Estos son los códigos postales que cubrirás; valídalos.</p>
+              <CoverageRadius
+                cp={s1.codigo_postal}
+                radioKm={radioKm}
+                onRadioChange={setRadioKm}
+                onCoverageChange={(cps, munis) => { setCoberturaCps(cps); setCoberturaMunis(munis); }}
               />
             </div>
 
