@@ -136,7 +136,7 @@ export function computeImpact(inputs: ImpactInputs): ImpactResult {
 export const ASSUMPTIONS_LIST = [
   { key: "PART_ATTACH_RATE", value: `${Math.round(PART_ATTACH_RATE * 100)}%` },
   { key: "PART_AVG_COST", value: `${PART_AVG_COST} €` },
-  { key: "DESCUENTO_REPUESTO", value: "40% – 70% (ajustable)" },
+  { key: "DESCUENTO_REPUESTO", value: "hasta 70% (según nivel de servicio)" },
   { key: "NOT_WORTH_REPAIR", value: `${Math.round(NOT_WORTH_REPAIR * 100)}%` },
   { key: "SUBSTITUTION_CONV", value: `${Math.round(SUBSTITUTION_CONV * 100)}%` },
   { key: "WARRANTY_ATTACH", value: `${Math.round(WARRANTY_ATTACH * 100)}%` },
