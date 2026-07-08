@@ -181,6 +181,9 @@ const Inscripcion = () => {
     if (d.capacidad) setCapacidad(d.capacidad);
     if (d.localidadesExcluidas) setLocalidadesExcluidas(d.localidadesExcluidas);
     if (d.materialWG) setMaterialWG(d.materialWG);
+    if (typeof d.radioKm === "number") setRadioKm(d.radioKm);
+    if (Array.isArray(d.coberturaCps)) setCoberturaCps(d.coberturaCps);
+    if (Array.isArray(d.coberturaMunis)) setCoberturaMunis(d.coberturaMunis);
     if (d.coberturas) setCoberturas(d.coberturas);
     if (d.datosSeguros) setDatosSeguros(d.datosSeguros);
     if (d.signerName) setSignerName(d.signerName);
