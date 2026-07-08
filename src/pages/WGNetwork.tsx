@@ -38,7 +38,7 @@ const WGNetwork = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/60 to-background" />
         <div className="container-tight relative z-10 py-10">
           <Reveal>
-            <p className="eyebrow text-teal-soft mb-5">{t("hero.eyebrow")}</p>
+            <p className="text-sm md:text-base font-medium text-teal-soft mb-5">{t("hero.eyebrow")}</p>
             <h1 className="heading-display text-foreground text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
