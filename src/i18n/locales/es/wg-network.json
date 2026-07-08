@@ -51,11 +51,11 @@
     "eyebrow": "Innegociables",
     "title": "3 compromisos innegociables.",
     "items": [
-      { "n": "1", "t": "Repuestos a coste mayorista", "d": "Para que podáis competir, crecer y respirar en el día a día." },
-      { "n": "2", "t": "Garantías extendidas y equipos al mejor precio", "d": "Para que tengáis ingresos recurrentes y construyáis clientes fieles." },
-      { "n": "3", "t": "Seguros colectivos", "d": "Para que estéis protegidos como merecéis." }
+      { "n": "1", "t": "Pago en 7 días", "d": "Emitís vuestra factura y cobráis en un máximo de 7 días desde su recepción. Sin esperas a fin de mes ni plazos a 60–90 días: liquidez real para que vuestra tesorería respire y compitáis sin financiar vosotros el trabajo." },
+      { "n": "2", "t": "El mejor precio en equipo y repuesto — y garantías que suman", "d": "Equipos nuevos al mejor precio de la red para cuando reparar no compensa, repuestos OEM con un 40%–70% de descuento sobre tarifa y garantías extendidas que ofrecéis con comisión. Más margen por intervención y nuevas vías de ingreso recurrente." },
+      { "n": "3", "t": "Seguros colectivos", "d": "Coberturas de actividad, salud, vida y protección jurídica negociadas en bloque, en directo con compañías de seguros líderes, en condiciones que por vuestra cuenta —como autónomos o pymes— no conseguiríais. Para que trabajéis tranquilos y protegidos." }
     ],
-    "outro": "El resto lo construiremos juntos, según vuestras necesidades y apetito."
+    "outro": "El resto lo construiremos juntos, según vuestras necesidades y vuestro ritmo."
   },
   "finalCta": {
     "title": "Únete a WG Professional Network.",
