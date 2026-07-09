@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
+import logo50 from "@/assets/logo-50-dark.png";
 
 export const FinalCTA = () => (
   <section className="relative py-32 md:py-44 bg-gradient-to-br from-ink via-ink-soft to-ink text-bone overflow-hidden">
@@ -8,6 +9,7 @@ export const FinalCTA = () => (
 
     <div className="container-tight relative z-10">
       <Reveal>
+        <img src={logo50} alt="50 años Grupo Warranty Global · desde 1976" width={160} height={160} loading="lazy" className="h-24 md:h-28 w-auto mb-10" />
         <h2 className="heading-display text-bone text-4xl md:text-7xl max-w-5xl text-balance">
           Cuando algo deja de funcionar,{" "}
           <span className="italic text-teal font-normal">empezamos nosotros.</span>
