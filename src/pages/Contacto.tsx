@@ -200,7 +200,7 @@ const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
 // ============= i18n para la vista previa de campos =============
-type PreviewLang = "es" | "en" | "pt" | "fr";
+type PreviewLang = "es" | "en" | "pt";
 
 const PREVIEW_I18N: Record<PreviewLang, {
   title: string;
@@ -285,32 +285,6 @@ const PREVIEW_I18N: Record<PreviewLang, {
       matricula: "Identificador",
       ramo: "Ramo",
       poliza: "Apólice",
-    },
-  },
-  fr: {
-    title: "Informations supplémentaires que nous vous demanderons",
-    required: "Champs obligatoires",
-    langLabel: "Langue",
-    motivoLabels: {
-      reparaciones: "Réparations",
-      instalaciones: "Installations",
-      repuestos: "Pièces détachées",
-      movilidad: "Équipements",
-      garantias: "Garanties",
-      seguros: "Assurances",
-      "wg-network": "Formulaire WG Network",
-      otro: "Autre",
-    },
-    fieldLabels: {
-      marca: "Marque",
-      numeroSerie: "Nº de série",
-      producto: "Produit",
-      urgencia: "Urgence",
-      referencia: "Référence",
-      vehiculo: "Type d'équipement",
-      matricula: "Identifiant",
-      ramo: "Branche",
-      poliza: "Police",
     },
   },
 };
@@ -1087,7 +1061,7 @@ const Contacto = () => {
                             role="group"
                             aria-label={t.langLabel}
                           >
-                            {(["es", "en", "pt", "fr"] as const).map((lng) => {
+                            {(["es", "en", "pt"] as const).map((lng) => {
                               const active = previewLang === lng;
                               return (
                                 <button
