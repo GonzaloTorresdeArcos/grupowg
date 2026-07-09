@@ -142,8 +142,8 @@
     font-family: inherit;
   }
   .heading-display {
-    /* Instrument Serif — editorial elegance. Serifs read best with normal weight and slightly open tracking */
-    @apply font-display font-normal tracking-[-0.015em] leading-[1.02];
+    /* Apple SF Pro Display — semibold + tight tracking like apple.com headlines */
+    @apply font-display font-semibold tracking-[-0.03em] leading-[1.05];
   }
   .heading-tight {
     @apply font-sans font-semibold tracking-[-0.02em] leading-[1.05];
