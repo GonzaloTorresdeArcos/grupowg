@@ -214,7 +214,9 @@ export const PortalLayout = () => {
               ...(showCollaboratorNav ? [...operaNav, ...negocioNav, ...profileNav] : []),
               ...(showClientNav ? clientNav : []),
               ...(isAdmin ? adminNav : []),
+              ...(showFallbackNav ? fallbackNav : []),
             ].map((item) => (
+
               <NavLink
                 key={item.to}
                 to={item.to}
