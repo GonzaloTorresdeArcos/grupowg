@@ -57,12 +57,16 @@
     "subtitle": "Because it's not just about the work. You matter.",
     "items": [
       {
-        "t": "Collective insurance",
-        "d": "Preferred conditions for professionals and teams."
+        "t": "Civil liability",
+        "d": "Protection against third-party damages arising from your professional activity."
+      },
+      {
+        "t": "Business multi-risk",
+        "d": "Coverage for facilities, tools, equipment and work materials."
       },
       {
         "t": "Legal protection",
-        "d": "Legal advice for incidents, claims and disputes."
+        "d": "Advice and defence in incidents, claims and disputes."
       },
       {
         "t": "Income protection",
@@ -70,27 +74,23 @@
       },
       {
         "t": "Health",
-        "d": "Medical coverage for professionals and families."
+        "d": "Preferred medical coverage for professionals and families."
       },
       {
         "t": "Life",
-        "d": "Family protection and financial security."
-      },
-      {
-        "t": "Savings plans",
-        "d": "Savings and retirement solutions."
+        "d": "Family protection and financial security for your loved ones."
       },
       {
         "t": "Occupational risk",
-        "d": "Risk prevention and workplace safety compliance."
+        "d": "Workplace risk prevention and regulatory compliance support."
       },
       {
-        "t": "Assisted compliance",
-        "d": "Document onboarding, validation and regulatory follow-up."
+        "t": "Assisted documentation",
+        "d": "Certificates, insurance and paperwork always up to date and under control."
       },
       {
-        "t": "Documentation",
-        "d": "Everything in order, up to date and traceable."
+        "t": "Savings & pension",
+        "d": "Long-term savings and financial planning solutions."
       }
     ],
     "outro": "We want you to work with peace of mind. We want you covered and safe."
