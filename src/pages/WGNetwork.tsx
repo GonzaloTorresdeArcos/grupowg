@@ -179,7 +179,7 @@ const WGNetwork = () => {
         <div className="container-tight">
           <Reveal>
             <div className="text-center max-w-4xl mx-auto px-4">
-              <h2 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.02] tracking-[-0.03em] text-ink text-balance">
+              <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-4xl mx-auto text-balance">
                 {t("finalCta.title")}
               </h2>
               <p className="mt-6 md:mt-8 text-lg md:text-xl text-ink/55 max-w-2xl mx-auto text-balance leading-relaxed">
