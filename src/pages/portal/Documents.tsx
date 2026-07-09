@@ -205,27 +205,30 @@ const PortalDocuments = () => {
   );
 };
 
-const toneClasses: Record<string, string> = {
-  emerald: "border-emerald-500/30 bg-emerald-50/50 text-emerald-700",
-  amber: "border-amber-500/30 bg-amber-50/50 text-amber-700",
-  red: "border-red-500/30 bg-red-50/50 text-red-700",
-  muted: "border-border bg-muted/30 text-muted-foreground",
+const toneAccent: Record<string, string> = {
+  emerald: "bg-emerald-500",
+  amber: "bg-amber-500",
+  red: "bg-red-500",
+  muted: "bg-ink/30",
 };
 
 const SummaryCard = ({
   label, count, active, onClick, tone,
 }: {
-  label: string; count: number; active: boolean; onClick: () => void; tone: keyof typeof toneClasses;
+  label: string; count: number; active: boolean; onClick: () => void; tone: keyof typeof toneAccent;
 }) => (
   <button
     onClick={onClick}
     className={cn(
-      "p-4 rounded-xl border-2 text-left transition-all",
-      active ? toneClasses[tone] + " ring-2 ring-offset-2 ring-current/20" : "border-border bg-card hover:border-ink/20",
+      "group relative p-5 rounded-2xl border bg-white text-left transition-all",
+      active
+        ? "border-ink/30 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.10)]"
+        : "border-black/[0.06] hover:border-black/[0.12]",
     )}
   >
-    <p className="font-display text-3xl text-ink leading-none">{count}</p>
-    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-2">{label}</p>
+    <p className="font-display text-[2rem] leading-none text-ink tracking-tight tabular-nums">{count}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40 mt-3">{label}</p>
+    <div className={cn("absolute left-5 right-5 bottom-0 h-px transition-opacity", toneAccent[tone], active ? "opacity-80" : "opacity-30 group-hover:opacity-60")} />
   </button>
 );
 
