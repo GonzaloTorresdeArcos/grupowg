@@ -621,7 +621,7 @@ export const ImpactSimulator = () => {
         </div>
 
         {/* Capture */}
-        <div className="mt-8 rounded-3xl bg-secondary border border-border text-ink p-6 md:p-10">
+        <div className="mt-8 rounded-3xl bg-background border border-border text-ink p-6 md:p-10">
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div>
               <p className="eyebrow text-teal-deep mb-3">{t("sim.capture.eyebrow")}</p>
@@ -636,13 +636,13 @@ export const ImpactSimulator = () => {
                 placeholder={t("sim.capture.nombre")}
                 value={lead.nombre}
                 onChange={(e) => setLead({ ...lead, nombre: e.target.value })}
-                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
+                className="rounded-xl bg-secondary border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 placeholder={t("sim.capture.empresa")}
                 value={lead.empresa}
                 onChange={(e) => setLead({ ...lead, empresa: e.target.value })}
-                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
+                className="rounded-xl bg-secondary border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 required
@@ -650,14 +650,14 @@ export const ImpactSimulator = () => {
                 placeholder={t("sim.capture.email")}
                 value={lead.email}
                 onChange={(e) => setLead({ ...lead, email: e.target.value })}
-                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
+                className="rounded-xl bg-secondary border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 type="tel"
                 placeholder={t("sim.capture.telefono")}
                 value={lead.telefono}
                 onChange={(e) => setLead({ ...lead, telefono: e.target.value })}
-                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
+                className="rounded-xl bg-secondary border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <button
                 type="submit"
