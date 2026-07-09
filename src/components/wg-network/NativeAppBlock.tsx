@@ -55,7 +55,7 @@ export const NativeAppBlock = () => (
       </Reveal>
       <Reveal>
         <span className="inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-3 py-1 text-xs font-medium text-teal-deep mb-14">
-          Se activa en diciembre · Capa 3
+          Disponible en diciembre
         </span>
       </Reveal>
 
