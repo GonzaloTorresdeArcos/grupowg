@@ -621,14 +621,14 @@ export const ImpactSimulator = () => {
         </div>
 
         {/* Capture */}
-        <div className="mt-8 rounded-3xl bg-ink text-background p-6 md:p-10">
+        <div className="mt-8 rounded-3xl bg-secondary border border-border text-ink p-6 md:p-10">
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div>
-              <p className="eyebrow text-teal-soft mb-3">{t("sim.capture.eyebrow")}</p>
-              <h3 className="font-display text-3xl md:text-4xl text-background text-balance">
+              <p className="eyebrow text-teal-deep mb-3">{t("sim.capture.eyebrow")}</p>
+              <h3 className="font-display text-3xl md:text-4xl text-ink text-balance">
                 {t("sim.capture.title")}
               </h3>
-              <p className="mt-3 text-background/70">{t("sim.capture.subtitle")}</p>
+              <p className="mt-3 text-muted-foreground">{t("sim.capture.subtitle")}</p>
             </div>
             <form onSubmit={submitLead} className="grid gap-3 sm:grid-cols-2">
               <input
@@ -636,13 +636,13 @@ export const ImpactSimulator = () => {
                 placeholder={t("sim.capture.nombre")}
                 value={lead.nombre}
                 onChange={(e) => setLead({ ...lead, nombre: e.target.value })}
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-teal"
+                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 placeholder={t("sim.capture.empresa")}
                 value={lead.empresa}
                 onChange={(e) => setLead({ ...lead, empresa: e.target.value })}
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-teal"
+                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 required
@@ -650,18 +650,18 @@ export const ImpactSimulator = () => {
                 placeholder={t("sim.capture.email")}
                 value={lead.email}
                 onChange={(e) => setLead({ ...lead, email: e.target.value })}
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-teal"
+                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <input
                 type="tel"
                 placeholder={t("sim.capture.telefono")}
                 value={lead.telefono}
                 onChange={(e) => setLead({ ...lead, telefono: e.target.value })}
-                className="rounded-xl bg-background/10 border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-teal"
+                className="rounded-xl bg-background border border-border px-4 py-3 text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ink/20"
               />
               <button
                 type="submit"
-                className="sm:col-span-2 mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-teal px-6 py-3.5 text-base font-medium text-ink hover:gap-3 transition-all"
+                className="sm:col-span-2 mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-base font-medium text-background hover:bg-ink/90 hover:gap-3 transition-all"
               >
                 {t("sim.capture.cta")} <ArrowUpRight className="h-5 w-5" />
               </button>
