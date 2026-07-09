@@ -287,32 +287,6 @@ const PREVIEW_I18N: Record<PreviewLang, {
       poliza: "Apólice",
     },
   },
-  fr: {
-    title: "Informations supplémentaires que nous vous demanderons",
-    required: "Champs obligatoires",
-    langLabel: "Langue",
-    motivoLabels: {
-      reparaciones: "Réparations",
-      instalaciones: "Installations",
-      repuestos: "Pièces détachées",
-      movilidad: "Équipements",
-      garantias: "Garanties",
-      seguros: "Assurances",
-      "wg-network": "Formulaire WG Network",
-      otro: "Autre",
-    },
-    fieldLabels: {
-      marca: "Marque",
-      numeroSerie: "Nº de série",
-      producto: "Produit",
-      urgencia: "Urgence",
-      referencia: "Référence",
-      vehiculo: "Type d'équipement",
-      matricula: "Identifiant",
-      ramo: "Branche",
-      poliza: "Police",
-    },
-  },
 };
 
 type DraftPayload = {
