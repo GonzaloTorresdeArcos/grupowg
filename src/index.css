@@ -135,6 +135,12 @@
   .eyebrow-mono {
     @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-teal;
   }
+  /* Portal Apple-minimal override: neutralize teal eyebrows to ink/40 */
+  .portal-surface .eyebrow,
+  .portal-surface .eyebrow-mono {
+    @apply font-semibold tracking-[0.14em] text-ink/40;
+    font-family: inherit;
+  }
   .heading-display {
     @apply font-display font-semibold tracking-[-0.025em] leading-[1.02];
   }
