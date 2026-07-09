@@ -128,6 +128,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
                     <li key={item.to}>
                       <Link
                         to={item.to}
+                        onClick={handleNavClick(item.to)}
                         className={cn(
                           "block py-1 px-2 -mx-2 rounded-md text-bone/75",
                           textHover,
