@@ -16,7 +16,7 @@ const GAMAS: Gama[] = [
     proximamente: ["Cecotec", "Thomson", "Onwa", "Origial", "Metz"],
   },
   {
-    g: "Aire acondicionado",
+    g: "Climatización",
     disponible: ["Johnson"],
     proximamente: ["Klindo", "Climatric", "Cecotec", "Sauber", "Origial"],
   },
