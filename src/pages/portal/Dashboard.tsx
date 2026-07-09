@@ -320,7 +320,7 @@ const PortalDashboard = () => {
                   <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">+{coverage.length - 12}</span>
                 )}
               </div>
-              <Button asChild variant="ghost" size="sm" className="mt-4 gap-1 px-0 text-teal-deep">
+              <Button asChild variant="ghost" size="sm" className="mt-4 gap-1 px-0 text-ink hover:text-ink/70 hover:bg-transparent">
                 <Link to="/portal/perfil">
                   {t("dashboard.coverage.manage", { defaultValue: "Gestionar cobertura" })}
                   <ArrowRight className="h-3.5 w-3.5" />
