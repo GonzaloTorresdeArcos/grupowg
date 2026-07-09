@@ -32,7 +32,15 @@ export const Footer = ({ dark = true }: FooterProps) => {
   const [allOpen, setAllOpen] = useState(false);
 
   const handleNavClick = (to: string) => (e: React.MouseEvent) => {
-    if (!to.includes("#")) return;
+    const hasHash = to.includes("#");
+    if (!hasHash) {
+      // Si ya estamos en la ruta destino, hacer scroll al top
+      if (location.pathname === to) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     e.preventDefault();
     const [rawPath, hash] = to.split("#");
     const targetPath = rawPath || "/";
@@ -47,6 +55,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
       window.setTimeout(scrollToHash, 120);
     }
   };
+
 
 
   const toggleAll = () => {
