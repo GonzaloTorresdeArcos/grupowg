@@ -144,7 +144,7 @@
       "tiempo": "Tiempo convertido en dinero"
     },
     "result": {
-      "eyebrow": "Impacto anual estimado",
+      "eyebrow": "Valor anual estimado",
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
       "cashLabel": "Caja liberada al año",
