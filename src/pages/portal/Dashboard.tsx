@@ -182,19 +182,19 @@ const PortalDashboard = () => {
             {t("dashboard.assigned.empty", { defaultValue: "No tienes avisos activos ahora mismo." })}
           </p>
         ) : (
-          <ul className="space-y-2">
+          <ul className="divide-y divide-black/[0.06] -mx-2">
             {active.slice(0, 6).map((i) => (
               <li key={i.id}>
-                <Link to={`/portal/incidencias/${i.id}`} className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors">
+                <Link to={`/portal/incidencias/${i.id}`} className="flex items-center justify-between gap-3 px-2 py-3 rounded-lg hover:bg-black/[0.02] transition-colors">
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-mono text-muted-foreground">{i.ref}</p>
-                    <p className="text-sm text-ink truncate">
+                    <p className="text-[11px] font-mono text-ink/40 tracking-wider">{i.ref}</p>
+                    <p className="text-sm text-ink truncate mt-0.5">
                       {i.customer_name} · {familiaLabel(i.product_family)}{i.city ? ` · ${i.city}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Badge variant="outline">{STATUS_LABELS[i.status] ?? i.status}</Badge>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <Badge variant="outline" className="border-black/10 bg-transparent text-ink/70 font-normal">{STATUS_LABELS[i.status] ?? i.status}</Badge>
+                    <ArrowRight className="h-4 w-4 text-ink/30" />
                   </div>
                 </Link>
               </li>
