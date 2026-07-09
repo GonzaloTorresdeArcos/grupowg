@@ -78,7 +78,7 @@ export const GAMAS: GamaDef[] = [
   },
   {
     code: "pae",
-    label: "PAE — Pequeño aparato electrodoméstico",
+    label: "Pequeño aparato",
     emoji: "🔷",
     subgrupos: [
       {
