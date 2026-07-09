@@ -157,7 +157,7 @@ export const Footer = ({ dark = true }: FooterProps) => {
               <ul className="space-y-2 text-sm">
                 {group.items.map((item) => (
                   <li key={item.to}>
-                    <Link to={item.to} className={textHover}>
+                    <Link to={item.to} onClick={handleNavClick(item.to)} className={textHover}>
                       {itemLabel(item.to, item.label)}
                     </Link>
                   </li>
