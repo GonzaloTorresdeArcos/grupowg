@@ -8,10 +8,12 @@
   "groups": {
     "system": "System",
     "company": "Company",
-    "network": "Professional network"
+    "network": "WG Network"
   },
   "items": {
-    "/": "WG Group",
+    "/": "The plan",
+    "/#simulador": "Simulator",
+    "/#marcas": "Brands",
     "/modelo": "Model",
     "/soluciones": "Solutions",
     "/plataforma": "Platform",
