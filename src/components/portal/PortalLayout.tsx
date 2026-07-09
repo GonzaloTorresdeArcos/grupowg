@@ -280,8 +280,8 @@ export const PortalLayout = () => {
 type NavItem = { to: string; label: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement> & { strokeWidth?: number | string }>; end?: boolean };
 
 const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
-  <div className="pb-2">
-    <p className="px-3 pt-3 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+  <div className="pb-1">
+    <p className="px-3 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
       {label}
     </p>
     {items.map((item) => (
@@ -291,11 +291,12 @@ const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
         end={item.end}
         className={({ isActive }) =>
           cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-            isActive ? "bg-black/[0.04] text-ink font-medium" : "text-ink/70 hover:text-ink hover:bg-muted",
+            "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] tracking-tight transition-colors duration-200",
+            isActive ? "bg-black/[0.04] text-ink font-medium" : "text-ink/60 hover:text-ink hover:bg-black/[0.03]",
           )
         }
       >
+
         <item.icon className="h-4 w-4" strokeWidth={1.75} />
         {item.label}
       </NavLink>
