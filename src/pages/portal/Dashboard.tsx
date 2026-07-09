@@ -362,28 +362,30 @@ const Row = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
-const toneClass: Record<string, string> = {
-  amber: "bg-amber-500/10 text-amber-700",
-  emerald: "bg-emerald-500/10 text-emerald-700",
-  ink: "bg-ink/5 text-ink",
-  teal: "bg-teal/10 text-teal",
+const toneAccent: Record<string, string> = {
+  amber: "bg-amber-500",
+  emerald: "bg-emerald-500",
+  ink: "bg-ink",
+  teal: "bg-ink/60",
 };
 
 const KpiCard = ({ icon: Icon, label, value, suffix, tone }: {
   icon: typeof Wrench; label: string; value: number | string; suffix?: string;
   tone: "amber" | "emerald" | "ink" | "teal";
 }) => (
-  <Card className="p-5">
-    <div className="flex items-start justify-between mb-4">
-      <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${toneClass[tone]}`}>
-        <Icon className="h-4 w-4" strokeWidth={1.75} />
-      </div>
+  <div className="group relative rounded-2xl border border-black/[0.06] bg-white p-6 transition-all hover:border-black/[0.12] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
+    <div className="flex items-start justify-between mb-8">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</p>
+      <Icon className="h-4 w-4 text-ink/30" strokeWidth={1.5} />
     </div>
-    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-    <p className="font-display text-2xl text-ink leading-none">
-      {value}{suffix && <span className="text-sm text-muted-foreground ml-1">{suffix}</span>}
+    <p className="font-display text-[2.5rem] leading-none text-ink tracking-tight tabular-nums">
+      {value}
     </p>
-  </Card>
+    {suffix && (
+      <p className="text-[12px] text-ink/50 mt-2">{suffix}</p>
+    )}
+    <div className={`absolute left-6 right-6 bottom-0 h-px ${toneAccent[tone]} opacity-40 group-hover:opacity-80 transition-opacity`} />
+  </div>
 );
 
 export default PortalDashboard;
