@@ -21,6 +21,8 @@ const GROUP_SPAN: Record<string, string> = {
 export const Footer = ({ dark = true }: FooterProps) => {
   const { openPreferences } = useCookieConsent();
   const { t } = useTranslation("footer");
+  const location = useLocation();
+  const navigate = useNavigate();
   const bg = dark ? "bg-ink" : "bg-ink";
   const textBase = "text-bone/70";
   const textHover = "hover:text-bone";
@@ -28,6 +30,24 @@ export const Footer = ({ dark = true }: FooterProps) => {
 
   const detailsRefs = useRef<Array<HTMLDetailsElement | null>>([]);
   const [allOpen, setAllOpen] = useState(false);
+
+  const handleNavClick = (to: string) => (e: React.MouseEvent) => {
+    if (!to.includes("#")) return;
+    e.preventDefault();
+    const [rawPath, hash] = to.split("#");
+    const targetPath = rawPath || "/";
+    const scrollToHash = () => {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    if (location.pathname === targetPath) {
+      scrollToHash();
+    } else {
+      navigate(to);
+      window.setTimeout(scrollToHash, 120);
+    }
+  };
+
 
   const toggleAll = () => {
     const next = !allOpen;
