@@ -51,6 +51,21 @@ export const PortalLayout = () => {
   // Si el usuario es sólo cliente (sin rol colaborador), no mostramos la navegación de colaborador.
   const showCollaboratorNav = isCollaborator;
   const showClientNav = isClient;
+  // Fallback: si el usuario está autenticado pero aún no tiene ningún rol,
+  // mostramos al menos Resumen y Perfil para que no vea una sidebar vacía.
+  const showFallbackNav = !!user && !isCollaborator && !isClient && !isAdmin;
+  const fallbackNav = [
+    { to: "/portal", label: t("nav.summary"), icon: LayoutDashboard, end: true },
+    { to: "/portal/perfil", label: t("nav.profile"), icon: Settings },
+  ];
+
+  // ---- Breadcrumbs -------------------------------------------------------
+  const allNavItems = [...operaNav, ...negocioNav, ...profileNav, ...clientNav, ...adminNav];
+  const currentItem =
+    allNavItems.find((i) => i.to !== "/portal" && pathname.startsWith(i.to)) ??
+    (pathname === "/portal" ? allNavItems.find((i) => i.to === "/portal") : undefined);
+  const isDashboard = pathname === "/portal";
+
 
   const handleSignOut = async () => {
     await signOut();
