@@ -600,16 +600,16 @@ export const ImpactSimulator = () => {
               <button
                 type="button"
                 onClick={() => setShowAssumptions((v) => !v)}
-                className="flex items-center gap-1 text-xs text-background/60 hover:text-background"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-ink"
               >
                 <ChevronDown className={cn("h-3 w-3 transition-transform", showAssumptions && "rotate-180")} />
                 {t("sim.result.assumptions")}
               </button>
-              <p className="mt-2 text-xs text-background/50 max-w-lg">{t("sim.result.disclaimer")}</p>
+              <p className="mt-2 text-xs text-muted-foreground max-w-lg">{t("sim.result.disclaimer")}</p>
               {showAssumptions && (
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-background/70">
+                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-ink/70">
                   {ASSUMPTIONS_LIST.map((a) => (
-                    <div key={a.key} className="flex justify-between border-b border-background/10 py-1">
+                    <div key={a.key} className="flex justify-between border-b border-border py-1">
                       <span className="font-mono">{a.key}</span>
                       <span>{a.value}</span>
                     </div>
