@@ -12,9 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", '"Helvetica Neue"', "Helvetica", "Arial", "system-ui", "sans-serif"],
-        display: ['"Instrument Serif"', '"Times New Roman"', "Georgia", "serif"],
-        mono: ["'JetBrains Mono'", "monospace"],
+        // Apple system stack — resolves to SF Pro on Apple devices, Inter fallback elsewhere.
+        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro"', 'Inter', '"Helvetica Neue"', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
+        display: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro"', 'Inter', '"Helvetica Neue"', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
+        mono: ["'JetBrains Mono'", 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
