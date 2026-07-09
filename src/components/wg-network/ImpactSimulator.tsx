@@ -261,7 +261,7 @@ export const ImpactSimulator = () => {
       <div className="container-tight">
         <div className="max-w-3xl mb-12">
           <p className="eyebrow mb-3">{t("sim.eyebrow")}</p>
-          <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+          <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
             {perfilCopy.title}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">{perfilCopy.subtitle}</p>

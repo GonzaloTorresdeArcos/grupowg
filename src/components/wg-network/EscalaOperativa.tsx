@@ -32,7 +32,7 @@ export const EscalaOperativa = () => (
       <Reveal>
         <div className="max-w-3xl mb-12">
           <p className="eyebrow mb-4">Experiencia y capacidad</p>
-          <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+          <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
             La fuerza de una gran red
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">

@@ -99,7 +99,7 @@ export const MarcasPorGama = () => (
       <Reveal>
         <div className="max-w-3xl mb-10">
           <p className="eyebrow mb-4">Marcas gestionadas</p>
-          <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+          <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
             Hasta un 70% de descuento en repuesto OEM.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">

@@ -45,7 +45,7 @@ export const NativeAppBlock = () => (
       <Reveal>
         <div className="max-w-3xl mb-4">
           <p className="eyebrow mb-4">La plataforma</p>
-          <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+          <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
             No es una web. Es tu negocio funcionando solo.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
