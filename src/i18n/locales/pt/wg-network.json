@@ -147,8 +147,8 @@
       "eyebrow": "Valor anual estimado",
       "perYear": "/ año",
       "overCurrent": "sobre tu facturación actual",
-      "cashLabel": "Caja liberada al año",
-      "cashNote": "Com pagamento em 7 dias vs. média do setor.",
+      "cashLabel": "Menos dinheiro imobilizado",
+      "cashNote": "Graças ao pagamento em 7 dias vs. média do setor",
       "assumptions": "Ver supuestos usados",
       "disclaimer": "Estimación basada en benchmarks de la red WG. Ajusta los supuestos si conoces mejor tu operación."
     },
