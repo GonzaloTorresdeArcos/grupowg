@@ -174,21 +174,33 @@ const WGNetwork = () => {
         </div>
       </section>
 
-      {/* 8 · CTA final */}
-      <section className="py-24 md:py-32 bg-card">
+      {/* 8 · CTA final — Apple-style */}
+      <section className="py-24 md:py-40 bg-white">
         <div className="container-tight">
           <Reveal>
-            <div className="rounded-3xl bg-gradient-ink p-10 md:p-20 text-foreground text-center">
-              <h2 className="heading-display text-4xl md:text-6xl max-w-3xl mx-auto text-balance">
+            <div className="text-center max-w-4xl mx-auto px-4">
+              <h2 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.02] tracking-[-0.03em] text-ink text-balance">
                 {t("finalCta.title")}
               </h2>
-              <p className="mt-6 text-foreground/70 max-w-xl mx-auto">
+              <p className="mt-6 md:mt-8 text-lg md:text-xl text-ink/55 max-w-2xl mx-auto text-balance leading-relaxed">
                 {t("finalCta.subtitle")}
               </p>
-              <Link to="/wg-network/inscripcion" className="mt-10 inline-flex items-center gap-2 rounded-full bg-teal px-8 py-4 text-base font-medium text-ink hover:gap-3 transition-all">
-                {t("finalCta.cta")}
-                <ArrowUpRight className="h-5 w-5" />
-              </Link>
+              <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to="/wg-network/inscripcion"
+                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-bone hover:bg-ink/90 transition-colors"
+                >
+                  {t("finalCta.cta")}
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+                <Link
+                  to="/wg-network#como-funciona"
+                  className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-ink/70 hover:text-ink transition-colors px-4 py-3.5"
+                >
+                  Saber más
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </div>
             </div>
           </Reveal>
         </div>
