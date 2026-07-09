@@ -111,7 +111,7 @@ export const PortalLayout = () => {
                     cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
                       isActive
-                        ? "bg-ink text-bone font-medium"
+                        ? "bg-black/[0.04] text-ink font-medium"
                         : "text-ink/70 hover:text-ink hover:bg-muted",
                     )
                   }
@@ -136,7 +136,7 @@ export const PortalLayout = () => {
                     cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
                       isActive
-                        ? "bg-ink text-bone font-medium"
+                        ? "bg-black/[0.04] text-ink font-medium"
                         : "text-ink/70 hover:text-ink hover:bg-muted",
                     )
                   }
@@ -218,7 +218,7 @@ export const PortalLayout = () => {
                 className={({ isActive }) =>
                   cn(
                     "flex items-center justify-between gap-3 px-3 py-3 rounded-lg text-sm",
-                    isActive ? "bg-ink text-bone font-medium" : "text-ink/80 hover:bg-muted",
+                    isActive ? "bg-black/[0.04] text-ink font-medium" : "text-ink/80 hover:bg-muted",
                   )
                 }
               >
@@ -279,7 +279,7 @@ const NavGroup = ({ label, items }: { label: string; items: NavItem[] }) => (
         className={({ isActive }) =>
           cn(
             "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
-            isActive ? "bg-ink text-bone font-medium" : "text-ink/70 hover:text-ink hover:bg-muted",
+            isActive ? "bg-black/[0.04] text-ink font-medium" : "text-ink/70 hover:text-ink hover:bg-muted",
           )
         }
       >
