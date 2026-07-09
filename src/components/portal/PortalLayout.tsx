@@ -154,7 +154,12 @@ export const PortalLayout = () => {
               ))}
             </>
           )}
+
+          {showFallbackNav && (
+            <NavGroup label={t("nav.groupAccount")} items={fallbackNav} />
+          )}
         </nav>
+
 
 
         <div className="p-3 border-t border-border">
