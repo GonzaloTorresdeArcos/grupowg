@@ -80,7 +80,7 @@ export const CoberturaRadio = () => {
       <div className="container-tight">
         <div className="max-w-3xl mb-10">
           <p className="eyebrow mb-3">Cobertura</p>
-          <h2 className="heading-display text-ink text-4xl md:text-5xl text-balance">
+          <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
             Define tu radio de acción
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">

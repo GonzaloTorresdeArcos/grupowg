@@ -70,7 +70,7 @@ const WGNetwork = () => {
           <Reveal>
             <div className="max-w-3xl mb-16">
               <p className="eyebrow mb-4">{t("layers.eyebrow")}</p>
-              <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+              <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
                 {t("layers.title")}
               </h2>
             </div>
@@ -129,7 +129,7 @@ const WGNetwork = () => {
           <Reveal>
             <div className="max-w-3xl mb-8">
               <p className="eyebrow mb-4">{t("benefits.eyebrow")}</p>
-              <h2 className="heading-display text-ink text-4xl md:text-6xl text-balance">
+              <h2 className="heading-display text-ink text-[clamp(2.25rem,6.5vw,5.5rem)] text-balance">
                 {t("benefits.title")}
               </h2>
               <p className="mt-6 text-lg text-muted-foreground">
