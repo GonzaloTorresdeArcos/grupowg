@@ -49,7 +49,7 @@ export const NativeAppBlock = () => (
             No es una web. Es tu negocio funcionando solo.
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Una sola app con IA: gestiona tu SAT y repara mejor. Todo en un sitio, sin cuotas.
+            Menos administración. Más reparaciones. Más control. Todo desde una sola app.
           </p>
         </div>
       </Reveal>
