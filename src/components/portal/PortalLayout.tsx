@@ -162,10 +162,18 @@ export const PortalLayout = () => {
       </aside>
 
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 inset-x-0 z-40 bg-card border-b border-border h-14 px-4 flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{t("nav.section")}</p>
-          <p className="font-display text-base text-ink leading-none">{t("nav.title")}</p>
+      <div className="lg:hidden fixed top-0 inset-x-0 z-40 bg-card border-b border-border h-14 px-4 flex items-center justify-between gap-3">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-ink hover:text-ink/70 transition-colors"
+          aria-label="Volver a la web pública"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <Logo className="h-6" />
+        </Link>
+        <div className="min-w-0 flex-1 text-right">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground truncate">{t("nav.section")}</p>
+          <p className="font-display text-sm text-ink leading-none truncate">{t("nav.title")}</p>
         </div>
         <Button size="icon" variant="ghost" onClick={() => setOpen((o) => !o)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
