@@ -100,7 +100,7 @@ export const PortalLayout = () => {
 
           {showClientNav && (
             <>
-              <p className="px-3 pt-4 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+              <p className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
                 Clientes
               </p>
               {clientNav.map((item) => (
@@ -125,7 +125,7 @@ export const PortalLayout = () => {
 
           {isAdmin && (
             <>
-              <p className="px-3 pt-4 pb-1 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+              <p className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
                 {t("nav.ops")}
               </p>
               {adminNav.map((item) => (
@@ -185,7 +185,7 @@ export const PortalLayout = () => {
           <Logo className="h-6" />
         </Link>
         <div className="min-w-0 flex-1 text-right">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground truncate">{t("nav.section")}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 truncate">{t("nav.section")}</p>
           <p className="font-display text-sm text-ink leading-none truncate">{t("nav.title")}</p>
         </div>
         <Button size="icon" variant="ghost" onClick={() => setOpen((o) => !o)}>
