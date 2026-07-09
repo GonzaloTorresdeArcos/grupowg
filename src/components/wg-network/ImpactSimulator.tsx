@@ -551,15 +551,15 @@ export const ImpactSimulator = () => {
           </div>
 
           {/* Result */}
-          <div className="lg:col-span-3 rounded-3xl bg-gradient-to-br from-ink to-ink-soft text-background p-6 md:p-10 relative overflow-hidden">
-            <p className="eyebrow text-teal-soft mb-3">{t("sim.result.eyebrow")}</p>
+          <div className="lg:col-span-3 rounded-3xl bg-secondary border border-border text-ink p-6 md:p-10 relative overflow-hidden">
+            <p className="eyebrow text-teal-deep mb-3">{t("sim.result.eyebrow")}</p>
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="font-display text-5xl md:text-7xl text-background">
+              <span className="font-display text-5xl md:text-7xl text-ink">
                 {fmt(animatedTotal)} €
               </span>
-              <span className="text-background/60 text-lg">{t("sim.result.perYear")}</span>
+              <span className="text-muted-foreground text-lg">{t("sim.result.perYear")}</span>
             </div>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-teal/20 border border-teal/40 px-3 py-1 text-sm text-teal-soft">
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-teal/10 border border-teal/30 px-3 py-1 text-sm text-teal-deep">
               +{Math.round((result.multiplicador - 1) * 100)}% {t("sim.result.overCurrent")}
             </div>
 
@@ -570,13 +570,13 @@ export const ImpactSimulator = () => {
                 return (
                   <div key={r.label}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="flex items-center gap-2 text-sm text-background/85">
-                        <Icon className="h-4 w-4 text-teal-soft" strokeWidth={1.5} />
+                      <span className="flex items-center gap-2 text-sm text-ink/75">
+                        <Icon className="h-4 w-4 text-teal-deep" strokeWidth={1.5} />
                         {r.label}
                       </span>
-                      <span className="font-display text-lg text-background">{fmt(r.value)} €</span>
+                      <span className="font-display text-lg text-ink">{fmt(r.value)} €</span>
                     </div>
-                    <div className="h-1.5 rounded-full bg-background/10 overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-ink/10 overflow-hidden">
                       <div
                         className={cn("h-full transition-all duration-700 ease-out", r.color)}
                         style={{ width: `${pct}%` }}
@@ -587,28 +587,29 @@ export const ImpactSimulator = () => {
               })}
             </div>
 
-            <div className="mt-8 rounded-2xl border border-teal/30 bg-teal/10 p-4 md:p-5">
-              <p className="text-sm text-teal-soft">{t("sim.result.cashLabel")}</p>
-              <p className="font-display text-2xl md:text-3xl text-background mt-1">
+            <div className="mt-8 rounded-2xl border border-teal/30 bg-teal/5 p-4 md:p-5">
+              <p className="text-sm text-teal-deep">{t("sim.result.cashLabel")}</p>
+              <p className="font-display text-2xl md:text-3xl text-ink mt-1">
                 +{fmt(result.cajaLiberada)} €
               </p>
-              <p className="text-xs text-background/60 mt-1">{t("sim.result.cashNote")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("sim.result.cashNote")}</p>
             </div>
+
 
             <div className="mt-6">
               <button
                 type="button"
                 onClick={() => setShowAssumptions((v) => !v)}
-                className="flex items-center gap-1 text-xs text-background/60 hover:text-background"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-ink"
               >
                 <ChevronDown className={cn("h-3 w-3 transition-transform", showAssumptions && "rotate-180")} />
                 {t("sim.result.assumptions")}
               </button>
-              <p className="mt-2 text-xs text-background/50 max-w-lg">{t("sim.result.disclaimer")}</p>
+              <p className="mt-2 text-xs text-muted-foreground max-w-lg">{t("sim.result.disclaimer")}</p>
               {showAssumptions && (
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-background/70">
+                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-ink/70">
                   {ASSUMPTIONS_LIST.map((a) => (
-                    <div key={a.key} className="flex justify-between border-b border-background/10 py-1">
+                    <div key={a.key} className="flex justify-between border-b border-border py-1">
                       <span className="font-mono">{a.key}</span>
                       <span>{a.value}</span>
                     </div>
