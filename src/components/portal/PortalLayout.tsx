@@ -82,7 +82,7 @@ export const PortalLayout = () => {
       <aside className="hidden lg:flex w-64 flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen">
         <div className="px-6 pt-7 pb-4">
           <Link to="/" className="block mb-1" aria-label="Grupo Warranty Global">
-            <Logo className="h-7" />
+            <Logo className="h-14" />
           </Link>
           <p className="mt-4 text-[10px] font-semibold tracking-[0.14em] text-ink/40 uppercase">{t("nav.section")}</p>
           <p className="font-display text-lg text-ink leading-tight tracking-tight">{t("nav.title")}</p>
@@ -182,7 +182,7 @@ export const PortalLayout = () => {
           aria-label="Volver a la web pública"
         >
           <ArrowLeft className="h-4 w-4" />
-          <Logo className="h-6" />
+          <Logo className="h-12" />
         </Link>
         <div className="min-w-0 flex-1 text-right">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 truncate">{t("nav.section")}</p>
