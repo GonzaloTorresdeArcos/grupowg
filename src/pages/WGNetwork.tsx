@@ -39,7 +39,7 @@ const WGNetwork = () => {
             <h1 className="heading-display text-foreground text-[clamp(2.25rem,6.5vw,5.5rem)] max-w-5xl">
               {t("hero.title1")}
               <br />
-              <span className="italic text-foreground/80">{t("hero.title2")}</span>
+              <span className="font-light text-foreground/55">{t("hero.title2")}</span>
             </h1>
             <p className="mt-8 max-w-2xl text-lg md:text-xl text-foreground/85 leading-relaxed">
               {t("hero.valueProp")}
