@@ -164,18 +164,18 @@ const PortalDashboard = () => {
 
       <ImpactoNegocio />
 
-      <Card className="p-6 md:p-8">
+      <Card className="p-6 md:p-8 rounded-2xl border-black/[0.06] shadow-none">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-teal/15 text-teal flex items-center justify-center">
-              <Inbox className="h-5 w-5" strokeWidth={1.75} />
+            <div className="h-9 w-9 rounded-xl bg-ink/[0.04] text-ink/70 flex items-center justify-center">
+              <Inbox className="h-4 w-4" strokeWidth={1.75} />
             </div>
             <div>
               <p className="eyebrow mb-0.5">{t("dashboard.assigned.eyebrow")}</p>
-              <h2 className="font-display text-xl text-ink">{t("dashboard.assigned.title")}</h2>
+              <h2 className="font-display text-xl text-ink tracking-tight">{t("dashboard.assigned.title")}</h2>
             </div>
           </div>
-          <Badge variant="outline">{active.length}</Badge>
+          <Badge variant="outline" className="border-black/10 bg-transparent text-ink/70">{active.length}</Badge>
         </div>
         {active.length === 0 ? (
           <p className="text-sm text-muted-foreground py-8 text-center">
