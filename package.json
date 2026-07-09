@@ -103,5 +103,11 @@
     "vite": "^5.4.19",
     "vitest": "^3.2.4",
     "vitest-axe": "^0.1.0"
+  },
+  "overrides": {
+    "dompurify": "^3.4.11"
+  },
+  "resolutions": {
+    "dompurify": "^3.4.11"
   }
 }
