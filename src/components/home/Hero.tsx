@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.webp";
+import logo50 from "@/assets/logo-50-light.png";
 
 export const Hero = () => (
   <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-background text-foreground">
@@ -16,8 +17,11 @@ export const Hero = () => (
 
     {/* Top label */}
     <div className="absolute top-28 left-0 right-0">
-      <div className="container-tight flex items-center justify-between">
-        <p className="eyebrow text-teal-soft animate-fade-in">Grupo Warranty Global · 1976 — 2026</p>
+      <div className="container-tight flex items-center justify-between gap-6">
+        <div className="flex items-center gap-4 animate-fade-in">
+          <img src={logo50} alt="50 años Grupo Warranty Global · desde 1976" width={72} height={72} className="h-14 w-auto md:h-16" />
+          <p className="eyebrow text-teal-soft">Grupo Warranty Global · 1976 — 2026</p>
+        </div>
         <p className="hidden md:block text-xs text-foreground/40 uppercase tracking-[0.2em] animate-fade-in">
           Postventa · Garantías · Red técnica
         </p>

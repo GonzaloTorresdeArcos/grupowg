@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/site/Reveal";
 import legacyImg from "@/assets/legacy.webp";
+import logo50 from "@/assets/logo-50-light.png";
 
 export const Legacy = () => (
   <section className="relative py-32 md:py-44 bg-background text-foreground overflow-hidden">
@@ -16,6 +17,7 @@ export const Legacy = () => (
     <div className="container-tight relative z-10">
       <Reveal>
         <div className="max-w-2xl">
+          <img src={logo50} alt="50 años · desde 1976" width={140} height={140} loading="lazy" className="h-24 w-auto mb-8" />
           <p className="eyebrow text-teal-soft mb-6">06 · Cultura</p>
           <h2 className="heading-display text-foreground text-4xl md:text-6xl text-balance">
             Una forma de hacer las cosas que no cambia.
