@@ -621,7 +621,7 @@ export const ImpactSimulator = () => {
         </div>
 
         {/* Capture */}
-        <div className="mt-8 rounded-3xl bg-secondary border border-border text-ink p-6 md:p-10">
+        <div className="mt-8 rounded-3xl bg-background border border-border text-ink p-6 md:p-10">
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div>
               <p className="eyebrow text-teal-deep mb-3">{t("sim.capture.eyebrow")}</p>
