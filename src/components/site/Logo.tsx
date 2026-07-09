@@ -4,11 +4,10 @@ export const Logo = ({ className = "h-10" }: { className?: string }) => (
   <img
     src={logo}
     alt="Grupo Warranty Global"
-    width={512}
-    height={512}
+    width={1406}
+    height={601}
     fetchPriority="high"
     decoding="async"
-    className={className}
-    style={{ aspectRatio: "1 / 1" }}
+    className={`${className} w-auto`}
   />
 );
