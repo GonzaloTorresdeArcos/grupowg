@@ -1,16 +1,18 @@
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import {
   LayoutDashboard, Calendar, FileText, Receipt, Settings,
   LogOut, Menu, X, ChevronRight, Inbox, Cpu, Package, Store, ShieldCheck, TrendingUp,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useTranslation } from "react-i18next";
+import { Logo } from "@/components/site/Logo";
 
 export const PortalLayout = () => {
   const { t } = useTranslation("portal");
@@ -63,7 +65,18 @@ export const PortalLayout = () => {
     <div className="min-h-screen bg-bone flex">
       {/* Sidebar desktop */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card sticky top-0 h-screen">
-        <div className="px-6 py-6 border-b border-border">
+        <div className="px-6 py-5 border-b border-border">
+          <Link
+            to="/"
+            className="group flex items-center gap-2 text-xs text-muted-foreground hover:text-ink transition-colors mb-3"
+            aria-label="Volver a la web pública de Grupo WG"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            <span>Volver a la web</span>
+          </Link>
+          <Link to="/" className="block" aria-label="Grupo Warranty Global">
+            <Logo className="h-8 mb-3" />
+          </Link>
           <p className="eyebrow mb-1">{t("nav.section")}</p>
           <p className="font-display text-xl text-ink leading-tight">{t("nav.title")}</p>
         </div>
@@ -149,10 +162,18 @@ export const PortalLayout = () => {
       </aside>
 
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 inset-x-0 z-40 bg-card border-b border-border h-14 px-4 flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{t("nav.section")}</p>
-          <p className="font-display text-base text-ink leading-none">{t("nav.title")}</p>
+      <div className="lg:hidden fixed top-0 inset-x-0 z-40 bg-card border-b border-border h-14 px-4 flex items-center justify-between gap-3">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-ink hover:text-ink/70 transition-colors"
+          aria-label="Volver a la web pública"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <Logo className="h-6" />
+        </Link>
+        <div className="min-w-0 flex-1 text-right">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground truncate">{t("nav.section")}</p>
+          <p className="font-display text-sm text-ink leading-none truncate">{t("nav.title")}</p>
         </div>
         <Button size="icon" variant="ghost" onClick={() => setOpen((o) => !o)}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
