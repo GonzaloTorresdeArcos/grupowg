@@ -11,7 +11,9 @@
     "network": "WG Network"
   },
   "items": {
-    "/": "Grupo WG",
+    "/": "El plan",
+    "/#simulador": "Simulador",
+    "/#marcas": "Marcas",
     "/modelo": "Modelo",
     "/soluciones": "Soluciones",
     "/plataforma": "Plataforma",
