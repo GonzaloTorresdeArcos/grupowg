@@ -152,7 +152,7 @@ const WGNetwork = () => {
 
           {showBenefits && (
             <>
-              <div className="mt-8 grid gap-px bg-border border border-border rounded-3xl overflow-hidden md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid gap-0.5 bg-border border border-border rounded-3xl overflow-hidden md:grid-cols-2 lg:grid-cols-3">
                 {benefits.map((b, i) => {
                   const Icon = benefitIcons[i] ?? Shield;
                   return (
