@@ -94,7 +94,7 @@ const GamaCard = ({ gama }: { gama: Gama }) => {
 };
 
 export const MarcasPorGama = () => (
-  <section className="py-24 md:py-32 bg-card">
+  <section id="marcas" className="scroll-mt-24 py-24 md:py-32 bg-card">
     <div className="container-tight">
       <Reveal>
         <div className="max-w-3xl mb-10">

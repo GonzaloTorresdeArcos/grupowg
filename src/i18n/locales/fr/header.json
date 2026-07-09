@@ -6,13 +6,11 @@
   "ctaContact": "Demander des informations",
   "languageLabel": "Langue",
   "nav": {
-    "/": "Groupe WG",
-    "/modelo": "Modèle",
-    "/soluciones": "Solutions",
-    "/plataforma": "Plateforme",
-    "/experiencia": "Expérience",
-    "/industrias": "Industries",
-    "/wg-network": "WG Network",
+    "/": "Le plan",
+    "/#simulador": "Simulateur",
+    "/#marcas": "Marques",
+    "/wg-network/inscripcion": "Rejoindre le réseau",
+    "/portal/login": "Espace privé",
     "/contacto": "Contact",
     "/legal/privacidad": "Confidentialité",
     "/legal/aviso-legal": "Mentions légales"

@@ -18,11 +18,12 @@ export type NavGroup = {
 export const primaryNav: NavItem[] = [
   { to: "/", label: "El plan" },
   { to: "/#simulador", label: "Simulador" },
+  { to: "/#marcas", label: "Marcas" },
   { to: "/wg-network/inscripcion", label: "Únete a la red" },
-  { to: "/portal/login", label: "Área privada" },
 ];
 
 export const secondaryNav: NavItem[] = [
+  { to: "/portal/login", label: "Área privada" },
   { to: "/contacto", label: "Contacto" },
   { to: "/legal/privacidad", label: "Privacidad" },
   { to: "/legal/aviso-legal", label: "Aviso legal" },
