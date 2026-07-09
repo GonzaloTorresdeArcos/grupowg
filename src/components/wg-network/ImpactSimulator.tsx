@@ -60,17 +60,17 @@ function useCountUp(target: number, duration = 900) {
 
 const PERFIL_TITLES: Record<Perfil, { title: string; subtitle: string }> = {
   sat: {
-    title: "Mete 4 datos. Mira lo que WG puede hacer por tu SAT.",
+    title: "Descubre cuánto más puede ganar tu negocio.",
     subtitle:
       "Dos minutos. Sin registros. Cálculo con tarifas reales de la red WG.",
   },
   instalador: {
-    title: "Mete 4 datos. Mira lo que WG puede hacer por tu negocio de instalación.",
+    title: "Descubre cuánto más puede ganar tu negocio.",
     subtitle:
       "Dos minutos. Sin registros. Cálculo con tickets reales de instalación.",
   },
   ambos: {
-    title: "Repares o instales, mira lo que WG puede hacer por tu negocio.",
+    title: "Descubre cuánto más puede ganar tu negocio.",
     subtitle:
       "Dos minutos. Sin registros. Basado en la operación real de la red WG.",
   },
