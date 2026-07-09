@@ -247,12 +247,26 @@ export const PortalLayout = () => {
       )}
 
       <main className="flex-1 min-w-0 lg:px-0 px-0 pt-14 lg:pt-0">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-6 md:pt-8">
+          {!isDashboard && (
+            <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <NavLink to="/portal" className="hover:text-ink transition-colors">
+                {t("nav.title")}
+              </NavLink>
+              <ChevronRight className="h-3 w-3 opacity-60" />
+              <span className="text-ink font-medium">
+                {currentItem?.label ?? pathname.split("/").pop()}
+              </span>
+            </nav>
+          )}
+        </div>
+        <div className="max-w-6xl mx-auto px-4 md:px-8 pb-8 md:pb-12">
           <RouteBoundary key={pathname}>
             <Outlet />
           </RouteBoundary>
         </div>
       </main>
+
     </div>
   );
 };
