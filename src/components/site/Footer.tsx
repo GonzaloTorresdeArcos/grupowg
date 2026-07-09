@@ -1,10 +1,11 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
+import { useAnchorNavigation } from "@/hooks/useAnchorNavigation";
 import { footerNav, legalNav } from "@/config/navigation";
 
 interface FooterProps {
@@ -21,8 +22,7 @@ const GROUP_SPAN: Record<string, string> = {
 export const Footer = ({ dark = true }: FooterProps) => {
   const { openPreferences } = useCookieConsent();
   const { t } = useTranslation("footer");
-  const location = useLocation();
-  const navigate = useNavigate();
+  const handleNavClick = useAnchorNavigation();
   const bg = dark ? "bg-ink" : "bg-ink";
   const textBase = "text-bone/70";
   const textHover = "hover:text-bone";
@@ -30,33 +30,6 @@ export const Footer = ({ dark = true }: FooterProps) => {
 
   const detailsRefs = useRef<Array<HTMLDetailsElement | null>>([]);
   const [allOpen, setAllOpen] = useState(false);
-
-  const handleNavClick = (to: string) => (e: React.MouseEvent) => {
-    const hasHash = to.includes("#");
-    if (!hasHash) {
-      // Si ya estamos en la ruta destino, hacer scroll al top
-      if (location.pathname === to) {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      return;
-    }
-    e.preventDefault();
-    const [rawPath, hash] = to.split("#");
-    const targetPath = rawPath || "/";
-    const scrollToHash = () => {
-      const el = document.getElementById(hash);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-    if (location.pathname === targetPath) {
-      scrollToHash();
-    } else {
-      navigate(to);
-      window.setTimeout(scrollToHash, 120);
-    }
-  };
-
-
 
   const toggleAll = () => {
     const next = !allOpen;

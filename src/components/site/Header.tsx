@@ -6,6 +6,7 @@ import { Logo } from "./Logo";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { cn } from "@/lib/utils";
 import { primaryNav, secondaryNav } from "@/config/navigation";
+import { useAnchorNavigation } from "@/hooks/useAnchorNavigation";
 
 
 interface HeaderProps {
@@ -16,6 +17,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const handleNavClick = useAnchorNavigation({ onNavigate: () => setOpen(false) });
   const { t } = useTranslation("header");
 
   // Traduce el label de un item de nav usando su `to` como clave.
@@ -95,6 +97,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={handleNavClick(item.to)}
               className={({ isActive }) =>
                 cn(
                   "px-2.5 py-2 text-[12px] font-medium whitespace-nowrap transition-colors",
@@ -145,6 +148,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  onClick={handleNavClick(item.to)}
                   className={({ isActive }) =>
                     cn(
                       "group flex items-center justify-between py-4 border-b transition-colors",
