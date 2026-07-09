@@ -59,12 +59,16 @@
     "subtitle": "Porque no solo importa el trabajo. Importáis vosotros.",
     "items": [
       {
-        "t": "Seguros colectivos",
-        "d": "Condiciones preferentes para profesionales y equipos."
+        "t": "Responsabilidad Civil",
+        "d": "Protección frente a daños a terceros derivados de tu actividad profesional."
+      },
+      {
+        "t": "Multirriesgo negocio",
+        "d": "Cobertura para instalaciones, herramientas, equipos y material de trabajo."
       },
       {
         "t": "Protección jurídica",
-        "d": "Asesoramiento legal ante incidencias, reclamaciones y conflictos."
+        "d": "Asesoramiento y defensa ante incidencias, reclamaciones y conflictos."
       },
       {
         "t": "Protección de ingresos",
@@ -72,27 +76,23 @@
       },
       {
         "t": "Salud",
-        "d": "Coberturas médicas para profesionales y familias."
+        "d": "Coberturas médicas en condiciones preferentes para profesionales y familias."
       },
       {
         "t": "Vida",
-        "d": "Protección familiar y seguridad económica."
-      },
-      {
-        "t": "Planes de ahorro",
-        "d": "Soluciones de ahorro y previsión."
+        "d": "Protección familiar y seguridad económica para los tuyos."
       },
       {
         "t": "PRL",
-        "d": "Prevención de riesgos y cumplimiento en seguridad laboral."
+        "d": "Prevención de riesgos laborales y apoyo en el cumplimiento normativo."
       },
       {
-        "t": "Compliance asistido",
-        "d": "Alta documental, validación y seguimiento normativo."
+        "t": "Documentación asistida",
+        "d": "Certificados, seguros y documentación siempre actualizados y bajo control."
       },
       {
-        "t": "Documentación",
-        "d": "Todo en regla, actualizado y trazable."
+        "t": "Ahorro y previsión",
+        "d": "Soluciones de ahorro y planificación financiera a largo plazo."
       }
     ],
     "outro": "Queremos que trabajéis tranquilos. Queremos que estéis cubiertos y seguros."
