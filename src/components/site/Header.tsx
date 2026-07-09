@@ -78,7 +78,7 @@ export const Header = ({ dark = true }: HeaderProps) => {
         <Link to="/" aria-label={t("logoAlt")} className="relative z-10 shrink-0">
           <Logo
             className={cn(
-              "h-7 sm:h-10 md:h-16 lg:h-24",
+              "h-9 sm:h-11 md:h-14 lg:h-16",
               // Logo blanco solo cuando el fondo del header es oscuro:
               // - tema dark (siempre, fondo ink o transparente sobre hero oscuro)
               // - en /wg-network root, el hero es oscuro → blanco mientras esté transparente
