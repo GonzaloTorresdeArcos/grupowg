@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
