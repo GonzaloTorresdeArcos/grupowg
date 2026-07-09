@@ -20,6 +20,7 @@ export const primaryNav: NavItem[] = [
   { to: "/#simulador", label: "Simulador" },
   { to: "/#marcas", label: "Marcas" },
   { to: "/wg-network/inscripcion", label: "Únete a la red" },
+  { to: "/portal/login", label: "Acceso colaboradores" },
 ];
 
 export const secondaryNav: NavItem[] = [
