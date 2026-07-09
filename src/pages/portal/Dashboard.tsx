@@ -204,16 +204,16 @@ const PortalDashboard = () => {
       </Card>
 
       <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
-        <Card className="p-6 md:p-8">
+        <Card className="p-6 md:p-8 rounded-2xl border-black/[0.06] shadow-none">
           <div className="flex items-start justify-between mb-6">
             <div>
               <p className="eyebrow mb-2">{t("dashboard.trend.eyebrow")}</p>
-              <h2 className="font-display text-xl text-ink">{t("dashboard.trend.title")}</h2>
+              <h2 className="font-display text-xl text-ink tracking-tight">{t("dashboard.trend.title")}</h2>
             </div>
           </div>
           <div className="h-64">
             {incidences.length === 0 && !loading ? (
-              <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+              <div className="h-full flex items-center justify-center text-sm text-ink/40">
                 {t("dashboard.trend.empty", { defaultValue: "Aún no hay histórico de avisos." })}
               </div>
             ) : (
@@ -221,30 +221,30 @@ const PortalDashboard = () => {
                 <AreaChart data={trend} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--teal))" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="hsl(var(--teal))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="hsl(var(--ink))" stopOpacity={0.12} />
+                      <stop offset="95%" stopColor="hsl(var(--ink))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="currentColor" className="text-muted-foreground" />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} stroke="currentColor" className="text-muted-foreground" />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                  <Area type="monotone" dataKey="incidences" stroke="hsl(var(--teal))" strokeWidth={2} fill="url(#g1)" name={t("dashboard.kpis.active")} />
+                  <CartesianGrid strokeDasharray="0" vertical={false} stroke="rgba(0,0,0,0.05)" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} stroke="rgba(0,0,0,0.1)" tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} stroke="rgba(0,0,0,0.1)" tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ background: "white", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, fontSize: 12, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.15)" }} />
+                  <Area type="monotone" dataKey="incidences" stroke="hsl(var(--ink))" strokeWidth={1.5} fill="url(#g1)" name={t("dashboard.kpis.active")} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
           </div>
         </Card>
 
-        <Card className="p-6 md:p-8 bg-ink text-bone border-ink">
-          <p className="text-xs font-mono uppercase tracking-widest text-teal mb-3">{t("dashboard.earnings.eyebrow")}</p>
-          <p className="font-display text-4xl md:text-5xl mb-1">{eur(invoiceMonth)}</p>
+        <Card className="p-6 md:p-8 rounded-2xl bg-ink text-bone border-ink shadow-none">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-bone/50 mb-3">{t("dashboard.earnings.eyebrow")}</p>
+          <p className="font-display text-5xl md:text-[3.5rem] leading-none tracking-tight tabular-nums mb-2">{eur(invoiceMonth)}</p>
           <p className="text-sm text-bone/60">{t("dashboard.earnings.subtitle", { count: closedMonth.length })}</p>
           <div className="mt-8 pt-6 border-t border-bone/10 space-y-3">
             <Row label={t("dashboard.earnings.pending")} value={eur(pending)} />
             <Row label={t("dashboard.earnings.servicesYtd", { defaultValue: "Servicios facturados (año)" })} value={String(servicesYtd)} />
           </div>
-          <Button asChild variant="secondary" className="w-full mt-8 gap-2 bg-teal text-ink hover:bg-teal/90">
+          <Button asChild variant="secondary" className="w-full mt-8 gap-2 bg-bone text-ink hover:bg-bone/90 rounded-full h-10">
             <Link to="/portal/facturacion">
               {t("dashboard.earnings.cta")}
               <ArrowRight className="h-4 w-4" />
