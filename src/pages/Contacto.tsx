@@ -200,7 +200,7 @@ const DRAFT_KEY = "wg:contacto:draft:v1";
 const DRAFT_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 días
 
 // ============= i18n para la vista previa de campos =============
-type PreviewLang = "es" | "en" | "pt" | "fr";
+type PreviewLang = "es" | "en" | "pt";
 
 const PREVIEW_I18N: Record<PreviewLang, {
   title: string;
