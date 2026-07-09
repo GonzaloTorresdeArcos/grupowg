@@ -607,11 +607,11 @@ export const ImpactSimulator = () => {
               </button>
               <p className="mt-2 text-xs text-muted-foreground max-w-lg">{t("sim.result.disclaimer")}</p>
               {showAssumptions && (
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-ink/70">
+                <div className="mt-4 grid gap-2 text-xs text-ink/70 sm:grid-cols-2">
                   {ASSUMPTIONS_LIST.map((a) => (
-                    <div key={a.key} className="flex justify-between border-b border-border py-1">
-                      <span className="font-mono">{a.key}</span>
-                      <span>{a.value}</span>
+                    <div key={a.key} className="flex justify-between gap-3 border-b border-border py-1.5">
+                      <span className="text-ink/80">{a.key}</span>
+                      <span className="text-ink shrink-0">{a.value}</span>
                     </div>
                   ))}
                 </div>
