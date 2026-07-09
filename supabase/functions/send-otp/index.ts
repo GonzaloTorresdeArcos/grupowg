@@ -94,14 +94,8 @@ Deno.serve(async (req) => {
         return json({ error: "invalid_code" }, 400);
       }
 
-      // [DEV] Código maestro de pruebas. Permite avanzar el flujo sin
-      // entrega real de email/SMS mientras se valida el resto.
-      // ⚠️ Quitar antes de producción.
-      const DEV_MASTER_CODE = "123456";
-      const isDevBypass = code === DEV_MASTER_CODE;
-
       let matchedId: string | null = null;
-      if (!isDevBypass) {
+      {
         const codeHash = await sha256(code);
         const { data, error } = await supabase
           .from("wg_otp_codes")

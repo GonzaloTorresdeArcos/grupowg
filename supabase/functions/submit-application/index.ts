@@ -175,13 +175,7 @@ Deno.serve(async (req) => {
           agreement_version_canon: AGREEMENT_VERSION,
           agreement_hash_canon: AGREEMENT_HASH,
         });
-        return json({
-          error: "agreement_hash_mismatch",
-          expected_version: AGREEMENT_VERSION,
-          expected_hash: AGREEMENT_HASH,
-          agreement_version_canon: AGREEMENT_VERSION,
-          agreement_hash_canon: AGREEMENT_HASH,
-        }, 400);
+        return json({ error: "agreement_hash_mismatch" }, 400);
       }
 
       const readAtRaw = isStr(signature.agreement_read_at, 64) ? signature.agreement_read_at : null;
