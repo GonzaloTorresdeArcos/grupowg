@@ -164,37 +164,37 @@ const PortalDashboard = () => {
 
       <ImpactoNegocio />
 
-      <Card className="p-6 md:p-8">
+      <Card className="p-6 md:p-8 rounded-2xl border-black/[0.06] shadow-none">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-teal/15 text-teal flex items-center justify-center">
-              <Inbox className="h-5 w-5" strokeWidth={1.75} />
+            <div className="h-9 w-9 rounded-xl bg-ink/[0.04] text-ink/70 flex items-center justify-center">
+              <Inbox className="h-4 w-4" strokeWidth={1.75} />
             </div>
             <div>
               <p className="eyebrow mb-0.5">{t("dashboard.assigned.eyebrow")}</p>
-              <h2 className="font-display text-xl text-ink">{t("dashboard.assigned.title")}</h2>
+              <h2 className="font-display text-xl text-ink tracking-tight">{t("dashboard.assigned.title")}</h2>
             </div>
           </div>
-          <Badge variant="outline">{active.length}</Badge>
+          <Badge variant="outline" className="border-black/10 bg-transparent text-ink/70">{active.length}</Badge>
         </div>
         {active.length === 0 ? (
           <p className="text-sm text-muted-foreground py-8 text-center">
             {t("dashboard.assigned.empty", { defaultValue: "No tienes avisos activos ahora mismo." })}
           </p>
         ) : (
-          <ul className="space-y-2">
+          <ul className="divide-y divide-black/[0.06] -mx-2">
             {active.slice(0, 6).map((i) => (
               <li key={i.id}>
-                <Link to={`/portal/incidencias/${i.id}`} className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors">
+                <Link to={`/portal/incidencias/${i.id}`} className="flex items-center justify-between gap-3 px-2 py-3 rounded-lg hover:bg-black/[0.02] transition-colors">
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-mono text-muted-foreground">{i.ref}</p>
-                    <p className="text-sm text-ink truncate">
+                    <p className="text-[11px] font-mono text-ink/40 tracking-wider">{i.ref}</p>
+                    <p className="text-sm text-ink truncate mt-0.5">
                       {i.customer_name} · {familiaLabel(i.product_family)}{i.city ? ` · ${i.city}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Badge variant="outline">{STATUS_LABELS[i.status] ?? i.status}</Badge>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <Badge variant="outline" className="border-black/10 bg-transparent text-ink/70 font-normal">{STATUS_LABELS[i.status] ?? i.status}</Badge>
+                    <ArrowRight className="h-4 w-4 text-ink/30" />
                   </div>
                 </Link>
               </li>
@@ -204,16 +204,16 @@ const PortalDashboard = () => {
       </Card>
 
       <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
-        <Card className="p-6 md:p-8">
+        <Card className="p-6 md:p-8 rounded-2xl border-black/[0.06] shadow-none">
           <div className="flex items-start justify-between mb-6">
             <div>
               <p className="eyebrow mb-2">{t("dashboard.trend.eyebrow")}</p>
-              <h2 className="font-display text-xl text-ink">{t("dashboard.trend.title")}</h2>
+              <h2 className="font-display text-xl text-ink tracking-tight">{t("dashboard.trend.title")}</h2>
             </div>
           </div>
           <div className="h-64">
             {incidences.length === 0 && !loading ? (
-              <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+              <div className="h-full flex items-center justify-center text-sm text-ink/40">
                 {t("dashboard.trend.empty", { defaultValue: "Aún no hay histórico de avisos." })}
               </div>
             ) : (
@@ -221,30 +221,30 @@ const PortalDashboard = () => {
                 <AreaChart data={trend} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--teal))" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="hsl(var(--teal))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="hsl(var(--ink))" stopOpacity={0.12} />
+                      <stop offset="95%" stopColor="hsl(var(--ink))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="currentColor" className="text-muted-foreground" />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} stroke="currentColor" className="text-muted-foreground" />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                  <Area type="monotone" dataKey="incidences" stroke="hsl(var(--teal))" strokeWidth={2} fill="url(#g1)" name={t("dashboard.kpis.active")} />
+                  <CartesianGrid strokeDasharray="0" vertical={false} stroke="rgba(0,0,0,0.05)" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} stroke="rgba(0,0,0,0.1)" tickLine={false} axisLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "rgba(0,0,0,0.4)" }} stroke="rgba(0,0,0,0.1)" tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ background: "white", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 12, fontSize: 12, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.15)" }} />
+                  <Area type="monotone" dataKey="incidences" stroke="hsl(var(--ink))" strokeWidth={1.5} fill="url(#g1)" name={t("dashboard.kpis.active")} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
           </div>
         </Card>
 
-        <Card className="p-6 md:p-8 bg-ink text-bone border-ink">
-          <p className="text-xs font-mono uppercase tracking-widest text-teal mb-3">{t("dashboard.earnings.eyebrow")}</p>
-          <p className="font-display text-4xl md:text-5xl mb-1">{eur(invoiceMonth)}</p>
+        <Card className="p-6 md:p-8 rounded-2xl bg-ink text-bone border-ink shadow-none">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-bone/50 mb-3">{t("dashboard.earnings.eyebrow")}</p>
+          <p className="font-display text-5xl md:text-[3.5rem] leading-none tracking-tight tabular-nums mb-2">{eur(invoiceMonth)}</p>
           <p className="text-sm text-bone/60">{t("dashboard.earnings.subtitle", { count: closedMonth.length })}</p>
           <div className="mt-8 pt-6 border-t border-bone/10 space-y-3">
             <Row label={t("dashboard.earnings.pending")} value={eur(pending)} />
             <Row label={t("dashboard.earnings.servicesYtd", { defaultValue: "Servicios facturados (año)" })} value={String(servicesYtd)} />
           </div>
-          <Button asChild variant="secondary" className="w-full mt-8 gap-2 bg-teal text-ink hover:bg-teal/90">
+          <Button asChild variant="secondary" className="w-full mt-8 gap-2 bg-bone text-ink hover:bg-bone/90 rounded-full h-10">
             <Link to="/portal/facturacion">
               {t("dashboard.earnings.cta")}
               <ArrowRight className="h-4 w-4" />
@@ -320,7 +320,7 @@ const PortalDashboard = () => {
                   <span className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">+{coverage.length - 12}</span>
                 )}
               </div>
-              <Button asChild variant="ghost" size="sm" className="mt-4 gap-1 px-0 text-teal-deep">
+              <Button asChild variant="ghost" size="sm" className="mt-4 gap-1 px-0 text-ink hover:text-ink/70 hover:bg-transparent">
                 <Link to="/portal/perfil">
                   {t("dashboard.coverage.manage", { defaultValue: "Gestionar cobertura" })}
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -362,28 +362,30 @@ const Row = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
-const toneClass: Record<string, string> = {
-  amber: "bg-amber-500/10 text-amber-700",
-  emerald: "bg-emerald-500/10 text-emerald-700",
-  ink: "bg-ink/5 text-ink",
-  teal: "bg-teal/10 text-teal",
+const toneAccent: Record<string, string> = {
+  amber: "bg-amber-500",
+  emerald: "bg-emerald-500",
+  ink: "bg-ink",
+  teal: "bg-ink/60",
 };
 
 const KpiCard = ({ icon: Icon, label, value, suffix, tone }: {
   icon: typeof Wrench; label: string; value: number | string; suffix?: string;
   tone: "amber" | "emerald" | "ink" | "teal";
 }) => (
-  <Card className="p-5">
-    <div className="flex items-start justify-between mb-4">
-      <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${toneClass[tone]}`}>
-        <Icon className="h-4 w-4" strokeWidth={1.75} />
-      </div>
+  <div className="group relative rounded-2xl border border-black/[0.06] bg-white p-6 transition-all hover:border-black/[0.12] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
+    <div className="flex items-start justify-between mb-8">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</p>
+      <Icon className="h-4 w-4 text-ink/30" strokeWidth={1.5} />
     </div>
-    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-    <p className="font-display text-2xl text-ink leading-none">
-      {value}{suffix && <span className="text-sm text-muted-foreground ml-1">{suffix}</span>}
+    <p className="font-display text-[2.5rem] leading-none text-ink tracking-tight tabular-nums">
+      {value}
     </p>
-  </Card>
+    {suffix && (
+      <p className="text-[12px] text-ink/50 mt-2">{suffix}</p>
+    )}
+    <div className={`absolute left-6 right-6 bottom-0 h-px ${toneAccent[tone]} opacity-40 group-hover:opacity-80 transition-opacity`} />
+  </div>
 );
 
 export default PortalDashboard;

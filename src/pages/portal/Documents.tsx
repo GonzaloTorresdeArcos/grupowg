@@ -92,68 +92,75 @@ const PortalDocuments = () => {
       </div>
 
       {filter !== "all" && (
-        <button onClick={() => setFilter("all")} className="text-sm text-teal hover:underline">
+        <button onClick={() => setFilter("all")} className="text-sm text-ink hover:text-ink/60 underline underline-offset-4">
           {t("documents.filters.viewAll")}
         </button>
       )}
 
-      {/* Document list */}
-      <div className="space-y-3">
-        {filtered.map((doc) => {
-          const Icon = typeIcon[doc.type] ?? FileText;
-          const cfg = statusConfig[doc.status];
-          const StatusIcon = cfg.icon;
-          return (
-            <Card key={doc.id} className="p-5 hover:shadow-md transition-shadow">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className={cn(
-                  "h-12 w-12 rounded-lg flex items-center justify-center shrink-0",
-                  doc.status === "valid" && "bg-emerald-500/10 text-emerald-700",
-                  doc.status === "expiring" && "bg-amber-500/10 text-amber-700",
-                  doc.status === "expired" && "bg-red-500/10 text-red-700",
-                  doc.status === "missing" && "bg-muted text-muted-foreground",
-                )}>
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-medium text-ink">{doc.name}</p>
-                    <Badge variant="outline" className={cn("gap-1 text-xs", cfg.color)}>
-                      <StatusIcon className="h-3 w-3" />
-                      {t(`documents.status.${doc.status}`)}
-                    </Badge>
+      {/* Document list — hairline rows */}
+      <div className="rounded-2xl border border-black/[0.06] bg-white overflow-hidden">
+        <ul className="divide-y divide-black/[0.06]">
+          {filtered.map((doc) => {
+            const Icon = typeIcon[doc.type] ?? FileText;
+            const cfg = statusConfig[doc.status];
+            const StatusIcon = cfg.icon;
+            return (
+              <li key={doc.id} className="group px-5 md:px-6 py-4 hover:bg-black/[0.02] transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className={cn(
+                    "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
+                    doc.status === "valid" && "bg-emerald-500/10 text-emerald-700",
+                    doc.status === "expiring" && "bg-amber-500/10 text-amber-700",
+                    doc.status === "expired" && "bg-red-500/10 text-red-700",
+                    doc.status === "missing" && "bg-ink/[0.04] text-ink/50",
+                  )}>
+                    <Icon className="h-4 w-4" strokeWidth={1.75} />
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-muted-foreground">
-                    {doc.fileName && <span>📎 {doc.fileName}</span>}
-                    {doc.issuedAt && <span>{t("documents.fields.issued")}: {formatDate(doc.issuedAt)}</span>}
-                    {doc.expiresAt && <span>{t("documents.fields.expires")}: {formatDate(doc.expiresAt)}</span>}
-                  </div>
-                </div>
 
-                <div className="flex gap-2 shrink-0">
-                  {doc.fileName && (
-                    <Button variant="outline" size="sm" className="gap-1">
-                      <Download className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">{t("documents.actions.download")}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium text-ink tracking-tight">{doc.name}</p>
+                      <Badge variant="outline" className={cn("gap-1 text-[11px] font-normal border-0", cfg.color)}>
+                        <StatusIcon className="h-3 w-3" />
+                        {t(`documents.status.${doc.status}`)}
+                      </Badge>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-ink/50">
+                      {doc.fileName && <span>📎 {doc.fileName}</span>}
+                      {doc.issuedAt && <span>{t("documents.fields.issued")}: {formatDate(doc.issuedAt)}</span>}
+                      {doc.expiresAt && <span>{t("documents.fields.expires")}: {formatDate(doc.expiresAt)}</span>}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 shrink-0">
+                    {doc.fileName && (
+                      <Button variant="ghost" size="sm" className="gap-1 text-ink/60 hover:text-ink hover:bg-black/[0.04] rounded-full">
+                        <Download className="h-3.5 w-3.5" />
+                        <span className="hidden sm:inline">{t("documents.actions.download")}</span>
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant={doc.status === "missing" || doc.status === "expired" ? "default" : "outline"}
+                      className={cn(
+                        "gap-1 rounded-full",
+                        doc.status === "missing" || doc.status === "expired"
+                          ? "bg-ink text-bone hover:bg-ink/90"
+                          : "border-black/10 bg-transparent text-ink hover:bg-black/[0.04]"
+                      )}
+                      onClick={() => setUploading(doc)}
+                    >
+                      {doc.status === "missing" ? <Upload className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                      <span className="hidden sm:inline">
+                        {doc.status === "missing" ? t("documents.actions.upload") : t("documents.actions.renew")}
+                      </span>
                     </Button>
-                  )}
-                  <Button
-                    size="sm"
-                    variant={doc.status === "missing" || doc.status === "expired" ? "default" : "outline"}
-                    className="gap-1"
-                    onClick={() => setUploading(doc)}
-                  >
-                    {doc.status === "missing" ? <Upload className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                    <span className="hidden sm:inline">
-                      {doc.status === "missing" ? t("documents.actions.upload") : t("documents.actions.renew")}
-                    </span>
-                  </Button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          );
-        })}
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
       {/* Upload dialog */}
@@ -198,27 +205,30 @@ const PortalDocuments = () => {
   );
 };
 
-const toneClasses: Record<string, string> = {
-  emerald: "border-emerald-500/30 bg-emerald-50/50 text-emerald-700",
-  amber: "border-amber-500/30 bg-amber-50/50 text-amber-700",
-  red: "border-red-500/30 bg-red-50/50 text-red-700",
-  muted: "border-border bg-muted/30 text-muted-foreground",
+const toneAccent: Record<string, string> = {
+  emerald: "bg-emerald-500",
+  amber: "bg-amber-500",
+  red: "bg-red-500",
+  muted: "bg-ink/30",
 };
 
 const SummaryCard = ({
   label, count, active, onClick, tone,
 }: {
-  label: string; count: number; active: boolean; onClick: () => void; tone: keyof typeof toneClasses;
+  label: string; count: number; active: boolean; onClick: () => void; tone: keyof typeof toneAccent;
 }) => (
   <button
     onClick={onClick}
     className={cn(
-      "p-4 rounded-xl border-2 text-left transition-all",
-      active ? toneClasses[tone] + " ring-2 ring-offset-2 ring-current/20" : "border-border bg-card hover:border-ink/20",
+      "group relative p-5 rounded-2xl border bg-white text-left transition-all",
+      active
+        ? "border-ink/30 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.10)]"
+        : "border-black/[0.06] hover:border-black/[0.12]",
     )}
   >
-    <p className="font-display text-3xl text-ink leading-none">{count}</p>
-    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-2">{label}</p>
+    <p className="font-display text-[2rem] leading-none text-ink tracking-tight tabular-nums">{count}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40 mt-3">{label}</p>
+    <div className={cn("absolute left-5 right-5 bottom-0 h-px transition-opacity", toneAccent[tone], active ? "opacity-80" : "opacity-30 group-hover:opacity-60")} />
   </button>
 );
 
