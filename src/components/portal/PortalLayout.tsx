@@ -77,24 +77,17 @@ export const PortalLayout = () => {
     .split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="min-h-screen bg-bone flex">
+    <div className="min-h-screen bg-[hsl(0_0%_99%)] flex font-sans antialiased" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       {/* Sidebar desktop */}
-      <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card sticky top-0 h-screen">
-        <div className="px-6 py-5 border-b border-border">
-          <Link
-            to="/"
-            className="group flex items-center gap-2 text-xs text-muted-foreground hover:text-ink transition-colors mb-3"
-            aria-label="Volver a la web pública de Grupo WG"
-          >
-            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-            <span>Volver a la web</span>
+      <aside className="hidden lg:flex w-64 flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen">
+        <div className="px-6 pt-7 pb-4">
+          <Link to="/" className="block mb-1" aria-label="Grupo Warranty Global">
+            <Logo className="h-7" />
           </Link>
-          <Link to="/" className="block" aria-label="Grupo Warranty Global">
-            <Logo className="h-8 mb-3" />
-          </Link>
-          <p className="eyebrow mb-1">{t("nav.section")}</p>
-          <p className="font-display text-xl text-ink leading-tight">{t("nav.title")}</p>
+          <p className="mt-4 text-[10px] font-semibold tracking-[0.14em] text-ink/40 uppercase">{t("nav.section")}</p>
+          <p className="font-display text-lg text-ink leading-tight tracking-tight">{t("nav.title")}</p>
         </div>
+
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {showCollaboratorNav && (
