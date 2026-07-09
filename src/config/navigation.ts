@@ -33,11 +33,13 @@ export const secondaryNav: NavItem[] = [
 export const footerNav: NavGroup[] = [
   {
     id: "network",
-    label: "Red profesional",
+    label: "WG Network",
     items: [
       { to: "/", label: "El plan" },
+      { to: "/#simulador", label: "Simulador" },
+      { to: "/#marcas", label: "Marcas" },
       { to: "/wg-network/inscripcion", label: "Únete a la red" },
-      { to: "/portal/login", label: "Área privada" },
+      { to: "/portal/login", label: "Acceso colaboradores" },
     ],
   },
   {
