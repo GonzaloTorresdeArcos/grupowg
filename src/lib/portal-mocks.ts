@@ -100,14 +100,26 @@ const futureDate = (daysFromNow: number) => {
 };
 
 export const mockDocuments: CollabDocument[] = [
-  { id: "d1", type: "seguro_rc", name: "Seguro Responsabilidad Civil", fileName: "RC_2024_2025.pdf", issuedAt: "2024-06-15", expiresAt: futureDate(45), status: "valid" },
-  { id: "d2", type: "certificado_tecnico", name: "Certificado técnico — Gama Blanca", fileName: "Cert_GB_2023.pdf", issuedAt: "2023-09-01", expiresAt: futureDate(12), status: "expiring" },
-  { id: "d3", type: "certificado_tecnico", name: "Certificado técnico — Climatización (RITE)", fileName: "RITE_2024.pdf", issuedAt: "2024-02-10", expiresAt: futureDate(180), status: "valid" },
-  { id: "d4", type: "itv_vehiculo", name: "ITV vehículo de servicio (4521-LXY)", fileName: "ITV_4521LXY.pdf", issuedAt: "2024-08-20", expiresAt: futureDate(90), status: "valid" },
-  { id: "d5", type: "itv_vehiculo", name: "ITV vehículo de servicio (8870-MNB)", expiresAt: futureDate(-15), status: "expired" },
-  { id: "d6", type: "alta_autonomos", name: "Alta autónomos / TGSS", fileName: "TGSS_alta.pdf", issuedAt: "2018-01-15", status: "valid" },
-  { id: "d7", type: "prl", name: "Prevención Riesgos Laborales", fileName: "PRL_2024.pdf", issuedAt: "2024-03-01", expiresAt: futureDate(320), status: "valid" },
-  { id: "d8", type: "iae", name: "Alta IAE", status: "missing" },
+  // Fiscal / laboral (Compliance §3)
+  { id: "d1", type: "cert_aeat", name: "Certificado AEAT — al corriente obligaciones tributarias", fileName: "AEAT_2025.pdf", issuedAt: "2025-01-20", expiresAt: futureDate(200), status: "valid" },
+  { id: "d2", type: "cert_tgss", name: "Certificado TGSS — al corriente Seguridad Social", fileName: "TGSS_2025.pdf", issuedAt: "2025-01-22", expiresAt: futureDate(25), status: "expiring" },
+  { id: "d3", type: "modelo_censal", name: "Modelo censal / CIF / Escritura sociedad", fileName: "Modelo036.pdf", issuedAt: "2018-01-15", status: "valid" },
+  { id: "d4", type: "alta_autonomos", name: "Alta autónomos / TGSS", fileName: "TGSS_alta.pdf", issuedAt: "2018-01-15", status: "valid" },
+  { id: "d5", type: "iae", name: "Alta IAE", status: "missing" },
+
+  // Contractual (Compliance §3)
+  { id: "d6", type: "contrato_mercantil", name: "Contrato mercantil firmado", fileName: "Contrato_WG_2024.pdf", issuedAt: "2024-04-10", status: "valid" },
+  { id: "d7", type: "rgpd_lopd", name: "Acuerdo confidencialidad y RGPD/LOPD", fileName: "RGPD_2024.pdf", issuedAt: "2024-04-10", status: "valid" },
+
+  // Operativo / seguridad (Compliance §3)
+  { id: "d8", type: "seguro_rc", name: "Seguro Responsabilidad Civil", fileName: "RC_2024_2025.pdf", issuedAt: "2024-06-15", expiresAt: futureDate(45), status: "valid" },
+  { id: "d9", type: "prl", name: "Prevención Riesgos Laborales", fileName: "PRL_2024.pdf", issuedAt: "2024-03-01", expiresAt: futureDate(320), status: "valid" },
+  { id: "d10", type: "certificado_tecnico", name: "Certificado técnico — Gama Blanca", fileName: "Cert_GB_2023.pdf", issuedAt: "2023-09-01", expiresAt: futureDate(12), status: "expiring" },
+  { id: "d11", type: "certificado_tecnico", name: "Certificado técnico — Climatización (RITE)", fileName: "RITE_2024.pdf", issuedAt: "2024-02-10", expiresAt: futureDate(180), status: "valid" },
+
+  // Extras operativos
+  { id: "d12", type: "itv_vehiculo", name: "ITV vehículo de servicio (4521-LXY)", fileName: "ITV_4521LXY.pdf", issuedAt: "2024-08-20", expiresAt: futureDate(90), status: "valid" },
+  { id: "d13", type: "itv_vehiculo", name: "ITV vehículo de servicio (8870-MNB)", expiresAt: futureDate(-15), status: "expired" },
 ];
 
 // Facturación
