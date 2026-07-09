@@ -265,7 +265,7 @@ export const PortalLayout = () => {
           </Link>
         </header>
 
-        <div className="flex-1 max-w-6xl w-full mx-auto px-4 md:px-10 py-8 md:py-12">
+        <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-10 py-8 md:py-12">
           <RouteBoundary key={pathname}>
             <Outlet />
           </RouteBoundary>
