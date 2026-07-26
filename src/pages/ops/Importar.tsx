@@ -100,14 +100,18 @@ const Importar = () => {
             }
           } else {
             // Clave compuesta: preguntamos todo y filtramos en memoria
-            const { data } = await supabase
-              .from(parsed.table)
+            const { data } = await (supabase.from(parsed.table) as unknown as {
+              select: (cols: string) => {
+                in: (col: string, vals: (string | number)[]) => Promise<{ data: Record<string, unknown>[] | null }>;
+              };
+            })
               .select(keyCols.join(","))
               .in(keyCols[0], slice.map((r) => r[keyCols[0]]).filter(Boolean) as (string | number)[]);
             existingSet = new Set(
-              (data ?? []).map((d) => keyCols.map((c) => String(d[c as keyof typeof d])).join("‖")),
+              (data ?? []).map((d) => keyCols.map((c) => String(d[c])).join("‖")),
             );
           }
+
         } catch {
           /* si el lookup falla, contamos todo como insertado (conservador) */
         }
