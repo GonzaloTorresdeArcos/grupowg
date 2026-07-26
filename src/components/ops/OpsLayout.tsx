@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
-  LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight,
+  LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight, Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,12 +9,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { Logo } from "@/components/site/Logo";
 import { toast } from "sonner";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
+import { OpsFiltersProvider } from "@/lib/ops-filters";
+import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 
 const NAV = [
   { to: "/operaciones", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/operaciones/tecnicos", label: "Técnicos", icon: Users },
   { to: "/operaciones/delegaciones", label: "Delegaciones", icon: Building2 },
   { to: "/operaciones/sla", label: "SLA / Envejecidos", icon: Timer },
+  { to: "/operaciones/sats", label: "SATs externos", icon: Wrench },
   { to: "/operaciones/importar", label: "Importar CSV", icon: Upload },
 ];
 
@@ -156,11 +159,14 @@ export const OpsLayout = () => {
           </Link>
         </header>
 
-        <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-10 py-8 md:py-12">
-          <RouteBoundary key={pathname}>
-            <Outlet />
-          </RouteBoundary>
-        </div>
+        <OpsFiltersProvider>
+          <OpsFiltersBar />
+          <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-10 py-8 md:py-12">
+            <RouteBoundary key={pathname}>
+              <Outlet />
+            </RouteBoundary>
+          </div>
+        </OpsFiltersProvider>
       </main>
     </div>
   );
