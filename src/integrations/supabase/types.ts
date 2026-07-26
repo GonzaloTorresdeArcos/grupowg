@@ -1285,6 +1285,7 @@ export type Database = {
           delegacion: string
           delta_pct: number
           dias_medio: number
+          gama_principal: string
           grupo: string
           mix_top: string
           motivo_inactivo: string
