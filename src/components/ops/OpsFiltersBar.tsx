@@ -65,7 +65,7 @@ export const OpsFiltersBar = () => {
         {canalWarning && (
           <span className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
             <Info className="h-3.5 w-3.5 text-amber-600" />
-            Canal registrado solo en técnicos con doble usuario del ERP (~8% de las OTs)
+            Canal conocido en ~12% de las OTs (doble usuario del ERP + libro Assurant, siempre taller)
           </span>
         )}
       </div>
