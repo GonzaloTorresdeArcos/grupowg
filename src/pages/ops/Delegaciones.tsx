@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2 } from "lucide-react";
+import { EquiposComparativa } from "@/components/ops/EquiposComparativa";
 
 type KpiRow = {
   delegacion: string; cerradas: number; pct_sla20: number; dias_medio: number;
@@ -43,6 +44,8 @@ const Delegaciones = () => {
           Tenerife cerrada en julio 2026.
         </p>
       </header>
+
+      <EquiposComparativa />
 
       <div className="grid gap-4">
         {data.kpis.sort((a, b) => b.cerradas - a.cerradas).map((d) => {
