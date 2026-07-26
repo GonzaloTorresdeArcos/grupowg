@@ -1,15 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2, X } from "lucide-react";
 
 type Row = {
-  tecnico: string; delegacion: string; grupo: string; activo: boolean; motivo_inactivo: string | null;
+  tecnico: string; delegacion: string; grupo: string; gama_principal: string | null;
+  activo: boolean; motivo_inactivo: string | null;
   cerradas: number; cerradas_prev: number; delta_pct: number | null;
   pct_bajas: number; pct_bajas_esp: number;
   pct_nff: number; pct_nff_esp: number;
   dias_medio: number; pct_sla20: number;
   mix_top: string; score: number | null;
+};
+
+const GAMA_ORDER = ["Gama Blanca", "Gama PAE", "Gama Marron", "Gama Movilidad"] as const;
+const GAMA_LABEL: Record<string, string> = {
+  "Gama Blanca": "Blanca",
+  "Gama PAE": "PAE",
+  "Gama Marron": "Marrón",
+  "Gama Movilidad": "Movilidad",
+};
+const gamaLabel = (g: string | null | undefined) => (g ? GAMA_LABEL[g] ?? g : "—");
+
+const GamaChip = ({ gama }: { gama: string | null | undefined }) => {
+  if (!gama) return null;
+  return (
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] font-medium text-ink/70">
+      {gamaLabel(gama)}
+    </span>
+  );
 };
 
 const scoreBadge = (s: number | null) => {
@@ -57,10 +76,42 @@ const Tecnicos = () => {
     })();
   }, [rpcParams]);
 
+  const [gamaFilter, setGamaFilter] = useState<string | null>(null);
+
   const activos = rows.filter((r) => r.activo);
   const inactivos = rows.filter((r) => !r.activo);
-  const central = activos.filter((r) => r.grupo === "Central");
+  const centralAll = activos.filter((r) => r.grupo === "Central");
   const dele = activos.filter((r) => r.grupo === "Delegaciones");
+
+  // Gamas presentes en Central para los chips filtro
+  const gamasPresentes = useMemo(() => {
+    const set = new Set(centralAll.map((r) => r.gama_principal).filter(Boolean) as string[]);
+    return GAMA_ORDER.filter((g) => set.has(g));
+  }, [centralAll]);
+
+  const central = gamaFilter ? centralAll.filter((r) => r.gama_principal === gamaFilter) : centralAll;
+
+  // Agrupación de Central por gama_principal (visual, no afecta score)
+  const centralGroups = useMemo(() => {
+    const groups: Array<{ gama: string | null; rows: Row[] }> = [];
+    const byGama = new Map<string, Row[]>();
+    const sinGama: Row[] = [];
+    for (const r of central) {
+      if (r.gama_principal) {
+        const arr = byGama.get(r.gama_principal) ?? [];
+        arr.push(r);
+        byGama.set(r.gama_principal, arr);
+      } else {
+        sinGama.push(r);
+      }
+    }
+    for (const g of GAMA_ORDER) {
+      const arr = byGama.get(g);
+      if (arr && arr.length) groups.push({ gama: g, rows: arr });
+    }
+    if (sinGama.length) groups.push({ gama: null, rows: sinGama });
+    return groups;
+  }, [central]);
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
 
@@ -75,7 +126,45 @@ const Tecnicos = () => {
         </p>
       </header>
 
-      <TecGroup title="Central San Agustín (taller)" rows={central} onOpen={setSel} />
+      {gamasPresentes.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mr-1">Filtro por gama (Central)</span>
+          <button
+            onClick={() => setGamaFilter(null)}
+            className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${gamaFilter === null ? "bg-ink text-bone border-ink" : "border-black/[0.1] text-ink/60 hover:text-ink hover:border-ink/40"}`}
+          >Todas</button>
+          {gamasPresentes.map((g) => (
+            <button
+              key={g}
+              onClick={() => setGamaFilter(g)}
+              className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${gamaFilter === g ? "bg-ink text-bone border-ink" : "border-black/[0.1] text-ink/60 hover:text-ink hover:border-ink/40"}`}
+            >{GAMA_LABEL[g] ?? g}</button>
+          ))}
+        </div>
+      )}
+
+      <section>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">
+          Central San Agustín (taller) · {central.length} técnicos
+          {gamaFilter && <span className="ml-2 text-ink/50 normal-case tracking-normal">— gama {GAMA_LABEL[gamaFilter] ?? gamaFilter}</span>}
+        </p>
+        <div className="space-y-4">
+          {centralGroups.length === 0 && (
+            <div className="border border-black/[0.06] rounded-2xl bg-white px-4 py-8 text-center text-sm text-ink/40">
+              Sin técnicos en el período con los filtros actuales.
+            </div>
+          )}
+          {centralGroups.map((g) => (
+            <TecTable
+              key={g.gama ?? "sin-gama"}
+              subtitle={g.gama ? `Gama ${GAMA_LABEL[g.gama] ?? g.gama}` : "Sin gama asignada"}
+              rows={g.rows}
+              onOpen={setSel}
+            />
+          ))}
+        </div>
+      </section>
+
       <TecGroup title="Delegaciones (calle)" rows={dele} onOpen={setSel} />
 
       {inactivos.length > 0 && (
@@ -84,7 +173,7 @@ const Tecnicos = () => {
           <div className="border border-black/[0.06] rounded-2xl bg-white divide-y divide-black/[0.05]">
             {inactivos.map((r) => (
               <div key={r.tecnico} className="px-4 py-2.5 flex justify-between items-center text-sm text-ink/50">
-                <span>{r.tecnico} <span className="text-ink/30">· {r.delegacion || "—"}</span></span>
+                <span>{r.tecnico} <span className="text-ink/30">· {r.delegacion || "—"}</span> {r.gama_principal && <span className="text-ink/30">· {gamaLabel(r.gama_principal)}</span>}</span>
                 <span className="text-xs italic">{r.motivo_inactivo || "Inactivo"}</span>
               </div>
             ))}
@@ -96,6 +185,56 @@ const Tecnicos = () => {
     </div>
   );
 };
+
+const TecTable = ({ subtitle, rows, onOpen }: { subtitle?: string; rows: Row[]; onOpen: (r: Row) => void }) => (
+  <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
+    {subtitle && (
+      <div className="px-4 py-2 border-b border-black/[0.05] flex items-center justify-between">
+        <span className="text-[11px] font-medium tracking-tight text-ink/70">{subtitle}</span>
+        <span className="text-[10px] text-ink/40 tabular-nums">{rows.length} técnicos</span>
+      </div>
+    )}
+    <table className="w-full text-sm">
+      <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06]">
+        <tr>
+          <th className="text-left px-4 py-2.5 font-semibold">Técnico</th>
+          <th className="text-right px-3 py-2.5 font-semibold">Cerradas</th>
+          <th className="text-right px-3 py-2.5 font-semibold">Δ</th>
+          <th className="text-right px-3 py-2.5 font-semibold">SLA 20d</th>
+          <th className="text-right px-3 py-2.5 font-semibold">Días</th>
+          <th className="text-right px-3 py-2.5 font-semibold">% Bajas</th>
+          <th className="text-right px-3 py-2.5 font-semibold">% NFF</th>
+          <th className="text-left px-3 py-2.5 font-semibold">Mix top</th>
+          <th className="text-right px-4 py-2.5 font-semibold">Score</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-black/[0.04]">
+        {rows.map((r) => (
+          <tr key={r.tecnico} onClick={() => onOpen(r)} className="cursor-pointer hover:bg-black/[0.02] transition-colors">
+            <td className="px-4 py-2.5">
+              <p className="text-ink font-medium flex items-center gap-2">
+                {r.tecnico}
+                <GamaChip gama={r.gama_principal} />
+              </p>
+              <p className="text-[11px] text-ink/40">{r.delegacion || "—"}</p>
+            </td>
+            <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(r.cerradas)}</td>
+            <td className="text-right px-3 py-2.5">{deltaBadge(r.delta_pct)}</td>
+            <td className="text-right px-3 py-2.5 tabular-nums">{fmtPct(r.pct_sla20)}</td>
+            <td className="text-right px-3 py-2.5 tabular-nums">{fmtDec(r.dias_medio, 1)}</td>
+            <td className="px-3 py-2.5">{compareCell(r.pct_bajas, r.pct_bajas_esp)}</td>
+            <td className="px-3 py-2.5">{compareCell(r.pct_nff, r.pct_nff_esp)}</td>
+            <td className="px-3 py-2.5 text-[11px] text-ink/60 truncate max-w-[180px]">{r.mix_top}</td>
+            <td className="text-right px-4 py-2.5">{scoreBadge(r.score)}</td>
+          </tr>
+        ))}
+        {rows.length === 0 && (
+          <tr><td colSpan={9} className="text-center px-4 py-8 text-ink/40 text-sm">Sin técnicos.</td></tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+);
 
 const TecGroup = ({ title, rows, onOpen }: { title: string; rows: Row[]; onOpen: (r: Row) => void }) => (
   <section>
@@ -165,7 +304,10 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: Row; onClose: () => void }
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Ficha técnico</p>
-            <h2 className="font-display text-2xl tracking-tight text-ink mt-1">{tecnico.tecnico}</h2>
+            <h2 className="font-display text-2xl tracking-tight text-ink mt-1 flex items-center gap-2">
+              {tecnico.tecnico}
+              <GamaChip gama={tecnico.gama_principal} />
+            </h2>
             <p className="text-xs text-ink/50">{tecnico.delegacion || "—"} · {tecnico.grupo}</p>
           </div>
           <button onClick={onClose} className="text-ink/50 hover:text-ink"><X className="h-5 w-5" /></button>

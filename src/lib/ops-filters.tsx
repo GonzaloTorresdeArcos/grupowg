@@ -69,11 +69,35 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   }, [filters]);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      const { data } = await supabase.rpc("ops_filter_options" as never);
-      if (data) setOptions(data as OpsFilterOptions);
+      const { data, error } = await supabase.rpc("ops_filter_options" as never);
+      if (cancelled) return;
+      if (error) {
+        console.error("[ops_filter_options] error", error);
+        setLoadingOptions(false);
+        return;
+      }
+      // PostgREST puede envolver el jsonb en un array de una fila; normalizamos.
+      const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
+      const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+      const toArr = (v: unknown): string[] =>
+        Array.isArray(v)
+          ? (v.filter((x) => x != null && x !== "").map((x) => String(x)) as string[])
+          : [];
+      setOptions({
+        delegaciones: toArr(src.delegaciones),
+        clientes: toArr(src.clientes),
+        gamas: toArr(src.gamas),
+        familias: toArr(src.familias),
+        provincias: toArr(src.provincias),
+        sats: toArr(src.sats),
+        tecnicos: toArr(src.tecnicos),
+        canales: toArr(src.canales),
+      });
       setLoadingOptions(false);
     })();
+    return () => { cancelled = true; };
   }, []);
 
   const setFilters = (partial: Partial<OpsFilters>) =>

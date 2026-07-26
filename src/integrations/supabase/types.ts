@@ -247,6 +247,7 @@ export type Database = {
           activo: boolean
           created_at: string
           delegacion: string | null
+          gama_principal: string | null
           id: string
           motivo_inactivo: string | null
           tecnico: string
@@ -256,6 +257,7 @@ export type Database = {
           activo?: boolean
           created_at?: string
           delegacion?: string | null
+          gama_principal?: string | null
           id?: string
           motivo_inactivo?: string | null
           tecnico: string
@@ -265,6 +267,7 @@ export type Database = {
           activo?: boolean
           created_at?: string
           delegacion?: string | null
+          gama_principal?: string | null
           id?: string
           motivo_inactivo?: string | null
           tecnico?: string
@@ -1282,6 +1285,7 @@ export type Database = {
           delegacion: string
           delta_pct: number
           dias_medio: number
+          gama_principal: string
           grupo: string
           mix_top: string
           motivo_inactivo: string
