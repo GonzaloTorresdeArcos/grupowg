@@ -68,6 +68,7 @@ const Tecnicos = () => {
         p_from: rpcParams.p_from, p_to: rpcParams.p_to,
         p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
         p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+        p_marca: rpcParams.p_marca,
         p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
         p_canal: rpcParams.p_canal,
       } as never);

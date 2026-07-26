@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type OpsFilters = {
@@ -8,6 +8,7 @@ export type OpsFilters = {
   cliente: string | null;
   gama: string | null;
   familia: string | null;
+  marca: string | null;
   provincia: string | null;
   sat: string | null;
   tecnico: string | null;
@@ -19,13 +20,14 @@ export type OpsFilterOptions = {
   clientes: string[];
   gamas: string[];
   familias: string[];
+  marcas: string[];
   provincias: string[];
   sats: string[];
   tecnicos: string[];
   canales: string[];
 };
 
-const STORAGE_KEY = "ops.filters.v1";
+const STORAGE_KEY = "ops.filters.v2";
 
 const defaultFilters = (): OpsFilters => {
   const now = new Date();
@@ -34,7 +36,7 @@ const defaultFilters = (): OpsFilters => {
   const iso = (d: Date) => d.toISOString().slice(0, 10);
   return {
     from: iso(from), to: iso(to),
-    delegacion: null, cliente: null, gama: null, familia: null,
+    delegacion: null, cliente: null, gama: null, familia: null, marca: null,
     provincia: null, sat: null, tecnico: null, canal: null,
   };
 };
@@ -50,6 +52,11 @@ type Ctx = {
 
 const OpsFiltersContext = createContext<Ctx | null>(null);
 
+const EMPTY_OPTIONS: OpsFilterOptions = {
+  delegaciones: [], clientes: [], gamas: [], familias: [], marcas: [],
+  provincias: [], sats: [], tecnicos: [], canales: [],
+};
+
 export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFiltersState] = useState<OpsFilters>(() => {
     try {
@@ -58,47 +65,81 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     } catch { /* ignore */ }
     return defaultFilters();
   });
-  const [options, setOptions] = useState<OpsFilterOptions>({
-    delegaciones: [], clientes: [], gamas: [], familias: [],
-    provincias: [], sats: [], tecnicos: [], canales: [],
-  });
+  const [options, setOptions] = useState<OpsFilterOptions>(EMPTY_OPTIONS);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const reqIdRef = useRef(0);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
   }, [filters]);
 
+  // Recarga en cascada: cada cambio de filtro pide nuevas opciones compatibles.
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data, error } = await supabase.rpc("ops_filter_options" as never);
-      if (cancelled) return;
+    const myReq = ++reqIdRef.current;
+    const handle = setTimeout(async () => {
+      const { data, error } = await supabase.rpc("ops_filter_options" as never, {
+        p_delegacion: filters.delegacion,
+        p_cliente: filters.cliente,
+        p_gama: filters.gama,
+        p_familia: filters.familia,
+        p_marca: filters.marca,
+        p_provincia: filters.provincia,
+        p_sat: filters.sat,
+        p_tecnico: filters.tecnico,
+        p_canal: filters.canal,
+      } as never);
+      if (myReq !== reqIdRef.current) return;
       if (error) {
         console.error("[ops_filter_options] error", error);
         setLoadingOptions(false);
         return;
       }
-      // PostgREST puede envolver el jsonb en un array de una fila; normalizamos.
       const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
       const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
       const toArr = (v: unknown): string[] =>
         Array.isArray(v)
           ? (v.filter((x) => x != null && x !== "").map((x) => String(x)) as string[])
           : [];
-      setOptions({
+      const next: OpsFilterOptions = {
         delegaciones: toArr(src.delegaciones),
         clientes: toArr(src.clientes),
         gamas: toArr(src.gamas),
         familias: toArr(src.familias),
+        marcas: toArr(src.marcas),
         provincias: toArr(src.provincias),
         sats: toArr(src.sats),
         tecnicos: toArr(src.tecnicos),
         canales: toArr(src.canales),
-      });
+      };
+      setOptions(next);
       setLoadingOptions(false);
-    })();
-    return () => { cancelled = true; };
-  }, []);
+
+      // Auto-limpieza: si un valor seleccionado ya no está entre las opciones válidas, lo quitamos.
+      const patch: Partial<OpsFilters> = {};
+      const check = (key: keyof OpsFilters, list: string[]) => {
+        const v = filters[key];
+        if (typeof v === "string" && v && !list.includes(v)) {
+          (patch as Record<string, null>)[key as string] = null;
+        }
+      };
+      check("delegacion", next.delegaciones);
+      check("cliente", next.clientes);
+      check("gama", next.gamas);
+      check("familia", next.familias);
+      check("marca", next.marcas);
+      check("provincia", next.provincias);
+      check("sat", next.sats);
+      check("tecnico", next.tecnicos);
+      check("canal", next.canales);
+      if (Object.keys(patch).length > 0) {
+        setFiltersState((f) => ({ ...f, ...patch }));
+      }
+    }, 120);
+    return () => clearTimeout(handle);
+  }, [
+    filters.delegacion, filters.cliente, filters.gama, filters.familia, filters.marca,
+    filters.provincia, filters.sat, filters.tecnico, filters.canal,
+  ]);
 
   const setFilters = (partial: Partial<OpsFilters>) =>
     setFiltersState((f) => ({ ...f, ...partial }));
@@ -107,7 +148,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const rpcParams = useMemo(() => ({
     p_from: filters.from, p_to: filters.to,
     p_delegacion: filters.delegacion, p_cliente: filters.cliente,
-    p_gama: filters.gama, p_familia: filters.familia,
+    p_gama: filters.gama, p_familia: filters.familia, p_marca: filters.marca,
     p_provincia: filters.provincia, p_sat: filters.sat,
     p_tecnico: filters.tecnico, p_canal: filters.canal,
   }), [filters]);

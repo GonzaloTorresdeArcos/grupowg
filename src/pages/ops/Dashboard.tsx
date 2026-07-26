@@ -43,6 +43,7 @@ const Dashboard = () => {
         supabase.rpc("ops_evolucion" as never, {
           p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
           p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+          p_marca: rpcParams.p_marca,
           p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
           p_tecnico: rpcParams.p_tecnico, p_canal: rpcParams.p_canal,
         } as never),

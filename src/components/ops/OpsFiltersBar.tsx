@@ -45,6 +45,8 @@ export const OpsFiltersBar = () => {
           onChange={(v) => setFilters({ gama: v })} />
         <Sel label="Familia" value={filters.familia} options={options.familias}
           onChange={(v) => setFilters({ familia: v })} />
+        <Sel label="Marca" value={filters.marca} options={options.marcas}
+          onChange={(v) => setFilters({ marca: v })} />
         <Sel label="Provincia" value={filters.provincia} options={options.provincias}
           onChange={(v) => setFilters({ provincia: v })} />
         <Sel label="SAT" value={filters.sat} options={options.sats}
