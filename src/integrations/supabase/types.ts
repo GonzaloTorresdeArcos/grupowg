@@ -1195,6 +1195,30 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_equipos: {
+        Args: {
+          p_cliente?: string
+          p_familia?: string
+          p_from?: string
+          p_to?: string
+        }
+        Returns: {
+          abiertas: number
+          abiertas_30: number
+          ambito: string
+          cerradas: number
+          coste_medio: number
+          despl_medio: number
+          dias_medio: number
+          equipo: string
+          pct_bajas: number
+          pct_bajas_esp: number
+          pct_nff: number
+          pct_nff_esp: number
+          pct_sla20: number
+          tecnicos_activos: number
+        }[]
+      }
       ops_evolucion: {
         Args: {
           p_canal?: string
