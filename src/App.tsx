@@ -48,6 +48,7 @@ const OpsDelegaciones = lazy(() => import("./pages/ops/Delegaciones.tsx"));
 const OpsSLA = lazy(() => import("./pages/ops/SLA.tsx"));
 const OpsSats = lazy(() => import("./pages/ops/Sats.tsx"));
 const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
+const OpsCostes = lazy(() => import("./pages/ops/Costes.tsx"));
 
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
