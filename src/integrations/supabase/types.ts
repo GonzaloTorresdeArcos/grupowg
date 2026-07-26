@@ -50,6 +50,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_coste_mensual: {
+        Row: {
+          coste_total: number
+          id: string
+          km: number | null
+          mes: string
+          tecnico: string
+          variable: number | null
+        }
+        Insert: {
+          coste_total: number
+          id?: string
+          km?: number | null
+          mes: string
+          tecnico: string
+          variable?: number | null
+        }
+        Update: {
+          coste_total?: number
+          id?: string
+          km?: number | null
+          mes?: string
+          tecnico?: string
+          variable?: number | null
+        }
+        Relationships: []
+      }
       ops_fact_ot: {
         Row: {
           anio_garantia: number | null
@@ -1227,6 +1254,7 @@ export type Database = {
         }
         Returns: string
       }
+      ops_costes: { Args: { p_from?: string; p_to?: string }; Returns: Json }
       ops_delegaciones: {
         Args: {
           p_cliente?: string
