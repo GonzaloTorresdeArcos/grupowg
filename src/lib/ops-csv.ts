@@ -82,11 +82,32 @@ const parseDate = (v: string): string | null => {
 };
 
 const parseNum = (v: string): number | null => {
-  const s = v.trim().replace(/%/g, "").replace(/\s/g, "").replace(/\./g, "").replace(",", ".");
+  let s = v.trim().replace(/%/g, "").replace(/\s/g, "");
   if (!s) return null;
+  const lastDot = s.lastIndexOf(".");
+  const lastComma = s.lastIndexOf(",");
+  const dots = (s.match(/\./g) ?? []).length;
+  const commas = (s.match(/,/g) ?? []).length;
+  if (dots && commas) {
+    if (lastDot > lastComma) {
+      // punto es decimal, coma es miles
+      s = s.replace(/,/g, "");
+    } else {
+      // coma es decimal, punto es miles
+      s = s.replace(/\./g, "").replace(",", ".");
+    }
+  } else if (commas) {
+    if (commas === 1) s = s.replace(",", ".");
+    else s = s.replace(/,/g, "");
+  } else if (dots) {
+    if (dots > 1) s = s.replace(/\./g, "");
+    // si dots === 1, es decimal → conservar
+  }
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 };
+
+const INT_FIELDS = new Set(["dias_cierre", "sla_cierre_dlab", "anio_garantia"]);
 
 // ---------- CSV parser ----------
 export function parseCSV(text: string): string[][] {
