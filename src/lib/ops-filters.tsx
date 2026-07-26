@@ -79,7 +79,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       // PostgREST puede envolver el jsonb en un array de una fila; normalizamos.
-      const raw = Array.isArray(data) ? (data[0] as unknown) : (data as unknown);
+      const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
       const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
       const toArr = (v: unknown): string[] =>
         Array.isArray(v)
