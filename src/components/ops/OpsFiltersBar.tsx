@@ -1,8 +1,9 @@
 import { useOpsFilters } from "@/lib/ops-filters";
-import { X } from "lucide-react";
+import { Info, X } from "lucide-react";
 
-const Sel = ({ label, value, options, onChange }: {
+const Sel = ({ label, value, options, onChange, displayMap }: {
   label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
+  displayMap?: Record<string, string>;
 }) => (
   <label className="flex flex-col gap-1 min-w-[130px]">
     <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
@@ -12,13 +13,21 @@ const Sel = ({ label, value, options, onChange }: {
       className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
     >
       <option value="">Todos</option>
-      {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      {options.map((o) => (
+        <option key={o} value={o}>{displayMap?.[o] ?? o}</option>
+      ))}
     </select>
   </label>
 );
 
+const CANAL_DISPLAY: Record<string, string> = {
+  Taller: "Taller (cobertura parcial)",
+  Domicilio: "Domicilio (cobertura parcial)",
+};
+
 export const OpsFiltersBar = () => {
   const { filters, setFilters, reset, options } = useOpsFilters();
+  const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
@@ -47,11 +56,18 @@ export const OpsFiltersBar = () => {
         <Sel label="Técnico" value={filters.tecnico} options={options.tecnicos}
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
+          displayMap={CANAL_DISPLAY}
           onChange={(v) => setFilters({ canal: v })} />
         <button onClick={reset}
           className="h-8 px-3 rounded-md border border-black/[0.08] text-[12px] text-ink/70 hover:text-ink hover:border-ink/40 flex items-center gap-1">
           <X className="h-3 w-3" /> Limpiar
         </button>
+        {canalWarning && (
+          <span className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+            <Info className="h-3.5 w-3.5 text-amber-600" />
+            Canal registrado solo en técnicos con doble usuario del ERP (~8% de las OTs)
+          </span>
+        )}
       </div>
     </div>
   );
