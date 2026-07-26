@@ -1,15 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2, X } from "lucide-react";
 
 type Row = {
-  tecnico: string; delegacion: string; grupo: string; activo: boolean; motivo_inactivo: string | null;
+  tecnico: string; delegacion: string; grupo: string; gama_principal: string | null;
+  activo: boolean; motivo_inactivo: string | null;
   cerradas: number; cerradas_prev: number; delta_pct: number | null;
   pct_bajas: number; pct_bajas_esp: number;
   pct_nff: number; pct_nff_esp: number;
   dias_medio: number; pct_sla20: number;
   mix_top: string; score: number | null;
+};
+
+const GAMA_ORDER = ["Gama Blanca", "Gama PAE", "Gama Marron", "Gama Movilidad"] as const;
+const GAMA_LABEL: Record<string, string> = {
+  "Gama Blanca": "Blanca",
+  "Gama PAE": "PAE",
+  "Gama Marron": "Marrón",
+  "Gama Movilidad": "Movilidad",
+};
+const gamaLabel = (g: string | null | undefined) => (g ? GAMA_LABEL[g] ?? g : "—");
+
+const GamaChip = ({ gama }: { gama: string | null | undefined }) => {
+  if (!gama) return null;
+  return (
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md border border-black/[0.08] bg-black/[0.02] text-[10px] font-medium text-ink/70">
+      {gamaLabel(gama)}
+    </span>
+  );
 };
 
 const scoreBadge = (s: number | null) => {
