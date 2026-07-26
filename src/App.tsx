@@ -46,6 +46,7 @@ const OpsDashboard = lazy(() => import("./pages/ops/Dashboard.tsx"));
 const OpsTecnicos = lazy(() => import("./pages/ops/Tecnicos.tsx"));
 const OpsDelegaciones = lazy(() => import("./pages/ops/Delegaciones.tsx"));
 const OpsSLA = lazy(() => import("./pages/ops/SLA.tsx"));
+const OpsSats = lazy(() => import("./pages/ops/Sats.tsx"));
 const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
 
 
@@ -146,6 +147,7 @@ const App = () => (
                 <Route path="/operaciones/tecnicos" element={<OpsTecnicos />} />
                 <Route path="/operaciones/delegaciones" element={<OpsDelegaciones />} />
                 <Route path="/operaciones/sla" element={<OpsSLA />} />
+                <Route path="/operaciones/sats" element={<OpsSats />} />
                 <Route path="/operaciones/importar" element={<OpsImportar />} />
               </Route>
 
