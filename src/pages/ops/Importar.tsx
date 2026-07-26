@@ -92,11 +92,15 @@ const Importar = () => {
           if (keyCols.length === 1) {
             const vals = slice.map((r) => r[keyCols[0]]).filter(Boolean) as (string | number)[];
             if (vals.length) {
-              const { data } = await supabase
-                .from(parsed.table)
+              const { data } = await (supabase.from(parsed.table) as unknown as {
+                select: (c: string) => {
+                  in: (col: string, vs: (string | number)[]) => Promise<{ data: Record<string, unknown>[] | null }>;
+                };
+              })
                 .select(keyCols[0])
-                .in(keyCols[0], vals as (string | number)[]);
-              existingSet = new Set((data ?? []).map((d) => String(d[keyCols[0] as keyof typeof d])));
+                .in(keyCols[0], vals);
+              existingSet = new Set((data ?? []).map((d) => String(d[keyCols[0]])));
+
             }
           } else {
             // Clave compuesta: preguntamos todo y filtramos en memoria
