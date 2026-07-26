@@ -37,6 +37,14 @@ const PortalRepuestos = lazy(() => import("./pages/portal/Repuestos.tsx"));
 const PortalEquipos = lazy(() => import("./pages/portal/Equipos.tsx"));
 const PortalGarantias = lazy(() => import("./pages/portal/Garantias.tsx"));
 
+// Operaciones (interno · lazy)
+const OpsDashboard = lazy(() => import("./pages/ops/Dashboard.tsx"));
+const OpsTecnicos = lazy(() => import("./pages/ops/Tecnicos.tsx"));
+const OpsDelegaciones = lazy(() => import("./pages/ops/Delegaciones.tsx"));
+const OpsSLA = lazy(() => import("./pages/ops/SLA.tsx"));
+const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
+
+
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
 import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
 import { ConsentScripts } from "./components/site/ConsentScripts.tsx";
