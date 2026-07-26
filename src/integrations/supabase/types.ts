@@ -74,6 +74,7 @@ export type Database = {
           fecha_primer_contacto: string | null
           fecha_primera_visita: string | null
           gama_origen: string | null
+          gama_real: string | null
           id: string
           importe_desplazamiento: number | null
           importe_mo: number | null
@@ -118,6 +119,7 @@ export type Database = {
           fecha_primer_contacto?: string | null
           fecha_primera_visita?: string | null
           gama_origen?: string | null
+          gama_real?: string | null
           id?: string
           importe_desplazamiento?: number | null
           importe_mo?: number | null
@@ -162,6 +164,7 @@ export type Database = {
           fecha_primer_contacto?: string | null
           fecha_primera_visita?: string | null
           gama_origen?: string | null
+          gama_real?: string | null
           id?: string
           importe_desplazamiento?: number | null
           importe_mo?: number | null
@@ -209,6 +212,36 @@ export type Database = {
           id?: string
           marca?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_regla_familia: {
+        Row: {
+          familia: string
+          gama: string
+        }
+        Insert: {
+          familia: string
+          gama: string
+        }
+        Update: {
+          familia?: string
+          gama?: string
+        }
+        Relationships: []
+      }
+      ops_regla_marca: {
+        Row: {
+          gama: string
+          marca: string
+        }
+        Insert: {
+          gama: string
+          marca: string
+        }
+        Update: {
+          gama?: string
+          marca?: string
         }
         Relationships: []
       }
@@ -1185,6 +1218,15 @@ export type Database = {
         }[]
       }
       ops_alertas: { Args: { p_from?: string; p_to?: string }; Returns: Json }
+      ops_clasifica_gama: {
+        Args: {
+          p_cliente: string
+          p_familia: string
+          p_gama_origen: string
+          p_marca: string
+        }
+        Returns: string
+      }
       ops_delegaciones: {
         Args: {
           p_cliente?: string
