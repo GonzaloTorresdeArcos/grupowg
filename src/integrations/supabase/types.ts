@@ -14,6 +14,264 @@ export type Database = {
   }
   public: {
     Tables: {
+      ops_benchmark: {
+        Row: {
+          cliente_wg: string
+          created_at: string
+          dias_medio: number | null
+          familia: string
+          id: string
+          ots: number | null
+          pct_bajas: number | null
+          pct_nff: number | null
+          updated_at: string
+        }
+        Insert: {
+          cliente_wg: string
+          created_at?: string
+          dias_medio?: number | null
+          familia: string
+          id?: string
+          ots?: number | null
+          pct_bajas?: number | null
+          pct_nff?: number | null
+          updated_at?: string
+        }
+        Update: {
+          cliente_wg?: string
+          created_at?: string
+          dias_medio?: number | null
+          familia?: string
+          id?: string
+          ots?: number | null
+          pct_bajas?: number | null
+          pct_nff?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_fact_ot: {
+        Row: {
+          anio_garantia: number | null
+          aparato: string | null
+          canal: string | null
+          capital: string | null
+          cliente_wg: string | null
+          codigo_postal: string | null
+          created_at: string
+          delegacion: string | null
+          dias_cierre: number | null
+          es_anulado: boolean
+          es_baja: boolean
+          es_nff: boolean
+          estado: string | null
+          fact_cli: number | null
+          fact_sat: number | null
+          familia: string | null
+          fecha_baja: string | null
+          fecha_cierre: string | null
+          fecha_creacion: string | null
+          fecha_primer_contacto: string | null
+          fecha_primera_visita: string | null
+          gama_origen: string | null
+          id: string
+          importe_desplazamiento: number | null
+          importe_mo: number | null
+          incidencia: string | null
+          kpi_20d: boolean | null
+          kpi_30d: boolean | null
+          marca: string | null
+          modelo: string | null
+          municipio: string | null
+          num_ot: string
+          provincia: string | null
+          sat: string | null
+          seccion: string | null
+          situacion: string | null
+          sla_cierre_dlab: number | null
+          subfamilia: string | null
+          tecnico: string | null
+          tiene_piezas: boolean | null
+          tipo_recurso: string | null
+          updated_at: string
+        }
+        Insert: {
+          anio_garantia?: number | null
+          aparato?: string | null
+          canal?: string | null
+          capital?: string | null
+          cliente_wg?: string | null
+          codigo_postal?: string | null
+          created_at?: string
+          delegacion?: string | null
+          dias_cierre?: number | null
+          es_anulado?: boolean
+          es_baja?: boolean
+          es_nff?: boolean
+          estado?: string | null
+          fact_cli?: number | null
+          fact_sat?: number | null
+          familia?: string | null
+          fecha_baja?: string | null
+          fecha_cierre?: string | null
+          fecha_creacion?: string | null
+          fecha_primer_contacto?: string | null
+          fecha_primera_visita?: string | null
+          gama_origen?: string | null
+          id?: string
+          importe_desplazamiento?: number | null
+          importe_mo?: number | null
+          incidencia?: string | null
+          kpi_20d?: boolean | null
+          kpi_30d?: boolean | null
+          marca?: string | null
+          modelo?: string | null
+          municipio?: string | null
+          num_ot: string
+          provincia?: string | null
+          sat?: string | null
+          seccion?: string | null
+          situacion?: string | null
+          sla_cierre_dlab?: number | null
+          subfamilia?: string | null
+          tecnico?: string | null
+          tiene_piezas?: boolean | null
+          tipo_recurso?: string | null
+          updated_at?: string
+        }
+        Update: {
+          anio_garantia?: number | null
+          aparato?: string | null
+          canal?: string | null
+          capital?: string | null
+          cliente_wg?: string | null
+          codigo_postal?: string | null
+          created_at?: string
+          delegacion?: string | null
+          dias_cierre?: number | null
+          es_anulado?: boolean
+          es_baja?: boolean
+          es_nff?: boolean
+          estado?: string | null
+          fact_cli?: number | null
+          fact_sat?: number | null
+          familia?: string | null
+          fecha_baja?: string | null
+          fecha_cierre?: string | null
+          fecha_creacion?: string | null
+          fecha_primer_contacto?: string | null
+          fecha_primera_visita?: string | null
+          gama_origen?: string | null
+          id?: string
+          importe_desplazamiento?: number | null
+          importe_mo?: number | null
+          incidencia?: string | null
+          kpi_20d?: boolean | null
+          kpi_30d?: boolean | null
+          marca?: string | null
+          modelo?: string | null
+          municipio?: string | null
+          num_ot?: string
+          provincia?: string | null
+          sat?: string | null
+          seccion?: string | null
+          situacion?: string | null
+          sla_cierre_dlab?: number | null
+          subfamilia?: string | null
+          tecnico?: string | null
+          tiene_piezas?: boolean | null
+          tipo_recurso?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_portfolio_gamas: {
+        Row: {
+          cliente_wg: string
+          created_at: string
+          gama_real: string
+          id: string
+          marca: string
+          updated_at: string
+        }
+        Insert: {
+          cliente_wg: string
+          created_at?: string
+          gama_real: string
+          id?: string
+          marca: string
+          updated_at?: string
+        }
+        Update: {
+          cliente_wg?: string
+          created_at?: string
+          gama_real?: string
+          id?: string
+          marca?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_rrhh: {
+        Row: {
+          ausencias: number | null
+          created_at: string
+          dias_trabajados: number | null
+          id: string
+          mes: string
+          tecnico: string
+          updated_at: string
+        }
+        Insert: {
+          ausencias?: number | null
+          created_at?: string
+          dias_trabajados?: number | null
+          id?: string
+          mes: string
+          tecnico: string
+          updated_at?: string
+        }
+        Update: {
+          ausencias?: number | null
+          created_at?: string
+          dias_trabajados?: number | null
+          id?: string
+          mes?: string
+          tecnico?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_tecnicos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          delegacion: string | null
+          id: string
+          motivo_inactivo: string | null
+          tecnico: string
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          delegacion?: string | null
+          id?: string
+          motivo_inactivo?: string | null
+          tecnico: string
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          delegacion?: string | null
+          id?: string
+          motivo_inactivo?: string | null
+          tecnico?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           application_id: string | null
@@ -901,6 +1159,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_management: { Args: { _user_id?: string }; Returns: boolean }
       match_candidates_for_incidence: {
         Args: {
           _brand?: string
@@ -924,7 +1183,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user" | "client"
+      app_role: "admin" | "user" | "client" | "management"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1052,7 +1311,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user", "client"],
+      app_role: ["admin", "user", "client", "management"],
     },
   },
 } as const

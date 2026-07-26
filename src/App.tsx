@@ -11,6 +11,10 @@ import { PortalLayout } from "@/components/portal/PortalLayout";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
 
 // Páginas públicas (lazy → code-splitting por ruta)
+import { OpsProtectedRoute } from "@/components/ops/OpsProtectedRoute";
+import { OpsLayout } from "@/components/ops/OpsLayout";
+
+// Páginas públicas (lazy → code-splitting por ruta)
 const WGNetwork = lazy(() => import("./pages/WGNetwork.tsx"));
 const Inscripcion = lazy(() => import("./pages/Inscripcion.tsx"));
 const Contacto = lazy(() => import("./pages/Contacto.tsx"));
@@ -36,6 +40,14 @@ const PortalI18nDebug = lazy(() => import("./pages/PortalI18nDebug.tsx"));
 const PortalRepuestos = lazy(() => import("./pages/portal/Repuestos.tsx"));
 const PortalEquipos = lazy(() => import("./pages/portal/Equipos.tsx"));
 const PortalGarantias = lazy(() => import("./pages/portal/Garantias.tsx"));
+
+// Operaciones (interno · lazy)
+const OpsDashboard = lazy(() => import("./pages/ops/Dashboard.tsx"));
+const OpsTecnicos = lazy(() => import("./pages/ops/Tecnicos.tsx"));
+const OpsDelegaciones = lazy(() => import("./pages/ops/Delegaciones.tsx"));
+const OpsSLA = lazy(() => import("./pages/ops/SLA.tsx"));
+const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
+
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
 import { CookieBanner, CookiePreferencesDialog } from "./components/site/CookieBanner.tsx";
@@ -121,6 +133,22 @@ const App = () => (
                 <Route path="/portal/incidencias/:id" element={<PortalIncidenciaDetail />} />
                 <Route path="/portal/leads" element={<PortalLeads />} />
               </Route>
+
+              {/* /operaciones — sección interna (solo rol management) */}
+              <Route
+                element={
+                  <OpsProtectedRoute>
+                    <OpsLayout />
+                  </OpsProtectedRoute>
+                }
+              >
+                <Route path="/operaciones" element={<OpsDashboard />} />
+                <Route path="/operaciones/tecnicos" element={<OpsTecnicos />} />
+                <Route path="/operaciones/delegaciones" element={<OpsDelegaciones />} />
+                <Route path="/operaciones/sla" element={<OpsSLA />} />
+                <Route path="/operaciones/importar" element={<OpsImportar />} />
+              </Route>
+
 
               <Route element={<Layout />}>
                 <Route path="*" element={<NotFound />} />
