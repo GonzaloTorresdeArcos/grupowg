@@ -134,6 +134,22 @@ const App = () => (
                 <Route path="/portal/leads" element={<PortalLeads />} />
               </Route>
 
+              {/* /operaciones — sección interna (solo rol management) */}
+              <Route
+                element={
+                  <OpsProtectedRoute>
+                    <OpsLayout />
+                  </OpsProtectedRoute>
+                }
+              >
+                <Route path="/operaciones" element={<OpsDashboard />} />
+                <Route path="/operaciones/tecnicos" element={<OpsTecnicos />} />
+                <Route path="/operaciones/delegaciones" element={<OpsDelegaciones />} />
+                <Route path="/operaciones/sla" element={<OpsSLA />} />
+                <Route path="/operaciones/importar" element={<OpsImportar />} />
+              </Route>
+
+
               <Route element={<Layout />}>
                 <Route path="*" element={<NotFound />} />
               </Route>
