@@ -187,7 +187,7 @@ export type Database = {
       }
       ops_portfolio_gamas: {
         Row: {
-          cliente_wg: string
+          cliente_wg: string | null
           created_at: string
           gama_real: string
           id: string
@@ -195,7 +195,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          cliente_wg: string
+          cliente_wg?: string | null
           created_at?: string
           gama_real: string
           id?: string
@@ -203,7 +203,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          cliente_wg?: string
+          cliente_wg?: string | null
           created_at?: string
           gama_real?: string
           id?: string
