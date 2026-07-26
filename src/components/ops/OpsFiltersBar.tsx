@@ -20,10 +20,6 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
   </label>
 );
 
-const CANAL_DISPLAY: Record<string, string> = {
-  Taller: "Taller (cobertura parcial)",
-  Domicilio: "Domicilio (cobertura parcial)",
-};
 
 export const OpsFiltersBar = () => {
   const { filters, setFilters, reset, options } = useOpsFilters();
@@ -56,7 +52,6 @@ export const OpsFiltersBar = () => {
         <Sel label="Técnico" value={filters.tecnico} options={options.tecnicos}
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
-          displayMap={CANAL_DISPLAY}
           onChange={(v) => setFilters({ canal: v })} />
         <button onClick={reset}
           className="h-8 px-3 rounded-md border border-black/[0.08] text-[12px] text-ink/70 hover:text-ink hover:border-ink/40 flex items-center gap-1">
@@ -65,7 +60,7 @@ export const OpsFiltersBar = () => {
         {canalWarning && (
           <span className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
             <Info className="h-3.5 w-3.5 text-amber-600" />
-            Canal conocido en ~12% de las OTs (doble usuario del ERP + libro Assurant, siempre taller)
+            Canal medido o inferido por tipo de producto — cubre el 79% de las OTs (reglas validadas, ≥95% de acierto)
           </span>
         )}
       </div>
