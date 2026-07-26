@@ -125,11 +125,28 @@ const Importar = () => {
 
         const { error } = await supabase
           .from(parsed.table)
-          // deno-lint-ignore no-explicit-any
           .upsert(slice as never, { onConflict: key });
         if (error) {
-          res.errors += slice.length;
-          if (res.errorSample.length < 3) res.errorSample.push(error.message);
+          // Reintento fila a fila: no descartar 500 por una fila mala
+          let rowInserted = 0;
+          let rowUpdated = 0;
+          for (let j = 0; j < slice.length; j++) {
+            const row = slice[j];
+            const rowKey = keyVals[j];
+            const { error: rowErr } = await supabase
+              .from(parsed.table)
+              .upsert([row] as never, { onConflict: key });
+            if (rowErr) {
+              res.errors += 1;
+              if (res.errorSample.length < 5) res.errorSample.push(rowErr.message);
+            } else if (existingSet.has(rowKey)) {
+              rowUpdated += 1;
+            } else {
+              rowInserted += 1;
+            }
+          }
+          res.inserted += rowInserted;
+          res.updated += rowUpdated;
         } else {
           res.inserted += inserts;
           res.updated += updates;
