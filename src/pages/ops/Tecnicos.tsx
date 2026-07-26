@@ -304,7 +304,10 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: Row; onClose: () => void }
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Ficha técnico</p>
-            <h2 className="font-display text-2xl tracking-tight text-ink mt-1">{tecnico.tecnico}</h2>
+            <h2 className="font-display text-2xl tracking-tight text-ink mt-1 flex items-center gap-2">
+              {tecnico.tecnico}
+              <GamaChip gama={tecnico.gama_principal} />
+            </h2>
             <p className="text-xs text-ink/50">{tecnico.delegacion || "—"} · {tecnico.grupo}</p>
           </div>
           <button onClick={onClose} className="text-ink/50 hover:text-ink"><X className="h-5 w-5" /></button>
