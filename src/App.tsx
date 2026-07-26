@@ -11,6 +11,10 @@ import { PortalLayout } from "@/components/portal/PortalLayout";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
 
 // Páginas públicas (lazy → code-splitting por ruta)
+import { OpsProtectedRoute } from "@/components/ops/OpsProtectedRoute";
+import { OpsLayout } from "@/components/ops/OpsLayout";
+
+// Páginas públicas (lazy → code-splitting por ruta)
 const WGNetwork = lazy(() => import("./pages/WGNetwork.tsx"));
 const Inscripcion = lazy(() => import("./pages/Inscripcion.tsx"));
 const Contacto = lazy(() => import("./pages/Contacto.tsx"));
