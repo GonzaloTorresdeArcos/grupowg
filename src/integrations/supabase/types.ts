@@ -1181,6 +1181,119 @@ export type Database = {
           razon_social: string
         }[]
       }
+      ops_alertas: { Args: { p_from?: string; p_to?: string }; Returns: Json }
+      ops_delegaciones: {
+        Args: {
+          p_cliente?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_evolucion: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_gama?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+        }
+        Returns: {
+          cerradas: number
+          creadas: number
+          mes: string
+          pct_bajas: number
+          pct_sla20: number
+        }[]
+      }
+      ops_filter_options: { Args: never; Returns: Json }
+      ops_kpis: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_sats_ranking: {
+        Args: {
+          p_cliente?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_provincia?: string
+          p_to?: string
+        }
+        Returns: {
+          abiertas: number
+          cerradas: number
+          coste_medio: number
+          dias_medio: number
+          pct_bajas: number
+          pct_nff: number
+          pct_sla20: number
+          sat: string
+        }[]
+      }
+      ops_sla: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_tecnico_ficha: { Args: { p_tecnico: string }; Returns: Json }
+      ops_tecnicos_scorecard: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_provincia?: string
+          p_sat?: string
+          p_to?: string
+        }
+        Returns: {
+          activo: boolean
+          cerradas: number
+          cerradas_prev: number
+          delegacion: string
+          delta_pct: number
+          dias_medio: number
+          grupo: string
+          mix_top: string
+          motivo_inactivo: string
+          pct_bajas: number
+          pct_bajas_esp: number
+          pct_nff: number
+          pct_nff_esp: number
+          pct_sla20: number
+          score: number
+          tecnico: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "client" | "management"
