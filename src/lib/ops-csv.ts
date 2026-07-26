@@ -165,7 +165,10 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (!col) continue;
     const v = (raw[i] ?? "").trim();
     if (DATE_FIELDS.has(col)) rec[col] = parseDate(v);
-    else if (NUMERIC.has(col)) rec[col] = parseNum(v);
+    else if (NUMERIC.has(col)) {
+      const n = parseNum(v);
+      rec[col] = n !== null && INT_FIELDS.has(col) ? Math.round(n) : n;
+    }
     else if (BOOL_FIELDS.has(col)) rec[col] = parseBool(v);
     else rec[col] = v || null;
   }
