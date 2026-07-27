@@ -86,34 +86,74 @@ const compareCell = (v: number, esp: number, thr = 0.1) => {
 
 const Tecnicos = () => {
   const { rpcParams } = useOpsFilters();
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rowsRaw, setRowsRaw] = useState<Row[]>([]);
+  const [rowsPrev, setRowsPrev] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sel, setSel] = useState<Row | null>(null);
+  const [sel, setSel] = useState<EnrichedRow | null>(null);
 
   useEffect(() => {
     setLoading(true);
+    const prev = computePrevPeriod(rpcParams.p_from as string, rpcParams.p_to as string);
+    const base = {
+      p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
+      p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+      p_marca: rpcParams.p_marca,
+      p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
+      p_canal: rpcParams.p_canal,
+    };
     (async () => {
-      const { data } = await supabase.rpc("ops_tecnicos_scorecard" as never, {
-        p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-        p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
-        p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
-        p_marca: rpcParams.p_marca,
-        p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
-        p_canal: rpcParams.p_canal,
-      } as never);
-      setRows((data ?? []) as Row[]);
+      const [cur, pre] = await Promise.all([
+        supabase.rpc("ops_tecnicos_scorecard" as never, { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...base } as never),
+        supabase.rpc("ops_tecnicos_scorecard" as never, { p_from: prev.from, p_to: prev.to, ...base } as never),
+      ]);
+      setRowsRaw((cur.data ?? []) as Row[]);
+      setRowsPrev((pre.data ?? []) as Row[]);
       setLoading(false);
     })();
   }, [rpcParams]);
 
   const [gamaFilter, setGamaFilter] = useState<string | null>(null);
 
+  // Enrich: media bajas por delegación (contexto peer-group) + estado
+  const rows: EnrichedRow[] = useMemo(() => {
+    const prevMap = new Map(rowsPrev.map((r) => [r.tecnico, r] as const));
+    // Media bajas por delegación en el período actual (ponderada por cerradas)
+    const accum = new Map<string, { b: number; c: number }>();
+    for (const r of rowsRaw.filter((x) => x.activo)) {
+      const cur = accum.get(r.delegacion) ?? { b: 0, c: 0 };
+      cur.b += r.pct_bajas * r.cerradas;
+      cur.c += r.cerradas;
+      accum.set(r.delegacion, cur);
+    }
+    const mediaByDeleg = new Map<string, number>();
+    for (const [k, v] of accum) mediaByDeleg.set(k, v.c > 0 ? v.b / v.c : 0);
+
+    return rowsRaw.map((r) => {
+      const p = prevMap.get(r.tecnico) ?? null;
+      const bajas_prev = p ? Math.round(p.pct_bajas * p.cerradas) : null;
+      const pct_bajas_prev = p ? p.pct_bajas : null;
+      const delta_ratio_bajas = pct_bajas_prev != null ? r.pct_bajas - pct_bajas_prev : null;
+      const estadoInfo = estadoTecnico(
+        { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp, cerradas_prev: p?.cerradas ?? r.cerradas_prev, delta_pct: r.delta_pct },
+        p ? { tecnico: p.tecnico, delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas, pct_bajas_esp: p.pct_bajas_esp } : null,
+        mediaByDeleg.get(r.delegacion) ?? null,
+      );
+      return { ...r, bajas_prev, pct_bajas_prev, delta_ratio_bajas, estadoInfo };
+    });
+  }, [rowsRaw, rowsPrev]);
+
+  const sortByEstado = (arr: EnrichedRow[]) =>
+    arr.slice().sort((a, b) => {
+      const d = ordenEstadoTecnico[a.estadoInfo.estado] - ordenEstadoTecnico[b.estadoInfo.estado];
+      if (d !== 0) return d;
+      return b.cerradas - a.cerradas;
+    });
+
   const activos = rows.filter((r) => r.activo);
   const inactivos = rows.filter((r) => !r.activo);
   const centralAll = activos.filter((r) => r.grupo === "Central");
-  const dele = activos.filter((r) => r.grupo === "Delegaciones");
+  const dele = sortByEstado(activos.filter((r) => r.grupo === "Delegaciones"));
 
-  // Gamas presentes en Central para los chips filtro
   const gamasPresentes = useMemo(() => {
     const set = new Set(centralAll.map((r) => r.gama_principal).filter(Boolean) as string[]);
     return GAMA_ORDER.filter((g) => set.has(g));
@@ -121,11 +161,10 @@ const Tecnicos = () => {
 
   const central = gamaFilter ? centralAll.filter((r) => r.gama_principal === gamaFilter) : centralAll;
 
-  // Agrupación de Central por gama_principal (visual, no afecta score)
   const centralGroups = useMemo(() => {
-    const groups: Array<{ gama: string | null; rows: Row[] }> = [];
-    const byGama = new Map<string, Row[]>();
-    const sinGama: Row[] = [];
+    const groups: Array<{ gama: string | null; rows: EnrichedRow[] }> = [];
+    const byGama = new Map<string, EnrichedRow[]>();
+    const sinGama: EnrichedRow[] = [];
     for (const r of central) {
       if (r.gama_principal) {
         const arr = byGama.get(r.gama_principal) ?? [];
@@ -137,11 +176,13 @@ const Tecnicos = () => {
     }
     for (const g of GAMA_ORDER) {
       const arr = byGama.get(g);
-      if (arr && arr.length) groups.push({ gama: g, rows: arr });
+      if (arr && arr.length) groups.push({ gama: g, rows: sortByEstado(arr) });
     }
-    if (sinGama.length) groups.push({ gama: null, rows: sinGama });
+    if (sinGama.length) groups.push({ gama: null, rows: sortByEstado(sinGama) });
     return groups;
   }, [central]);
+
+
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
 
