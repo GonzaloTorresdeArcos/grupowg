@@ -8,7 +8,7 @@ import {
   estadoTecnico,
   mediana,
   indicadorProvisionalIncentivo,
-} from "../ops-perf";
+} from "../ops-performance";
 
 describe("variacion", () => {
   it("calcula abs y pct correctamente", () => {
