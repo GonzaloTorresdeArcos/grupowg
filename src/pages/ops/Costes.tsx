@@ -57,11 +57,6 @@ const defaultRange = () => {
   };
 };
 
-const monthInputValue = (iso: string) => iso.slice(0, 7);
-const parseMonthInput = (v: string, end: boolean) => {
-  const [y, m] = v.split("-").map(Number);
-  return end ? lastOfMonth(y, m - 1) : firstOfMonth(y, m - 1);
-};
 
 const Costes = () => {
   const [range, setRange] = useState(defaultRange);
