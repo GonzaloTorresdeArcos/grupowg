@@ -62,7 +62,12 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFiltersState] = useState<OpsFilters>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return { ...defaultFilters(), ...JSON.parse(raw) };
+      if (raw) {
+        const parsed = { ...defaultFilters(), ...JSON.parse(raw) } as OpsFilters;
+        // Sanitiza canal: solo permite los valores reales de la BD.
+        if (parsed.canal && !CANAL_VALIDOS.has(parsed.canal)) parsed.canal = null;
+        return parsed;
+      }
     } catch { /* ignore */ }
     return defaultFilters();
   });
