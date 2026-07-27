@@ -135,10 +135,10 @@ const Tecnicos = () => {
       const pct_bajas_prev = p ? p.pct_bajas : null;
       const delta_ratio_bajas = pct_bajas_prev != null ? r.pct_bajas - pct_bajas_prev : null;
       const estadoInfo = estadoTecnico(
-        { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp, cerradas_prev: p?.cerradas ?? r.cerradas_prev, delta_pct: r.delta_pct },
+        { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp },
         p ? { tecnico: p.tecnico, delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas, pct_bajas_esp: p.pct_bajas_esp } : null,
-        mediaByDeleg.get(r.delegacion) ?? null,
       );
+
       return { ...r, bajas_prev, pct_bajas_prev, delta_ratio_bajas, estadoInfo };
     });
   }, [rowsRaw, rowsPrev]);
