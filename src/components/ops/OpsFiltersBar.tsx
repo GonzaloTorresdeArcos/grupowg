@@ -1,5 +1,6 @@
 import { useOpsFilters } from "@/lib/ops-filters";
 import { Info, X } from "lucide-react";
+import { OpsPeriodPicker } from "./OpsPeriodPicker";
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
   label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
@@ -27,16 +28,13 @@ export const OpsFiltersBar = () => {
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Desde</span>
-          <input type="date" value={filters.from} onChange={(e) => setFilters({ from: e.target.value })}
-            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px]" />
-        </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Hasta</span>
-          <input type="date" value={filters.to} onChange={(e) => setFilters({ to: e.target.value })}
-            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px]" />
-        </label>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período</span>
+          <OpsPeriodPicker
+            value={{ from: filters.from, to: filters.to }}
+            onChange={(v) => setFilters({ from: v.from, to: v.to })}
+          />
+        </div>
         <Sel label="Delegación" value={filters.delegacion} options={options.delegaciones}
           onChange={(v) => setFilters({ delegacion: v })} />
         <Sel label="Cliente" value={filters.cliente} options={options.clientes}

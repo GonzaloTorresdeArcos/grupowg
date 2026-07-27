@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtEur, fmtNum } from "@/lib/ops-filters";
 import { Loader2, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OpsPeriodPicker } from "@/components/ops/OpsPeriodPicker";
 
 type Kpis = { coste: number; cierres: number; eur_cierre: number };
 type EvoRow = { mes: string; coste: number; cierres: number; eur_cierre: number };
@@ -56,11 +57,6 @@ const defaultRange = () => {
   };
 };
 
-const monthInputValue = (iso: string) => iso.slice(0, 7);
-const parseMonthInput = (v: string, end: boolean) => {
-  const [y, m] = v.split("-").map(Number);
-  return end ? lastOfMonth(y, m - 1) : firstOfMonth(y, m - 1);
-};
 
 const Costes = () => {
   const [range, setRange] = useState(defaultRange);
@@ -136,23 +132,12 @@ const Costes = () => {
       </header>
 
       {/* Selector de período */}
-      <div className="flex flex-wrap items-end gap-4 border border-black/[0.06] rounded-2xl bg-white px-5 py-4">
-        <div>
-          <label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">Desde</label>
-          <input
-            type="month"
-            value={monthInputValue(range.from)}
-            onChange={(e) => setRange((r) => ({ ...r, from: parseMonthInput(e.target.value, false) }))}
-            className="border border-black/10 rounded-md px-3 py-1.5 text-sm bg-white"
-          />
-        </div>
-        <div>
-          <label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">Hasta</label>
-          <input
-            type="month"
-            value={monthInputValue(range.to)}
-            onChange={(e) => setRange((r) => ({ ...r, to: parseMonthInput(e.target.value, true) }))}
-            className="border border-black/10 rounded-md px-3 py-1.5 text-sm bg-white"
+      <div className="flex flex-wrap items-center gap-4 border border-black/[0.06] rounded-2xl bg-white px-5 py-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período</span>
+          <OpsPeriodPicker
+            value={range}
+            onChange={(v) => setRange(v)}
           />
         </div>
         <Button variant="ghost" size="sm" onClick={() => setRange(defaultRange())}>
