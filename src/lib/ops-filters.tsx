@@ -27,7 +27,8 @@ export type OpsFilterOptions = {
   canales: string[];
 };
 
-const STORAGE_KEY = "ops.filters.v2";
+const STORAGE_KEY = "ops.filters.v3";
+const CANAL_VALIDOS = new Set(["Taller", "Domicilio", "Unico"]);
 
 const defaultFilters = (): OpsFilters => {
   const now = new Date();
