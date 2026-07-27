@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      ops_bases: {
+        Row: {
+          delegacion: string
+          lat: number
+          lng: number
+          nota: string | null
+        }
+        Insert: {
+          delegacion: string
+          lat: number
+          lng: number
+          nota?: string | null
+        }
+        Update: {
+          delegacion?: string
+          lat?: number
+          lng?: number
+          nota?: string | null
+        }
+        Relationships: []
+      }
       ops_benchmark: {
         Row: {
           cliente_wg: string
@@ -74,6 +95,24 @@ export type Database = {
           mes?: string
           tecnico?: string
           variable?: number | null
+        }
+        Relationships: []
+      }
+      ops_cp_geo: {
+        Row: {
+          cp: string
+          lat: number
+          lng: number
+        }
+        Insert: {
+          cp: string
+          lat: number
+          lng: number
+        }
+        Update: {
+          cp?: string
+          lat?: number
+          lng?: number
         }
         Relationships: []
       }
@@ -1244,7 +1283,22 @@ export type Database = {
           razon_social: string
         }[]
       }
-      ops_alertas: { Args: { p_from?: string; p_to?: string }; Returns: Json }
+      ops_alertas: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_clasifica_gama: {
         Args: {
           p_cliente: string
@@ -1258,6 +1312,16 @@ export type Database = {
       ops_delegaciones: {
         Args: {
           p_cliente?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_dispersion: {
+        Args: {
+          p_delegacion?: string
           p_familia?: string
           p_from?: string
           p_gama?: string
