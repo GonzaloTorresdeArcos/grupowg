@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
+import {
+  computePrevPeriod,
+  estadoTecnico,
+  ordenEstadoTecnico,
+  type EstadoTecnico,
+  type EstadoTecResult,
+} from "@/lib/ops-performance";
 import { Loader2, X } from "lucide-react";
+
 
 type Row = {
   tecnico: string; delegacion: string; grupo: string; gama_principal: string | null;
