@@ -49,6 +49,7 @@ const OpsSLA = lazy(() => import("./pages/ops/SLA.tsx"));
 const OpsSats = lazy(() => import("./pages/ops/Sats.tsx"));
 const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
 const OpsCostes = lazy(() => import("./pages/ops/Costes.tsx"));
+const OpsDispersion = lazy(() => import("./pages/ops/Dispersion.tsx"));
 
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
@@ -149,6 +150,7 @@ const App = () => (
                 <Route path="/operaciones/delegaciones" element={<OpsDelegaciones />} />
                 <Route path="/operaciones/costes" element={<OpsCostes />} />
                 <Route path="/operaciones/sla" element={<OpsSLA />} />
+                <Route path="/operaciones/dispersion" element={<OpsDispersion />} />
                 <Route path="/operaciones/sats" element={<OpsSats />} />
                 <Route path="/operaciones/importar" element={<OpsImportar />} />
               </Route>

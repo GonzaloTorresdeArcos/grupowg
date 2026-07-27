@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
-  LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight, Wrench, Euro,
+  LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight, Wrench, Euro, MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ const NAV = [
   { to: "/operaciones/delegaciones", label: "Delegaciones", icon: Building2 },
   { to: "/operaciones/costes", label: "Coste y productividad", icon: Euro },
   { to: "/operaciones/sla", label: "SLA / Envejecidos", icon: Timer },
+  { to: "/operaciones/dispersion", label: "Dispersión", icon: MapPin },
   { to: "/operaciones/sats", label: "SATs externos", icon: Wrench },
   { to: "/operaciones/importar", label: "Importar CSV", icon: Upload },
 ];
