@@ -257,7 +257,66 @@ const Tecnicos = () => {
   );
 };
 
-const TecTable = ({ subtitle, rows, onOpen }: { subtitle?: string; rows: Row[]; onOpen: (r: Row) => void }) => (
+const HeaderCells = () => (
+  <tr>
+    <th className="text-left px-4 py-2.5 font-semibold">Técnico</th>
+    <th className="text-right px-3 py-2.5 font-semibold" title="Cerradas en el período">Cerradas</th>
+    <th className="text-right px-3 py-2.5 font-semibold text-ink/40" title="Cerradas en el período anterior equivalente">Ant.</th>
+    <th className="text-right px-3 py-2.5 font-semibold" title="Variación de cierres vs. período anterior">Δ</th>
+    <th className="text-right px-3 py-2.5 font-semibold">SLA 20d</th>
+    <th className="text-right px-3 py-2.5 font-semibold">Días</th>
+    <th className="text-right px-3 py-2.5 font-semibold" title="Ratio bajas / cerradas del período">% Bajas</th>
+    <th className="text-right px-3 py-2.5 font-semibold text-ink/40" title="Bajas absolutas del período anterior">B. ant.</th>
+    <th className="text-right px-3 py-2.5 font-semibold" title="Diferencia en puntos porcentuales del ratio de bajas">Δ ratio</th>
+    <th className="text-right px-3 py-2.5 font-semibold">% NFF</th>
+    <th className="text-left px-3 py-2.5 font-semibold">Estado</th>
+    <th className="text-left px-3 py-2.5 font-semibold">Observación</th>
+    <th className="text-right px-4 py-2.5 font-semibold" title="Score PROVISIONAL 0-100">Score</th>
+  </tr>
+);
+
+const RowCells = ({
+  r,
+  onOpen,
+  showGamaChip,
+}: {
+  r: EnrichedRow;
+  onOpen: (r: EnrichedRow) => void;
+  showGamaChip?: boolean;
+}) => {
+  const dRatio = r.delta_ratio_bajas;
+  const dRatioCls =
+    dRatio == null ? "text-ink/30" : dRatio > 0.02 ? "text-red-600" : dRatio < -0.02 ? "text-emerald-600" : "text-ink/50";
+  return (
+    <tr onClick={() => onOpen(r)} className="cursor-pointer hover:bg-black/[0.02] transition-colors">
+      <td className="px-4 py-2.5">
+        <p className="text-ink font-medium flex items-center gap-2">
+          {r.tecnico}
+          {showGamaChip && <GamaChip gama={r.gama_principal} />}
+        </p>
+        <p className="text-[11px] text-ink/40">{r.delegacion || "—"}</p>
+      </td>
+      <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(r.cerradas)}</td>
+      <td className="text-right px-3 py-2.5 tabular-nums text-ink/40">{fmtNum(r.cerradas_prev)}</td>
+      <td className="text-right px-3 py-2.5">{deltaBadge(r.delta_pct)}</td>
+      <td className="text-right px-3 py-2.5 tabular-nums">{fmtPct(r.pct_sla20)}</td>
+      <td className="text-right px-3 py-2.5 tabular-nums">{fmtDec(r.dias_medio, 1)}</td>
+      <td className="px-3 py-2.5">{compareCell(r.pct_bajas, r.pct_bajas_esp)}</td>
+      <td className="text-right px-3 py-2.5 tabular-nums text-ink/40">{r.bajas_prev == null ? "—" : fmtNum(r.bajas_prev)}</td>
+      <td className={`text-right px-3 py-2.5 tabular-nums text-xs ${dRatioCls}`}>
+        {dRatio == null ? "—" : `${dRatio > 0 ? "+" : ""}${(dRatio * 100).toFixed(1)} pp`}
+      </td>
+      <td className="px-3 py-2.5">{compareCell(r.pct_nff, r.pct_nff_esp)}</td>
+      <td className="px-3 py-2.5"><EstadoBadge e={r.estadoInfo} /></td>
+      <td className="px-3 py-2.5 text-[11px] text-ink/60 max-w-[260px]">
+        {r.estadoInfo.razones.length ? r.estadoInfo.razones.join(" ") : "—"}
+      </td>
+      <td className="text-right px-4 py-2.5">{scoreBadge(r.score)}</td>
+    </tr>
+  );
+};
+
+const TecTable = ({ subtitle, rows, onOpen }: { subtitle?: string; rows: EnrichedRow[]; onOpen: (r: EnrichedRow) => void }) => (
   <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
     {subtitle && (
       <div className="px-4 py-2 border-b border-black/[0.05] flex items-center justify-between">
@@ -266,90 +325,38 @@ const TecTable = ({ subtitle, rows, onOpen }: { subtitle?: string; rows: Row[]; 
       </div>
     )}
     <table className="w-full text-sm">
-      <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06]">
-        <tr>
-          <th className="text-left px-4 py-2.5 font-semibold">Técnico</th>
-          <th className="text-right px-3 py-2.5 font-semibold">Cerradas</th>
-          <th className="text-right px-3 py-2.5 font-semibold">Δ</th>
-          <th className="text-right px-3 py-2.5 font-semibold">SLA 20d</th>
-          <th className="text-right px-3 py-2.5 font-semibold">Días</th>
-          <th className="text-right px-3 py-2.5 font-semibold">% Bajas</th>
-          <th className="text-right px-3 py-2.5 font-semibold">% NFF</th>
-          <th className="text-left px-3 py-2.5 font-semibold">Mix top</th>
-          <th className="text-right px-4 py-2.5 font-semibold">Score</th>
-        </tr>
+      <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06] sticky top-0 bg-white">
+        <HeaderCells />
       </thead>
       <tbody className="divide-y divide-black/[0.04]">
-        {rows.map((r) => (
-          <tr key={r.tecnico} onClick={() => onOpen(r)} className="cursor-pointer hover:bg-black/[0.02] transition-colors">
-            <td className="px-4 py-2.5">
-              <p className="text-ink font-medium flex items-center gap-2">
-                {r.tecnico}
-                <GamaChip gama={r.gama_principal} />
-              </p>
-              <p className="text-[11px] text-ink/40">{r.delegacion || "—"}</p>
-            </td>
-            <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(r.cerradas)}</td>
-            <td className="text-right px-3 py-2.5">{deltaBadge(r.delta_pct)}</td>
-            <td className="text-right px-3 py-2.5 tabular-nums">{fmtPct(r.pct_sla20)}</td>
-            <td className="text-right px-3 py-2.5 tabular-nums">{fmtDec(r.dias_medio, 1)}</td>
-            <td className="px-3 py-2.5">{compareCell(r.pct_bajas, r.pct_bajas_esp)}</td>
-            <td className="px-3 py-2.5">{compareCell(r.pct_nff, r.pct_nff_esp)}</td>
-            <td className="px-3 py-2.5 text-[11px] text-ink/60 truncate max-w-[180px]">{r.mix_top}</td>
-            <td className="text-right px-4 py-2.5">{scoreBadge(r.score)}</td>
-          </tr>
-        ))}
+        {rows.map((r) => <RowCells key={r.tecnico} r={r} onOpen={onOpen} showGamaChip />)}
         {rows.length === 0 && (
-          <tr><td colSpan={9} className="text-center px-4 py-8 text-ink/40 text-sm">Sin técnicos.</td></tr>
+          <tr><td colSpan={13} className="text-center px-4 py-8 text-ink/40 text-sm">Sin técnicos.</td></tr>
         )}
       </tbody>
     </table>
   </div>
 );
 
-const TecGroup = ({ title, rows, onOpen }: { title: string; rows: Row[]; onOpen: (r: Row) => void }) => (
+const TecGroup = ({ title, rows, onOpen }: { title: string; rows: EnrichedRow[]; onOpen: (r: EnrichedRow) => void }) => (
   <section>
     <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">{title} · {rows.length} técnicos</p>
     <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06]">
-          <tr>
-            <th className="text-left px-4 py-2.5 font-semibold">Técnico</th>
-            <th className="text-right px-3 py-2.5 font-semibold">Cerradas</th>
-            <th className="text-right px-3 py-2.5 font-semibold">Δ</th>
-            <th className="text-right px-3 py-2.5 font-semibold">SLA 20d</th>
-            <th className="text-right px-3 py-2.5 font-semibold">Días</th>
-            <th className="text-right px-3 py-2.5 font-semibold">% Bajas</th>
-            <th className="text-right px-3 py-2.5 font-semibold">% NFF</th>
-            <th className="text-left px-3 py-2.5 font-semibold">Mix top</th>
-            <th className="text-right px-4 py-2.5 font-semibold">Score</th>
-          </tr>
+        <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06] sticky top-0 bg-white">
+          <HeaderCells />
         </thead>
         <tbody className="divide-y divide-black/[0.04]">
-          {rows.map((r) => (
-            <tr key={r.tecnico} onClick={() => onOpen(r)} className="cursor-pointer hover:bg-black/[0.02] transition-colors">
-              <td className="px-4 py-2.5">
-                <p className="text-ink font-medium">{r.tecnico}</p>
-                <p className="text-[11px] text-ink/40">{r.delegacion || "—"}</p>
-              </td>
-              <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(r.cerradas)}</td>
-              <td className="text-right px-3 py-2.5">{deltaBadge(r.delta_pct)}</td>
-              <td className="text-right px-3 py-2.5 tabular-nums">{fmtPct(r.pct_sla20)}</td>
-              <td className="text-right px-3 py-2.5 tabular-nums">{fmtDec(r.dias_medio, 1)}</td>
-              <td className="px-3 py-2.5">{compareCell(r.pct_bajas, r.pct_bajas_esp)}</td>
-              <td className="px-3 py-2.5">{compareCell(r.pct_nff, r.pct_nff_esp)}</td>
-              <td className="px-3 py-2.5 text-[11px] text-ink/60 truncate max-w-[180px]">{r.mix_top}</td>
-              <td className="text-right px-4 py-2.5">{scoreBadge(r.score)}</td>
-            </tr>
-          ))}
+          {rows.map((r) => <RowCells key={r.tecnico} r={r} onOpen={onOpen} />)}
           {rows.length === 0 && (
-            <tr><td colSpan={9} className="text-center px-4 py-8 text-ink/40 text-sm">Sin técnicos en el período con los filtros actuales.</td></tr>
+            <tr><td colSpan={13} className="text-center px-4 py-8 text-ink/40 text-sm">Sin técnicos en el período con los filtros actuales.</td></tr>
           )}
         </tbody>
       </table>
     </div>
   </section>
 );
+
 
 type Ficha = {
   evolucion: Array<{ mes: string; cerradas: number; pct_sla20: number; pct_bajas: number }>;
