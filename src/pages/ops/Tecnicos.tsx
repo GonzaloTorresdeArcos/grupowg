@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import {
-  computePrevPeriod,
+  prevPeriod,
   estadoTecnico,
-  ordenEstadoTecnico,
-  type EstadoTecnico,
-  type EstadoTecResult,
-} from "@/lib/ops-performance";
+  ordenEstado,
+  type EstadoTecnicoNivel,
+  type EstadoTecnicoResult,
+} from "@/lib/ops-perf";
+
 import { Loader2, X } from "lucide-react";
 
 
@@ -24,17 +25,17 @@ type EnrichedRow = Row & {
   bajas_prev: number | null;
   pct_bajas_prev: number | null;
   delta_ratio_bajas: number | null;
-  estadoInfo: EstadoTecResult;
+  estadoInfo: EstadoTecnicoResult;
 };
 
-const ESTADO_STYLE: Record<EstadoTecnico, { dot: string; text: string; label: string }> = {
+const ESTADO_STYLE: Record<EstadoTecnicoNivel, { dot: string; text: string; label: string }> = {
   critico: { dot: "bg-red-500", text: "text-red-700", label: "Crítico" },
   atencion: { dot: "bg-amber-500", text: "text-amber-700", label: "Atención" },
   ok: { dot: "bg-emerald-500", text: "text-emerald-700", label: "OK" },
   sin_contexto: { dot: "bg-ink/30", text: "text-ink/50", label: "Sin contexto" },
 };
 
-const EstadoBadge = ({ e }: { e: EstadoTecResult }) => (
+const EstadoBadge = ({ e }: { e: EstadoTecnicoResult }) => (
   <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${ESTADO_STYLE[e.estado].text}`}>
     <span className={`h-2 w-2 rounded-full ${ESTADO_STYLE[e.estado].dot}`} />
     {ESTADO_STYLE[e.estado].label}
@@ -93,7 +94,7 @@ const Tecnicos = () => {
 
   useEffect(() => {
     setLoading(true);
-    const prev = computePrevPeriod(rpcParams.p_from as string, rpcParams.p_to as string);
+    const prev = prevPeriod(rpcParams.p_from as string, rpcParams.p_to as string);
     const base = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
@@ -134,17 +135,17 @@ const Tecnicos = () => {
       const pct_bajas_prev = p ? p.pct_bajas : null;
       const delta_ratio_bajas = pct_bajas_prev != null ? r.pct_bajas - pct_bajas_prev : null;
       const estadoInfo = estadoTecnico(
-        { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp, cerradas_prev: p?.cerradas ?? r.cerradas_prev, delta_pct: r.delta_pct },
+        { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp },
         p ? { tecnico: p.tecnico, delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas, pct_bajas_esp: p.pct_bajas_esp } : null,
-        mediaByDeleg.get(r.delegacion) ?? null,
       );
+
       return { ...r, bajas_prev, pct_bajas_prev, delta_ratio_bajas, estadoInfo };
     });
   }, [rowsRaw, rowsPrev]);
 
   const sortByEstado = (arr: EnrichedRow[]) =>
     arr.slice().sort((a, b) => {
-      const d = ordenEstadoTecnico[a.estadoInfo.estado] - ordenEstadoTecnico[b.estadoInfo.estado];
+      const d = ordenEstado[a.estadoInfo.estado] - ordenEstado[b.estadoInfo.estado];
       if (d !== 0) return d;
       return b.cerradas - a.cerradas;
     });

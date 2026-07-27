@@ -1,32 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtEur, fmtDec } from "@/lib/ops-filters";
 import {
-  computePrevPeriod,
-  labelComparativa,
+  prevPeriod,
   variacion,
   ratioBajas,
-  estadoDelegacion,
-  estadoTecnico,
-  indicadorProvisionalIncentivo,
+  labelComparativa,
   generarConclusiones,
-  ordenEstadoTecnico,
-  type EstadoNivel,
-  type IndicadorIncentivo,
   type Conclusion,
-} from "@/lib/ops-performance";
+  type EquipoRow,
+  type KpisMin,
+  type TecnicoConclInput,
+} from "@/lib/ops-perf";
+import { DelegacionesResumen } from "@/components/ops/DelegacionesResumen";
 import {
-  Loader2,
-  AlertTriangle,
-  TrendingDown,
-  MapPin,
-  Gauge,
-  ChevronDown,
-  ChevronUp,
-  ArrowUpRight,
-  ArrowDownRight,
-  Minus,
-  Info,
+  Loader2, AlertTriangle, TrendingDown, MapPin, Gauge,
+  ArrowUpRight, ArrowDownRight, Minus, ChevronDown, ChevronUp, Info,
 } from "lucide-react";
 
 type Kpis = {
@@ -41,47 +30,32 @@ type Alertas = {
   calidad: Array<{ tecnico: string; n: number; pct_bajas: number; pct_bajas_esp: number; pct_nff: number; pct_nff_esp: number }>;
   provincias: Array<{ provincia: string; abiertas_30: number }>;
 };
-type DelegKpi = {
-  delegacion: string; cerradas: number; pct_sla20: number; dias_medio: number;
-  pct_bajas: number; pct_nff: number; tecnicos: number; abiertas: number; abiertas_30: number;
-};
-type DelegPayload = { kpis: DelegKpi[] };
 type ScoreRow = {
-  tecnico: string; delegacion: string; grupo: string;
+  tecnico: string; delegacion: string; grupo: string; activo: boolean;
   cerradas: number; cerradas_prev: number; delta_pct: number | null;
   pct_bajas: number; pct_bajas_esp: number;
 };
 
 // ---------------- primitives ----------------
-type Tone = "ink" | "warn" | "ok" | "bad";
-const toneBar = (t: Tone) =>
-  ({ ink: "bg-ink", warn: "bg-amber-500", ok: "bg-emerald-500", bad: "bg-red-500" }[t]);
-const estadoBadge: Record<EstadoNivel, { dot: string; label: string; text: string }> = {
-  ok: { dot: "bg-emerald-500", label: "OK", text: "text-emerald-700" },
-  atencion: { dot: "bg-amber-500", label: "Atención", text: "text-amber-700" },
-  critico: { dot: "bg-red-500", label: "Crítico", text: "text-red-700" },
+type Tone = "ok" | "warn" | "bad" | "ink";
+const toneClass: Record<Tone, string> = {
+  ok: "bg-emerald-500", warn: "bg-amber-500", bad: "bg-red-500", ink: "bg-ink",
 };
 
 const DeltaPill = ({
-  v,
-  favorable,
-  format = "pct",
+  v, favorable, format = "pct",
 }: {
-  v: number | null;
-  favorable: "up" | "down"; // dirección buena
-  format?: "pct" | "abs";
+  v: number | null; favorable: "up" | "down"; format?: "pct" | "abs";
 }) => {
   if (v == null) return <span className="text-ink/30 text-xs tabular-nums">—</span>;
   const positive = v > 0;
-  const good = (positive && favorable === "up") || (!positive && favorable === "down");
   const neutral = Math.abs(v) < (format === "pct" ? 0.005 : 0.5);
-  const cls = neutral
-    ? "text-ink/50 bg-black/[0.03]"
-    : good
-      ? "text-emerald-700 bg-emerald-50"
-      : "text-red-700 bg-red-50";
+  const good = (positive && favorable === "up") || (!positive && favorable === "down");
+  const cls = neutral ? "text-ink/50 bg-black/[0.03]" : good ? "text-emerald-700 bg-emerald-50" : "text-red-700 bg-red-50";
   const Icon = neutral ? Minus : positive ? ArrowUpRight : ArrowDownRight;
-  const label = format === "pct" ? `${positive ? "+" : ""}${(v * 100).toFixed(1)}%` : `${positive ? "+" : ""}${fmtNum(v)}`;
+  const label = format === "pct"
+    ? `${positive ? "+" : ""}${(v * 100).toFixed(1)}%`
+    : `${positive ? "+" : ""}${fmtNum(v)}`;
   return (
     <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-medium tabular-nums ${cls}`}>
       <Icon className="h-3 w-3" />
@@ -90,44 +64,24 @@ const DeltaPill = ({
   );
 };
 
-const Card = ({ label, value, hint, tone = "ink" }: { label: string; value: string; hint?: string; tone?: Tone }) => (
-  <div className="border border-black/[0.06] rounded-2xl bg-white p-5">
-    <div className={`h-[2px] w-8 mb-4 ${toneBar(tone)}`} />
-    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</p>
-    <p className="font-display text-3xl tracking-tight text-ink tabular-nums mt-2">{value}</p>
-    {hint && <p className="mt-1.5 text-[11px] text-ink/50">{hint}</p>}
-  </div>
-);
-
 const ExecCard = ({
-  label,
-  actual,
-  previo,
-  delta,
-  favorable,
-  extraWarn,
-  hint,
+  label, actual, previo, delta, favorable, tone, warn,
 }: {
-  label: string;
-  actual: string;
-  previo: string;
-  delta: number | null;
-  favorable: "up" | "down";
-  extraWarn?: string;
-  hint?: string;
+  label: string; actual: string; previo: string; delta: number | null;
+  favorable: "up" | "down"; tone?: Tone; warn?: string;
 }) => (
   <div className="border border-black/[0.06] rounded-2xl bg-white p-5">
+    <div className={`h-[2px] w-8 mb-4 ${toneClass[tone ?? "ink"]}`} />
     <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</p>
     <div className="flex items-baseline gap-2 mt-2">
       <p className="font-display text-3xl tracking-tight text-ink tabular-nums">{actual}</p>
       <DeltaPill v={delta} favorable={favorable} />
     </div>
     <p className="mt-1 text-[11px] text-ink/50">Anterior: <span className="tabular-nums">{previo}</span></p>
-    {hint && <p className="mt-1 text-[11px] text-ink/50">{hint}</p>}
-    {extraWarn && (
+    {warn && (
       <p className="mt-2 text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 flex items-start gap-1">
         <Info className="h-3 w-3 mt-0.5 shrink-0" />
-        {extraWarn}
+        {warn}
       </p>
     )}
   </div>
@@ -141,36 +95,29 @@ const Dashboard = () => {
   const [kpisPrev, setKpisPrev] = useState<Kpis | null>(null);
   const [evo, setEvo] = useState<EvoRow[]>([]);
   const [alertas, setAlertas] = useState<Alertas | null>(null);
-  const [dele, setDele] = useState<DelegKpi[]>([]);
-  const [delePrev, setDelePrev] = useState<DelegKpi[]>([]);
+  const [equiposNow, setEquiposNow] = useState<EquipoRow[]>([]);
+  const [equiposPrev, setEquiposPrev] = useState<EquipoRow[]>([]);
   const [score, setScore] = useState<ScoreRow[]>([]);
   const [scorePrev, setScorePrev] = useState<ScoreRow[]>([]);
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  const [showSecondary, setShowSecondary] = useState(true);
+  const [showComp, setShowComp] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
-
-  const prev = useMemo(() => computePrevPeriod(filters.from, filters.to), [filters.from, filters.to]);
-  const labelComp = useMemo(() => labelComparativa(filters.from, filters.to), [filters.from, filters.to]);
+  const [showPend, setShowPend] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    const prev = prevPeriod(filters.from, filters.to);
     const filtroSecundarios = {
-      p_delegacion: rpcParams.p_delegacion,
-      p_cliente: rpcParams.p_cliente,
-      p_gama: rpcParams.p_gama,
-      p_familia: rpcParams.p_familia,
-      p_marca: rpcParams.p_marca,
-      p_provincia: rpcParams.p_provincia,
-      p_sat: rpcParams.p_sat,
-      p_tecnico: rpcParams.p_tecnico,
-      p_canal: rpcParams.p_canal,
+      p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
+      p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia, p_marca: rpcParams.p_marca,
+      p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
+      p_tecnico: rpcParams.p_tecnico, p_canal: rpcParams.p_canal,
     };
-    const prevParams = { ...rpcParams, p_from: prev.from, p_to: prev.to };
-    const delegParams = {
+    const prevRpc = { ...rpcParams, p_from: prev.from, p_to: prev.to };
+    const equipParams = {
       p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-      p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+      p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
     };
-    const delegPrevParams = { ...delegParams, p_from: prev.from, p_to: prev.to };
+    const equipPrev = { ...equipParams, p_from: prev.from, p_to: prev.to };
     const scoreParams = {
       p_from: rpcParams.p_from, p_to: rpcParams.p_to,
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
@@ -180,126 +127,78 @@ const Dashboard = () => {
     const scorePrevParams = { ...scoreParams, p_from: prev.from, p_to: prev.to };
 
     (async () => {
-      const [k, kp, e, a, d, dp, s, sp, lu] = await Promise.all([
+      const [k, kp, e, a, eq, eqp, s, sp] = await Promise.all([
         supabase.rpc("ops_kpis" as never, rpcParams as never),
-        supabase.rpc("ops_kpis" as never, prevParams as never),
+        supabase.rpc("ops_kpis" as never, prevRpc as never),
         supabase.rpc("ops_evolucion" as never, filtroSecundarios as never),
         supabase.rpc("ops_alertas" as never, { p_from: filters.from, p_to: filters.to } as never),
-        supabase.rpc("ops_delegaciones" as never, delegParams as never),
-        supabase.rpc("ops_delegaciones" as never, delegPrevParams as never),
+        supabase.rpc("ops_equipos" as never, equipParams as never),
+        supabase.rpc("ops_equipos" as never, equipPrev as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scoreParams as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scorePrevParams as never),
-        supabase.from("ops_fact_ot").select("fecha_creacion").order("fecha_creacion", { ascending: false }).limit(1),
       ]);
       setKpis((k.data ?? null) as Kpis | null);
       setKpisPrev((kp.data ?? null) as Kpis | null);
       setEvo((e.data ?? []) as EvoRow[]);
       setAlertas((a.data ?? null) as Alertas | null);
-      setDele(((d.data as DelegPayload | null)?.kpis ?? []) as DelegKpi[]);
-      setDelePrev(((dp.data as DelegPayload | null)?.kpis ?? []) as DelegKpi[]);
+      setEquiposNow((eq.data ?? []) as EquipoRow[]);
+      setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
       setScore((s.data ?? []) as ScoreRow[]);
       setScorePrev((sp.data ?? []) as ScoreRow[]);
-      const row = (lu.data ?? [])[0] as { fecha_creacion?: string } | undefined;
-      setLastUpdate(row?.fecha_creacion ?? null);
       setLoading(false);
     })();
-  }, [rpcParams, filters.from, filters.to, prev.from, prev.to]);
+  }, [rpcParams, filters.from, filters.to]);
 
   if (loading || !kpis) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
   }
 
-  // -------- resumen ejecutivo --------
-  const vCerradas = variacion(kpis.cerradas, kpisPrev?.cerradas ?? null);
-  const vBajas = variacion(kpis.bajas, kpisPrev?.bajas ?? null);
+  // Resumen ejecutivo
+  const vCer = variacion(kpis.cerradas, kpisPrev?.cerradas ?? null);
+  const vBaj = variacion(kpis.bajas, kpisPrev?.bajas ?? null);
   const ratioAct = ratioBajas(kpis.bajas, kpis.cerradas);
   const ratioPre = ratioBajas(kpisPrev?.bajas ?? null, kpisPrev?.cerradas ?? null);
   const vRatio = variacion(ratioAct, ratioPre);
+  const vSla = variacion(kpis.pct_sla20, kpisPrev?.pct_sla20 ?? null);
+  const vAb30 = variacion(kpis.abiertas_30, kpisPrev?.abiertas_30 ?? null);
   const cerradasSubenBajasSuben =
-    (vCerradas.pct ?? 0) > 0 && (vBajas.pct ?? 0) > 0 && (vBajas.pct ?? 0) - (vCerradas.pct ?? 0) > 0.1;
+    (vCer.pct ?? 0) > 0 && (vBaj.pct ?? 0) > 0 && (vBaj.pct ?? 0) - (vCer.pct ?? 0) > 0.1;
 
-  // -------- comparativa delegaciones --------
-  const prevByDeleg = new Map(delePrev.map((d) => [d.delegacion, d] as const));
-  const mediaGlobalBajas = ratioAct;
-  const delegRows = dele
-    .map((d) => {
-      const p = prevByDeleg.get(d.delegacion) ?? null;
-      const est = estadoDelegacion(
-        { delegacion: d.delegacion, cerradas: d.cerradas, pct_bajas: d.pct_bajas },
-        p ? { delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas } : null,
-        mediaGlobalBajas,
-      );
-      const vC = variacion(d.cerradas, p?.cerradas ?? null);
-      const bajasA = Math.round(d.pct_bajas * d.cerradas);
-      const bajasP = p ? Math.round(p.pct_bajas * p.cerradas) : null;
-      const vB = variacion(bajasA, bajasP);
-      return { d, p, est, vC, vB, bajasA, bajasP };
-    })
-    .sort((a, b) => {
-      const ord: Record<EstadoNivel, number> = { critico: 0, atencion: 1, ok: 2 };
-      const diff = ord[a.est.estado] - ord[b.est.estado];
-      if (diff !== 0) return diff;
-      return b.d.cerradas - a.d.cerradas;
-    });
-
-  // -------- conclusiones --------
+  // Conclusiones (usa scorecard actual + previo)
   const prevByTec = new Map(scorePrev.map((r) => [r.tecnico, r] as const));
   const mediaByDeleg = new Map<string, number>();
   {
     const acc = new Map<string, { b: number; c: number }>();
-    for (const r of score) {
+    for (const r of score.filter((x) => x.activo)) {
       const cur = acc.get(r.delegacion) ?? { b: 0, c: 0 };
       cur.b += r.pct_bajas * r.cerradas;
       cur.c += r.cerradas;
       acc.set(r.delegacion, cur);
     }
-    for (const [k2, v] of acc) mediaByDeleg.set(k2, v.c > 0 ? v.b / v.c : 0);
+    for (const [k, v] of acc) mediaByDeleg.set(k, v.c > 0 ? v.b / v.c : 0);
   }
+  const tecnicosConcl: TecnicoConclInput[] = score.filter((r) => r.activo).map((r) => {
+    const p = prevByTec.get(r.tecnico) ?? null;
+    return {
+      tecnico: r.tecnico, delegacion: r.delegacion,
+      cerradas: r.cerradas, pct_bajas: r.pct_bajas,
+      cerradas_prev: p?.cerradas ?? null,
+      pct_bajas_prev: p?.pct_bajas ?? null,
+      mediaDelegacion: mediaByDeleg.get(r.delegacion) ?? null,
+    };
+  });
+  const kpisNowMin: KpisMin = { cerradas: kpis.cerradas, bajas: kpis.bajas, pct_bajas: kpis.pct_bajas };
+  const kpisPrevMin: KpisMin | null = kpisPrev
+    ? { cerradas: kpisPrev.cerradas, bajas: kpisPrev.bajas, pct_bajas: kpisPrev.pct_bajas }
+    : null;
   const conclusiones: Conclusion[] = generarConclusiones(
-    dele.map((d) => ({
-      actual: { delegacion: d.delegacion, cerradas: d.cerradas, pct_bajas: d.pct_bajas },
-      previo: (() => {
-        const p = prevByDeleg.get(d.delegacion);
-        return p ? { delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas } : null;
-      })(),
-    })),
-    score.map((r) => ({
-      actual: {
-        tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas,
-        pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp,
-      },
-      previo: (() => {
-        const p = prevByTec.get(r.tecnico);
-        return p ? {
-          tecnico: p.tecnico, delegacion: p.delegacion, cerradas: p.cerradas,
-          pct_bajas: p.pct_bajas, pct_bajas_esp: p.pct_bajas_esp,
-        } : null;
-      })(),
-      mediaDelegacionBajas: mediaByDeleg.get(r.delegacion) ?? null,
-    })),
+    kpisNowMin, kpisPrevMin, equiposNow, equiposPrev, tecnicosConcl,
   );
 
-  // -------- indicador incentivo --------
-  const buckets: Record<IndicadorIncentivo, ScoreRow[]> = {
-    reconocimiento_potencial: [],
-    revision_estandar: [],
-    requiere_validacion: [],
-    informacion_insuficiente: [],
-  };
-  for (const r of score) {
-    const est = estadoTecnico(
-      { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp, cerradas_prev: prevByTec.get(r.tecnico)?.cerradas ?? null },
-      prevByTec.get(r.tecnico) ? {
-        tecnico: r.tecnico, delegacion: r.delegacion,
-        cerradas: prevByTec.get(r.tecnico)!.cerradas,
-        pct_bajas: prevByTec.get(r.tecnico)!.pct_bajas,
-        pct_bajas_esp: prevByTec.get(r.tecnico)!.pct_bajas_esp,
-      } : null,
-      mediaByDeleg.get(r.delegacion) ?? null,
-    );
-    buckets[indicadorProvisionalIncentivo(est)].push(r);
-  }
+  // Indicador provisional incentivos
+  const buckets = classifyIncentive(score, prevByTec);
 
+  // Evolución
   const maxCer = Math.max(1, ...evo.map((e) => Math.max(e.creadas, e.cerradas)));
   const maxBaj = Math.max(0.01, ...evo.map((e) => e.pct_bajas ?? 0));
 
@@ -309,15 +208,14 @@ const Dashboard = () => {
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-2">Cuadro de mando</p>
         <h1 className="font-display text-3xl md:text-4xl tracking-tight text-ink">Panorama operativo</h1>
         <p className="text-sm text-ink/60 mt-2 max-w-2xl">
-          Vista global de la red HIPERSERVICE y SATs externos. Se excluyen &quot;ANULADO AVISO&quot; y OTs anuladas.
-          Comparativa con el período inmediatamente anterior de igual longitud.
+          Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
         <p className="mt-3 text-[11px] uppercase tracking-[0.14em] text-ink/50 font-semibold">
-          Período comparado · {labelComp}
+          Período comparado · {labelComparativa(filters.from, filters.to)}
         </p>
       </header>
 
-      {/* (b) Resumen ejecutivo */}
+      {/* 2. Resumen ejecutivo — 5 cards */}
       <section>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Resumen ejecutivo</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -325,16 +223,18 @@ const Dashboard = () => {
             label="Cerradas"
             actual={fmtNum(kpis.cerradas)}
             previo={fmtNum(kpisPrev?.cerradas ?? null)}
-            delta={vCerradas.pct}
+            delta={vCer.pct}
             favorable="up"
-            extraWarn={cerradasSubenBajasSuben ? "Cierres suben, pero bajas suben desproporcionadamente." : undefined}
+            tone={cerradasSubenBajasSuben ? "warn" : "ok"}
+            warn={cerradasSubenBajasSuben ? "Los cierres suben, pero las bajas suben desproporcionadamente." : undefined}
           />
           <ExecCard
             label="Bajas"
             actual={fmtNum(kpis.bajas)}
             previo={fmtNum(kpisPrev?.bajas ?? null)}
-            delta={vBajas.pct}
+            delta={vBaj.pct}
             favorable="down"
+            tone={(vBaj.pct ?? 0) > 0 ? "warn" : "ok"}
           />
           <ExecCard
             label="Bajas / Cerradas"
@@ -342,115 +242,65 @@ const Dashboard = () => {
             previo={fmtPct(ratioPre)}
             delta={vRatio.pct}
             favorable="down"
-            hint="Ratio calculado sobre cerradas del período (incluye Baja como cierre)."
           />
           <ExecCard
-            label="Δ Cerradas"
-            actual={vCerradas.abs == null ? "—" : `${vCerradas.abs > 0 ? "+" : ""}${fmtNum(vCerradas.abs)}`}
-            previo={fmtNum(kpisPrev?.cerradas ?? null)}
-            delta={vCerradas.pct}
+            label="SLA ≤20 días"
+            actual={fmtPct(kpis.pct_sla20)}
+            previo={fmtPct(kpisPrev?.pct_sla20 ?? null)}
+            delta={vSla.pct}
             favorable="up"
+            tone={kpis.pct_sla20 >= 0.8 ? "ok" : kpis.pct_sla20 >= 0.6 ? "warn" : "bad"}
           />
           <ExecCard
-            label="Δ Bajas"
-            actual={vBajas.abs == null ? "—" : `${vBajas.abs > 0 ? "+" : ""}${fmtNum(vBajas.abs)}`}
-            previo={fmtNum(kpisPrev?.bajas ?? null)}
-            delta={vBajas.pct}
+            label="Abiertas +30 días"
+            actual={fmtNum(kpis.abiertas_30)}
+            previo={fmtNum(kpisPrev?.abiertas_30 ?? null)}
+            delta={vAb30.pct}
             favorable="down"
+            tone={kpis.abiertas_30 > 0 ? "warn" : "ok"}
           />
         </div>
-      </section>
 
-      {/* (c) Fila secundaria compacta colapsable */}
-      <section>
+        {/* Indicadores complementarios (fila compacta, sin cards grandes) */}
         <button
-          onClick={() => setShowSecondary((s) => !s)}
-          className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 hover:text-ink transition-colors mb-3"
+          onClick={() => setShowComp((s) => !s)}
+          className="mt-4 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 hover:text-ink transition-colors"
         >
-          {showSecondary ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-          Indicadores adicionales
+          {showComp ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          Indicadores complementarios
         </button>
-        {showSecondary && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Card label="SLA ≤20 días" value={fmtPct(kpis.pct_sla20)}
-              tone={kpis.pct_sla20 >= 0.8 ? "ok" : kpis.pct_sla20 >= 0.6 ? "warn" : "bad"} />
-            <Card label="SLA ≤30 días" value={fmtPct(kpis.pct_sla30)} />
-            <Card label="% NFF" value={fmtPct(kpis.pct_nff)} hint={`${fmtNum(kpis.nff)} sin avería`} />
-            <Card label="Días medios cierre" value={fmtDec(kpis.dias_medio, 1)} />
-            <Card label="Avisos creados" value={fmtNum(kpis.creadas)} hint={`Balance ${kpis.balance > 0 ? "+" : ""}${fmtNum(kpis.balance)}`} />
-            <Card label="Abiertas +30 días" value={fmtNum(kpis.abiertas_30)}
-              hint={`${fmtNum(kpis.abiertas_total)} abiertas totales`}
-              tone={kpis.abiertas_30 > 0 ? "warn" : "ok"} />
-            <Card label="Coste SAT total" value={fmtEur(kpis.coste_sat_total)} />
-            <Card label="Coste medio / OT" value={fmtEur(kpis.coste_sat_medio)} />
+        {showComp && (
+          <div className="mt-3 border border-black/[0.06] rounded-xl bg-white px-5 py-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-3 text-[13px]">
+            <MiniStat label="Avisos creados" value={fmtNum(kpis.creadas)} sub={`Balance ${kpis.balance > 0 ? "+" : ""}${fmtNum(kpis.balance)}`} />
+            <MiniStat label="% NFF" value={fmtPct(kpis.pct_nff)} sub={`${fmtNum(kpis.nff)} sin avería`} />
+            <MiniStat label="SLA ≤30 días" value={fmtPct(kpis.pct_sla30)} />
+            <MiniStat label="Días medios cierre" value={fmtDec(kpis.dias_medio, 1)} />
+            <MiniStat label="Coste SAT total" value={fmtEur(kpis.coste_sat_total)} />
+            <MiniStat label="Coste medio / OT" value={fmtEur(kpis.coste_sat_medio)} />
           </div>
         )}
       </section>
 
-      {/* (d) Comparativa de delegaciones */}
-      <section>
-        <div className="flex items-baseline gap-3 mb-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Comparativa de delegaciones</p>
-          <span className="text-[10px] text-ink/40 italic" title="CRÍTICO: caída >25% con bajas empeorando o ratio bajas > 1,5× media global. ATENCIÓN: caída >15%, bajas > media global y empeorando, o cierres suben pero bajas suben desproporcionadamente. OK: resto.">
-            Modelo de estado provisional (?)
-          </span>
-        </div>
-        <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06] sticky top-0 bg-white">
-              <tr>
-                <th className="text-left px-4 py-2.5 font-semibold">Delegación</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Cerradas</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Anterior</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Δ</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Bajas</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Anterior</th>
-                <th className="text-right px-3 py-2.5 font-semibold">Δ</th>
-                <th className="text-right px-3 py-2.5 font-semibold" title="Bajas / cerradas del período">Bajas / Cerradas</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Estado</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Observación</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.04]">
-              {delegRows.map(({ d, p, est, vC, vB, bajasA, bajasP }) => (
-                <tr key={d.delegacion}>
-                  <td className="px-4 py-2.5 text-ink font-medium">{d.delegacion}</td>
-                  <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(d.cerradas)}</td>
-                  <td className="text-right px-3 py-2.5 tabular-nums text-ink/50">{fmtNum(p?.cerradas ?? null)}</td>
-                  <td className="text-right px-3 py-2.5"><DeltaPill v={vC.pct} favorable="up" /></td>
-                  <td className="text-right px-3 py-2.5 tabular-nums">{fmtNum(bajasA)}</td>
-                  <td className="text-right px-3 py-2.5 tabular-nums text-ink/50">{fmtNum(bajasP)}</td>
-                  <td className="text-right px-3 py-2.5"><DeltaPill v={vB.pct} favorable="down" /></td>
-                  <td className="text-right px-3 py-2.5 tabular-nums">{fmtPct(d.pct_bajas)}</td>
-                  <td className="px-3 py-2.5">
-                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${estadoBadge[est.estado].text}`}>
-                      <span className={`h-2 w-2 rounded-full ${estadoBadge[est.estado].dot}`} />
-                      {estadoBadge[est.estado].label}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5 text-[11px] text-ink/60 max-w-[380px]">
-                    {est.razones.length ? est.razones.join(" ") : "Sin señales relevantes."}
-                  </td>
-                </tr>
-              ))}
-              {delegRows.length === 0 && (
-                <tr><td colSpan={10} className="text-center px-4 py-8 text-ink/40 text-sm">Sin delegaciones en el período con los filtros actuales.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      {/* 3. Comparativa de delegaciones */}
+      <DelegacionesResumen
+        equiposNow={equiposNow}
+        equiposPrev={equiposPrev}
+        mediaCompaniaBajas={ratioAct}
+      />
 
-      {/* (e) Evolución + %bajas */}
+      {/* 4. Evolución 18 meses (existente) + serie ratio bajas */}
       <section>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Evolución últimos 18 meses</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">
+          Evolución últimos 18 meses
+          <span className="ml-2 text-ink/40 normal-case tracking-normal italic">Responde a los filtros globales activos.</span>
+        </p>
         <div className="border border-black/[0.06] rounded-2xl bg-white p-6">
           <div className="flex items-end gap-1.5 h-40">
             {evo.map((e) => (
               <div key={e.mes} className="flex-1 flex flex-col items-center gap-1 relative">
                 <div className="w-full flex items-end gap-0.5 h-32">
                   <div className="flex-1 bg-ink/70 rounded-t-sm" style={{ height: `${(e.creadas / maxCer) * 100}%` }} title={`Creadas: ${e.creadas}`} />
-                  <div className="flex-1 bg-emerald-500 rounded-t-sm" style={{ height: `${(e.cerradas / maxCer) * 100}%` }} title={`Cerradas: ${e.cerradas} · SLA20 ${fmtPct(e.pct_sla20)}`} />
+                  <div className="flex-1 bg-emerald-500 rounded-t-sm" style={{ height: `${(e.cerradas / maxCer) * 100}%` }} title={`Cerradas: ${e.cerradas} · SLA20 ${fmtPct(e.pct_sla20)} · Bajas ${fmtPct(e.pct_bajas)}`} />
                 </div>
                 <div
                   className="absolute h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-white"
@@ -467,34 +317,13 @@ const Dashboard = () => {
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 bg-ink/70 rounded-sm" /> Creadas</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 bg-emerald-500 rounded-sm" /> Cerradas</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 bg-red-500 rounded-full" /> % Bajas</span>
-            <span className="ml-auto text-ink/40">Pasa el cursor por las series para el detalle.</span>
           </div>
         </div>
       </section>
 
-      {/* (f) Conclusiones + alertas */}
+      {/* 5. Alertas automáticas (existentes) */}
       <section>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Conclusiones operativas</p>
-        <div className="border border-black/[0.06] rounded-2xl bg-white divide-y divide-black/[0.05]">
-          {conclusiones.length === 0 && (
-            <p className="px-5 py-6 text-sm text-ink/40">Sin hallazgos deterministas con los datos y filtros actuales.</p>
-          )}
-          {conclusiones.map((c) => (
-            <div key={c.titulo} className="px-5 py-4">
-              <p className="text-sm font-medium text-ink">{c.titulo}</p>
-              <p className="text-[13px] text-ink/70 mt-1">{c.detalle}</p>
-              <p className="text-[11px] text-ink/40 mt-1">Alcance: {c.alcance}</p>
-              {c.faltan && (
-                <p className="text-[11px] text-amber-700 mt-1 flex items-start gap-1">
-                  <Info className="h-3 w-3 mt-0.5 shrink-0" />
-                  {c.faltan}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mt-6 mb-3">Alertas automáticas</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Alertas automáticas</p>
         <div className="grid md:grid-cols-3 gap-3">
           <AlertBox title="Caída de cierres >40%" icon={TrendingDown} tone="bad" empty="Sin caídas relevantes">
             {alertas?.caidas.map((c) => (
@@ -527,13 +356,34 @@ const Dashboard = () => {
         </p>
       </section>
 
-      {/* (g) Indicador provisional para incentivos */}
+      {/* 6. Conclusiones operativas */}
+      <section>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Conclusiones operativas</p>
+        <div className="border border-black/[0.06] rounded-2xl bg-white divide-y divide-black/[0.05]">
+          {conclusiones.length === 0 && (
+            <p className="px-5 py-6 text-sm text-ink/40">Sin desviaciones materiales en el período.</p>
+          )}
+          {conclusiones.map((c) => (
+            <div key={c.texto} className="px-5 py-4 flex items-start gap-3">
+              <span className={`text-[10px] font-semibold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${c.tipo === "hecho" ? "bg-ink/[0.06] text-ink" : "bg-amber-50 text-amber-800 border border-amber-200"}`}>
+                {c.tipo === "hecho" ? "Hecho" : "Hipótesis"}
+              </span>
+              <div>
+                <p className="text-sm text-ink">{c.texto}</p>
+                <p className="text-[11px] text-ink/40 mt-0.5">Ámbito: {c.ambito}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 7. Indicador provisional para incentivos */}
       <section>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Indicador provisional para incentivos</p>
         <div className="border border-black/[0.06] rounded-2xl bg-white p-5">
           <p className="font-display text-lg text-ink">Indicador provisional de producción y calidad</p>
           <p className="text-[12px] text-amber-800 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-3">
-            Este indicador se basa únicamente en los datos de producción y bajas actualmente disponibles.
+            Este indicador se basa únicamente en los datos de producción y bajas disponibles actualmente.
             No debe utilizarse como base única para decisiones de nómina o incentivos definitivos.
           </p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
@@ -542,11 +392,17 @@ const Dashboard = () => {
             <BucketBox title="Requiere validación" tone="warn" rows={buckets.requiere_validacion} />
             <BucketBox title="Información insuficiente" tone="ink" rows={buckets.informacion_insuficiente} muted />
           </div>
-          <div className="mt-5 pt-5 border-t border-black/[0.05]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-2">Datos adicionales necesarios para el modelo definitivo</p>
-            <ul className="text-[12px] text-ink/60 grid sm:grid-cols-2 gap-x-4 gap-y-1 list-disc pl-4">
+          <button
+            onClick={() => setShowPend((s) => !s)}
+            className="mt-5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/50 hover:text-ink transition-colors"
+          >
+            {showPend ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            Datos pendientes para el modelo definitivo
+          </button>
+          {showPend && (
+            <ul className="text-[12px] text-ink/60 grid sm:grid-cols-2 gap-x-4 gap-y-1 list-disc pl-4 mt-3">
               <li>Trabajos asignados</li>
-              <li>Días y horas efectivas</li>
+              <li>Días y horas trabajadas</li>
               <li>Vacaciones y bajas laborales</li>
               <li>First Time Fix</li>
               <li>Reincidencias</li>
@@ -554,14 +410,14 @@ const Dashboard = () => {
               <li>Reclamaciones y satisfacción</li>
               <li>Complejidad de producto</li>
               <li>Desplazamientos</li>
-              <li>Casos demorados por causas ajenas</li>
+              <li>Causas ajenas al técnico</li>
               <li>Disponibilidad y consumo de repuestos</li>
             </ul>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* (h) Definiciones */}
+      {/* 8. Definiciones */}
       <section>
         <button
           onClick={() => setShowDefs((s) => !s)}
@@ -573,12 +429,11 @@ const Dashboard = () => {
         {showDefs && (
           <div className="border border-black/[0.06] rounded-2xl bg-white p-5 text-[13px] text-ink/70 space-y-3">
             <p><strong className="text-ink">Cerradas</strong>: OTs con situación &quot;Cerrado&quot; o &quot;Baja&quot; y fecha de cierre dentro del período. Se excluye siempre &quot;ANULADO AVISO&quot; y las OTs anuladas.</p>
-            <p><strong className="text-ink">Bajas</strong>: OTs con situación &quot;Baja&quot; (aparato irreparable). En este sistema una baja ES un cierre.</p>
-            <p><strong className="text-ink">Bajas / Cerradas</strong>: bajas del período ÷ cerradas del período.</p>
-            <p><strong className="text-ink">Período comparado</strong>: {labelComp}. Cuando el período activo es un mes natural, la comparación es contra el mes natural anterior; en cualquier otro caso, contra los mismos días inmediatamente anteriores.</p>
-            <p><strong className="text-ink">Última actualización de datos</strong>: {lastUpdate ? new Date(lastUpdate).toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" }) : "—"} (max. fecha de creación en ops_fact_ot).</p>
-            <p><strong className="text-ink">Variables aún no disponibles</strong>: días trabajados, ausencias, First Time Fix, reincidencias, satisfacción, reclamaciones, complejidad de producto, disponibilidad de repuestos.</p>
-            <p className="text-ink/50 italic">Todos los valores mostrados provienen de datos reales importados (ops_fact_ot). No hay datos simulados.</p>
+            <p><strong className="text-ink">Bajas</strong>: OTs con situación &quot;Baja&quot; (aparato irreparable). En este sistema una baja es un cierre.</p>
+            <p><strong className="text-ink">Bajas / Cerradas × 100</strong>: bajas del período divididas entre cerradas del período, en porcentaje.</p>
+            <p><strong className="text-ink">Período de comparación</strong>: {labelComparativa(filters.from, filters.to)}. Si el rango activo es un mes natural, se compara contra el mes natural anterior; si es un rango arbitrario, contra los mismos días inmediatamente anteriores.</p>
+            <p><strong className="text-ink">Variables contextuales aún no disponibles</strong>: días trabajados, ausencias, First Time Fix, reincidencias, satisfacción, reclamaciones, complejidad de producto, disponibilidad de repuestos.</p>
+            <p className="text-ink/50 italic">Todos los valores mostrados proceden de <code className="text-[12px]">ops_fact_ot</code> importado. No hay datos simulados.</p>
           </div>
         )}
       </section>
@@ -586,34 +441,32 @@ const Dashboard = () => {
   );
 };
 
-// -----------------------------------------------------------------------------
+// ---------------- helpers ----------------
+const MiniStat = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
+  <div>
+    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</p>
+    <p className="text-ink font-medium tabular-nums mt-0.5">{value}</p>
+    {sub && <p className="text-[11px] text-ink/40">{sub}</p>}
+  </div>
+);
+
 const BucketBox = ({
-  title,
-  tone,
-  rows,
-  muted,
+  title, tone, rows, muted,
 }: {
-  title: string;
-  tone: Tone;
-  rows: ScoreRow[];
-  muted?: boolean;
+  title: string; tone: Tone; rows: ScoreRow[]; muted?: boolean;
 }) => (
   <div className={`border rounded-xl p-4 ${muted ? "border-black/[0.05] bg-black/[0.01]" : "border-black/[0.06] bg-white"}`}>
-    <div className={`h-[2px] w-6 mb-2 ${toneBar(tone)}`} />
+    <div className={`h-[2px] w-6 mb-2 ${toneClass[tone]}`} />
     <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{title}</p>
     <p className="font-display text-2xl tabular-nums text-ink mt-1">{rows.length}</p>
     {rows.length > 0 && (
       <ul className="mt-2 space-y-0.5 text-[11px] text-ink/60 max-h-32 overflow-y-auto">
-        {rows
-          .slice()
-          .sort((a, b) => b.cerradas - a.cerradas)
-          .slice(0, 8)
-          .map((r) => (
-            <li key={r.tecnico} className="flex justify-between gap-2">
-              <span className="truncate">{r.tecnico}</span>
-              <span className="tabular-nums text-ink/40">{fmtNum(r.cerradas)}</span>
-            </li>
-          ))}
+        {rows.slice().sort((a, b) => b.cerradas - a.cerradas).slice(0, 8).map((r) => (
+          <li key={r.tecnico} className="flex justify-between gap-2">
+            <span className="truncate">{r.tecnico}</span>
+            <span className="tabular-nums text-ink/40">{fmtNum(r.cerradas)}</span>
+          </li>
+        ))}
         {rows.length > 8 && <li className="text-ink/30">+{rows.length - 8} más</li>}
       </ul>
     )}
@@ -637,7 +490,40 @@ const AlertBox = ({ title, icon: Icon, tone, empty, children }: {
   );
 };
 
-// suprimir warning por importar ordenEstadoTecnico solo para exponerlo al Tecnicos.tsx
-void ordenEstadoTecnico;
+// Clasificación de incentivos: usa estadoTecnico + mediana de producción por grupo.
+import { estadoTecnico, indicadorProvisionalIncentivo, mediana, type IndicadorIncentivo } from "@/lib/ops-perf";
+function classifyIncentive(
+  score: ScoreRow[],
+  prevByTec: Map<string, ScoreRow>,
+): Record<IndicadorIncentivo, ScoreRow[]> {
+  const activos = score.filter((r) => r.activo);
+  // Mediana de cerradas por grupo (Central vs Delegaciones)
+  const medianaByGrupo = new Map<string, number>();
+  const byGrupo = new Map<string, number[]>();
+  for (const r of activos) {
+    const arr = byGrupo.get(r.grupo) ?? [];
+    arr.push(r.cerradas);
+    byGrupo.set(r.grupo, arr);
+  }
+  for (const [g, arr] of byGrupo) medianaByGrupo.set(g, mediana(arr));
+
+  const out: Record<IndicadorIncentivo, ScoreRow[]> = {
+    reconocimiento_potencial: [], revision_estandar: [], requiere_validacion: [], informacion_insuficiente: [],
+  };
+  for (const r of activos) {
+    const p = prevByTec.get(r.tecnico) ?? null;
+    if (!p) {
+      out.informacion_insuficiente.push(r);
+      continue;
+    }
+    const est = estadoTecnico(
+      { tecnico: r.tecnico, delegacion: r.delegacion, cerradas: r.cerradas, pct_bajas: r.pct_bajas, pct_bajas_esp: r.pct_bajas_esp },
+      { tecnico: p.tecnico, delegacion: p.delegacion, cerradas: p.cerradas, pct_bajas: p.pct_bajas, pct_bajas_esp: p.pct_bajas_esp },
+    );
+    const med = medianaByGrupo.get(r.grupo) ?? 0;
+    out[indicadorProvisionalIncentivo(est, r.cerradas, med)].push(r);
+  }
+  return out;
+}
 
 export default Dashboard;
