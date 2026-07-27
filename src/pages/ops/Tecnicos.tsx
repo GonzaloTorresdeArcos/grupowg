@@ -7,7 +7,7 @@ import {
   ordenEstado,
   type EstadoTecnicoNivel,
   type EstadoTecnicoResult,
-} from "@/lib/ops-performance";
+} from "@/lib/ops-perf";
 
 import { Loader2, X } from "lucide-react";
 

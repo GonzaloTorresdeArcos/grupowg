@@ -1,5 +1,5 @@
 /**
- * ops-performance.ts — Motor de cálculo puro para el módulo /operaciones.
+ * ops-perf.ts — Motor de cálculo puro para el módulo /operaciones.
  *
  * Funciones sin efectos, tipadas, sin dependencias de React ni de red.
  * Toda la lógica de comparación de períodos, clasificación de estados y

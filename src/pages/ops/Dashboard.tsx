@@ -11,7 +11,7 @@ import {
   type EquipoRow,
   type KpisMin,
   type TecnicoConclInput,
-} from "@/lib/ops-performance";
+} from "@/lib/ops-perf";
 import { DelegacionesResumen } from "@/components/ops/DelegacionesResumen";
 import {
   Loader2, AlertTriangle, TrendingDown, MapPin, Gauge,
@@ -491,7 +491,7 @@ const AlertBox = ({ title, icon: Icon, tone, empty, children }: {
 };
 
 // Clasificación de incentivos: usa estadoTecnico + mediana de producción por grupo.
-import { estadoTecnico, indicadorProvisionalIncentivo, mediana, type IndicadorIncentivo } from "@/lib/ops-performance";
+import { estadoTecnico, indicadorProvisionalIncentivo, mediana, type IndicadorIncentivo } from "@/lib/ops-perf";
 function classifyIncentive(
   score: ScoreRow[],
   prevByTec: Map<string, ScoreRow>,

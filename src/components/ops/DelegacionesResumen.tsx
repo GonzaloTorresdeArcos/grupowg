@@ -1,5 +1,5 @@
 import { fmtNum, fmtPct } from "@/lib/ops-filters";
-import { estadoDelegacion, variacion, type EquipoRow } from "@/lib/ops-performance";
+import { estadoDelegacion, variacion, type EquipoRow } from "@/lib/ops-perf";
 
 const dot: Record<"ok" | "atencion" | "critico", string> = {
   ok: "bg-emerald-500",
