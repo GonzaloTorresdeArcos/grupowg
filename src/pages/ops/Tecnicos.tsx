@@ -365,7 +365,7 @@ type Ficha = {
   abiertas: Array<{ num_ot: string; cliente_wg: string; familia: string; provincia: string; fecha_creacion: string; dias_abierta: number }>;
 };
 
-const FichaDrawer = ({ tecnico, onClose }: { tecnico: Row; onClose: () => void }) => {
+const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () => void }) => {
   const [data, setData] = useState<Ficha | null>(null);
   useEffect(() => {
     (async () => {
