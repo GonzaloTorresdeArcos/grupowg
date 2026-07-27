@@ -20,6 +20,27 @@ type Row = {
   dias_medio: number; pct_sla20: number;
   mix_top: string; score: number | null;
 };
+type EnrichedRow = Row & {
+  bajas_prev: number | null;
+  pct_bajas_prev: number | null;
+  delta_ratio_bajas: number | null;
+  estadoInfo: EstadoTecResult;
+};
+
+const ESTADO_STYLE: Record<EstadoTecnico, { dot: string; text: string; label: string }> = {
+  critico: { dot: "bg-red-500", text: "text-red-700", label: "Crítico" },
+  atencion: { dot: "bg-amber-500", text: "text-amber-700", label: "Atención" },
+  ok: { dot: "bg-emerald-500", text: "text-emerald-700", label: "OK" },
+  sin_contexto: { dot: "bg-ink/30", text: "text-ink/50", label: "Sin contexto" },
+};
+
+const EstadoBadge = ({ e }: { e: EstadoTecResult }) => (
+  <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium ${ESTADO_STYLE[e.estado].text}`}>
+    <span className={`h-2 w-2 rounded-full ${ESTADO_STYLE[e.estado].dot}`} />
+    {ESTADO_STYLE[e.estado].label}
+  </span>
+);
+
 
 const GAMA_ORDER = ["Gama Blanca", "Gama PAE", "Gama Marron", "Gama Movilidad"] as const;
 const GAMA_LABEL: Record<string, string> = {
