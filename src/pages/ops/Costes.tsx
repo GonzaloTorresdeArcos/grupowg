@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtEur, fmtNum } from "@/lib/ops-filters";
 import { Loader2, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OpsPeriodPicker } from "@/components/ops/OpsPeriodPicker";
 
 type Kpis = { coste: number; cierres: number; eur_cierre: number };
 type EvoRow = { mes: string; coste: number; cierres: number; eur_cierre: number };
