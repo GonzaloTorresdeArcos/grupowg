@@ -1,5 +1,6 @@
 import { useOpsFilters } from "@/lib/ops-filters";
 import { Info, X } from "lucide-react";
+import { OpsPeriodPicker } from "./OpsPeriodPicker";
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
   label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
