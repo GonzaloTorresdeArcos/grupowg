@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import {
-  computePrevPeriod,
+  prevPeriod,
   estadoTecnico,
-  ordenEstadoTecnico,
-  type EstadoTecnico,
-  type EstadoTecResult,
-} from "@/lib/ops-performance";
+  ordenEstado,
+  type EstadoTecnicoNivel,
+  type EstadoTecnicoResult,
+} from "@/lib/ops-perf";
+
 import { Loader2, X } from "lucide-react";
 
 
