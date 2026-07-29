@@ -1309,6 +1309,24 @@ export type Database = {
         Returns: string
       }
       ops_costes: { Args: { p_from?: string; p_to?: string }; Returns: Json }
+      ops_costes_entidades: {
+        Args: { p_from?: string; p_to?: string; p_vista?: string }
+        Returns: {
+          bajas: number
+          cerradas: number
+          cerradas_con_ingreso: number
+          contribucion_parcial: number
+          coste_desplazamiento: number
+          coste_directo: number
+          coste_sat: number
+          entidad: string
+          eur_cierre: number
+          ingreso_cli: number
+          pct_bajas: number
+          pct_sla20: number
+          tipo_coste: string
+        }[]
+      }
       ops_delegacion_ficha: {
         Args: { p_delegacion: string; p_from?: string; p_to?: string }
         Returns: Json
