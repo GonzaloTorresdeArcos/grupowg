@@ -1309,6 +1309,10 @@ export type Database = {
         Returns: string
       }
       ops_costes: { Args: { p_from?: string; p_to?: string }; Returns: Json }
+      ops_delegacion_ficha: {
+        Args: { p_delegacion: string; p_from?: string; p_to?: string }
+        Returns: Json
+      }
       ops_delegaciones: {
         Args: {
           p_cliente?: string
