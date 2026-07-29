@@ -8,7 +8,17 @@ import {
   estadoTecnico,
   mediana,
   indicadorProvisionalIncentivo,
+  percentil,
+  estadoProduccion,
+  estadoCalidad,
+  estadoSLA,
+  estadoGlobalTecnico,
+  elegibilidadIncentivo,
+  generarHallazgosTecnicos,
+  validarCalidadDatosTecnicos,
+  prioridadAtencion,
 } from "../ops-performance";
+
 
 describe("variacion", () => {
   it("calcula abs y pct correctamente", () => {
