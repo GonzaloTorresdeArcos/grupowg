@@ -325,7 +325,7 @@ const Dashboard = () => {
       <section>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">Alertas automáticas</p>
         <div className="grid md:grid-cols-3 gap-3">
-          <AlertBox title="Caída de cierres >40%" icon={TrendingDown} tone="bad" empty="Sin caídas relevantes">
+          <AlertBox title={`Caída de cierres >${(UMBRAL_ALERTA_CAIDA * 100).toFixed(0)}%`} icon={TrendingDown} tone="bad" empty="Sin caídas relevantes en técnicos individuales">
             {alertas?.caidas.map((c) => (
               <li key={c.tecnico} className="text-sm">
                 <span className="text-ink font-medium">{c.tecnico}</span>
