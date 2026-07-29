@@ -365,3 +365,110 @@ describe("prioridadAtencion", () => {
     expect(prioridadAtencion(mk("informacion_insuficiente"), 0, 0, 0)).toBe(7);
   });
 });
+
+import {
+  esDelegacionReal, estadoDelegacionMulti, validarCalidadDatosDelegaciones,
+  generarHallazgosDelegaciones, UMBRAL_ALERTA_CAIDA, UMBRAL_MIN_DELEGACION,
+} from "@/lib/ops-performance";
+
+describe("delegación · esDelegacionReal", () => {
+  it("acepta delegaciones reales", () => {
+    for (const d of ["Central San Agustin", "Barcelona", "Valencia", "Las Palmas", "Tenerife"]) {
+      expect(esDelegacionReal(d)).toBe(true);
+    }
+  });
+  it("rechaza equipos/gamas y valores vacíos", () => {
+    for (const g of ["Gama PAE", "Gama Marrón", "Gama Blanca", "Gama Movilidad", "Central (sin gama)", "Madrid · Central", "", null, undefined]) {
+      expect(esDelegacionReal(g as any)).toBe(false);
+    }
+  });
+});
+
+describe("estadoDelegacionMulti", () => {
+  const base = {
+    delegacion: "Barcelona", cerradas: 800, cerradasPrev: 780,
+    pctBajas: 0.18, mediaEmpresaBajas: 0.18, pctSla20: 0.7,
+    abiertas: 50, abiertas30: 5,
+  };
+  it("equilibrada cuando ninguna dimensión desvía", () => {
+    expect(estadoDelegacionMulti(base).nivel).toBe("equilibrado");
+  });
+  it("crítico con calidad + SLA malos", () => {
+    const s = estadoDelegacionMulti({ ...base, pctBajas: 0.35, mediaEmpresaBajas: 0.18, pctSla20: 0.3, abiertas30: 25 });
+    expect(s.calidad.nivel).toBe("critico");
+    expect(s.sla.nivel).toBe("critico");
+    expect(s.nivel).toBe("critico");
+  });
+  it("información insuficiente por bajo volumen", () => {
+    const s = estadoDelegacionMulti({ ...base, cerradas: 10, cerradasPrev: 8 });
+    expect(s.nivel).toBe("informacion_insuficiente");
+  });
+  it("problemas de datos bloquean la clasificación", () => {
+    const s = estadoDelegacionMulti({ ...base, problemasDatos: ["duplicado"] });
+    expect(s.nivel).toBe("informacion_insuficiente");
+    expect(s.bloqueadoPorDatos).toBe(true);
+  });
+});
+
+describe("validarCalidadDatosDelegaciones", () => {
+  it("detecta gamas etiquetadas como delegación", () => {
+    const r = validarCalidadDatosDelegaciones(
+      [{ delegacion: "Gama PAE", cerradas: 100, cerradasPrev: 90, bajas: 5, bajasPrev: 5, pctSla20: 0.7, abiertas: 10, abiertas30: 2 }],
+      new Set(),
+    );
+    expect(r.get("Gama PAE")?.some((a) => a.tipo === "gama_como_delegacion")).toBe(true);
+  });
+  it("detecta inconsistencia con alerta de caída del dashboard", () => {
+    const r = validarCalidadDatosDelegaciones(
+      [{ delegacion: "Barcelona", cerradas: 100, cerradasPrev: 105, bajas: 10, bajasPrev: 10, pctSla20: 0.7, abiertas: 10, abiertas30: 2 }],
+      new Set(["Barcelona"]),
+    );
+    expect(r.get("Barcelona")?.some((a) => a.tipo === "inconsistencia_alertas")).toBe(true);
+  });
+  it("NO detecta inconsistencia si la caída es real", () => {
+    const r = validarCalidadDatosDelegaciones(
+      [{ delegacion: "Barcelona", cerradas: 40, cerradasPrev: 100, bajas: 5, bajasPrev: 10, pctSla20: 0.7, abiertas: 10, abiertas30: 2 }],
+      new Set(["Barcelona"]),
+    );
+    expect(r.get("Barcelona")?.some((a) => a.tipo === "inconsistencia_alertas") ?? false).toBe(false);
+  });
+  it("detecta cerradas=0 con bajas positivas y bajas>cerradas", () => {
+    const r = validarCalidadDatosDelegaciones(
+      [
+        { delegacion: "A", cerradas: 0, cerradasPrev: 0, bajas: 3, bajasPrev: 0, pctSla20: 0.5, abiertas: 0, abiertas30: 0 },
+        { delegacion: "B", cerradas: 10, cerradasPrev: 10, bajas: 15, bajasPrev: 5, pctSla20: 0.5, abiertas: 5, abiertas30: 8 },
+      ],
+      new Set(),
+    );
+    expect(r.get("A")?.some((a) => a.tipo === "cerradas_0_bajas_positivas")).toBe(true);
+    expect(r.get("B")?.some((a) => a.tipo === "bajas_mayor_cerradas")).toBe(true);
+    expect(r.get("B")?.some((a) => a.tipo === "abiertas30_incoherente")).toBe(true);
+  });
+});
+
+describe("generarHallazgosDelegaciones", () => {
+  it("emite máx 5 y contiene HECHO/HIPÓTESIS/ACCIÓN", () => {
+    const rows = ["A", "B", "C", "D", "E", "F"].map((d) => ({
+      delegacion: d, cerradas: 500, cerradasPrev: 450,
+      bajas: 120, bajasPrev: 80, pctBajas: 0.24, mediaEmpresaBajas: 0.15, pctSla20: 0.6, abiertas30: 30,
+      estado: estadoDelegacionMulti({
+        delegacion: d, cerradas: 500, cerradasPrev: 450, pctBajas: 0.24, mediaEmpresaBajas: 0.15,
+        pctSla20: 0.6, abiertas: 60, abiertas30: 30,
+      }),
+    }));
+    const h = generarHallazgosDelegaciones(rows);
+    expect(h.length).toBeLessThanOrEqual(5);
+    h.forEach((x) => {
+      expect(x.hecho.length).toBeGreaterThan(0);
+      expect(x.hipotesis.length).toBeGreaterThan(0);
+      expect(x.accion.length).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe("constantes compartidas", () => {
+  it("UMBRAL_ALERTA_CAIDA y UMBRAL_MIN_DELEGACION están definidos", () => {
+    expect(UMBRAL_ALERTA_CAIDA).toBeGreaterThan(0);
+    expect(UMBRAL_MIN_DELEGACION).toBeGreaterThan(0);
+  });
+});
