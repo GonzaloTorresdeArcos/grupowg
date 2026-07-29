@@ -8,7 +8,17 @@ import {
   estadoTecnico,
   mediana,
   indicadorProvisionalIncentivo,
+  percentil,
+  estadoProduccion,
+  estadoCalidad,
+  estadoSLA,
+  estadoGlobalTecnico,
+  elegibilidadIncentivo,
+  generarHallazgosTecnicos,
+  validarCalidadDatosTecnicos,
+  prioridadAtencion,
 } from "../ops-performance";
+
 
 describe("variacion", () => {
   it("calcula abs y pct correctamente", () => {
@@ -161,5 +171,197 @@ describe("mediana + indicadorProvisionalIncentivo", () => {
   it("informacion_insuficiente si sin_contexto", () => {
     const sc = { estado: "sin_contexto" as const, razones: [] };
     expect(indicadorProvisionalIncentivo(sc, 5, 50)).toBe("informacion_insuficiente");
+  });
+});
+
+// =========================
+// Modelo multidimensional
+// =========================
+describe("percentil", () => {
+  it("p50 = mediana", () => {
+    expect(percentil([1, 2, 3, 4, 5], 0.5)).toBe(3);
+  });
+  it("interpola linealmente", () => {
+    expect(percentil([10, 20], 0.5)).toBe(15);
+  });
+});
+
+describe("estadoProduccion", () => {
+  it("insuficiente si cerradas < umbral", () => {
+    expect(estadoProduccion(5, 5, 20, 60, 10).nivel).toBe("insuficiente");
+  });
+  it("sobre_benchmark si cerradas ≥ p66", () => {
+    expect(estadoProduccion(80, 70, 30, 70, 10).nivel).toBe("sobre_benchmark");
+  });
+  it("sobre_benchmark también si Δ ≥ +15% aunque esté bajo p66", () => {
+    expect(estadoProduccion(50, 40, 30, 70, 10).nivel).toBe("sobre_benchmark");
+  });
+  it("bajo_benchmark requiere ≤ p33 Y caída ≥15%", () => {
+    expect(estadoProduccion(20, 30, 25, 70, 10).nivel).toBe("bajo_benchmark");
+    expect(estadoProduccion(20, 22, 25, 70, 10).nivel).toBe("en_linea");
+  });
+  it("en_linea por defecto", () => {
+    expect(estadoProduccion(45, 45, 30, 70, 10).nivel).toBe("en_linea");
+  });
+});
+
+describe("estadoCalidad", () => {
+  it("insuficiente sin muestra", () => {
+    expect(estadoCalidad(0.3, 0.2, 0.2, 5, 10).nivel).toBe("insuficiente");
+  });
+  it("insuficiente sin benchmark", () => {
+    expect(estadoCalidad(0.3, null, null, 50, 10).nivel).toBe("insuficiente");
+  });
+  it("critico si ≥+10pp Y ≥1,5× esperado", () => {
+    expect(estadoCalidad(0.35, 0.2, 0.2, 50, 10).nivel).toBe("critico");
+  });
+  it("atencion si ≥+5pp", () => {
+    expect(estadoCalidad(0.27, 0.2, 0.2, 50, 10).nivel).toBe("atencion");
+  });
+  it("mejor_que_benchmark si ≤−5pp", () => {
+    expect(estadoCalidad(0.14, 0.2, 0.2, 50, 10).nivel).toBe("mejor_que_benchmark");
+  });
+  it("en_linea en el resto", () => {
+    expect(estadoCalidad(0.21, 0.2, 0.2, 50, 10).nivel).toBe("en_linea");
+  });
+});
+
+describe("estadoSLA", () => {
+  it("no_disponible sin cifra o sin muestra", () => {
+    expect(estadoSLA(null, 50, 10).nivel).toBe("no_disponible");
+    expect(estadoSLA(0.9, 5, 10).nivel).toBe("no_disponible");
+  });
+  it("segmenta 80/60/40", () => {
+    expect(estadoSLA(0.85, 50, 10).nivel).toBe("sobre_objetivo");
+    expect(estadoSLA(0.7, 50, 10).nivel).toBe("en_linea");
+    expect(estadoSLA(0.5, 50, 10).nivel).toBe("atencion");
+    expect(estadoSLA(0.3, 50, 10).nivel).toBe("critico");
+  });
+});
+
+describe("estadoGlobalTecnico", () => {
+  const base = {
+    cerradas: 50, cerradasPrev: 45,
+    pctBajas: 0.2, mediaDelegacion: 0.2, pctBajasEsp: 0.2,
+    pctSla20: 0.75, abiertas30: 0,
+    p33Grupo: 30, p66Grupo: 70, medianaGrupo: 40, umbralMinimo: 10,
+  };
+
+  it("informacion_insuficiente si producción insuficiente", () => {
+    const r = estadoGlobalTecnico({ ...base, cerradas: 3 });
+    expect(r.nivel).toBe("informacion_insuficiente");
+  });
+  it("requiere_validacion si hay problemas de datos", () => {
+    const r = estadoGlobalTecnico({ ...base, problemasDatos: ["duplicado"] });
+    expect(r.nivel).toBe("requiere_validacion");
+  });
+  it("atencion_requerida por calidad crítica", () => {
+    const r = estadoGlobalTecnico({ ...base, pctBajas: 0.35 });
+    expect(r.nivel).toBe("atencion_requerida");
+  });
+  it("atencion_requerida por SLA en atención", () => {
+    const r = estadoGlobalTecnico({ ...base, pctSla20: 0.45 });
+    expect(r.nivel).toBe("atencion_requerida");
+  });
+  it("atencion_requerida por backlog +30 ≥ 5", () => {
+    const r = estadoGlobalTecnico({ ...base, abiertas30: 8 });
+    expect(r.nivel).toBe("atencion_requerida");
+  });
+  it("reconocimiento_potencial cumple los tres criterios", () => {
+    const r = estadoGlobalTecnico({ ...base, cerradas: 80, pctSla20: 0.85, pctBajas: 0.12 });
+    expect(r.nivel).toBe("reconocimiento_potencial");
+  });
+  it("rendimiento_equilibrado por defecto si nada crítico pero < mediana", () => {
+    const r = estadoGlobalTecnico({ ...base, cerradas: 25, p33Grupo: 10, p66Grupo: 70, medianaGrupo: 40, umbralMinimo: 10 });
+    expect(r.nivel).toBe("rendimiento_equilibrado");
+  });
+});
+
+describe("elegibilidadIncentivo", () => {
+  const mk = (nivel: any) => ({ nivel, produccion: {} as any, calidad: {} as any, sla: {} as any, reglaGlobal: "", observacion: "" });
+  it("mapea correctamente los 5 niveles", () => {
+    expect(elegibilidadIncentivo(mk("informacion_insuficiente"))).toBe("informacion_insuficiente");
+    expect(elegibilidadIncentivo(mk("requiere_validacion"))).toBe("requiere_validacion");
+    expect(elegibilidadIncentivo(mk("atencion_requerida"))).toBe("requiere_validacion");
+    expect(elegibilidadIncentivo(mk("reconocimiento_potencial"))).toBe("reconocimiento_potencial");
+    expect(elegibilidadIncentivo(mk("rendimiento_equilibrado"))).toBe("revision_estandar");
+  });
+});
+
+describe("generarHallazgosTecnicos", () => {
+  const mkEstado = (nivel: any = "rendimiento_equilibrado") => ({
+    nivel, produccion: { nivel: "en_linea", regla: "" } as any,
+    calidad: { nivel: "en_linea", regla: "" } as any, sla: { nivel: "en_linea", regla: "" } as any,
+    reglaGlobal: "", observacion: "",
+  });
+  it("genera hallazgo por desviación de calidad", () => {
+    const h = generarHallazgosTecnicos([{
+      tecnico: "A", delegacion: "D", cerradas: 50, cerradasPrev: 50,
+      pctBajas: 0.3, mediaDelegacion: 0.2, abiertas30: 0, pctSla20: 0.7, estado: mkEstado(),
+    }]);
+    expect(h.length).toBe(1);
+    expect(h[0].tecnico).toBe("A");
+  });
+  it("genera hallazgo por caída de producción", () => {
+    const h = generarHallazgosTecnicos([{
+      tecnico: "A", delegacion: "D", cerradas: 30, cerradasPrev: 60,
+      pctBajas: 0.2, mediaDelegacion: 0.2, abiertas30: 0, pctSla20: 0.7, estado: mkEstado(),
+    }]);
+    expect(h.length).toBe(1);
+  });
+  it("máximo 5 hallazgos", () => {
+    const rows = Array.from({ length: 20 }, (_, i) => ({
+      tecnico: `T${i}`, delegacion: "D", cerradas: 30, cerradasPrev: 60,
+      pctBajas: 0.35 + i * 0.001, mediaDelegacion: 0.2, abiertas30: 20, pctSla20: 0.5, estado: mkEstado(),
+    }));
+    expect(generarHallazgosTecnicos(rows).length).toBeLessThanOrEqual(5);
+  });
+});
+
+describe("validarCalidadDatosTecnicos", () => {
+  it("detecta duplicados y multi-delegación", () => {
+    const { porTecnico } = validarCalidadDatosTecnicos([
+      { tecnico: "A", delegacion: "D1", cerradas: 10, cerradasPrev: 10, pctBajas: 0.1, pctBajasPrev: 0.1, pctSla20: 0.7 },
+      { tecnico: "A", delegacion: "D2", cerradas: 5, cerradasPrev: 5, pctBajas: 0.1, pctBajasPrev: 0.1, pctSla20: 0.7 },
+    ], new Set());
+    const av = porTecnico.get("A") ?? [];
+    expect(av.some((x) => x.tipo === "duplicado")).toBe(true);
+    expect(av.some((x) => x.tipo === "multi_delegacion")).toBe(true);
+  });
+  it("detecta bajas > cerradas y sin período anterior", () => {
+    const { porTecnico } = validarCalidadDatosTecnicos([
+      { tecnico: "B", delegacion: "D", cerradas: 20, cerradasPrev: null, pctBajas: 1.5, pctBajasPrev: null, pctSla20: 0.7 },
+    ], new Set());
+    const av = porTecnico.get("B") ?? [];
+    expect(av.some((x) => x.tipo === "bajas_mayor_cerradas")).toBe(true);
+    expect(av.some((x) => x.tipo === "sin_periodo_anterior")).toBe(true);
+  });
+  it("detecta inconsistencia con alertas del dashboard", () => {
+    const { porTecnico } = validarCalidadDatosTecnicos([
+      { tecnico: "C", delegacion: "D", cerradas: 100, cerradasPrev: 100, pctBajas: 0.1, pctBajasPrev: 0.1, pctSla20: 0.7 },
+    ], new Set(["C"]));
+    expect(porTecnico.get("C")?.some((x) => x.tipo === "inconsistencia_alertas")).toBe(true);
+  });
+});
+
+describe("prioridadAtencion", () => {
+  const mk = (nivel: any, calidad: any = "en_linea", sla: any = "en_linea") => ({
+    nivel, produccion: {} as any, calidad: { nivel: calidad, regla: "" } as any,
+    sla: { nivel: sla, regla: "" } as any, reglaGlobal: "", observacion: "",
+  });
+  it("crítico va primero", () => {
+    expect(prioridadAtencion(mk("atencion_requerida", "critico"), 0, 0, 0)).toBe(0);
+  });
+  it("desviación calidad ≥+5pp", () => {
+    expect(prioridadAtencion(mk("rendimiento_equilibrado"), 0.06, null, 0)).toBe(1);
+  });
+  it("caída producción ≥15%", () => {
+    expect(prioridadAtencion(mk("rendimiento_equilibrado"), 0, -0.2, 0)).toBe(2);
+  });
+  it("backlog +30", () => {
+    expect(prioridadAtencion(mk("rendimiento_equilibrado"), 0, 0, 8)).toBe(3);
+  });
+  it("info insuficiente al final", () => {
+    expect(prioridadAtencion(mk("informacion_insuficiente"), 0, 0, 0)).toBe(7);
   });
 });
