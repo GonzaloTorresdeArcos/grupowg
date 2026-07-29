@@ -11,7 +11,9 @@ import {
   type EquipoRow,
   type KpisMin,
   type TecnicoConclInput,
+  UMBRAL_ALERTA_CAIDA,
 } from "@/lib/ops-performance";
+
 import { DelegacionesResumen } from "@/components/ops/DelegacionesResumen";
 import {
   Loader2, AlertTriangle, TrendingDown, MapPin, Gauge,
