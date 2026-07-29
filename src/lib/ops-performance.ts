@@ -754,3 +754,342 @@ export function diasEntre(fromISO: string, toISO: string): number {
   return Math.round((t.getTime() - f.getTime()) / 86400000) + 1;
 }
 
+
+// =============================================================================
+// MODELO MULTIDIMENSIONAL DE ESTADO DE DELEGACIÓN (iteración 3)
+//
+// Entidad válida: SOLO delegaciones reales del ERP (Central San Agustin, Las
+// Palmas, Valencia, Barcelona, Tenerife). Se rechaza cualquier valor que
+// parezca una gama, marca, cliente, SAT o técnico.
+//
+// Estado global 4-niveles con reglas explícitas y trazables.
+// =============================================================================
+
+// Umbral compartido entre la tabla y las alertas del dashboard, para evitar
+// inconsistencias del tipo "Sin caídas relevantes" cuando la tabla muestra
+// caídas mayores que este umbral.
+export const UMBRAL_ALERTA_CAIDA = 0.4; // −40% cierres vs período anterior
+export const UMBRAL_MIN_DELEGACION = 50; // menos → "información insuficiente"
+
+// Etiquetas de gama utilizadas como equipos dentro de Central: si alguno de
+// estos strings aparece como "delegación", es un error de clasificación de
+// entidades.
+const ETIQUETAS_GAMA = /^(gama\s+(pae|marr[oó]n|blanca|movilidad|clima|profesional)|central\s+\(sin gama\)|madrid\s+·\s+.+)$/i;
+
+export function esDelegacionReal(nombre: string | null | undefined): boolean {
+  if (!nombre) return false;
+  const t = nombre.trim();
+  if (!t) return false;
+  if (ETIQUETAS_GAMA.test(t)) return false;
+  return true;
+}
+
+export type EstadoProduccionDeleg =
+  | "sobre_periodo_anterior" | "estable" | "por_debajo" | "insuficiente";
+export type EstadoCalidadDeleg =
+  | "mejor_que_empresa" | "en_linea" | "atencion" | "critico" | "insuficiente";
+export type EstadoBacklogDeleg =
+  | "sano" | "atencion" | "critico" | "no_evaluable";
+export type EstadoGlobalDeleg =
+  | "equilibrado" | "atencion" | "critico" | "informacion_insuficiente";
+
+export const LABEL_GLOBAL_DELEG: Record<EstadoGlobalDeleg, string> = {
+  equilibrado: "Equilibrado",
+  atencion: "Atención",
+  critico: "Crítico",
+  informacion_insuficiente: "Información insuficiente",
+};
+
+// --- Producción --------------------------------------------------------------
+export function estadoProduccionDeleg(
+  cerradas: number,
+  cerradasPrev: number | null,
+  umbralMin: number,
+): ClasificacionDim<EstadoProduccionDeleg> {
+  if (cerradas < umbralMin)
+    return { nivel: "insuficiente", regla: `Muestra insuficiente: ${cerradas} cierres < umbral ${umbralMin}.` };
+  const v = variacion(cerradas, cerradasPrev);
+  if (v.pct == null)
+    return { nivel: "estable", regla: `Sin período anterior comparable para evaluar variación.` };
+  if (v.pct >= 0.05)
+    return { nivel: "sobre_periodo_anterior", regla: `Cierres ${fmtPctSigned(v.pct)} vs período anterior (${cerradasPrev}→${cerradas}).` };
+  if (v.pct <= -0.15)
+    return { nivel: "por_debajo", regla: `Cierres ${fmtPctSigned(v.pct)} vs período anterior (${cerradasPrev}→${cerradas}). No ajustado por capacidad.` };
+  return { nivel: "estable", regla: `Variación ${fmtPctSigned(v.pct)} dentro del rango estable (±15%).` };
+}
+
+// --- Calidad (ratio bajas vs media compañía) ---------------------------------
+export function estadoCalidadDeleg(
+  pctBajas: number,
+  mediaEmpresa: number | null,
+  cerradas: number,
+  umbralMin: number,
+): ClasificacionDim<EstadoCalidadDeleg> {
+  if (cerradas < umbralMin)
+    return { nivel: "insuficiente", regla: `Muestra insuficiente: ${cerradas} cierres < umbral ${umbralMin}.` };
+  if (mediaEmpresa == null || mediaEmpresa <= 0)
+    return { nivel: "insuficiente", regla: "Sin media de empresa disponible." };
+  const dpp = pctBajas - mediaEmpresa;
+  if (dpp >= 0.10 && pctBajas >= mediaEmpresa * 1.5)
+    return { nivel: "critico", regla: `Ratio ${fmtP(pctBajas)} vs empresa ${fmtP(mediaEmpresa)} (${fmtPP(dpp)}) y ≥ 1,5× empresa.` };
+  if (dpp >= 0.05)
+    return { nivel: "atencion", regla: `Ratio ${fmtP(pctBajas)} vs empresa ${fmtP(mediaEmpresa)} (${fmtPP(dpp)}).` };
+  if (dpp <= -0.05)
+    return { nivel: "mejor_que_empresa", regla: `Ratio ${fmtP(pctBajas)} vs empresa ${fmtP(mediaEmpresa)} (${fmtPP(dpp)}).` };
+  return { nivel: "en_linea", regla: `Ratio ${fmtP(pctBajas)} en el rango de la empresa (${fmtP(mediaEmpresa)}).` };
+}
+
+// --- SLA (reutiliza estadoSLA de técnicos con el mismo umbral) --------------
+// Nota: aquí no reutilizamos directamente por semántica ligeramente distinta.
+export function estadoSlaDeleg(
+  pctSla: number | null | undefined,
+  cerradas: number,
+  umbralMin: number,
+): ClasificacionDim<EstadoSLA> {
+  return estadoSLA(pctSla ?? null, cerradas, umbralMin);
+}
+
+// --- Backlog (abiertas +30 / abiertas totales) ------------------------------
+export function estadoBacklogDeleg(
+  abiertas: number,
+  abiertas30: number,
+): ClasificacionDim<EstadoBacklogDeleg> {
+  if (abiertas <= 0)
+    return { nivel: "no_evaluable", regla: "No hay OTs abiertas en la delegación." };
+  const pct = abiertas30 / abiertas;
+  if (abiertas30 >= 20 && pct >= 0.30)
+    return { nivel: "critico", regla: `${abiertas30} OTs +30d (${fmtP(pct)} del backlog) ≥ umbrales 20 y 30%.` };
+  if (abiertas30 >= 10 || pct >= 0.20)
+    return { nivel: "atencion", regla: `${abiertas30} OTs +30d (${fmtP(pct)} del backlog).` };
+  return { nivel: "sano", regla: `${abiertas30} OTs +30d (${fmtP(pct)} del backlog).` };
+}
+
+// --- Estado global de la delegación -----------------------------------------
+export type DelegacionGlobalInput = {
+  delegacion: string;
+  cerradas: number;
+  cerradasPrev: number | null;
+  pctBajas: number;
+  mediaEmpresaBajas: number | null;
+  pctSla20: number | null;
+  abiertas: number;
+  abiertas30: number;
+  problemasDatos?: string[];
+  umbralMin?: number;
+};
+
+export type EstadoDelegacionMulti = {
+  nivel: EstadoGlobalDeleg;
+  produccion: ClasificacionDim<EstadoProduccionDeleg>;
+  calidad: ClasificacionDim<EstadoCalidadDeleg>;
+  sla: ClasificacionDim<EstadoSLA>;
+  backlog: ClasificacionDim<EstadoBacklogDeleg>;
+  reglaGlobal: string;
+  observacion: string;
+  bloqueadoPorDatos: boolean;
+};
+
+export function estadoDelegacionMulti(t: DelegacionGlobalInput): EstadoDelegacionMulti {
+  const umbral = t.umbralMin ?? UMBRAL_MIN_DELEGACION;
+  const produccion = estadoProduccionDeleg(t.cerradas, t.cerradasPrev, umbral);
+  const calidad = estadoCalidadDeleg(t.pctBajas, t.mediaEmpresaBajas, t.cerradas, umbral);
+  const sla = estadoSlaDeleg(t.pctSla20, t.cerradas, umbral);
+  const backlog = estadoBacklogDeleg(t.abiertas, t.abiertas30);
+  const problemas = t.problemasDatos ?? [];
+
+  if (problemas.length > 0) {
+    return {
+      nivel: "informacion_insuficiente", produccion, calidad, sla, backlog,
+      reglaGlobal: "Inconsistencias en los datos que bloquean clasificación definitiva.",
+      observacion: problemas.join(" · "),
+      bloqueadoPorDatos: true,
+    };
+  }
+  if (produccion.nivel === "insuficiente") {
+    return {
+      nivel: "informacion_insuficiente", produccion, calidad, sla, backlog,
+      reglaGlobal: `Volumen insuficiente para clasificar (${t.cerradas} < ${umbral}).`,
+      observacion: "Contexto insuficiente para evaluación definitiva.",
+      bloqueadoPorDatos: false,
+    };
+  }
+
+  const dimsCriticas =
+    (calidad.nivel === "critico" ? 1 : 0) +
+    (sla.nivel === "critico" ? 1 : 0) +
+    (backlog.nivel === "critico" ? 1 : 0);
+  const dimsAtencion =
+    (produccion.nivel === "por_debajo" ? 1 : 0) +
+    (calidad.nivel === "atencion" || calidad.nivel === "critico" ? 1 : 0) +
+    (sla.nivel === "atencion" || sla.nivel === "critico" ? 1 : 0) +
+    (backlog.nivel === "atencion" || backlog.nivel === "critico" ? 1 : 0);
+
+  if (dimsCriticas >= 1 && dimsAtencion >= 2) {
+    return {
+      nivel: "critico", produccion, calidad, sla, backlog,
+      reglaGlobal: `Dos o más dimensiones materiales negativas (${dimsAtencion}), con al menos una crítica.`,
+      observacion: `Producción ${produccion.nivel} · Calidad ${calidad.nivel} · SLA ${sla.nivel} · Backlog ${backlog.nivel}.`,
+      bloqueadoPorDatos: false,
+    };
+  }
+  if (dimsAtencion >= 1) {
+    return {
+      nivel: "atencion", produccion, calidad, sla, backlog,
+      reglaGlobal: `Una dimensión con señal material negativa.`,
+      observacion: `Producción ${produccion.nivel} · Calidad ${calidad.nivel} · SLA ${sla.nivel} · Backlog ${backlog.nivel}.`,
+      bloqueadoPorDatos: false,
+    };
+  }
+  return {
+    nivel: "equilibrado", produccion, calidad, sla, backlog,
+    reglaGlobal: "Sin desviación material en producción, calidad, SLA ni backlog.",
+    observacion: "Rendimiento estable en las dimensiones evaluables.",
+    bloqueadoPorDatos: false,
+  };
+}
+
+// --- Validaciones de calidad de datos por delegación -------------------------
+export type ValidacionDelegInput = {
+  delegacion: string;
+  cerradas: number;
+  cerradasPrev: number | null;
+  bajas: number;
+  bajasPrev: number | null;
+  pctSla20: number | null;
+  abiertas: number;
+  abiertas30: number;
+};
+
+export function validarCalidadDatosDelegaciones(
+  rows: ValidacionDelegInput[],
+  alertasCaida: Set<string>,
+): Map<string, AvisoCalidad[]> {
+  const out = new Map<string, AvisoCalidad[]>();
+  const push = (d: string, tipo: string, mensaje: string) => {
+    const arr = out.get(d) ?? [];
+    arr.push({ ambito: "tecnico", tecnico: d, tipo, mensaje });
+    out.set(d, arr);
+  };
+  const seen = new Map<string, number>();
+  for (const r of rows) seen.set(r.delegacion, (seen.get(r.delegacion) ?? 0) + 1);
+  for (const [d, n] of seen) if (n > 1) push(d, "duplicado", `Delegación aparece ${n} veces.`);
+  for (const r of rows) {
+    if (!esDelegacionReal(r.delegacion)) {
+      push(r.delegacion, "gama_como_delegacion",
+        `"${r.delegacion}" parece un equipo/gama, no una delegación real. No debe aparecer en esta tabla.`);
+    }
+    if (r.cerradas === 0 && r.bajas > 0)
+      push(r.delegacion, "cerradas_0_bajas_positivas", `Cerradas=0 con ${r.bajas} bajas.`);
+    if (r.bajas > r.cerradas)
+      push(r.delegacion, "bajas_mayor_cerradas", `${r.bajas} bajas > ${r.cerradas} cerradas.`);
+    if (r.pctSla20 != null && (r.pctSla20 < 0 || r.pctSla20 > 1))
+      push(r.delegacion, "sla_fuera_rango", `SLA ${fmtP(r.pctSla20)} fuera del rango 0-100%.`);
+    if (r.abiertas30 > r.abiertas)
+      push(r.delegacion, "abiertas30_incoherente", `${r.abiertas30} abiertas +30d > ${r.abiertas} abiertas totales.`);
+    if (r.cerradasPrev != null && r.cerradas === r.cerradasPrev && r.bajasPrev != null && r.bajas === r.bajasPrev && r.cerradas > 0)
+      push(r.delegacion, "valores_identicos", "Cifras idénticas al período anterior — verificar carga o join.");
+    if (alertasCaida.has(r.delegacion)) {
+      const v = variacion(r.cerradas, r.cerradasPrev);
+      if (v.pct == null || v.pct > -UMBRAL_ALERTA_CAIDA) {
+        push(r.delegacion, "inconsistencia_alertas",
+          `Marcada como 'caída' en el dashboard pero la tabla no refleja caída ≥ ${(UMBRAL_ALERTA_CAIDA * 100).toFixed(0)}%.`);
+      }
+    }
+  }
+  return out;
+}
+
+// --- Hallazgos automáticos de delegación (HECHO / HIPÓTESIS / ACCIÓN) --------
+export type HallazgoDelegacion = {
+  delegacion: string;
+  hecho: string;
+  hipotesis: string;
+  accion: string;
+  benchmark: string;
+  relevancia: string;
+};
+
+export type DelegHallazgoInput = {
+  delegacion: string;
+  cerradas: number;
+  cerradasPrev: number | null;
+  bajas: number;
+  bajasPrev: number | null;
+  pctBajas: number;
+  mediaEmpresaBajas: number | null;
+  pctSla20: number | null;
+  abiertas30: number;
+  estado: EstadoDelegacionMulti;
+};
+
+export function generarHallazgosDelegaciones(rows: DelegHallazgoInput[]): HallazgoDelegacion[] {
+  const out: HallazgoDelegacion[] = [];
+  // 1) Cierres suben pero bajas suben más → posible calidad
+  for (const r of rows) {
+    if (r.cerradasPrev == null || r.bajasPrev == null || r.cerradasPrev === 0 || r.bajasPrev === 0) continue;
+    const vC = variacion(r.cerradas, r.cerradasPrev);
+    const vB = variacion(r.bajas, r.bajasPrev);
+    if (vC.pct != null && vB.pct != null && vC.pct >= 0 && vB.pct - vC.pct >= 0.10) {
+      out.push({
+        delegacion: r.delegacion,
+        hecho: `${r.delegacion} aumentó cierres un ${fmtPctSigned(vC.pct)} mientras sus bajas subieron un ${fmtPctSigned(vB.pct)}; el ratio queda en ${fmtP(r.pctBajas)}.`,
+        hipotesis: "El aumento puede concentrarse en una gama, cliente o técnico concreto; revisar la distribución antes de concluir deterioro de calidad.",
+        accion: `Revisar bajas por técnico, gama y motivo en ${r.delegacion} antes del próximo comité.`,
+        benchmark: `Media de empresa: ${fmtP(r.mediaEmpresaBajas)}.`,
+        relevancia: "Divergencia > 10 pp entre variación de cierres y de bajas.",
+      });
+    }
+  }
+  // 2) Calidad crítica vs empresa
+  for (const r of rows) {
+    if (r.estado.calidad.nivel !== "critico") continue;
+    const dpp = r.mediaEmpresaBajas != null ? r.pctBajas - r.mediaEmpresaBajas : null;
+    if (dpp == null) continue;
+    out.push({
+      delegacion: r.delegacion,
+      hecho: `${r.delegacion} presenta un ratio de bajas de ${fmtP(r.pctBajas)} sobre ${r.cerradas} cierres.`,
+      hipotesis: "Puede reflejar mix de producto más complejo o problema real de calidad; requiere validar antes de responsabilizar al equipo.",
+      accion: "Descomponer por gama, cliente y técnico; contrastar con benchmark por mix familia×cliente.",
+      benchmark: `Media empresa ${fmtP(r.mediaEmpresaBajas)} (${fmtPP(dpp)}).`,
+      relevancia: "Ratio ≥ 1,5× media empresa y ≥ +10pp.",
+    });
+  }
+  // 3) Backlog envejecido crítico
+  for (const r of rows) {
+    if (r.estado.backlog.nivel !== "critico") continue;
+    out.push({
+      delegacion: r.delegacion,
+      hecho: `${r.delegacion} acumula ${r.abiertas30} OTs abiertas con más de 30 días.`,
+      hipotesis: "Puede deberse a demoras de repuestos, cancelaciones de cliente o capacidad insuficiente.",
+      accion: "Revisar causa raíz por técnico y provincia; priorizar cierre de casos +30d en las próximas 2 semanas.",
+      benchmark: `Umbrales operativos: > 20 OTs +30d y > 30% del backlog.`,
+      relevancia: "Backlog envejecido crítico.",
+    });
+  }
+  // 4) Caída material de producción no ajustada por capacidad
+  for (const r of rows) {
+    if (r.cerradasPrev == null || r.cerradasPrev < UMBRAL_MIN_DELEGACION) continue;
+    const v = variacion(r.cerradas, r.cerradasPrev);
+    if (v.pct != null && v.pct <= -UMBRAL_ALERTA_CAIDA) {
+      out.push({
+        delegacion: r.delegacion,
+        hecho: `${r.delegacion} pasó de ${r.cerradasPrev} a ${r.cerradas} cierres (${fmtPctSigned(v.pct)}).`,
+        hipotesis: "La caída puede reflejar menor entrada, cambios de plantilla, vacaciones o cierre de puntos. No es en sí misma peor rendimiento.",
+        accion: "Antes de calificar como deterioro, comprobar entradas, capacidad disponible y comparabilidad de días laborables.",
+        benchmark: `Umbral operativo: caída ≥ ${(UMBRAL_ALERTA_CAIDA * 100).toFixed(0)}%.`,
+        relevancia: "Variación superior al umbral compartido con alertas del dashboard.",
+      });
+    }
+  }
+  // Dedup por delegación+acción, máx 5
+  const seen = new Set<string>();
+  const uniq: HallazgoDelegacion[] = [];
+  for (const h of out) {
+    const k = h.delegacion + "|" + h.accion;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    uniq.push(h);
+    if (uniq.length >= 5) break;
+  }
+  return uniq;
+}
