@@ -1454,6 +1454,8 @@ export type Database = {
           p_to?: string
         }
         Returns: {
+          abiertas_30: number
+          abiertas_total: number
           activo: boolean
           cerradas: number
           cerradas_prev: number
