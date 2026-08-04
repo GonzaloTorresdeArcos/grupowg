@@ -248,6 +248,7 @@ const SLA = () => {
   const deltaSla = t.pct_sla20 != null && slaPrev != null ? t.pct_sla20 - slaPrev : null;
   const pct30 = snap.abiertas > 0 ? snap.n30 / snap.abiertas : null;
   const tot = Math.max(1, t.total);
+  const varAbiertas = snapPrev ? variacion(snapPrev.abiertas, snap.abiertas).ratio : null;
   const delegReales = data.delegaciones.filter((d) => esDelegacionReal(d.delegacion));
   const redSat = data.delegaciones.filter((d) => !esDelegacionReal(d.delegacion));
   const productoFiltrado = (dim: ProdRow["dim"]) =>
@@ -322,7 +323,7 @@ const SLA = () => {
             label="Abiertas totales"
             def="OTs actualmente en situación Abierto."
             valor={fmtNum(snap.abiertas)}
-            tone={snapPrev ? (variacion(snapPrev.abiertas, snap.abiertas) ?? 0) > 0.05 ? "desfavorable" : (variacion(snapPrev.abiertas, snap.abiertas) ?? 0) < -0.05 ? "favorable" : "neutro" : "neutro"}
+            tone={varAbiertas == null ? "neutro" : varAbiertas > 0.05 ? "desfavorable" : varAbiertas < -0.05 ? "favorable" : "neutro"}
             detalle={snapPrev ? `Hace ${L} días: ${fmtNum(snapPrev.abiertas)} (reconstruido)` : undefined}
           />
           <Card
@@ -455,7 +456,7 @@ const SLA = () => {
               {delegReales.map((d) => {
                 const serie = seriesDeleg.find((s) => s.delegacion === d.delegacion)?.serieEdad ?? [];
                 const tend = tendenciaSerie(serie);
-                const est = estadoBacklogDeleg(d.abiertas, d.n30);
+                const est = estadoBacklogDeleg(d.abiertas, d.n30).nivel;
                 const catDom = d.estado_dom ? categoriaDeEstado(d.estado_dom) : null;
                 return (
                   <tr key={d.delegacion}>
@@ -483,7 +484,7 @@ const SLA = () => {
               <table className="w-full text-sm min-w-[720px]">
                 <tbody className="divide-y divide-black/[0.04]">
                   {redSat.map((d) => {
-                    const est = estadoBacklogDeleg(d.abiertas, d.n30);
+                    const est = estadoBacklogDeleg(d.abiertas, d.n30).nivel;
                     const catDom = d.estado_dom ? categoriaDeEstado(d.estado_dom) : null;
                     return (
                       <tr key={d.delegacion}>
