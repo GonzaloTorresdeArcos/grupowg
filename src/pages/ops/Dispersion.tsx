@@ -479,7 +479,9 @@ export default function OpsDispersion() {
                 value={kpis.km_reales_total > 0 ? `${fmtNum(kpis.km_reales_total)} km` : "no disponible"}
                 hint={kpis.km_reales_total > 0
                   ? `real registrado · ${fmtNum(kpis.km_reales_tecnicos)} técnicos con dato en el período`
-                  : "sin registros de km en los meses del período"}
+                  : kpis.km_reales_tecnicos > 0
+                    ? "los registros del período están a 0 km — el campo km no se está cargando en la fuente"
+                    : "sin registros de km en los meses del período"}
               />
             </div>
           </section>
