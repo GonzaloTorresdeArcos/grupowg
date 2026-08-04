@@ -27,7 +27,8 @@ describe("normalizaCp", () => {
   it("normaliza CPs con espacios y rellena a 5 dígitos", () => {
     expect(normalizaCp("28001 ")).toBe("28001");
     expect(normalizaCp("8013")).toBe("08013");
-    expect(normalizaCp("28.801")).toBe("28001");
+    // regla: se eliminan los no-dígitos tal cual (28.801 → 28801)
+    expect(normalizaCp("28.801")).toBe("28801");
   });
   it("rechaza formatos no normalizables", () => {
     expect(normalizaCp("123")).toBeNull();
