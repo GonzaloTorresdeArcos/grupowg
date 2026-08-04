@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { prevPeriod, labelPeriodo, diasEntre } from "@/lib/ops-performance";
@@ -84,6 +84,9 @@ export default function OpsDispersion() {
   const [data, setData] = useState<DispPayload | null>(null);
   const [dataPrev, setDataPrev] = useState<DispPayload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const reqIdRef = useRef(0);
   const [delOpts, setDelOpts] = useState<string[]>([]);
   const [gamaOpts, setGamaOpts] = useState<string[]>([]);
   const [famOpts, setFamOpts] = useState<string[]>([]);
@@ -105,7 +108,9 @@ export default function OpsDispersion() {
   }, []);
 
   useEffect(() => {
+    const myReq = ++reqIdRef.current;
     setLoading(true);
+    setErrorMsg(null);
     const prev = prevPeriod(range.from, range.to);
     const mk = (from: string, to: string) => ({
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
@@ -113,14 +118,30 @@ export default function OpsDispersion() {
     Promise.all([
       supabase.rpc("ops_dispersion" as never, mk(range.from, range.to) as never),
       supabase.rpc("ops_dispersion" as never, mk(prev.from, prev.to) as never),
-    ]).then(([a, b]) => {
-      if (a.error) console.error(a.error);
-      if (b.error) console.error(b.error);
-      setData((a.data ?? null) as unknown as DispPayload | null);
-      setDataPrev((b.data ?? null) as unknown as DispPayload | null);
+    ]).then((pair) => {
+      const [a, b] = pair as [{ data: unknown; error: unknown }, { data: unknown; error: unknown }];
+      if (myReq !== reqIdRef.current) return; // llegó una petición más reciente
+      if (a.error || !a.data) {
+        console.error("[ops_dispersion]", a.error);
+        setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
+        setLoading(false);
+        return; // conserva los datos previos en pantalla
+      }
+      setData(a.data as unknown as DispPayload);
+      if (!b.error && b.data) setDataPrev(b.data as unknown as DispPayload);
+      setLoading(false);
+    }).catch((e) => {
+      if (myReq !== reqIdRef.current) return;
+      console.error("[ops_dispersion]", e);
+      setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
       setLoading(false);
     });
-  }, [range.from, range.to, delegacion, gama, familia]);
+  }, [range.from, range.to, delegacion, gama, familia, reloadKey]);
+
+  // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
+  useEffect(() => {
+    if (provSel && data && !data.provincias.some((p) => p.provincia === provSel)) setProvSel(null);
+  }, [data, provSel]);
 
   // ── Derivados ────────────────────────────────────────────────────────────
   const prev = prevPeriod(range.from, range.to);
@@ -424,12 +445,27 @@ export default function OpsDispersion() {
         <Sel label="Familia" value={familia} options={famOpts} onChange={setFamilia} />
       </div>
 
-      {loading && (
+      {loading && !data && (
         <div className="flex items-center gap-2 text-ink/50 text-sm"><Loader2 className="h-4 w-4 animate-spin" /> Calculando…</div>
       )}
 
-      {!loading && kpis && data && (
+      {errorMsg && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-800">
+          <span>{errorMsg}</span>
+          <button onClick={() => setReloadKey((k) => k + 1)}
+            className="px-3 py-1 rounded-full bg-red-600 text-white text-[12px] font-semibold hover:bg-red-700">
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {kpis && data && (
         <>
+          {loading && (
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white px-3 py-1.5 text-[12px] text-ink/60">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Actualizando datos…
+            </div>
+          )}
           {/* Comparabilidad de períodos */}
           <section className="border border-black/[0.06] rounded-xl bg-white p-4 text-[13px] text-ink/70 flex flex-wrap items-center gap-x-6 gap-y-1.5">
             <span><span className="text-ink/40">Período actual:</span> <b className="text-ink">{labelPeriodo(range.from, range.to)}</b> · {L} días naturales</span>

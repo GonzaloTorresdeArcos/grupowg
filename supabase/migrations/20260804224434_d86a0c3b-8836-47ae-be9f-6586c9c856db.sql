@@ -1,0 +1,1 @@
+ALTER FUNCTION public.ops_dispersion(date, date, text, text, text) SET jit = off;
