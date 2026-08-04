@@ -457,7 +457,7 @@ export default function OpsDispersion() {
                 label="Municipios servidos"
                 def="Municipios distintos con al menos una OT cerrada (con municipio registrado)."
                 value={fmtNum(kpis.municipios_servidos)}
-                hint={kpisPrev ? `anterior ${fmtNum(kpisPrev.municipios_servidas)} · ${fmtNum(kpis.cps_servidos)} CPs distintos` : `${fmtNum(kpis.cps_servidos)} CPs distintos`}
+                hint={kpisPrev ? `anterior ${fmtNum(kpisPrev.municipios_servidos)} · ${fmtNum(kpis.cps_servidos)} CPs distintos` : `${fmtNum(kpis.cps_servidos)} CPs distintos`}
               />
               <Card
                 label="% fuera de capital"
