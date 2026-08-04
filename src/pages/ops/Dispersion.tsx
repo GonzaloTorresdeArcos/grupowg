@@ -378,8 +378,10 @@ export default function OpsDispersion() {
       ),
     },
     {
-      label: "Técnicos con km reales",
-      pct: data.tecnicos.length > 0 ? kpis.km_reales_tecnicos / data.tecnicos.length : null,
+      label: "Técnicos con km reales > 0",
+      pct: data.tecnicos.length > 0
+        ? data.tecnicos.filter((t) => (num(t.km_reales) ?? 0) > 0).length / data.tecnicos.length
+        : null,
     },
   ] : [];
 
