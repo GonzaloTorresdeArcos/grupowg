@@ -84,6 +84,9 @@ export default function OpsDispersion() {
   const [data, setData] = useState<DispPayload | null>(null);
   const [dataPrev, setDataPrev] = useState<DispPayload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const reqIdRef = useRef(0);
   const [delOpts, setDelOpts] = useState<string[]>([]);
   const [gamaOpts, setGamaOpts] = useState<string[]>([]);
   const [famOpts, setFamOpts] = useState<string[]>([]);
@@ -105,7 +108,9 @@ export default function OpsDispersion() {
   }, []);
 
   useEffect(() => {
+    const myReq = ++reqIdRef.current;
     setLoading(true);
+    setErrorMsg(null);
     const prev = prevPeriod(range.from, range.to);
     const mk = (from: string, to: string) => ({
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
@@ -114,13 +119,28 @@ export default function OpsDispersion() {
       supabase.rpc("ops_dispersion" as never, mk(range.from, range.to) as never),
       supabase.rpc("ops_dispersion" as never, mk(prev.from, prev.to) as never),
     ]).then(([a, b]) => {
-      if (a.error) console.error(a.error);
-      if (b.error) console.error(b.error);
-      setData((a.data ?? null) as unknown as DispPayload | null);
-      setDataPrev((b.data ?? null) as unknown as DispPayload | null);
+      if (myReq !== reqIdRef.current) return; // llegó una petición más reciente
+      if (a.error || !a.data) {
+        console.error("[ops_dispersion]", a.error);
+        setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
+        setLoading(false);
+        return; // conserva los datos previos en pantalla
+      }
+      setData(a.data as unknown as DispPayload);
+      if (!b.error && b.data) setDataPrev(b.data as unknown as DispPayload);
+      setLoading(false);
+    }).catch((e) => {
+      if (myReq !== reqIdRef.current) return;
+      console.error("[ops_dispersion]", e);
+      setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
       setLoading(false);
     });
-  }, [range.from, range.to, delegacion, gama, familia]);
+  }, [range.from, range.to, delegacion, gama, familia, reloadKey]);
+
+  // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
+  useEffect(() => {
+    if (provSel && data && !data.provincias.some((p) => p.provincia === provSel)) setProvSel(null);
+  }, [data, provSel]);
 
   // ── Derivados ────────────────────────────────────────────────────────────
   const prev = prevPeriod(range.from, range.to);
