@@ -370,7 +370,8 @@ export function compararSlaDashboard(
   tol: number = TOLERANCIA_SLA_DASHBOARD,
 ): AvisoSla | null {
   if (slaPagina == null || slaDashboard == null) return null;
-  if (Math.abs(slaPagina - slaDashboard) <= tol) return null;
+  // epsilon para evitar falsos positivos por precisión binaria en el límite
+  if (Math.abs(slaPagina - slaDashboard) <= tol + 1e-9) return null;
   return {
     tipo: "inconsistencia_dashboard",
     severidad: "error",
