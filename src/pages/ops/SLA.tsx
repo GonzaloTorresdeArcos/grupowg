@@ -248,7 +248,7 @@ const SLA = () => {
   const deltaSla = t.pct_sla20 != null && slaPrev != null ? t.pct_sla20 - slaPrev : null;
   const pct30 = snap.abiertas > 0 ? snap.n30 / snap.abiertas : null;
   const tot = Math.max(1, t.total);
-  const varAbiertas = snapPrev ? variacion(snapPrev.abiertas, snap.abiertas).ratio : null;
+  const varAbiertas = snapPrev ? variacion(snap.abiertas, snapPrev.abiertas).pct : null;
   const delegReales = data.delegaciones.filter((d) => esDelegacionReal(d.delegacion));
   const redSat = data.delegaciones.filter((d) => !esDelegacionReal(d.delegacion));
   const productoFiltrado = (dim: ProdRow["dim"]) =>
