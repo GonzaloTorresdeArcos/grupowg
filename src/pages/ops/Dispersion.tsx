@@ -118,7 +118,8 @@ export default function OpsDispersion() {
     Promise.all([
       supabase.rpc("ops_dispersion" as never, mk(range.from, range.to) as never),
       supabase.rpc("ops_dispersion" as never, mk(prev.from, prev.to) as never),
-    ]).then(([a, b]) => {
+    ]).then((pair) => {
+      const [a, b] = pair as [{ data: unknown; error: unknown }, { data: unknown; error: unknown }];
       if (myReq !== reqIdRef.current) return; // llegó una petición más reciente
       if (a.error || !a.data) {
         console.error("[ops_dispersion]", a.error);
