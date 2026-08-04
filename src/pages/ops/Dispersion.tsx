@@ -445,12 +445,27 @@ export default function OpsDispersion() {
         <Sel label="Familia" value={familia} options={famOpts} onChange={setFamilia} />
       </div>
 
-      {loading && (
+      {loading && !data && (
         <div className="flex items-center gap-2 text-ink/50 text-sm"><Loader2 className="h-4 w-4 animate-spin" /> Calculando…</div>
       )}
 
-      {!loading && kpis && data && (
+      {errorMsg && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-800">
+          <span>{errorMsg}</span>
+          <button onClick={() => setReloadKey((k) => k + 1)}
+            className="px-3 py-1 rounded-full bg-red-600 text-white text-[12px] font-semibold hover:bg-red-700">
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {kpis && data && (
         <>
+          {loading && (
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white px-3 py-1.5 text-[12px] text-ink/60">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Actualizando datos…
+            </div>
+          )}
           {/* Comparabilidad de períodos */}
           <section className="border border-black/[0.06] rounded-xl bg-white p-4 text-[13px] text-ink/70 flex flex-wrap items-center gap-x-6 gap-y-1.5">
             <span><span className="text-ink/40">Período actual:</span> <b className="text-ink">{labelPeriodo(range.from, range.to)}</b> · {L} días naturales</span>
