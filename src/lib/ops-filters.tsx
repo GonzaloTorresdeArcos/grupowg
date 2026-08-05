@@ -159,14 +159,16 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
       }
     }, 120);
     return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filters.delegacion, filters.cliente, filters.gama, filters.familia, filters.marca,
-    filters.provincia, filters.sat, filters.tecnico, filters.canal,
+    filters.provincia, filters.sat, filters.tecnico, filters.canal, reloadKey,
   ]);
 
   const setFilters = (partial: Partial<OpsFilters>) =>
     setFiltersState((f) => ({ ...f, ...partial }));
   const reset = () => setFiltersState(defaultFilters());
+  const reloadOptions = () => setReloadKey((k) => k + 1);
 
   const rpcParams = useMemo(() => ({
     p_from: filters.from, p_to: filters.to,
