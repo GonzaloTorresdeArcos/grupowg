@@ -90,22 +90,40 @@ export default function OpsDispersion() {
   const [delOpts, setDelOpts] = useState<string[]>([]);
   const [gamaOpts, setGamaOpts] = useState<string[]>([]);
   const [famOpts, setFamOpts] = useState<string[]>([]);
+  const [optsErr, setOptsErr] = useState(false);
+  const [optsReloadKey, setOptsReloadKey] = useState(0);
   const [vista, setVista] = useState<Vista>("provincias");
   const [provSel, setProvSel] = useState<string | null>(null);
   const [sort, setSort] = useState<SortState>(null);
 
   useEffect(() => {
-    supabase.rpc("ops_filter_options" as never, {
-      p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
-      p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
-    } as never).then(({ data: d }) => {
-      const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
-      const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
-      setDelOpts(toArr(src?.delegaciones));
-      setGamaOpts(toArr(src?.gamas));
-      setFamOpts(toArr(src?.familias));
-    });
-  }, []);
+    let alive = true;
+    void (async () => {
+      try {
+        const { data: d, error } = await supabase.rpc("ops_filter_options" as never, {
+          p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
+          p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
+        } as never);
+        if (!alive) return;
+        if (error) {
+          console.error("[ops_filter_options] dispersion", error);
+          setOptsErr(true);
+          return;
+        }
+        setOptsErr(false);
+        const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
+        const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
+        setDelOpts(toArr(src?.delegaciones));
+        setGamaOpts(toArr(src?.gamas));
+        setFamOpts(toArr(src?.familias));
+      } catch (e) {
+        if (!alive) return;
+        console.error("[ops_filter_options] dispersion", e);
+        setOptsErr(true);
+      }
+    })();
+    return () => { alive = false; };
+  }, [optsReloadKey]);
 
   useEffect(() => {
     const myReq = ++reqIdRef.current;
@@ -372,19 +390,23 @@ export default function OpsDispersion() {
 
   const Sel = ({ label, value, options, onChange }: {
     label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
-  }) => (
-    <label className="flex flex-col gap-1 min-w-[140px]">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
-      <select
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value || null)}
-        className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
-      >
-        <option value="">Todas</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </label>
-  );
+  }) => {
+    // Blindaje: cualquier payload no-array degrada a lista vacía, nunca rompe el render.
+    const list = Array.isArray(options) ? options : [];
+    return (
+      <label className="flex flex-col gap-1 min-w-[140px]">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
+        <select
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || null)}
+          className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+        >
+          <option value="">Todas</option>
+          {list.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      </label>
+    );
+  };
 
   const completitudItems = kpis && data ? [
     { label: "Con provincia", pct: pctCompleto(kpis.con_provincia, kpis.cerradas) },
@@ -443,6 +465,16 @@ export default function OpsDispersion() {
         <Sel label="Delegación" value={delegacion} options={delOpts} onChange={setDelegacion} />
         <Sel label="Gama" value={gama} options={gamaOpts} onChange={setGama} />
         <Sel label="Familia" value={familia} options={famOpts} onChange={setFamilia} />
+        {optsErr && (
+          <span role="alert" className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-red-50 border border-red-200 text-[11px] text-red-800">
+            <AlertTriangle className="h-3.5 w-3.5 text-red-600" />
+            No se han podido cargar las opciones de filtro
+            <button type="button" onClick={() => setOptsReloadKey((k) => k + 1)}
+              className="ml-1 font-semibold underline underline-offset-2 hover:text-red-900">
+              Reintentar
+            </button>
+          </span>
+        )}
       </div>
 
       {loading && !data && (

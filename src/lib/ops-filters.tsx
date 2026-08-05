@@ -48,6 +48,10 @@ type Ctx = {
   reset: () => void;
   options: OpsFilterOptions;
   loadingOptions: boolean;
+  /** true si la última carga de opciones maestras falló (red/timeout/RPC). */
+  optionsError: boolean;
+  /** Reintenta la carga de opciones maestras. */
+  reloadOptions: () => void;
   rpcParams: Record<string, string | null>;
 };
 
@@ -73,6 +77,8 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   });
   const [options, setOptions] = useState<OpsFilterOptions>(EMPTY_OPTIONS);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [optionsError, setOptionsError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const reqIdRef = useRef(0);
 
   useEffect(() => {
@@ -83,23 +89,34 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const myReq = ++reqIdRef.current;
     const handle = setTimeout(async () => {
-      const { data, error } = await supabase.rpc("ops_filter_options" as never, {
-        p_delegacion: filters.delegacion,
-        p_cliente: filters.cliente,
-        p_gama: filters.gama,
-        p_familia: filters.familia,
-        p_marca: filters.marca,
-        p_provincia: filters.provincia,
-        p_sat: filters.sat,
-        p_tecnico: filters.tecnico,
-        p_canal: filters.canal,
-      } as never);
+      let data: unknown = null;
+      let error: unknown = null;
+      try {
+        const res = await supabase.rpc("ops_filter_options" as never, {
+          p_delegacion: filters.delegacion,
+          p_cliente: filters.cliente,
+          p_gama: filters.gama,
+          p_familia: filters.familia,
+          p_marca: filters.marca,
+          p_provincia: filters.provincia,
+          p_sat: filters.sat,
+          p_tecnico: filters.tecnico,
+          p_canal: filters.canal,
+        } as never);
+        data = res.data;
+        error = res.error;
+      } catch (e) {
+        // Fallo a nivel de red (la promesa rechaza): degradamos a aviso, nunca excepción sin capturar.
+        error = e;
+      }
       if (myReq !== reqIdRef.current) return;
       if (error) {
         console.error("[ops_filter_options] error", error);
+        setOptionsError(true);
         setLoadingOptions(false);
         return;
       }
+      setOptionsError(false);
       const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
       const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
       const toArr = (v: unknown): string[] =>
@@ -142,14 +159,16 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
       }
     }, 120);
     return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filters.delegacion, filters.cliente, filters.gama, filters.familia, filters.marca,
-    filters.provincia, filters.sat, filters.tecnico, filters.canal,
+    filters.provincia, filters.sat, filters.tecnico, filters.canal, reloadKey,
   ]);
 
   const setFilters = (partial: Partial<OpsFilters>) =>
     setFiltersState((f) => ({ ...f, ...partial }));
   const reset = () => setFiltersState(defaultFilters());
+  const reloadOptions = () => setReloadKey((k) => k + 1);
 
   const rpcParams = useMemo(() => ({
     p_from: filters.from, p_to: filters.to,
@@ -160,7 +179,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   }), [filters]);
 
   return (
-    <OpsFiltersContext.Provider value={{ filters, setFilters, reset, options, loadingOptions, rpcParams }}>
+    <OpsFiltersContext.Provider value={{ filters, setFilters, reset, options, loadingOptions, optionsError, reloadOptions, rpcParams }}>
       {children}
     </OpsFiltersContext.Provider>
   );
