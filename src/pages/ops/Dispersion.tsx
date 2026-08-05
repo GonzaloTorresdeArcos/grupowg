@@ -98,27 +98,30 @@ export default function OpsDispersion() {
 
   useEffect(() => {
     let alive = true;
-    supabase.rpc("ops_filter_options" as never, {
-      p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
-      p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
-    } as never).then(({ data: d, error }: { data: unknown; error: unknown }) => {
-      if (!alive) return;
-      if (error) {
-        console.error("[ops_filter_options] dispersion", error);
+    void (async () => {
+      try {
+        const { data: d, error } = await supabase.rpc("ops_filter_options" as never, {
+          p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
+          p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
+        } as never);
+        if (!alive) return;
+        if (error) {
+          console.error("[ops_filter_options] dispersion", error);
+          setOptsErr(true);
+          return;
+        }
+        setOptsErr(false);
+        const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
+        const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
+        setDelOpts(toArr(src?.delegaciones));
+        setGamaOpts(toArr(src?.gamas));
+        setFamOpts(toArr(src?.familias));
+      } catch (e) {
+        if (!alive) return;
+        console.error("[ops_filter_options] dispersion", e);
         setOptsErr(true);
-        return;
       }
-      setOptsErr(false);
-      const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
-      const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
-      setDelOpts(toArr(src?.delegaciones));
-      setGamaOpts(toArr(src?.gamas));
-      setFamOpts(toArr(src?.familias));
-    }).catch((e: unknown) => {
-      if (!alive) return;
-      console.error("[ops_filter_options] dispersion", e);
-      setOptsErr(true);
-    });
+    })();
     return () => { alive = false; };
   }, [optsReloadKey]);
 
