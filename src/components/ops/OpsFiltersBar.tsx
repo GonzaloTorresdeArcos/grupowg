@@ -1,5 +1,5 @@
 import { useOpsFilters } from "@/lib/ops-filters";
-import { Info, X } from "lucide-react";
+import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
@@ -28,7 +28,7 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
 
 
 export const OpsFiltersBar = () => {
-  const { filters, setFilters, reset, options } = useOpsFilters();
+  const { filters, setFilters, reset, options, optionsError, reloadOptions } = useOpsFilters();
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
@@ -66,6 +66,19 @@ export const OpsFiltersBar = () => {
           <span className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
             <Info className="h-3.5 w-3.5 text-amber-600" />
             Canal medido o inferido por tipo de producto — cubre el 79% de las OTs (reglas validadas, ≥95% de acierto)
+          </span>
+        )}
+        {optionsError && (
+          <span role="alert" className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-red-50 border border-red-200 text-[11px] text-red-800">
+            <AlertTriangle className="h-3.5 w-3.5 text-red-600" />
+            No se han podido cargar las opciones de filtro
+            <button
+              type="button"
+              onClick={reloadOptions}
+              className="ml-1 font-semibold underline underline-offset-2 hover:text-red-900"
+            >
+              Reintentar
+            </button>
           </span>
         )}
       </div>
