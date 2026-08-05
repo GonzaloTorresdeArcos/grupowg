@@ -89,23 +89,34 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const myReq = ++reqIdRef.current;
     const handle = setTimeout(async () => {
-      const { data, error } = await supabase.rpc("ops_filter_options" as never, {
-        p_delegacion: filters.delegacion,
-        p_cliente: filters.cliente,
-        p_gama: filters.gama,
-        p_familia: filters.familia,
-        p_marca: filters.marca,
-        p_provincia: filters.provincia,
-        p_sat: filters.sat,
-        p_tecnico: filters.tecnico,
-        p_canal: filters.canal,
-      } as never);
+      let data: unknown = null;
+      let error: unknown = null;
+      try {
+        const res = await supabase.rpc("ops_filter_options" as never, {
+          p_delegacion: filters.delegacion,
+          p_cliente: filters.cliente,
+          p_gama: filters.gama,
+          p_familia: filters.familia,
+          p_marca: filters.marca,
+          p_provincia: filters.provincia,
+          p_sat: filters.sat,
+          p_tecnico: filters.tecnico,
+          p_canal: filters.canal,
+        } as never);
+        data = res.data;
+        error = res.error;
+      } catch (e) {
+        // Fallo a nivel de red (la promesa rechaza): degradamos a aviso, nunca excepción sin capturar.
+        error = e;
+      }
       if (myReq !== reqIdRef.current) return;
       if (error) {
         console.error("[ops_filter_options] error", error);
+        setOptionsError(true);
         setLoadingOptions(false);
         return;
       }
+      setOptionsError(false);
       const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
       const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
       const toArr = (v: unknown): string[] =>
