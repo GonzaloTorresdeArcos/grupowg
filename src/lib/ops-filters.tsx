@@ -77,6 +77,8 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   });
   const [options, setOptions] = useState<OpsFilterOptions>(EMPTY_OPTIONS);
   const [loadingOptions, setLoadingOptions] = useState(true);
+  const [optionsError, setOptionsError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const reqIdRef = useRef(0);
 
   useEffect(() => {
