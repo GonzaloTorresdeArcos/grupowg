@@ -5,21 +5,26 @@ import { OpsPeriodPicker } from "./OpsPeriodPicker";
 const Sel = ({ label, value, options, onChange, displayMap }: {
   label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
   displayMap?: Record<string, string>;
-}) => (
-  <label className="flex flex-col gap-1 min-w-[130px]">
-    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
-    <select
-      value={value ?? ""}
-      onChange={(e) => onChange(e.target.value || null)}
-      className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
-    >
-      <option value="">Todos</option>
-      {options.map((o) => (
-        <option key={o} value={o}>{displayMap?.[o] ?? o}</option>
-      ))}
-    </select>
-  </label>
-);
+}) => {
+  // Blindaje: si por cualquier camino llega algo que no es array (payload
+  // malformado, respuesta parcial), degradamos a lista vacía en vez de romper.
+  const list = Array.isArray(options) ? options : [];
+  return (
+    <label className="flex flex-col gap-1 min-w-[130px]">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
+      <select
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value || null)}
+        className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+      >
+        <option value="">Todos</option>
+        {list.map((o) => (
+          <option key={o} value={o}>{displayMap?.[o] ?? o}</option>
+        ))}
+      </select>
+    </label>
+  );
+};
 
 
 export const OpsFiltersBar = () => {

@@ -48,6 +48,10 @@ type Ctx = {
   reset: () => void;
   options: OpsFilterOptions;
   loadingOptions: boolean;
+  /** true si la última carga de opciones maestras falló (red/timeout/RPC). */
+  optionsError: boolean;
+  /** Reintenta la carga de opciones maestras. */
+  reloadOptions: () => void;
   rpcParams: Record<string, string | null>;
 };
 
