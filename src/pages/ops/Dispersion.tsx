@@ -390,19 +390,23 @@ export default function OpsDispersion() {
 
   const Sel = ({ label, value, options, onChange }: {
     label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
-  }) => (
-    <label className="flex flex-col gap-1 min-w-[140px]">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
-      <select
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value || null)}
-        className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
-      >
-        <option value="">Todas</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-    </label>
-  );
+  }) => {
+    // Blindaje: cualquier payload no-array degrada a lista vacía, nunca rompe el render.
+    const list = Array.isArray(options) ? options : [];
+    return (
+      <label className="flex flex-col gap-1 min-w-[140px]">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{label}</span>
+        <select
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || null)}
+          className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+        >
+          <option value="">Todas</option>
+          {list.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      </label>
+    );
+  };
 
   const completitudItems = kpis && data ? [
     { label: "Con provincia", pct: pctCompleto(kpis.con_provincia, kpis.cerradas) },
