@@ -179,7 +179,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   }), [filters]);
 
   return (
-    <OpsFiltersContext.Provider value={{ filters, setFilters, reset, options, loadingOptions, rpcParams }}>
+    <OpsFiltersContext.Provider value={{ filters, setFilters, reset, options, loadingOptions, optionsError, reloadOptions, rpcParams }}>
       {children}
     </OpsFiltersContext.Provider>
   );
