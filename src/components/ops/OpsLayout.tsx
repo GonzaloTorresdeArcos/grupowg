@@ -162,7 +162,11 @@ export const OpsLayout = () => {
         </header>
 
         <OpsFiltersProvider>
-          <OpsFiltersBar />
+          {/* Boundary propio: un fallo en la barra de filtros nunca debe
+              dejar en blanco toda la sección de operaciones. */}
+          <RouteBoundary>
+            <OpsFiltersBar />
+          </RouteBoundary>
           <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-10 py-8 md:py-12">
             <RouteBoundary key={pathname}>
               <Outlet />

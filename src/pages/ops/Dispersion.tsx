@@ -465,6 +465,16 @@ export default function OpsDispersion() {
         <Sel label="Delegación" value={delegacion} options={delOpts} onChange={setDelegacion} />
         <Sel label="Gama" value={gama} options={gamaOpts} onChange={setGama} />
         <Sel label="Familia" value={familia} options={famOpts} onChange={setFamilia} />
+        {optsErr && (
+          <span role="alert" className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-red-50 border border-red-200 text-[11px] text-red-800">
+            <AlertTriangle className="h-3.5 w-3.5 text-red-600" />
+            No se han podido cargar las opciones de filtro
+            <button type="button" onClick={() => setOptsReloadKey((k) => k + 1)}
+              className="ml-1 font-semibold underline underline-offset-2 hover:text-red-900">
+              Reintentar
+            </button>
+          </span>
+        )}
       </div>
 
       {loading && !data && (
