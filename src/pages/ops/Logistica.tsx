@@ -70,14 +70,12 @@ const KPIS_PREVISTOS: { kpi: string; def: string }[] = [
   { kpi: "Desglose por transportista y por tipo de destino", def: "Mismas métricas abiertas por transportista y por destino_tipo, nunca mezclados." },
 ];
 
-const num = (v: unknown): number | null => (v == null || v === "" ? null : Number(v));
-
 export default function OpsLogistica() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
   const [log, setLog] = useState<LogisticaPayload | null>(null);
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
-  const [campo, setCampo] = useState<CampoPayload | null>(null);
+  const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -110,32 +108,21 @@ export default function OpsLogistica() {
     })();
   }, [rpcParams, filters.from, filters.to, prevRange.from, prevRange.to, reloadKey]);
 
-  // (C) Logística de campo — reutiliza las RPC existentes (ops_dispersion para km,
-  // ops_costes para el importe de desplazamiento). Sin duplicar lógica de cálculo.
+  // (C) Productividad de almacén — detalle de expediciones del período.
   useEffect(() => {
     let vivo = true;
     void (async () => {
-      const [rDisp, rCost] = await Promise.all([
-        supabase.rpc("ops_dispersion" as never, {
-          p_from: filters.from, p_to: filters.to,
-          p_delegacion: filters.delegacion, p_gama: filters.gama, p_familia: filters.familia,
-        } as never),
-        supabase.rpc("ops_costes" as never, { p_from: filters.from, p_to: filters.to } as never),
-      ]);
-      if (!vivo || rDisp.error || rCost.error) return;
-      const d = (rDisp.data ?? {}) as Record<string, unknown>;
-      const k = (d.kpis ?? {}) as Record<string, unknown>;
-      const c = ((rCost.data ?? {}) as Record<string, unknown>).kpis as Record<string, unknown> | undefined;
-      setCampo({
-        kmMedia: num(k.km_media),
-        kmMediana: num(k.km_mediana),
-        cerradas: num(k.cerradas),
-        geocodificadas: num(k.geocodificadas),
-        costeDesplazamiento: num(c?.coste_desplazamiento),
-      });
+      const { data, error } = await supabase
+        .from("ops_expedicion" as never)
+        .select(COLS_EXPEDICION)
+        .gte("fecha_expedicion", filters.from)
+        .lte("fecha_expedicion", `${filters.to}T23:59:59`)
+        .limit(5000);
+      if (!vivo || error) return;
+      setExped((data ?? []) as unknown as FilaExpedicion[]);
     })();
     return () => { vivo = false; };
-  }, [filters.from, filters.to, filters.delegacion, filters.gama, filters.familia]);
+  }, [filters.from, filters.to, reloadKey]);
 
   const etiqueta = labelPeriodo(filters.from, filters.to);
   const hayExpediciones = (log?.total_filas ?? 0) > 0;
@@ -145,6 +132,13 @@ export default function OpsLogistica() {
   );
   const domExp = dominio("expediciones");
   const traz = supply ? pctTrazabilidad(supply.cadena) : null;
+
+  const prod = useMemo(
+    () => ({ kpis: kpisProductividad(exped), linea: lineaProductividad(kpisProductividad(exped), etiqueta) }),
+    [exped, etiqueta],
+  );
+  const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
+
 
   const otd = log && log.periodo.otd_n > 0 ? log.periodo.otd_ok / log.periodo.otd_n : null;
   const otdPrev = log && log.periodo_prev.otd_n > 0 ? log.periodo_prev.otd_ok / log.periodo_prev.otd_n : null;
