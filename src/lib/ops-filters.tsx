@@ -1,5 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { prevPeriod, type ModoComparacion } from "@/lib/ops-performance";
+import {
+  detectarPreset, resolverPreset, sinPeriodoComparable,
+  type Cobertura, type PresetKey, type Rango,
+} from "@/lib/ops-periodo";
 
 export type OpsFilters = {
   from: string; // YYYY-MM-DD
@@ -28,6 +33,7 @@ export type OpsFilterOptions = {
 };
 
 const STORAGE_KEY = "ops.filters.v3";
+const MODO_KEY = "ops.modoComparacion.v1";
 const CANAL_VALIDOS = new Set(["Taller", "Domicilio", "Unico"]);
 
 const defaultFilters = (): OpsFilters => {
@@ -53,6 +59,22 @@ type Ctx = {
   /** Reintenta la carga de opciones maestras. */
   reloadOptions: () => void;
   rpcParams: Record<string, string | null>;
+  // ---- Contexto temporal V2 (Fase 2) ----
+  /** Modo de comparación global efectivo (en YTD se fuerza 'interanual'). */
+  modo: ModoComparacion;
+  /** Modo elegido por el usuario (puede diferir del efectivo en YTD). */
+  modoSeleccionado: ModoComparacion;
+  setModo: (m: ModoComparacion) => void;
+  /** Preset detectado a partir del rango activo. */
+  preset: PresetKey;
+  /** Aplica un preset del selector global sin tocar el resto de filtros. */
+  aplicarPreset: (key: PresetKey, refISO?: string) => void;
+  /** Rango de comparación calculado con el modo global. Único origen de verdad. */
+  prevRange: Rango;
+  /** true si el rango de comparación cae fuera de la cobertura de datos. */
+  sinComparable: boolean;
+  /** Cobertura real de datos cargados (min/max), cacheada en el provider. */
+  cobertura: Cobertura;
 };
 
 const OpsFiltersContext = createContext<Ctx | null>(null);
@@ -61,6 +83,7 @@ const EMPTY_OPTIONS: OpsFilterOptions = {
   delegaciones: [], clientes: [], gamas: [], familias: [], marcas: [],
   provincias: [], sats: [], tecnicos: [], canales: [],
 };
+
 
 export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFiltersState] = useState<OpsFilters>(() => {
