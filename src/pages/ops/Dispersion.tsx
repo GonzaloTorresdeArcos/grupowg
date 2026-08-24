@@ -29,14 +29,6 @@ import {
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-const defaultRange = () => {
-  const now = new Date();
-  return {
-    from: iso(new Date(Date.UTC(now.getUTCFullYear(), 0, 1))),
-    to: iso(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0))),
-  };
-};
-
 type Vista = "provincias" | "municipios" | "tecnicos" | "sats";
 type SortState = { key: string; dir: 1 | -1 } | null;
 
@@ -158,6 +150,7 @@ export default function OpsDispersion() {
       setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
       setLoading(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia, reloadKey]);
 
   // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.

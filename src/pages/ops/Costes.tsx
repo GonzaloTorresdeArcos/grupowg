@@ -63,15 +63,6 @@ const mesLabel = (iso: string) => {
 const firstOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
 const lastOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
 const monthKey = (iso: string) => iso.slice(0, 7);
-const monthsBetween = (from: string, to: string) => {
-  const f = new Date(from + "T00:00:00Z");
-  const t = new Date(to + "T00:00:00Z");
-  return (t.getUTCFullYear() - f.getUTCFullYear()) * 12 + (t.getUTCMonth() - f.getUTCMonth()) + 1;
-};
-const shiftMonths = (iso: string, delta: number) => {
-  const d = new Date(iso + "T00:00:00Z");
-  return firstOfMonth(d.getUTCFullYear(), d.getUTCMonth() + delta);
-};
 
 const fetchCostes = async (from: string, to: string) => {
   const { data, error } = await supabase.rpc("ops_costes" as never, { p_from: from, p_to: to } as never);
@@ -83,11 +74,6 @@ const fetchEntidades = async (from: string, to: string, vista: Vista) => {
   const { data, error } = await supabase.rpc("ops_costes_entidades" as never, { p_from: from, p_to: to, p_vista: vista } as never);
   if (error) throw error;
   return (data ?? []) as unknown as EntidadRow[];
-};
-
-const defaultRange = () => {
-  const now = new Date();
-  return { from: firstOfMonth(2026, 0), to: lastOfMonth(now.getUTCFullYear(), now.getUTCMonth()) };
 };
 
 // ─── Componente ─────────────────────────────────────────────────────────────
