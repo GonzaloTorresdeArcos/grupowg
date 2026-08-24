@@ -84,10 +84,18 @@ const CalidadDatos = () => {
     return Object.entries(medidas.campos_fact_ot).sort((a, b) => a[1] - b[1]);
   }, [medidas]);
 
-  const readiness = useMemo(
-    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas) : null),
-    [medidas, reglasEfectivas],
+  const universos = useMemo(
+    () => (medidas && reglasEfectivas.length ? universosPorCliente(medidas, aliases, reglasEfectivas) : null),
+    [medidas, aliases, reglasEfectivas],
   );
+
+  const ctxReadiness = useMemo(() => ({ universos }), [universos]);
+
+  const readiness = useMemo(
+    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas, ctxReadiness) : null),
+    [medidas, reglasEfectivas, ctxReadiness],
+  );
+
 
   const resumen = useMemo(() => {
     const valores = medidas?.clientes_erp;
