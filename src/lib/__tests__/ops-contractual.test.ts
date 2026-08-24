@@ -235,11 +235,12 @@ describe("cumplimiento con cobertura declarada: nunca extrapola", () => {
   });
 
   it("añadir OTs sin evento no cambia el porcentaje de cumplimiento, solo la cobertura", () => {
-    const base = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
-    const conMas = evaluarCumplimientoConCobertura(lote(8, 6, 4), 12);
+    const base = evaluarCumplimientoConCobertura(lote(8, 6, 0), 8);
+    const conMas = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
     expect(conMas.pct_cumplimiento).toBe(base.pct_cumplimiento);
     expect(conMas.cobertura).toBeLessThan(base.cobertura);
   });
+
 
   it("prohibido extrapolar: el universo se reporta pero el pct no se proyecta sobre él", () => {
     const r = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
