@@ -151,10 +151,10 @@ export default function OpsLogistica() {
   const domExp = dominio("expediciones");
   const traz = supply ? pctTrazabilidad(supply.cadena) : null;
 
-  const prod = useMemo(
-    () => ({ kpis: kpisProductividad(exped), linea: lineaProductividad(kpisProductividad(exped), etiqueta) }),
-    [exped, etiqueta],
-  );
+  const prod = useMemo(() => {
+    const kpis = kpisProductividad(exped, refs);
+    return { kpis, linea: lineaProductividad(kpis, etiqueta) };
+  }, [exped, refs, etiqueta]);
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
 
 
