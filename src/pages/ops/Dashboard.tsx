@@ -190,7 +190,7 @@ const Dashboard = () => {
     const scorePrevParams = { ...scoreParams, p_from: prev.from, p_to: prev.to };
 
     (async () => {
-      const [k, kp, pn, pnp, e, a, eq, eqp, s, sp, sup] = await Promise.all([
+      const [k, kp, pn, pnp, e, a, eq, eqp, s, sp] = await Promise.all([
         supabase.rpc("ops_kpis" as never, rpcParams as never),
         supabase.rpc("ops_kpis" as never, prevRpc as never),
         supabase.rpc("ops_panorama" as never, { ...rpcParams, p_meses: 12 } as never),
@@ -201,8 +201,8 @@ const Dashboard = () => {
         supabase.rpc("ops_equipos" as never, equipPrev as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scoreParams as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scorePrevParams as never),
-        supabase.rpc("ops_supply" as never, { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } as never),
       ]);
+      const sup = await supabase.rpc("ops_supply" as never, { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } as never);
       setKpis((k.data ?? null) as Kpis | null);
       setKpisPrev((kp.data ?? null) as Kpis | null);
       setPano((pn.data ?? null) as PanoramaPayload | null);
