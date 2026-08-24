@@ -213,7 +213,8 @@ const Dashboard = () => {
       setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
       setScore((s.data ?? []) as ScoreRow[]);
       setScorePrev((sp.data ?? []) as ScoreRow[]);
-      setSupply(sup.error || !sup.data ? null : normalizarSupply(sup.data));
+      const supRes = sup as { data: unknown; error: unknown };
+      setSupply(supRes.error || !supRes.data ? null : normalizarSupply(supRes.data));
       setLoading(false);
     })();
   }, [rpcParams, filters.from, filters.to, prevRange]);
