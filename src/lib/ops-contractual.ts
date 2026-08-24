@@ -124,9 +124,15 @@ export type ReglaSla = {
   vigencia_hasta: string | null;
   fuente_contractual: string | null;
   tipo_target: TipoTargetRegistry;
+  /** (b) Estado de VALIDACIÓN contra clausulado. */
   estado_regla: EstadoRegla;
+  /** (a) Estado de EXTRACCIÓN documental del valor de la obligación. */
+  estado_extraccion: EstadoExtraccion;
+  /** Territorio del calendario laboral aplicable (null = no aplica calendario). */
+  territorio_calendario: string | null;
   notas: string | null;
 };
+
 
 /** Campos obligatorios de una fila del Registry (usado por los tests de fixtures). */
 export const CAMPOS_OBLIGATORIOS_REGLA: readonly (keyof ReglaSla)[] = [
