@@ -35,7 +35,7 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
 export const OpsFiltersBar = () => {
   const {
     filters, setFilters, reset, options, optionsError, reloadOptions,
-    modo, modoSeleccionado, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+    modo, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
   } = useOpsFilters();
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
