@@ -8,6 +8,7 @@ import {
   frescura,
   readinessRegla,
   resumenReadiness,
+  universosPorCliente,
   type MedidasDataQuality,
 } from "@/lib/ops-data-quality";
 import { FIXTURES_REGISTRY } from "@/lib/ops-contractual-fixtures";
@@ -157,5 +158,50 @@ describe("contractual data readiness", () => {
   it("el aviso deja claro que no se calcula cumplimiento contractual", () => {
     expect(AVISO_NO_CUMPLIMIENTO.toLowerCase()).toContain("no calcula");
     expect(AVISO_NO_CUMPLIMIENTO.toLowerCase()).toContain("cumplimiento contractual");
+  });
+});
+
+describe("readiness sobre el universo del cliente contractual", () => {
+  const REGLA = FIXTURES_REGISTRY.find((x) => x.cliente_wg_patron != null)!;
+  const clientes = (patron: string) => [
+    { cliente_wg: patron, ots: 1000, cob_primer_contacto: 0.5, cob_primera_visita: 0.5, cob_cierre: 0.5 },
+    { cliente_wg: "OTRO CLIENTE", ots: 100000, cob_primer_contacto: 1, cob_primera_visita: 1, cob_cierre: 1 },
+  ];
+
+  it("agrega el universo y pondera la cobertura por volumen del cliente", () => {
+    const patron = REGLA.cliente_wg_patron!.replace(/%/g, "");
+    const m = medidas({ clientes_erp: clientes(patron) });
+    const u = universosPorCliente(m, [], FIXTURES_REGISTRY);
+    expect(u).not.toBeNull();
+    const uni = u!.get(REGLA.cliente);
+    expect(uni?.universo_total).toBe(1000);
+    expect(uni?.cobertura.fecha_cierre).toBeCloseTo(0.5, 6);
+  });
+
+  it("usa la cobertura del cliente, no la global de la tabla", () => {
+    const patron = REGLA.cliente_wg_patron!.replace(/%/g, "");
+    const m = medidas({ clientes_erp: clientes(patron) });
+    const ctx = { universos: universosPorCliente(m, [], FIXTURES_REGISTRY) };
+    const rd = readinessRegla(REGLA, m, ctx);
+    expect(rd.fuenteCobertura).toBe("cliente");
+    expect(rd.universoCliente).toBe(1000);
+    expect(rd.coberturaEventos).toBeCloseTo(0.5, 6);
+    expect(rd.estadoCobertura).toBe("limitado");
+  });
+
+  it("un cliente contractual sin ningún valor ERP que resuelva queda bloqueado", () => {
+    const m = medidas({
+      clientes_erp: [{ cliente_wg: "CLIENTE SIN CONTRATO", ots: 500, cob_primer_contacto: 1, cob_primera_visita: 1, cob_cierre: 1 }],
+    });
+    const ctx = { universos: universosPorCliente(m, [], FIXTURES_REGISTRY) };
+    const rd = readinessRegla(REGLA, m, ctx);
+    expect(rd.bloqueos.some((b) => b.tipo === "cliente" && b.clave === "cliente_no_identificado_en_datos")).toBe(true);
+    expect(rd.universoCliente).toBeNull();
+  });
+
+  it("sin clientes_erp en las medidas cae a la cobertura global marcada como tal", () => {
+    const rd = readinessRegla(REGLA, medidas());
+    expect(rd.fuenteCobertura).toBe("global");
+    expect(rd.bloqueos.every((b) => b.tipo !== "cliente")).toBe(true);
   });
 });
