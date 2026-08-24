@@ -50,13 +50,6 @@ const isFullYear = (from: string, to: string) => {
 };
 
 const labelFor = (from: string, to: string): string => {
-  const n = now();
-  // Últimos 12 meses
-  const last12From = shiftMonth(n.y, n.m, -11);
-  if (from === firstOfMonth(last12From.y, last12From.m) && to === lastOfMonth(n.y, n.m)) return "Últimos 12 meses";
-  const last6From = shiftMonth(n.y, n.m, -5);
-  if (from === firstOfMonth(last6From.y, last6From.m) && to === lastOfMonth(n.y, n.m)) return "Últimos 6 meses";
-  if (from === firstOfMonth(HIST_START.y, HIST_START.m) && to === lastOfMonth(n.y, n.m)) return "Todo el histórico";
   if (isFullMonth(from, to)) {
     const { y, m } = parseYM(from);
     return `${MESES_LARGO[m]} ${y}`;
@@ -67,7 +60,11 @@ const labelFor = (from: string, to: string): string => {
   }
   if (isFullYear(from, to)) return `${parseYM(from).y}`;
   const a = parseYM(from), b = parseYM(to);
-  if (a.y === b.y) return `${MESES[a.m]} – ${MESES[b.m]} ${a.y}`;
+  if (a.y === b.y) {
+    if (a.m === 0) return `YTD ${a.y} · ene–${MESES[b.m].toLowerCase()}`;
+    return `${MESES[a.m]} – ${MESES[b.m]} ${a.y}`;
+  }
+  if (monthsBetween(from, to) === 12) return `Últimos 12 meses`;
   return `${MESES[a.m]} ${a.y} – ${MESES[b.m]} ${b.y}`;
 };
 
@@ -76,32 +73,28 @@ const isFutureMonth = (y: number, m: number) => {
   return y > n.y || (y === n.y && m > n.m);
 };
 
-type Preset = { key: string; label: string; get: () => OpsPeriod };
-const presets = (): Preset[] => {
-  const n = now();
-  const q = Math.floor(n.m / 3);
-  const prevQStart = shiftMonth(n.y, q * 3, -3);
-  const last6From = shiftMonth(n.y, n.m, -5);
-  const last12From = shiftMonth(n.y, n.m, -11);
-  const prevMonth = shiftMonth(n.y, n.m, -1);
-  return [
-    { key: "this-month", label: "Este mes", get: () => ({ from: firstOfMonth(n.y, n.m), to: lastOfMonth(n.y, n.m) }) },
-    { key: "prev-month", label: "Mes anterior", get: () => ({ from: firstOfMonth(prevMonth.y, prevMonth.m), to: lastOfMonth(prevMonth.y, prevMonth.m) }) },
-    { key: "this-q", label: "Este trimestre", get: () => ({ from: firstOfMonth(n.y, q * 3), to: lastOfMonth(n.y, q * 3 + 2) }) },
-    { key: "prev-q", label: "Trimestre anterior", get: () => ({ from: firstOfMonth(prevQStart.y, prevQStart.m), to: lastOfMonth(prevQStart.y, prevQStart.m + 2) }) },
-    { key: "this-year", label: "Este año", get: () => ({ from: firstOfMonth(n.y, 0), to: lastOfMonth(n.y, 11) }) },
-    { key: "2025", label: "Año 2025", get: () => ({ from: firstOfMonth(2025, 0), to: lastOfMonth(2025, 11) }) },
-    { key: "last6", label: "Últimos 6 meses", get: () => ({ from: firstOfMonth(last6From.y, last6From.m), to: lastOfMonth(n.y, n.m) }) },
-    { key: "last12", label: "Últimos 12 meses", get: () => ({ from: firstOfMonth(last12From.y, last12From.m), to: lastOfMonth(n.y, n.m) }) },
-    { key: "all", label: "Todo el histórico", get: () => ({ from: firstOfMonth(HIST_START.y, HIST_START.m), to: lastOfMonth(n.y, n.m) }) },
-  ];
-};
+type PresetItem = { key: PresetKey; label: string; hint?: string; disabled?: boolean };
+const PRESET_ITEMS: PresetItem[] = [
+  { key: "mes", label: "Mes", hint: "Mes natural" },
+  { key: "trimestre", label: "Trimestre", hint: "Trimestre natural" },
+  { key: "ytd", label: "YTD", hint: "1-ene → último día con datos" },
+  { key: "doce_meses", label: "12 meses", hint: "Últimos 12 meses completos" },
+  { key: "historico", label: "Histórico", hint: "Toda la cobertura de datos" },
+  { key: "rango", label: "Rango personalizado", hint: "Elige meses a la derecha" },
+];
 
 type Props = {
   value: OpsPeriod;
   onChange: (v: OpsPeriod) => void;
   className?: string;
+  /** Cobertura real de datos, para YTD e Histórico. */
+  cobertura?: Cobertura;
+  /** Preset activo detectado (resaltado). */
+  preset?: PresetKey;
+  /** Aplica un preset global (no toca el resto de filtros). */
+  onPreset?: (key: PresetKey) => void;
 };
+
 
 export const OpsPeriodPicker = ({ value, onChange, className }: Props) => {
   const [open, setOpen] = useState(false);
