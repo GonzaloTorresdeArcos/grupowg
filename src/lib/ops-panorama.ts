@@ -278,7 +278,21 @@ export type AsuntosInput = {
    * derivada de `etapas`: Panorama y Repuestos NO pueden dar cifras distintas.
    * `asOf` es la fecha efectiva contra la que está medida la antigüedad.
    */
-  supplyPte?: { n: number; n30: number; edad_media: number | null; asOf?: string | null } | null;
+  /**
+   * F4B · Única fuente del asunto `espera_repuesto`: `ops_supply.pte_piezas_actual`.
+   * Sin este bloque el asunto no se publica.
+   */
+  supplyPte?: {
+    n: number;
+    n30: number;
+    edad_media: number | null;
+    n_prev?: number | null;
+    asOf?: string | null;
+    topClientes?: ReadonlyArray<{ cliente: string; n: number }>;
+    /** Clientes del top con regla contractual que excluye demora por repuesto. */
+    exposicionRegistry?: readonly string[];
+  } | null;
+
 };
 
 /** Fuente declarada de la cifra de espera de repuesto mostrada en el asunto. */
