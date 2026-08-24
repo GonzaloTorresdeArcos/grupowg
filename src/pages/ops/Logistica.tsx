@@ -361,6 +361,26 @@ export default function OpsLogistica() {
             </table>
           </div>
         )}
+
+        {/* C.2 — Productividad por persona, servicio y rapidez de salida */}
+        <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
+          Productividad por persona, servicio y rapidez de salida
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {kpisAvanzados.map((k) => (
+            <div key={k.label} className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{k.label}</p>
+              <p className="mt-2 heading-display text-2xl text-ink">
+                {k.valor ?? <span className="text-ink/40 text-sm">{GLIFO_FUENTE.pendiente} Pendiente de fuente</span>}
+              </p>
+              <p className="mt-1 text-[11px] text-ink/50 leading-snug">{k.hint}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-[11px] text-ink/40 leading-snug">
+          Día trabajado = día con al menos una expedición de esa persona. Es un proxy declarado hasta que exista la
+          fuente de RRHH con días efectivos y ausencias.
+        </p>
         <p className="mt-3 text-[12px] text-ink/50">
           El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}
           <Link to="/operaciones/dispersion" className="text-ink underline underline-offset-2 hover:text-ink/70">
