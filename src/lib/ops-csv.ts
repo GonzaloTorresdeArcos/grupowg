@@ -190,7 +190,28 @@ const parseNum = (v: string): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
-const INT_FIELDS = new Set(["dias_cierre", "sla_cierre_dlab", "anio_garantia"]);
+const INT_FIELDS = new Set([
+  "dias_cierre", "sla_cierre_dlab", "anio_garantia",
+  "linea", "num_lineas", "num_ot_abastecidas",
+]);
+
+/**
+ * F4A.1 · Campos con HORA. La productividad de picking se mide en minutos, así
+ * que estos no se pueden truncar a fecha: se conserva el timestamp completo.
+ */
+const TS_FIELDS = new Set(["picking_inicio", "picking_fin", "expedicion_timestamp"]);
+
+const parseTimestamp = (v: string): string | null => {
+  const s = v.trim();
+  if (!s) return null;
+  const hora = s.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  const fecha = parseDate(s);
+  if (!fecha) return null;
+  if (!hora) return fecha;
+  const hh = hora[1].padStart(2, "0");
+  return `${fecha}T${hh}:${hora[2]}:${(hora[3] ?? "00").padStart(2, "0")}`;
+};
+
 
 // ---------- CSV parser ----------
 export function parseCSV(text: string): string[][] {
