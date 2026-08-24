@@ -348,6 +348,7 @@ export type Database = {
           calendario: string
           cliente: string
           cliente_wg_patron: string | null
+          condicion_aplicacion: string | null
           created_at: string
           estado_regla: string
           evento_fin: string
@@ -385,6 +386,7 @@ export type Database = {
           calendario?: string
           cliente: string
           cliente_wg_patron?: string | null
+          condicion_aplicacion?: string | null
           created_at?: string
           estado_regla?: string
           evento_fin: string
@@ -422,6 +424,7 @@ export type Database = {
           calendario?: string
           cliente?: string
           cliente_wg_patron?: string | null
+          condicion_aplicacion?: string | null
           created_at?: string
           estado_regla?: string
           evento_fin?: string
