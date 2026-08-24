@@ -142,7 +142,10 @@ describe("contractual data readiness", () => {
 
   it("una regla en borrador nunca se considera medible aunque el dato exista", () => {
     const perfecto = medidas({
-      campos_fact_ot: { ...medidas().campos_fact_ot, programa: 1, fecha_primer_contacto: 1 },
+      campos_fact_ot: {
+        ...medidas().campos_fact_ot,
+        programa: 1, business_line: 1, tipologia_servicio: 1, fase: 1, fecha_primer_contacto: 1,
+      },
       campos_ausentes_fact_ot: [],
     });
     const base = FIXTURES_REGISTRY.find((x) => x.cliente === "ELECTRO DEPOT ESPAÑA S.L.U")!;
