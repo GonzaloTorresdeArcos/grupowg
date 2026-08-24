@@ -197,19 +197,30 @@ describe("consistencia espera_repuesto ↔ ops_supply", () => {
 
 // ─── Importador ─────────────────────────────────────────────────────────────
 
-describe("importador de las tres plantillas de supply", () => {
-  const csv = (t: "ops_pieza_solicitud" | "ops_expedicion" | "ops_stock_snapshot", fila: string) =>
-    `${PLANTILLAS[t].join(",")}\n${fila}`;
+describe("importador de las plantillas de supply", () => {
+  const csv = (
+    t: "ops_pieza_solicitud" | "ops_expedicion" | "ops_expedicion_linea" | "ops_stock_snapshot",
+    fila: string,
+  ) => `${PLANTILLAS[t].join(",")}\n${fila}`;
+
+  // almacen_base,expedicion_id,num_ot,preparado_por,persona_id,equipo,picking_inicio,picking_fin,
+  // expedicion_timestamp,transportista,origen,destino,destino_cp,destino_tipo,
+  // fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion,
+  // expedicion_origen_id,coste_transporte,num_lineas,num_unidades,num_ot_abastecidas
+  const FILA_EXP =
+    "CENTRAL,EXP1,OT1,Ana,P1,Turno A,01/06/2026 08:00,01/06/2026 08:30,01/06/2026 10:15," +
+    "SEUR,CENTRAL,SAT Madrid,28001,cliente,03/06/2026,,preparada,,no,,7,4,9,2";
 
   it("auto-detecta ops_pieza_solicitud", () => {
     const rows = parseCSV(csv("ops_pieza_solicitud", "OT1,REF1,Motor,1,Proveedor,,01/06/2026,,,,,,solicitada,12,wg"));
     expect(detectTable(rows[0])).toBe("ops_pieza_solicitud");
   });
 
-  it("auto-detecta ops_expedicion y ops_stock_snapshot", () => {
-    expect(detectTable(parseCSV(csv("ops_expedicion", "OT1,EXP1,SEUR,Madrid,28001,cliente,01/06/2026,,,preparada,7,"))[0]))
-      .toBe("ops_expedicion");
-    expect(detectTable(parseCSV(csv("ops_stock_snapshot", "01/06/2026,CENTRAL,REF1,Motor,4,1,22"))[0]))
+  it("auto-detecta expediciones, líneas y stock", () => {
+    expect(detectTable(parseCSV(csv("ops_expedicion", FILA_EXP))[0])).toBe("ops_expedicion");
+    expect(detectTable(parseCSV(csv("ops_expedicion_linea", "CENTRAL,EXP1,1,REF1,Motor,2,OT1"))[0]))
+      .toBe("ops_expedicion_linea");
+    expect(detectTable(parseCSV(csv("ops_stock_snapshot", "01/06/2026,CENTRAL,REF1,Motor,4,1,3,0,22"))[0]))
       .toBe("ops_stock_snapshot");
   });
 
@@ -226,14 +237,107 @@ describe("importador de las tres plantillas de supply", () => {
     expect(a?.num_ot).toBe("OT1");
   });
 
-  it("normaliza fechas y estados válidos", () => {
-    const rows = parseCSV(csv("ops_expedicion", "OT1,EXP1,SEUR,Madrid,28001,cliente,01/06/2026,,,preparada,7,"));
+  it("la expedición conserva la HORA del picking y usa la clave natural almacén+expedición", () => {
+    const rows = parseCSV(csv("ops_expedicion", FILA_EXP));
     const rec = normalizeRow("ops_expedicion", rows[0], rows[1]);
-    expect(rec?.fecha_expedicion).toBe("2026-06-01");
+    expect(rec?.almacen_base).toBe("CENTRAL");
+    expect(rec?.expedicion_id).toBe("EXP1");
+    expect(rec?.picking_inicio).toBe("2026-06-01T08:00:00");
+    expect(rec?.picking_fin).toBe("2026-06-01T08:30:00");
     expect(rec?.estado_expedicion).toBe("preparada");
-    expect(rec?.coste_envio).toBe(7);
+    expect(rec?.coste_transporte).toBe(7);
+    expect(rec?.procedencia_conteo).toBe("cabecera");
+    expect(conflictKey("ops_expedicion")).toBe("almacen_base,expedicion_id");
+  });
+
+  it("el stock deriva el disponible cuando no viene declarado y no lo inventa si falta reservado", () => {
+    const conReservado = normalizeRow(
+      "ops_stock_snapshot",
+      parseCSV(csv("ops_stock_snapshot", "01/06/2026,CENTRAL,REF1,Motor,4,1,,,22"))[0],
+      parseCSV(csv("ops_stock_snapshot", "01/06/2026,CENTRAL,REF1,Motor,4,1,,,22"))[1],
+    );
+    expect(conReservado?.stock_fisico).toBe(4);
+    expect(conReservado?.stock_disponible).toBe(3);
+
+    const rows = parseCSV(csv("ops_stock_snapshot", "01/06/2026,CENTRAL,REF2,Motor,4,,,,22"));
+    const sinReservado = normalizeRow("ops_stock_snapshot", rows[0], rows[1]);
+    expect(sinReservado?.stock_disponible).toBeNull();
   });
 });
+
+// ─── F4A.1 · Productividad de almacén ───────────────────────────────────────
+
+describe("productividad de almacén (ops-logistica)", () => {
+  const base = {
+    almacen_base: "CENTRAL", equipo: "Turno A", preparado_por: "Ana",
+    expedicion_timestamp: null, fecha_entrega_prevista: null, fecha_entrega_real: null,
+    estado_expedicion: "entregada", tipo_incidencia: null, reexpedicion: false,
+    coste_transporte: null, num_unidades: null, num_ot_abastecidas: null,
+  };
+  const filas = Array.from({ length: 25 }, (_, i) => ({
+    ...base,
+    expedicion_id: `E${i}`,
+    picking_inicio: "2026-06-01T08:00:00Z",
+    picking_fin: "2026-06-01T08:30:00Z",
+    num_lineas: 5,
+  }));
+
+  it("mide minutos de picking solo con inicio y fin", () => {
+    const k = kpisProductividad([...filas, { ...base, expedicion_id: "X", picking_inicio: null, picking_fin: null, num_lineas: 3 }]);
+    expect(k.expediciones).toBe(26);
+    expect(k.coberturaPicking.n).toBe(25);
+    expect(k.minutosPickingMediana).toBe(30);
+    expect(k.lineasHora).toBeCloseTo(10, 5);
+  });
+
+  it("no publica productividad por debajo de la muestra mínima", () => {
+    const pocas = filas.slice(0, 5);
+    const [f] = productividadPor(pocas, "almacen");
+    expect(f.comparable).toBe(false);
+    expect(f.lineasHora).toBeNull();
+    expect(f.motivo).toMatch(/por debajo de 20/);
+  });
+
+  it("no calcula ratio si la cobertura de tiempos baja del 80 %", () => {
+    const mixtas = [
+      ...filas.slice(0, 10),
+      ...Array.from({ length: 15 }, (_, i) => ({ ...base, expedicion_id: `S${i}`, picking_inicio: null, picking_fin: null, num_lineas: 5 })),
+    ];
+    const [f] = productividadPor(mixtas, "almacen");
+    expect(f.comparable).toBe(false);
+    expect(f.motivo).toMatch(/80 %/);
+  });
+
+  it("sin expediciones no inventa cifras", () => {
+    const k = kpisProductividad([]);
+    expect(k.minutosPickingMediana).toBeNull();
+    expect(k.lineasHora).toBeNull();
+    expect(lineaProductividad(k, "junio 2026")).toMatch(/no es calculable/);
+  });
+});
+
+// ─── F4A.1 · Stock, fill rate e intervalos de la cadena ─────────────────────
+
+describe("stock y fill rate", () => {
+  it("cuenta stock-out por disponible y no estima el fill rate sin líneas", () => {
+    const s = indicadoresStock([
+      { referencia: "A", stock_fisico: 5, stock_disponible: null, reservado: 5, en_transito: null },
+      { referencia: "B", stock_fisico: 5, stock_disponible: 2, reservado: 3, en_transito: 1 },
+    ]);
+    expect(s.referencias).toBe(2);
+    expect(s.stockOut).toBe(1);
+    expect(s.pctStockOut).toBe(0.5);
+    expect(fillRate(0, 0).valor).toBeNull();
+    expect(fillRate(10, 8).valor).toBe(0.8);
+  });
+
+  it("sin foto de stock no publica cifras", () => {
+    const s = indicadoresStock([]);
+    expect(s.pctStockOut).toBeNull();
+    expect(s.medida).toMatch(/vacía/);
+  });
+});
+
 
 // ─── Ausencia de contenido de demostración ──────────────────────────────────
 
