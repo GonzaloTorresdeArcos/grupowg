@@ -1429,6 +1429,23 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_panorama: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_meses?: number
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_sats_ranking: {
         Args: {
           p_cliente?: string
