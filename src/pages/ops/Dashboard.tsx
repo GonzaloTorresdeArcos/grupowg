@@ -15,6 +15,7 @@ import {
   type TecnicoConclInput,
 } from "@/lib/ops-performance";
 import { LABEL_CATEGORIA } from "@/lib/ops-sla";
+import { normalizarSupply, type SupplyPayload } from "@/lib/ops-supply";
 import {
   agruparEtapasPanorama,
   construirAsuntos,
