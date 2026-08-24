@@ -83,6 +83,8 @@ export type ReglaSla = {
   /** null = aplica a todas las gamas/familias. */
   gama_familia: string | null;
   tipologia_servicio: string | null;
+  /** Condición contractual de aplicación de la regla (p. ej. 'sin_solicitud_pieza_ni_baja'). */
+  condicion_aplicacion?: string | null;
   fase: Fase | null;
   kpi: string;
   evento_inicio: EventoInicio;
