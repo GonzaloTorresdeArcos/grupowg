@@ -113,6 +113,7 @@ const Tecnicos = () => {
   const [gamaFilter, setGamaFilter] = useState<string | null>(null);
   const [umbral, setUmbral] = useState<number>(UMBRAL_MIN_DEFAULT);
   const [showDefs, setShowDefs] = useState(false);
+  const [showPend, setShowPend] = useState(false);
 
   // ---- Fetch ---------------------------------------------------------------
   useEffect(() => {
