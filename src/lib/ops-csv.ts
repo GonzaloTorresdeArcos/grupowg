@@ -283,7 +283,9 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (!col) continue;
     const v = (raw[i] ?? "").trim();
 
-    if (DATE_FIELDS.has(col)) rec[col] = parseDate(v);
+    if (TS_FIELDS.has(col)) rec[col] = parseTimestamp(v);
+    else if (DATE_FIELDS.has(col)) rec[col] = parseDate(v);
+
     else if (NUMERIC.has(col)) {
       const n = parseNum(v);
       rec[col] = n !== null && INT_FIELDS.has(col) ? Math.round(n) : n;
