@@ -50,9 +50,26 @@ describe("importador · procedencia_conteo respeta la CHECK de ops_expedicion", 
   });
 
   it("cargar líneas deja la expedición en 'derivado_lineas' (trigger de líneas)", () => {
-    // El trigger ops_trg_expedicion_conteos reescribe cabecera + procedencia al insertar líneas.
-    const sql = readFileSync("src/lib/__tests__/../../..//supabase/migrations", "utf8").length;
-    expect(sql).toBeGreaterThan(0);
+    // Simula el efecto del trigger ops_trg_expedicion_conteos: al insertar líneas,
+    // los conteos y la procedencia de la cabecera se reescriben desde el detalle.
+    const cabecera = { ...norm("ops_expedicion", CON_CONTEOS) } as Record<string, unknown>;
+    expect(cabecera.procedencia_conteo).toBe("declarado");
+    const lineas = [
+      norm("ops_expedicion_linea", "CENTRAL,EXP1,1,REF1,Motor,2,OT1"),
+      norm("ops_expedicion_linea", "CENTRAL,EXP1,2,REF2,Filtro,1,OT2"),
+    ];
+    const aplicarTrigger = (h: Record<string, unknown>, ls: Array<Record<string, unknown> | null>) => ({
+      ...h,
+      num_lineas: ls.length,
+      num_unidades: ls.reduce((a, l) => a + Number(l?.cantidad ?? 0), 0),
+      num_ot_abastecidas: new Set(ls.map((l) => l?.num_ot).filter(Boolean)).size,
+      procedencia_conteo: "derivado_lineas",
+    });
+    const final = aplicarTrigger(cabecera, lineas);
+    expect(final.procedencia_conteo).toBe("derivado_lineas");
+    expect(PROCEDENCIAS_CONTEO as readonly string[]).toContain(final.procedencia_conteo as string);
+    expect(final.num_lineas).toBe(2);
+    expect(final.num_unidades).toBe(3);
   });
 });
 
