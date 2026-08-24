@@ -13,12 +13,17 @@ import {
   hallazgosImpactoPieza,
   MUESTRA_MINIMA,
   ETAPAS_CADENA,
+  indicadoresStock,
+  fillRate,
+  intervalosCadena,
   type BloqueCadena,
   type SupplyPayload,
 } from "@/lib/ops-supply";
+import { kpisProductividad, productividadPor, lineaProductividad } from "@/lib/ops-logistica";
 import { FIXTURES_REGISTRY } from "@/lib/ops-contractual-fixtures";
 import type { ClienteAlias } from "@/lib/ops-cliente-alias";
 import { detectTable, normalizeRow, conflictKey, PLANTILLAS, parseCSV } from "@/lib/ops-csv";
+
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
