@@ -153,6 +153,27 @@ export default function OpsLogistica() {
     return () => { vivo = false; };
   }, [filters.from, filters.to, reloadKey]);
 
+  // F4B.1 · El dominio RRHH manda: sin días efectivos no se publica ningún
+  // ratio por persona y día, ni siquiera como diagnóstico.
+  const rrhhDisponible = dominio("dias_trabajados")?.estado === "disponible";
+
+  useEffect(() => {
+    if (!rrhhDisponible) { setRrhhDias([]); return; }
+    let vivo = true;
+    void (async () => {
+      const { data, error } = await supabase
+        .from("ops_rrhh" as never)
+        .select("tecnico,mes,dias_trabajados")
+        .gte("mes", filters.from.slice(0, 8) + "01")
+        .lte("mes", filters.to)
+        .limit(20000);
+      if (!vivo || error) return;
+      const rows = (data ?? []) as unknown as Array<{ tecnico: string; mes: string; dias_trabajados: number | null }>;
+      setRrhhDias(rows.map((r) => ({ persona: r.tecnico, mes: r.mes, dias_trabajados: r.dias_trabajados })));
+    })();
+    return () => { vivo = false; };
+  }, [rrhhDisponible, filters.from, filters.to, reloadKey]);
+
   const etiqueta = labelPeriodo(filters.from, filters.to);
   const hayExpediciones = (log?.total_filas ?? 0) > 0;
   const linea = useMemo(
@@ -170,35 +191,37 @@ export default function OpsLogistica() {
   // F4B · San Agustín concentra la preparación: se lee por almacén → equipo → persona.
   const prodJerarquia = useMemo(() => aplanarJerarquia(jerarquiaProductividad(exped)), [exped]);
 
-  // KPIs de productividad por persona/día, OTD y rapidez de salida. Sin dato → pendiente de fuente.
+  // Ratios por persona y día trabajado: calculados SOLO contra ops_rrhh real.
+  const ratiosPersona = useMemo(
+    () => ratiosPorPersonaDiaRrhh(exped, rrhhDias, rrhhDisponible),
+    [exped, rrhhDias, rrhhDisponible],
+  );
+
+  // KPIs de servicio y rapidez de salida. Sin dato → pendiente de fuente.
   const kpisAvanzados = useMemo(() => {
     const k = prod.kpis;
+    const r = ratiosPersona;
     const cob = (c: { n: number; total: number }) => `Sobre ${fmtNum(c.n)} de ${fmtNum(c.total)} expediciones.`;
     const baseTxt = k.baseSalida ? LABEL_BASE_SALIDA[k.baseSalida] : "sin referencia de partida disponible";
+    const bloqueado = r.estado !== "medible";
+    const hintPersona = bloqueado
+      ? FUENTE_DESBLOQUEO_RRHH
+      : `${fmtNum(r.personas)} personas · ${fmtNum(r.diasTrabajados)} días trabajados (ops_rrhh). ${cob(r.cobertura)}`;
+    const persona = (label: string, v: number | null) => ({
+      label,
+      valor: bloqueado || v == null ? null : fmtDec(v, 1),
+      pendienteRrhh: bloqueado,
+      hint: hintPersona,
+    });
     return [
-      {
-        label: "Expediciones / persona · día",
-        valor: k.expedicionesPorPersonaDia == null ? null : fmtDec(k.expedicionesPorPersonaDia, 1),
-        hint: `${fmtNum(k.personas)} personas · ${fmtNum(k.diasPersona)} días-persona. ${cob(k.coberturaPersonaDia)}`,
-      },
-      {
-        label: "Líneas / persona · día",
-        valor: k.lineasPorPersonaDia == null ? null : fmtDec(k.lineasPorPersonaDia, 1),
-        hint: cob(k.coberturaLineasPersonaDia),
-      },
-      {
-        label: "Unidades / persona · día",
-        valor: k.unidadesPorPersonaDia == null ? null : fmtDec(k.unidadesPorPersonaDia, 1),
-        hint: cob(k.coberturaUnidadesPersonaDia),
-      },
-      {
-        label: "OTs abastecidas / persona · día",
-        valor: k.otsAbastecidasPorPersonaDia == null ? null : fmtDec(k.otsAbastecidasPorPersonaDia, 1),
-        hint: cob(k.coberturaOtsPersonaDia),
-      },
+      persona("Expediciones / persona · día", r.expedicionesPorPersonaDia),
+      persona("Líneas / persona · día", r.lineasPorPersonaDia),
+      persona("Unidades / persona · día", r.unidadesPorPersonaDia),
+      persona("OTs abastecidas / persona · día", r.otsAbastecidasPorPersonaDia),
       {
         label: "OTD · entrega en plazo",
         valor: k.otdPct == null ? null : fmtPct(k.otdPct),
+        pendienteRrhh: false,
         hint: `Entrega real ≤ prevista. ${cob(k.coberturaOtd)}`,
       },
       {
@@ -207,10 +230,12 @@ export default function OpsLogistica() {
           k.pctSalidaMismoDia == null
             ? null
             : `${fmtPct(k.pctSalidaMismoDia)} · ${fmtPct(k.pctSalidaMenos24h)}`,
+        pendienteRrhh: false,
         hint: `${baseTxt}. ${cob(k.coberturaSalida)}`,
       },
     ];
-  }, [prod.kpis]);
+  }, [prod.kpis, ratiosPersona]);
+
 
 
   const otd = log && log.periodo.otd_n > 0 ? log.periodo.otd_ok / log.periodo.otd_n : null;
