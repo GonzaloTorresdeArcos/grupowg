@@ -368,7 +368,7 @@ export const evaluarRegla = (
 
 // ─── Reglas agregadas ────────────────────────────────────────────────────────
 
-export type ResultadoAgregado = {
+export type ResultadoAgregadoBasico = {
   evaluable: boolean;
   motivo_no_evaluable?: string;
   denominador: number;
@@ -385,7 +385,8 @@ export type ResultadoAgregado = {
 export const evaluarReglaAgregada = (
   regla: ReglaSla,
   resultados: ResultadoRegla[],
-): ResultadoAgregado => {
+): ResultadoAgregadoBasico => {
+
   const evaluables = resultados.filter((r) => r.evaluable);
   const denominador = evaluables.length;
   if (denominador === 0) {
