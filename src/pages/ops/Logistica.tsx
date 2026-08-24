@@ -18,6 +18,7 @@ import {
   INDICADORES_PRODUCTIVIDAD,
   LABEL_BASE_SALIDA,
   NOTA_COMPARABILIDAD,
+  NOTA_DIAS_EFECTIVOS,
   kpisProductividad,
   lineaProductividad,
   productividadPor,
