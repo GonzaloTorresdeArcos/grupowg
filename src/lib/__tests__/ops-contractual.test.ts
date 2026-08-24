@@ -1,8 +1,12 @@
 import { describe, it, expect } from "vitest";
 import {
   CAMPOS_OBLIGATORIOS_REGLA,
+  aCalendarioLaboral,
+  clasificarCoberturaEvento,
+  construirCalendario,
   consecuenciaDeclarada,
   diasLaborables,
+  evaluarCumplimientoConCobertura,
   evaluarRegla,
   evaluarReglaAgregada,
   evaluarMesesConsecutivos,
@@ -15,6 +19,15 @@ import {
 import { FIXTURES_REGISTRY, TARGETS_DECLARADOS } from "@/lib/ops-contractual-fixtures";
 
 const CAL: CalendarioLaboral = { festivos: ["2026-01-06"], horaInicio: 9, horaFin: 18 };
+
+const okRes = (cumple: boolean): ResultadoRegla => ({
+  evaluable: true,
+  unidad: "dias_naturales",
+  transcurrido: cumple ? 1 : 99,
+  cumple_target: cumple,
+});
+const noEvalRes = (): ResultadoRegla => ({ evaluable: false, unidad: "dias_naturales", motivo_no_evaluable: "falta cierre" });
+
 
 const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   business_line: "Postventa",
@@ -193,6 +206,118 @@ describe("reglas agregadas", () => {
     expect(evaluarRepeatRepair(regla(), "2026-01-01T00:00:00Z", "2026-02-01T00:00:00Z").evaluable).toBe(false);
   });
 });
+
+describe("cobertura del evento: umbrales exactos", () => {
+  it("clasifica en los límites sin ambigüedad", () => {
+    expect(clasificarCoberturaEvento(0.95)).toBe("disponible");
+    expect(clasificarCoberturaEvento(0.9499)).toBe("parcial");
+    expect(clasificarCoberturaEvento(0.8)).toBe("parcial");
+    expect(clasificarCoberturaEvento(0.7999)).toBe("limitado");
+  });
+});
+
+describe("cumplimiento con cobertura declarada: nunca extrapola", () => {
+  const lote = (evaluables: number, cumplen: number, sinEvento: number): ResultadoRegla[] => [
+    ...Array.from({ length: cumplen }, () => okRes(true)),
+    ...Array.from({ length: evaluables - cumplen }, () => okRes(false)),
+    ...Array.from({ length: sinEvento }, () => noEvalRes()),
+  ];
+
+  it("el denominador son solo las OTs con evento; las que no lo tienen no suman a ningún lado", () => {
+    const r = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
+    expect(r.denominador_evaluado).toBe(8);
+    expect(r.numerador).toBe(6);
+    expect(r.universo_total).toBe(10);
+    expect(r.pct_cumplimiento).toBeCloseTo(0.75, 6);
+    expect(r.cobertura).toBeCloseTo(0.8, 6);
+    expect(r.estado_cobertura).toBe("parcial");
+    expect(r.texto).toBe("75,0% cumplimiento sobre 8 OTs evaluables · cobertura del evento 80,0% ◐");
+  });
+
+  it("añadir OTs sin evento no cambia el porcentaje de cumplimiento, solo la cobertura", () => {
+    const base = evaluarCumplimientoConCobertura(lote(8, 6, 0), 8);
+    const conMas = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
+    expect(conMas.pct_cumplimiento).toBe(base.pct_cumplimiento);
+    expect(conMas.cobertura).toBeLessThan(base.cobertura);
+  });
+
+
+  it("prohibido extrapolar: el universo se reporta pero el pct no se proyecta sobre él", () => {
+    const r = evaluarCumplimientoConCobertura(lote(8, 6, 2), 10);
+    // Si extrapolase, el numerador implícito sería 7,5 sobre 10. No ocurre.
+    expect(r.numerador).toBe(6);
+    expect((r.pct_cumplimiento ?? 0) * r.universo_total).not.toBe(r.numerador);
+    expect(r.texto).not.toContain("10 OTs");
+  });
+
+  it("cobertura por debajo del 80% invalida el porcentaje y lo dice", () => {
+    const r = evaluarCumplimientoConCobertura(lote(75, 60, 25), 100);
+    expect(r.pct_cumplimiento).toBeNull();
+    expect(r.estado_cobertura).toBe("limitado");
+    expect(r.texto).toBe("readiness limitado: cobertura del evento 75,0% — no representativo");
+  });
+
+  it("formato es-ES exacto con miles y un decimal", () => {
+    const r = evaluarCumplimientoConCobertura(lote(4382, 3620, 492), 4874);
+    expect(r.texto).toBe("82,6% cumplimiento sobre 4.382 OTs evaluables · cobertura del evento 89,9% ◐");
+  });
+
+  it("sin glifo de aviso cuando la cobertura llega al 95%", () => {
+    const r = evaluarCumplimientoConCobertura(lote(95, 80, 5), 100);
+    expect(r.estado_cobertura).toBe("disponible");
+    expect(r.texto).not.toContain("◐");
+    expect(r.texto).toContain("cobertura del evento 95,0%");
+  });
+});
+
+describe("calendario laborable: nunca implícito", () => {
+  it("sin festivos cargados para el territorio no hay calendario", () => {
+    expect(construirCalendario("ES", [])).toBeNull();
+    expect(construirCalendario(null, [{ territorio: "ES", ambito: "nacional", fecha: "2026-01-06" }])).toBeNull();
+  });
+
+  it("regla en días laborables con territorio ES y sin calendario → no evaluable", () => {
+    const r = evaluarRegla(
+      regla({ unidad: "dias_laborables", calendario: "laborable_es", territorio_calendario: "ES", target: 5 }),
+      { eventos: { creacion_ot: "2026-01-05T09:00:00Z", cierre: "2026-01-09T09:00:00Z" } },
+      aCalendarioLaboral(construirCalendario("ES", [])),
+    );
+    expect(r.evaluable).toBe(false);
+    expect(r.motivo_no_evaluable).toBe("sin_calendario_laboral");
+  });
+
+  it("el festivo cargado entre inicio y fin descuenta exactamente un día", () => {
+    const conFestivo = construirCalendario("ES", [
+      { territorio: "ES", ambito: "nacional", fecha: "2026-01-06", descripcion: "Reyes" },
+    ]);
+    const eventos = { eventos: { creacion_ot: "2026-01-05T09:00:00Z", cierre: "2026-01-09T09:00:00Z" } };
+    const base = regla({ unidad: "dias_laborables", calendario: "laborable_es", territorio_calendario: "ES", target: 5 });
+    const conCal = evaluarRegla(base, eventos, aCalendarioLaboral(conFestivo));
+    const sinFestivos = evaluarRegla(base, eventos, { festivos: [] });
+    expect(sinFestivos.transcurrido).toBe(4);
+    expect(conCal.transcurrido).toBe(3);
+  });
+});
+
+describe("tres estados independientes del Registry", () => {
+  it("extraída del contrato + borrador conviven sin contaminarse", () => {
+    const r = regla({ estado_extraccion: "extraida_contrato", estado_regla: "borrador" });
+    expect(r.estado_extraccion).toBe("extraida_contrato");
+    expect(r.estado_regla).toBe("borrador");
+  });
+
+  it("validar la regla no altera la extracción ni fabrica medibilidad", () => {
+    const r = regla({ estado_extraccion: "pendiente_extraer", estado_regla: "borrador", target: null });
+    const validada = { ...r, estado_regla: "validada" as const };
+    expect(validada.estado_extraccion).toBe("pendiente_extraer");
+    // Sigue sin target: el motor continúa sin poder evaluar.
+    const ev = evaluarRegla(validada, { eventos: { creacion_ot: "2026-01-01T00:00:00Z", cierre: "2026-01-02T00:00:00Z" } });
+    expect(ev.evaluable).toBe(false);
+    expect(ev.motivo_no_evaluable).toBe("sin_sla_cuantificado");
+  });
+});
+
+
 
 describe("consecuencias declaradas", () => {
   it("nunca devuelve un importe económico", () => {

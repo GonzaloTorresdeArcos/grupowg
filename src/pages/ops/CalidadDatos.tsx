@@ -10,6 +10,8 @@ import {
   frescura,
   readinessRegla,
   resumenReadiness,
+  universosPorCliente,
+
   type DominioDato,
   type EstadoDominio,
 } from "@/lib/ops-data-quality";
@@ -84,10 +86,18 @@ const CalidadDatos = () => {
     return Object.entries(medidas.campos_fact_ot).sort((a, b) => a[1] - b[1]);
   }, [medidas]);
 
-  const readiness = useMemo(
-    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas) : null),
-    [medidas, reglasEfectivas],
+  const universos = useMemo(
+    () => (medidas && reglasEfectivas.length ? universosPorCliente(medidas, aliases, reglasEfectivas) : null),
+    [medidas, aliases, reglasEfectivas],
   );
+
+  const ctxReadiness = useMemo(() => ({ universos }), [universos]);
+
+  const readiness = useMemo(
+    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas, ctxReadiness) : null),
+    [medidas, reglasEfectivas, ctxReadiness],
+  );
+
 
   const resumen = useMemo(() => {
     const valores = medidas?.clientes_erp;
@@ -308,6 +318,7 @@ const CalidadDatos = () => {
                 <th className="py-2 pr-4 font-medium">Indicador</th>
                 <th className="py-2 pr-4 font-medium">Extracción</th>
                 <th className="py-2 pr-4 font-medium">Medibilidad</th>
+                <th className="py-2 pr-4 font-medium">Universo cliente (OTs)</th>
                 <th className="py-2 pr-4 font-medium">Cobertura evento</th>
                 <th className="py-2 font-medium">Qué falta</th>
               </tr>
@@ -315,7 +326,7 @@ const CalidadDatos = () => {
             <tbody>
               {medidas &&
                 reglasEfectivas.map((r, i) => {
-                  const rd = readinessRegla(r, medidas);
+                  const rd = readinessRegla(r, medidas, ctxReadiness);
                   return (
                     <tr key={r.id ?? `${r.cliente}-${i}`} className="border-b border-black/[0.04] align-top">
                       <td className="py-2.5 pr-4 text-ink">
@@ -333,9 +344,16 @@ const CalidadDatos = () => {
                           }
                         />
                       </td>
+                      <td className="py-2.5 pr-4 text-ink/70 tabular-nums">
+                        {rd.universoCliente == null ? "Sin resolver" : num(rd.universoCliente)}
+                      </td>
                       <td className="py-2.5 pr-4 text-ink/55 tabular-nums">
                         {rd.coberturaEventos == null ? "—" : `${pct(rd.coberturaEventos)} · ${rd.estadoCobertura}`}
+                        <span className="block text-[11px] text-ink/40">
+                          {rd.fuenteCobertura === "cliente" ? "universo del cliente" : "cobertura global, no por cliente"}
+                        </span>
                       </td>
+
                       <td className="py-2.5 text-ink/55">
                         <ul className="space-y-0.5">
                           {rd.bloqueos.map((b, j) => <li key={j}>{b.motivo}</li>)}
