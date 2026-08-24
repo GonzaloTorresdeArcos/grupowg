@@ -54,7 +54,7 @@ const Delta = ({ v, favorable }: { v: number | null; favorable: "up" | "down" })
 };
 
 const Delegaciones = () => {
-  const { filters, rpcParams } = useOpsFilters();
+  const { filters, rpcParams, prevRange, modo } = useOpsFilters();
   const [now, setNow] = useState<Data | null>(null);
   const [prev, setPrev] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,7 @@ const Delegaciones = () => {
   const [loadingFicha, setLoadingFicha] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
 
-  const prevRange = useMemo(() => prevPeriod(filters.from, filters.to), [filters.from, filters.to]);
+
   const dNow = diasEntre(filters.from, filters.to);
   const dPrev = diasEntre(prevRange.from, prevRange.to);
   const mismasDuraciones = dNow === dPrev;

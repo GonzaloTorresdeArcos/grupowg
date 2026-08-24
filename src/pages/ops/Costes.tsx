@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { fmtEur, fmtNum, fmtPct } from "@/lib/ops-filters";
+import { fmtEur, fmtNum, fmtPct, useOpsFilters } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
 
 import { Loader2, ChevronDown, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { OpsPeriodPicker } from "@/components/ops/OpsPeriodPicker";
 import { variacion, labelPeriodo, diasEntre } from "@/lib/ops-performance";
 import {
   componentesCoste,
@@ -64,15 +63,6 @@ const mesLabel = (iso: string) => {
 const firstOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
 const lastOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
 const monthKey = (iso: string) => iso.slice(0, 7);
-const monthsBetween = (from: string, to: string) => {
-  const f = new Date(from + "T00:00:00Z");
-  const t = new Date(to + "T00:00:00Z");
-  return (t.getUTCFullYear() - f.getUTCFullYear()) * 12 + (t.getUTCMonth() - f.getUTCMonth()) + 1;
-};
-const shiftMonths = (iso: string, delta: number) => {
-  const d = new Date(iso + "T00:00:00Z");
-  return firstOfMonth(d.getUTCFullYear(), d.getUTCMonth() + delta);
-};
 
 const fetchCostes = async (from: string, to: string) => {
   const { data, error } = await supabase.rpc("ops_costes" as never, { p_from: from, p_to: to } as never);
@@ -86,14 +76,12 @@ const fetchEntidades = async (from: string, to: string, vista: Vista) => {
   return (data ?? []) as unknown as EntidadRow[];
 };
 
-const defaultRange = () => {
-  const now = new Date();
-  return { from: firstOfMonth(2026, 0), to: lastOfMonth(now.getUTCFullYear(), now.getUTCMonth()) };
-};
-
 // ─── Componente ─────────────────────────────────────────────────────────────
 const Costes = () => {
-  const [range, setRange] = useState(defaultRange);
+  // Contexto temporal ÚNICO: el período y el modo de comparación vienen del
+  // selector global (useOpsFilters). Esta página no mantiene período propio.
+  const { filters, prevRange, modo } = useOpsFilters();
+  const range = useMemo(() => ({ from: filters.from, to: filters.to }), [filters.from, filters.to]);
   const [data, setData] = useState<Payload | null>(null);
   const [prev, setPrev] = useState<Kpis | null>(null);
   const [loading, setLoading] = useState(true);
@@ -105,13 +93,7 @@ const Costes = () => {
   const [loadingEnt, setLoadingEnt] = useState(false);
   const [umbral, setUmbral] = useState(20);
 
-  const prevInfo = useMemo(() => {
-    const n = monthsBetween(range.from, range.to);
-    const prevFrom = shiftMonths(range.from, -n);
-    const prevToStart = shiftMonths(range.from, -1);
-    const prevTo = lastOfMonth(Number(prevToStart.slice(0, 4)), Number(prevToStart.slice(5, 7)) - 1);
-    return { from: prevFrom, to: prevTo };
-  }, [range]);
+  const prevInfo = prevRange;
 
   useEffect(() => {
     let cancel = false;
@@ -180,9 +162,10 @@ const Costes = () => {
 
       {/* Selector de período + comparabilidad */}
       <div className="flex flex-wrap items-center gap-4 border border-black/[0.06] rounded-2xl bg-white px-5 py-4">
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período</span>
-          <OpsPeriodPicker value={range} onChange={(v) => setRange(v)} />
+        <div className="flex flex-col gap-1 text-xs text-ink/60">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período global</span>
+          <span className="text-ink font-medium">{labelPeriodo(range.from, range.to)}</span>
+          <span className="text-[10px] text-ink/40">Se controla desde el selector superior</span>
         </div>
         <div className="flex flex-col gap-1 text-xs text-ink/60">
           <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Comparativa</span>
@@ -194,7 +177,7 @@ const Costes = () => {
             Períodos con distinta duración — variaciones pueden reflejar cobertura de días.
           </span>
         )}
-        <Button variant="ghost" size="sm" onClick={() => setRange(defaultRange())}>Restablecer</Button>
+        <span className="text-[11px] text-ink/50">Modo: {modo === "interanual" ? "vs. año anterior" : "vs. período anterior"}</span>
       </div>
 
       {loading || !data ? (
@@ -209,7 +192,9 @@ const Costes = () => {
 
           {/* Evolución 18 meses */}
           <section className="border border-black/[0.06] rounded-2xl bg-white p-6">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">Evolución 18 meses</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">Evolución 18 meses
+              <span className="ml-2 text-ink/40 normal-case tracking-normal italic">Ventana propia: últimos 18 meses (independiente del período global).</span>
+            </p>
             <h2 className="font-display text-lg tracking-tight text-ink mb-5">Cierres y €/cierre por mes</h2>
             <EvoChart rows={evo18} />
           </section>

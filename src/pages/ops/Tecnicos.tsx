@@ -104,7 +104,7 @@ const fmtPctSigned = (v: number | null | undefined) =>
 // COMPONENTE PRINCIPAL
 // =============================================================================
 const Tecnicos = () => {
-  const { rpcParams } = useOpsFilters();
+  const { rpcParams, prevRange, modo } = useOpsFilters();
   const [rowsRaw, setRowsRaw] = useState<Row[]>([]);
   const [rowsPrev, setRowsPrev] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +117,7 @@ const Tecnicos = () => {
   // ---- Fetch ---------------------------------------------------------------
   useEffect(() => {
     setLoading(true);
-    const prev = prevPeriod(rpcParams.p_from as string, rpcParams.p_to as string);
+    const prev = prevRange;
     const base = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
@@ -133,7 +133,7 @@ const Tecnicos = () => {
       setRowsPrev((pre.data ?? []) as Row[]);
       setLoading(false);
     })();
-  }, [rpcParams]);
+  }, [rpcParams, prevRange]);
 
   // ---- Enriquecimiento -----------------------------------------------------
   const enriched: EnrichedRow[] = useMemo(() => {
@@ -284,7 +284,7 @@ const Tecnicos = () => {
 
   // ---- Banner de período ---------------------------------------------------
   const now = { from: rpcParams.p_from as string, to: rpcParams.p_to as string };
-  const prev = prevPeriod(now.from, now.to);
+  const prev = prevRange;
   const diasActual = diasEntre(now.from, now.to);
   const diasPrev = diasEntre(prev.from, prev.to);
   const diferenciaDias = diasActual !== diasPrev;
@@ -699,7 +699,7 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
 
         {data && (
           <>
-            <Section title="Evolución 12 meses">
+            <Section title="Evolución 12 meses — ventana propia, independiente del período global">
               <div className="flex items-end gap-1 h-24">
                 {data.evolucion.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">

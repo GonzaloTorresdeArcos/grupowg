@@ -94,7 +94,7 @@ const VistaGeneral = () => {
         <Metric label="Abiertas +30d" value={`${fmtNum(abiertas30)} / ${fmtNum(abiertas)}`} sub={abiertas > 0 ? `${((abiertas30 / abiertas) * 100).toFixed(1)}% del backlog` : "—"} />
       </div>
 
-      <Section title="Evolución mensual del HUB">
+      <Section title="Evolución mensual del HUB — ventana propia: últimos 18 meses (independiente del período global)">
         {evo.length === 0 ? (
           <p className="text-sm text-ink/50">Sin evolución disponible.</p>
         ) : (

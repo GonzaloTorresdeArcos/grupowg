@@ -1,7 +1,10 @@
 import { useOpsFilters } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
+import { estadoCobertura, fechaLarga, TOOLTIP_SIN_COMPARABLE } from "@/lib/ops-periodo";
+import { labelComparativa } from "@/lib/ops-performance";
 import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
+
 
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
@@ -30,8 +33,13 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
 
 
 export const OpsFiltersBar = () => {
-  const { filters, setFilters, reset, options, optionsError, reloadOptions } = useOpsFilters();
+  const {
+    filters, setFilters, reset, options, optionsError, reloadOptions,
+    modo, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+  } = useOpsFilters();
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
+  const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
+  const ytdForzado = preset === "ytd";
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
@@ -40,8 +48,29 @@ export const OpsFiltersBar = () => {
           <OpsPeriodPicker
             value={{ from: filters.from, to: filters.to }}
             onChange={(v) => setFilters({ from: v.from, to: v.to })}
+            cobertura={cobertura}
+            preset={preset}
+            onPreset={(k) => aplicarPreset(k)}
           />
         </div>
+        <label className="flex flex-col gap-1 min-w-[190px]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Comparar con</span>
+          <select
+            aria-label="Modo de comparación"
+            data-testid="ops-modo-comparacion"
+            value={modo}
+            disabled={ytdForzado}
+            title={ytdForzado
+              ? "En YTD la comparación es siempre interanual homogénea (mismo intervalo exacto del año anterior)"
+              : undefined}
+            onChange={(e) => setModo(e.target.value === "interanual" ? "interanual" : "anterior")}
+            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40 disabled:opacity-60"
+          >
+            <option value="anterior">Período anterior equivalente</option>
+            <option value="interanual">Mismo período del año anterior</option>
+          </select>
+        </label>
+
         <Sel label="Delegación" value={filters.delegacion} options={options.delegaciones}
           onChange={(v) => setFilters({ delegacion: v })} />
         <Sel label="Cliente" value={filters.cliente} options={options.clientes}
@@ -85,7 +114,26 @@ export const OpsFiltersBar = () => {
             </button>
           </span>
         )}
+        <span className="w-full text-[11px] text-ink/50">
+          Comparando: <strong className="text-ink/70">{labelComparativa(filters.from, filters.to, modo)}</strong>
+          {ytdForzado && " · YTD homogéneo: mismo intervalo exacto del año anterior"}
+          {sinComparable && (
+            <span className="ml-2 text-amber-700" title={TOOLTIP_SIN_COMPARABLE}>
+              — {TOOLTIP_SIN_COMPARABLE} ({prevRange.from} → {prevRange.to})
+            </span>
+          )}
+        </span>
+        {(cob === "parcial" || cob === "fuera") && (
+          <span role="status" className="w-full inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+            <Info className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+            {cob === "fuera"
+              ? "El período seleccionado está fuera de los datos cargados — no se muestran cifras, no se rellenan con ceros."
+              : "Parte del período seleccionado no tiene datos cargados; esos tramos aparecen como “sin datos”, nunca como cero."}
+            {" "}Datos disponibles desde {fechaLarga(cobertura.min)} hasta {fechaLarga(cobertura.max)}.
+          </span>
+        )}
       </div>
     </div>
+
   );
 };

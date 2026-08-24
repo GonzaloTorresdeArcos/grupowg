@@ -63,7 +63,9 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     await waitFor(() =>
       expect(screen.getByRole("option", { name: "Taller" })).toBeInTheDocument()
     );
-    const selects = screen.getAllByRole("combobox");
+    const selects = screen.getAllByRole("combobox").filter(
+      (s) => s.getAttribute("aria-label") !== "Modo de comparación",
+    );
     expect(selects.length).toBeGreaterThanOrEqual(9);
     for (const s of selects) expect(s).toHaveValue("");
     expect(screen.queryByRole("option", { name: "Frigorífico" })).not.toBeInTheDocument();
@@ -75,7 +77,9 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     rpcMock.mockResolvedValue({ data: null, error: null });
     renderBar();
     await waitFor(() => expect(rpcMock).toHaveBeenCalled());
-    const selects = screen.getAllByRole("combobox");
+    const selects = screen.getAllByRole("combobox").filter(
+      (s) => s.getAttribute("aria-label") !== "Modo de comparación",
+    );
     expect(selects.length).toBeGreaterThanOrEqual(9);
     expect(screen.getAllByRole("option", { name: "Todos" }).length).toBe(selects.length);
   });
@@ -99,7 +103,9 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     renderBar();
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("No se han podido cargar las opciones de filtro");
-    const selects = screen.getAllByRole("combobox");
+    const selects = screen.getAllByRole("combobox").filter(
+      (s) => s.getAttribute("aria-label") !== "Modo de comparación",
+    );
     expect(selects.length).toBeGreaterThanOrEqual(9);
   });
 });

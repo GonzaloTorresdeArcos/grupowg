@@ -91,7 +91,7 @@ const ExecCard = ({
 
 // ---------------- main ----------------
 const Dashboard = () => {
-  const { rpcParams, filters } = useOpsFilters();
+  const { rpcParams, filters, prevRange, modo } = useOpsFilters();
   const [loading, setLoading] = useState(true);
   const [kpis, setKpis] = useState<Kpis | null>(null);
   const [kpisPrev, setKpisPrev] = useState<Kpis | null>(null);
@@ -107,7 +107,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setLoading(true);
-    const prev = prevPeriod(filters.from, filters.to);
+    const prev = prevRange;
     const filtroSecundarios = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia, p_marca: rpcParams.p_marca,
@@ -149,7 +149,7 @@ const Dashboard = () => {
       setScorePrev((sp.data ?? []) as ScoreRow[]);
       setLoading(false);
     })();
-  }, [rpcParams, filters.from, filters.to]);
+  }, [rpcParams, filters.from, filters.to, prevRange]);
 
   if (loading || !kpis) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
@@ -213,7 +213,7 @@ const Dashboard = () => {
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
         <p className="mt-3 text-[11px] uppercase tracking-[0.14em] text-ink/50 font-semibold">
-          Período comparado · {labelComparativa(filters.from, filters.to)}
+          Período comparado · {labelComparativa(filters.from, filters.to, modo)}
         </p>
       </header>
 
@@ -294,7 +294,7 @@ const Dashboard = () => {
       <section>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-3">
           Evolución últimos 18 meses
-          <span className="ml-2 text-ink/40 normal-case tracking-normal italic">Responde a los filtros globales activos.</span>
+          <span className="ml-2 text-ink/40 normal-case tracking-normal italic">Ventana propia: últimos 18 meses (independiente del período global). Responde al resto de filtros activos.</span>
         </p>
         <div className="border border-black/[0.06] rounded-2xl bg-white p-6">
           <div className="flex items-end gap-1.5 h-40">
@@ -433,7 +433,7 @@ const Dashboard = () => {
             <p><strong className="text-ink">Cerradas</strong>: OTs con situación &quot;Cerrado&quot; o &quot;Baja&quot; y fecha de cierre dentro del período. Se excluye siempre &quot;ANULADO AVISO&quot; y las OTs anuladas.</p>
             <p><strong className="text-ink">Bajas</strong>: OTs con situación &quot;Baja&quot; (aparato irreparable). En este sistema una baja es un cierre.</p>
             <p><strong className="text-ink">Bajas / Cerradas × 100</strong>: bajas del período divididas entre cerradas del período, en porcentaje.</p>
-            <p><strong className="text-ink">Período de comparación</strong>: {labelComparativa(filters.from, filters.to)}. Si el rango activo es un mes natural, se compara contra el mes natural anterior; si es un rango arbitrario, contra los mismos días inmediatamente anteriores.</p>
+            <p><strong className="text-ink">Período de comparación</strong>: {labelComparativa(filters.from, filters.to, modo)}. En modo interanual se comparan exactamente las mismas fechas desplazadas un año. En modo «período anterior»: si el rango activo es un mes natural, se compara contra el mes natural anterior; si es un rango arbitrario, contra los mismos días inmediatamente anteriores.</p>
             <p><strong className="text-ink">Variables contextuales aún no disponibles</strong>: días trabajados, ausencias, First Time Fix, reincidencias, satisfacción, reclamaciones, complejidad de producto, disponibilidad de repuestos.</p>
             <p className="text-ink/50 italic">Todos los valores mostrados proceden de <code className="text-[12px]">ops_fact_ot</code> importado. No hay datos simulados.</p>
           </div>

@@ -67,13 +67,51 @@ export function isNaturalMonth(fromISO: string, toISO: string): boolean {
   return t.getUTCDate() === lastDayOfMonth(t.getUTCFullYear(), t.getUTCMonth());
 }
 
-export function prevPeriod(fromISO: string, toISO: string): { from: string; to: string } {
+/**
+ * Modo de comparación global (Fase 2 V2).
+ * - 'anterior'   → período inmediatamente anterior equivalente (comportamiento histórico).
+ * - 'interanual' → exactamente las mismas fechas desplazadas un año atrás.
+ */
+export type ModoComparacion = "anterior" | "interanual";
+
+/**
+ * Desplaza una fecha ISO N años, con CLAMP documentado:
+ * 29-feb de un bisiesto → 28-feb del año destino si éste no es bisiesto.
+ */
+export function shiftYearISO(fechaISO: string, delta: number): string {
+  const d = parseISO(fechaISO);
+  const y = d.getUTCFullYear() + delta;
+  const m = d.getUTCMonth();
+  const day = Math.min(d.getUTCDate(), lastDayOfMonth(y, m));
+  return iso(new Date(Date.UTC(y, m, day)));
+}
+
+/**
+ * prevPeriod(from, to, modo?) — rango de comparación.
+ * modo por defecto 'anterior' (compatibilidad con todos los llamantes previos).
+ * En 'interanual' se conservan las mismas fechas y duración, desplazadas 12 meses.
+ */
+export function prevPeriod(
+  fromISO: string,
+  toISO: string,
+  modo: ModoComparacion = "anterior",
+): { from: string; to: string } {
+  if (modo === "interanual") {
+    return { from: shiftYearISO(fromISO, -1), to: shiftYearISO(toISO, -1) };
+  }
   const f = parseISO(fromISO);
   const t = parseISO(toISO);
   if (isNaturalMonth(fromISO, toISO)) {
     const y = f.getUTCFullYear();
     const m = f.getUTCMonth();
     const pFrom = new Date(Date.UTC(y, m - 1, 1));
+    const pTo = new Date(Date.UTC(y, m, 0));
+    return { from: iso(pFrom), to: iso(pTo) };
+  }
+  if (isNaturalQuarter(fromISO, toISO)) {
+    const y = f.getUTCFullYear();
+    const m = f.getUTCMonth();
+    const pFrom = new Date(Date.UTC(y, m - 3, 1));
     const pTo = new Date(Date.UTC(y, m, 0));
     return { from: iso(pFrom), to: iso(pTo) };
   }
@@ -85,22 +123,38 @@ export function prevPeriod(fromISO: string, toISO: string): { from: string; to: 
   return { from: iso(pFrom), to: iso(pTo) };
 }
 
+/** true si el rango es exactamente un trimestre natural (T1..T4). */
+export function isNaturalQuarter(fromISO: string, toISO: string): boolean {
+  const f = parseISO(fromISO), t = parseISO(toISO);
+  if (f.getUTCFullYear() !== t.getUTCFullYear()) return false;
+  if (f.getUTCMonth() % 3 !== 0) return false;
+  if (t.getUTCMonth() !== f.getUTCMonth() + 2) return false;
+  if (f.getUTCDate() !== 1) return false;
+  return t.getUTCDate() === lastDayOfMonth(t.getUTCFullYear(), t.getUTCMonth());
+}
+
 export function labelPeriodo(fromISO: string, toISO: string): string {
   const f = parseISO(fromISO);
   const t = parseISO(toISO);
   if (isNaturalMonth(fromISO, toISO)) return `${capMes(f.getUTCMonth())} ${f.getUTCFullYear()}`;
+  if (isNaturalQuarter(fromISO, toISO)) return `T${Math.floor(f.getUTCMonth() / 3) + 1} ${f.getUTCFullYear()}`;
   const dd = (d: Date) => String(d.getUTCDate()).padStart(2, "0");
   const mm = (d: Date) => String(d.getUTCMonth() + 1).padStart(2, "0");
   return `${dd(f)}/${mm(f)}/${f.getUTCFullYear()}–${dd(t)}/${mm(t)}/${t.getUTCFullYear()}`;
 }
 
-export function labelComparativa(fromISO: string, toISO: string): string {
-  const prev = prevPeriod(fromISO, toISO);
-  if (isNaturalMonth(fromISO, toISO)) {
+export function labelComparativa(
+  fromISO: string,
+  toISO: string,
+  modo: ModoComparacion = "anterior",
+): string {
+  const prev = prevPeriod(fromISO, toISO, modo);
+  if (isNaturalMonth(fromISO, toISO) || isNaturalQuarter(fromISO, toISO) || modo === "interanual") {
     return `${labelPeriodo(fromISO, toISO)} vs. ${labelPeriodo(prev.from, prev.to)}`;
   }
   return `${labelPeriodo(fromISO, toISO)} vs. período anterior`;
 }
+
 
 // -----------------------------------------------------------------------------
 // Estado de una delegación (o equipo comparable).
