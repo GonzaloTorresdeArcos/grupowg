@@ -699,7 +699,7 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
 
         {data && (
           <>
-            <Section title="Evolución 12 meses">
+            <Section title="Evolución 12 meses — ventana propia, independiente del período global">
               <div className="flex items-end gap-1 h-24">
                 {data.evolucion.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">
