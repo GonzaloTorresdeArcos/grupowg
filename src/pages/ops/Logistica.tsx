@@ -15,11 +15,13 @@ import {
 } from "@/lib/ops-supply";
 import {
   INDICADORES_PRODUCTIVIDAD,
+  LABEL_BASE_SALIDA,
   NOTA_COMPARABILIDAD,
   kpisProductividad,
   lineaProductividad,
   productividadPor,
   type FilaExpedicion,
+  type RefDisponibilidad,
 } from "@/lib/ops-logistica";
 import { AlertTriangle, Info, Loader2, RefreshCw } from "lucide-react";
 
