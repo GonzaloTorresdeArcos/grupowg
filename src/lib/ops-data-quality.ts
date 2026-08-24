@@ -647,8 +647,11 @@ export const readinessRegla = (
     bloqueos,
     coberturaEventos,
     estadoCobertura,
+    universoCliente: universo?.universo_total ?? null,
+    fuenteCobertura,
   };
 };
+
 
 
 export type ResumenReadiness = {
