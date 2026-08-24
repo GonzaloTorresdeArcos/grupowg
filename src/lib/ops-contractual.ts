@@ -410,6 +410,82 @@ export const evaluarReglaAgregada = (
   return { evaluable: true, denominador, numerador, valor: pct, cumple_umbral: pct >= regla.umbral_agregado };
 };
 
+// ─── Cobertura del evento en el universo de OTs ──────────────────────────────
+
+/**
+ * Umbrales de cobertura del evento requerido. Sustituyen al bloqueo binario al
+ * 95%: por debajo se degrada la confianza, nunca se rellena el hueco.
+ */
+export const UMBRAL_COBERTURA_DISPONIBLE = 0.95;
+export const UMBRAL_COBERTURA_PARCIAL = 0.8;
+
+export type EstadoCobertura = "disponible" | "parcial" | "limitado";
+
+export const clasificarCoberturaEvento = (cobertura: number): EstadoCobertura => {
+  if (cobertura >= UMBRAL_COBERTURA_DISPONIBLE) return "disponible";
+  if (cobertura >= UMBRAL_COBERTURA_PARCIAL) return "parcial";
+  return "limitado";
+};
+
+export type ResultadoAgregado = {
+  numerador: number;
+  /** OTs con el evento requerido y por tanto evaluables. */
+  denominador_evaluado: number;
+  /** OTs del universo del cliente/período, tengan o no el evento. */
+  universo_total: number;
+  cobertura: number;
+  estado_cobertura: EstadoCobertura;
+  /** null si no hay denominador o si la cobertura es limitada. */
+  pct_cumplimiento: number | null;
+  texto: string;
+};
+
+const pct1 = (v: number) => `${(v * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+const miles = (v: number) => v.toLocaleString("es-ES");
+
+/**
+ * Cumplimiento agregado con cobertura declarada.
+ * PROHIBIDO: contar las OTs sin evento como cumplidas o incumplidas, y
+ * extrapolar el porcentaje al universo total. El denominador son SIEMPRE las
+ * OTs evaluables y la cobertura se declara junto al resultado.
+ */
+export const evaluarCumplimientoConCobertura = (
+  resultados: readonly ResultadoRegla[],
+  universoTotal: number,
+): ResultadoAgregado => {
+  const evaluables = resultados.filter((r) => r.evaluable);
+  const denominador_evaluado = evaluables.length;
+  const numerador = evaluables.filter((r) => r.cumple_target === true).length;
+  const cobertura = universoTotal > 0 ? denominador_evaluado / universoTotal : 0;
+  const estado_cobertura = clasificarCoberturaEvento(cobertura);
+  const ratio = denominador_evaluado > 0 ? numerador / denominador_evaluado : null;
+
+  if (estado_cobertura === "limitado") {
+    return {
+      numerador,
+      denominador_evaluado,
+      universo_total: universoTotal,
+      cobertura,
+      estado_cobertura,
+      pct_cumplimiento: null,
+      texto: `readiness limitado: cobertura del evento ${pct1(cobertura)} — no representativo`,
+    };
+  }
+
+  const glifo = estado_cobertura === "parcial" ? " ◐" : "";
+  return {
+    numerador,
+    denominador_evaluado,
+    universo_total: universoTotal,
+    cobertura,
+    estado_cobertura,
+    pct_cumplimiento: ratio,
+    texto: `${pct1(ratio ?? 0)} cumplimiento sobre ${miles(denominador_evaluado)} OTs evaluables · cobertura del evento ${pct1(cobertura)}${glifo}`,
+  };
+};
+
+
+
 /** Regla de N meses consecutivos de incumplimiento. */
 export const evaluarMesesConsecutivos = (
   regla: ReglaSla,
