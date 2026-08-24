@@ -441,7 +441,9 @@ export type ResultadoAgregado = {
 };
 
 const pct1 = (v: number) => `${(v * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
-const miles = (v: number) => v.toLocaleString("es-ES");
+/** es-ES no agrupa por defecto los números de 4 dígitos; aquí siempre se agrupa. */
+const miles = (v: number) => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 
 /**
  * Cumplimiento agregado con cobertura declarada.
