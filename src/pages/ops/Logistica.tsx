@@ -36,14 +36,12 @@ type LogisticaPayload = {
   por_destino: Array<{ entidad: string; n: number; coste_medio: number | null }>;
 };
 
-/** Campos reutilizados de la RPC ops_dispersion (bloque C, logística de campo). */
-type CampoPayload = {
-  kmMedia: number | null;
-  kmMediana: number | null;
-  cerradas: number | null;
-  geocodificadas: number | null;
-  costeDesplazamiento: number | null;
-};
+/** Columnas de ops_expedicion necesarias para la productividad de almacén. */
+const COLS_EXPEDICION =
+  "almacen_base,expedicion_id,preparado_por,equipo,picking_inicio,picking_fin,expedicion_timestamp," +
+  "fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
+  "coste_transporte,num_lineas,num_unidades,num_ot_abastecidas";
+
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{children}</p>
