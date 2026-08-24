@@ -237,20 +237,38 @@ const CalidadDatos = () => {
         </p>
         {readiness && (
           <>
-            <dl className="grid gap-4 sm:grid-cols-3 text-[13px] mb-4">
+            <dl className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5 text-[13px] mb-4">
               <div>
                 <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Reglas modeladas</dt>
                 <dd className="text-ink tabular-nums text-lg">{readiness.total}</dd>
               </div>
               <div>
                 <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Medibles hoy</dt>
-                <dd className="text-ink tabular-nums text-lg">{readiness.medibles}</dd>
+                <dd className="text-ink tabular-nums text-lg">{readiness.porMedibilidad.medible}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Medibles parciales</dt>
+                <dd className="text-ink tabular-nums text-lg">{readiness.porMedibilidad.parcial}</dd>
               </div>
               <div>
                 <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Bloqueadas</dt>
-                <dd className="text-ink tabular-nums text-lg">{readiness.noMedibles}</dd>
+                <dd className="text-ink tabular-nums text-lg">{readiness.porMedibilidad.pendiente}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Extraídas del contrato</dt>
+                <dd className="text-ink tabular-nums text-lg">
+                  {readiness.porExtraccion.extraida_contrato}
+                  <span className="text-[12px] text-ink/45"> / {readiness.total}</span>
+                </dd>
               </div>
             </dl>
+            <p className="mb-4 text-[12px] text-ink/50">
+              Tres estados independientes: <strong className="font-medium text-ink/70">extracción</strong> (el valor está
+              sacado del contrato), <strong className="font-medium text-ink/70">validación</strong> (
+              {Object.entries(readiness.porValidacion).map(([k, v]) => `${v} ${k}`).join(" · ")}) y{" "}
+              <strong className="font-medium text-ink/70">medibilidad técnica</strong>, que se deriva aquí y nunca se
+              almacena.
+            </p>
             <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40 mb-2">Bloqueos más frecuentes</p>
             <ul className="space-y-1 text-[13px] text-ink/60 mb-5">
               {readiness.bloqueosTop.slice(0, 8).map((b) => (
@@ -267,7 +285,9 @@ const CalidadDatos = () => {
               <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
                 <th className="py-2 pr-4 font-medium">Cliente · programa</th>
                 <th className="py-2 pr-4 font-medium">Indicador</th>
-                <th className="py-2 pr-4 font-medium">Medible hoy</th>
+                <th className="py-2 pr-4 font-medium">Extracción</th>
+                <th className="py-2 pr-4 font-medium">Medibilidad</th>
+                <th className="py-2 pr-4 font-medium">Cobertura evento</th>
                 <th className="py-2 font-medium">Qué falta</th>
               </tr>
             </thead>
@@ -282,8 +302,18 @@ const CalidadDatos = () => {
                         <span className="block text-[12px] text-ink/45">{r.programa}</span>
                       </td>
                       <td className="py-2.5 pr-4 text-ink/70">{r.kpi}</td>
+                      <td className="py-2.5 pr-4 text-ink/55">
+                        {r.estado_extraccion === "extraida_contrato" ? "Extraída" : "Pendiente de extraer"}
+                      </td>
                       <td className="py-2.5 pr-4">
-                        <EstadoPill estado={rd.medible ? "disponible" : "pendiente"} />
+                        <EstadoPill
+                          estado={
+                            rd.medibilidad === "medible" ? "disponible" : rd.medibilidad === "parcial" ? "parcial" : "pendiente"
+                          }
+                        />
+                      </td>
+                      <td className="py-2.5 pr-4 text-ink/55 tabular-nums">
+                        {rd.coberturaEventos == null ? "—" : `${pct(rd.coberturaEventos)} · ${rd.estadoCobertura}`}
                       </td>
                       <td className="py-2.5 text-ink/55">
                         <ul className="space-y-0.5">
@@ -297,6 +327,48 @@ const CalidadDatos = () => {
           </table>
         </div>
       </Seccion>
+
+      {/* Aliases cliente ERP → contrato */}
+      <Seccion
+        id="aliases"
+        titulo="Clientes ERP → cliente contractual"
+        sub="El nombre del cliente en el ERP no es el cliente del contrato. La correspondencia es explícita y auditable: el patrón del Registry solo actúa como fallback provisional."
+      >
+        {resumen ? (
+          <>
+            <p className="mb-4 text-[12px] text-ink/55">
+              {num(resumen.valoresSinResolver)} valores de <code className="text-[12px]">cliente_wg</code> sin cliente
+              contractual asignado ({num(resumen.otsSinResolver)} OTs). Esas OTs quedan fuera de cualquier medición
+              contractual: no se reparten ni se estiman.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                    <th className="py-2 pr-4 font-medium">Cliente contractual</th>
+                    <th className="py-2 pr-4 font-medium">Valores por alias</th>
+                    <th className="py-2 pr-4 font-medium">Valores por patrón (provisional)</th>
+                    <th className="py-2 font-medium">OTs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resumen.porCliente.map((c) => (
+                    <tr key={c.cliente_contractual} className="border-b border-black/[0.04]">
+                      <td className="py-2.5 pr-4 text-ink">{c.cliente_contractual}</td>
+                      <td className="py-2.5 pr-4 text-ink/70 tabular-nums">{c.valoresPorAlias}</td>
+                      <td className="py-2.5 pr-4 text-ink/70 tabular-nums">{c.valoresPorPatron}</td>
+                      <td className="py-2.5 text-ink/70 tabular-nums">{num(c.ots)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <p className="text-[13px] text-ink/50">Sin medida de clientes ERP disponible.</p>
+        )}
+      </Seccion>
+
 
       {/* Registry */}
       <Seccion
