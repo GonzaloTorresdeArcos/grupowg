@@ -190,6 +190,8 @@ describe("cola de asuntos", () => {
     calidadTec: [{ tecnico: "ANA", n: 35, pct_bajas: 0.4, pct_bajas_esp: 0.15, pct_nff: 0.2, pct_nff_esp: 0.05 }],
     provincias: [{ provincia: "MADRID", abiertas_30: 300 }, { provincia: "SEVILLA", abiertas_30: 120 }],
     conclusiones: [{ tipo: "hecho", texto: "Los cierres bajan un 4%.", ambito: "Compañía" }],
+    // F4B: el asunto de espera de repuesto solo existe con cifra de Supply.
+    supplyPte: { n: 900, n30: 400, edad_media: 44, n_prev: 850, asOf: "2026-07-25" },
   };
 
   it("nunca devuelve más de 6 asuntos y fusiona técnico duplicado", () => {
