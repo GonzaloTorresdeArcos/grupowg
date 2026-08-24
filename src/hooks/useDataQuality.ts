@@ -16,10 +16,14 @@ let cache: Promise<MedidasDataQuality | null> | null = null;
 
 const cargar = (): Promise<MedidasDataQuality | null> => {
   if (!cache) {
-    cache = supabase
-      .rpc("ops_data_quality" as never)
-      .then(({ data, error }) => (error ? null : ((data ?? null) as MedidasDataQuality | null)))
-      .catch(() => null);
+    cache = (async () => {
+      try {
+        const { data, error } = await supabase.rpc("ops_data_quality" as never);
+        return error ? null : ((data ?? null) as MedidasDataQuality | null);
+      } catch {
+        return null;
+      }
+    })();
   }
   return cache;
 };
