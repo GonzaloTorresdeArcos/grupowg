@@ -129,10 +129,11 @@ export const OpsPeriodPicker = ({ value, onChange, className, cobertura, preset,
     }
   };
 
-  const applyPreset = (p: Preset) => {
-    onChange(p.get());
-    setOpen(false);
+  const applyPreset = (key: PresetKey) => {
+    onPreset?.(key);
+    if (key !== "rango") setOpen(false);
   };
+
 
   const clickMonth = (m: number) => {
     if (isFutureMonth(year, m)) return;
