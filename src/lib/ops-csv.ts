@@ -417,3 +417,33 @@ export const PLANTILLAS: Record<OpsTable, readonly string[]> = {
 
 /** Fila de cabecera lista para pegar en un CSV. */
 export const cabeceraPlantilla = (t: OpsTable): string => PLANTILLAS[t].join(",");
+
+/**
+ * Columnas reales de las tablas de supply tal y como existen en la migración.
+ * Sirve de contrato: toda cabecera de PLANTILLAS debe existir aquí.
+ */
+export const COLUMNAS_TABLA: Partial<Record<OpsTable, readonly string[]>> = {
+  ops_pieza_solicitud: [
+    "id", "num_ot", "referencia", "descripcion", "cantidad", "proveedor",
+    "fecha_necesidad", "fecha_solicitud", "fecha_disponibilidad", "fecha_picking",
+    "fecha_expedicion", "fecha_entrega", "fecha_montaje", "estado_pieza",
+    "coste_unitario", "imputabilidad_retraso", "origen_dato", "created_at", "updated_at",
+  ],
+  ops_expedicion: [
+    "id", "num_ot", "referencia_expedicion", "transportista", "origen", "destino_cp",
+    "destino_tipo", "fecha_expedicion", "fecha_entrega_prevista", "fecha_entrega_real",
+    "estado_expedicion", "coste_envio", "incidencia", "origen_dato", "created_at",
+    "updated_at", "almacen_base", "expedicion_id", "preparado_por", "persona_id", "equipo",
+    "picking_inicio", "picking_fin", "expedicion_timestamp", "destino", "tipo_incidencia",
+    "reexpedicion", "expedicion_origen_id", "coste_transporte", "num_lineas",
+    "num_unidades", "num_ot_abastecidas", "procedencia_conteo",
+  ],
+  ops_expedicion_linea: [
+    "id", "almacen_base", "expedicion_id", "linea", "referencia", "descripcion",
+    "cantidad", "num_ot", "pieza_solicitud_id", "origen_dato", "created_at",
+  ],
+  ops_stock_snapshot: [
+    "id", "fecha_snapshot", "almacen_base", "referencia", "descripcion", "stock_fisico",
+    "reservado", "coste_medio", "origen_dato", "created_at", "stock_disponible", "en_transito",
+  ],
+};
