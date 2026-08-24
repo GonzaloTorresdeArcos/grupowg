@@ -70,6 +70,9 @@ const Delegaciones = () => {
   const dPrev = diasEntre(prevRange.from, prevRange.to);
   const mismasDuraciones = dNow === dPrev;
 
+  const [equiposNow, setEquiposNow] = useState<EquipoRow[]>([]);
+  const [equiposPrev, setEquiposPrev] = useState<EquipoRow[]>([]);
+
   useEffect(() => {
     setLoading(true);
     (async () => {
@@ -78,15 +81,25 @@ const Delegaciones = () => {
         p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
       };
       const paramsPrev = { ...paramsNow, p_from: prevRange.from, p_to: prevRange.to };
-      const [n, p] = await Promise.all([
+      const equipNow = {
+        p_from: rpcParams.p_from, p_to: rpcParams.p_to,
+        p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
+      };
+      const equipPrev = { ...equipNow, p_from: prevRange.from, p_to: prevRange.to };
+      const [n, p, eq, eqp] = await Promise.all([
         supabase.rpc("ops_delegaciones" as never, paramsNow as never),
         supabase.rpc("ops_delegaciones" as never, paramsPrev as never),
+        supabase.rpc("ops_equipos" as never, equipNow as never),
+        supabase.rpc("ops_equipos" as never, equipPrev as never),
       ]);
       setNow((n.data ?? null) as Data | null);
       setPrev((p.data ?? null) as Data | null);
+      setEquiposNow((eq.data ?? []) as EquipoRow[]);
+      setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
       setLoading(false);
     })();
   }, [rpcParams, prevRange.from, prevRange.to]);
+
 
   useEffect(() => {
     if (!selected) { setFicha(null); return; }
