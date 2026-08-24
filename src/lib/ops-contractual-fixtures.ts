@@ -9,7 +9,14 @@
  * ni por la referencia operativa interna (≤20 días).
  */
 
-import type { ReglaSla } from "@/lib/ops-contractual";
+import type { EstadoExtraccion, ReglaSla } from "@/lib/ops-contractual";
+
+/**
+ * Fila del pliego sin los dos campos derivados (`estado_extraccion` se deduce de
+ * si el contrato aporta valor; `territorio_calendario`, del calendario declarado).
+ */
+type RowBase = Omit<ReglaSla, "estado_extraccion" | "territorio_calendario">;
+
 
 export const AVISO_FIXTURES =
   "Reglas en estado borrador procedentes de la revisión contractual de Dirección. Pendientes de verificación documental campo a campo. No se usan para calcular cumplimiento contractual.";
