@@ -10,6 +10,7 @@
  * priorizada de asuntos de dirección (fusión y deduplicación de señales).
  */
 import type { Conclusion } from "./ops-performance";
+import { fmtFechaEs } from "./ops-as-of";
 import { categoriaDeEstado, LABEL_CATEGORIA, type CategoriaEtapa } from "./ops-sla";
 
 // ─── Taxonomía de targets ────────────────────────────────────────────────────
@@ -114,14 +115,20 @@ export type SituationInput = {
   varBacklogPct: number | null;
   referencia20: number | null;
   nAsuntos: number;
+  /** F4B · Fecha efectiva del dato operativo (`ops_as_of('ot')`). */
+  asOf?: string | null;
 };
 
 /**
  * Una sola frase, solo con datos reales del período/modo activos.
  * Si falta comparable, se omite la variación (nunca se inventa un cero).
+ * F4B: abre declarando a qué fecha corresponde el dato, porque el backlog y las
+ * antigüedades están medidos contra esa fecha y no contra el día de hoy.
  */
 export function situationLine(i: SituationInput): string {
-  const partes: string[] = [i.periodoLabel];
+  const partes: string[] = [];
+  if (i.asOf) partes.push(`Datos operativos a ${fmtFechaEs(i.asOf)}`);
+  partes.push(i.periodoLabel);
   if (i.totalOts != null) partes.push(`${num(i.totalOts)} OTs`);
   if (i.backlogFin != null) {
     const v =
@@ -140,6 +147,7 @@ export function situationLine(i: SituationInput): string {
   );
   return partes.join(" · ");
 }
+
 
 // ─── Cola priorizada de asuntos de dirección ─────────────────────────────────
 export type Impacto = "alto" | "medio" | "bajo";
@@ -264,7 +272,18 @@ export type AsuntosInput = {
   }>;
   provincias: Array<{ provincia: string; abiertas_30: number }>;
   conclusiones: Conclusion[];
+  /**
+   * F4B · Cifra AUTORITATIVA de OTs en espera de repuesto, tal cual la devuelve
+   * `ops_supply.pte_piezas_actual`. Cuando está presente manda sobre la etapa
+   * derivada de `etapas`: Panorama y Repuestos NO pueden dar cifras distintas.
+   * `asOf` es la fecha efectiva contra la que está medida la antigüedad.
+   */
+  supplyPte?: { n: number; n30: number; edad_media: number | null; asOf?: string | null } | null;
 };
+
+/** Fuente declarada de la cifra de espera de repuesto mostrada en el asunto. */
+export type FuenteEsperaRepuesto = "ops_supply" | "etapa_derivada";
+
 
 /**
  * Fusiona alertas automáticas, conclusiones operativas y hallazgos en UNA cola
@@ -317,14 +336,26 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
   }
 
   // 3. Concentración en espera de repuesto (conector Service ↔ Supply).
-  const rep = i.etapas.find((e) => e.categoria === "esperando_repuesto");
+  //    F4B: la cifra la manda Supply. Si `supplyPte` viene informado, es la que
+  //    se muestra; la etapa derivada solo se usa como respaldo cuando no llega.
+  const etapaRep = i.etapas.find((e) => e.categoria === "esperando_repuesto");
+  const rep = i.supplyPte
+    ? { n: i.supplyPte.n, n30: i.supplyPte.n30, edad: i.supplyPte.edad_media }
+    : etapaRep
+      ? { n: etapaRep.n, n30: etapaRep.n30, edad: etapaRep.edadMedia }
+      : null;
+  const fuenteRep: FuenteEsperaRepuesto = i.supplyPte ? "ops_supply" : "etapa_derivada";
   if (rep && i.abiertas > 0 && rep.n / i.abiertas >= UMBRAL_SHARE_REPUESTO) {
+    const fecha = i.supplyPte?.asOf ? ` a ${fmtFechaEs(i.supplyPte.asOf)}` : "";
     cand.push({
       fenomeno: "espera_repuesto",
-      titulo: "Volumen relevante de OTs actualmente esperando repuesto",
-      hecho: `${num(rep.n)} OTs abiertas (${pct1(rep.n / i.abiertas)}) están actualmente en "${LABEL_CATEGORIA.esperando_repuesto}"; ${num(rep.n30)} superan 30 días.`,
-      hipotesis: "Posible cuello de botella en suministro de recambios, no en capacidad técnica.",
-      accion: "Revisar plazos de proveedor y referencias pendientes antes de ampliar capacidad.",
+      titulo: "Volumen relevante de OTs en espera de repuesto",
+      hecho: `${num(rep.n)} OTs abiertas (${pct1(rep.n / i.abiertas)}) están en "${LABEL_CATEGORIA.esperando_repuesto}"${fecha}; ${num(rep.n30)} superan 30 días${
+        rep.edad != null ? ` y la antigüedad media es de ${rep.edad.toFixed(1).replace(".", ",")} días` : ""
+      }. Fuente: ${fuenteRep === "ops_supply" ? "ops_supply.pte_piezas_actual" : "etapa derivada de la OT"}.`,
+      hipotesis:
+        "Concentración observada en la etapa de espera de repuesto. Sin trazabilidad de la solicitud no se puede afirmar que el suministro sea la causa del retraso: es un potencial efecto por confirmar.",
+      accion: "Revisar en Repuestos el desglose por cliente contractual y antigüedad antes de decidir sobre capacidad o proveedor.",
       impacto: clasificarImpacto(rep.n, univ),
       confianza: clasificarConfianza(rep.n, i.hayComparable),
       deterioro: false,
@@ -333,6 +364,7 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
       destinoLabel: "Ver repuestos y stock",
     });
   }
+
 
   // 4. Ratio de bajas creciendo (salida que no repara).
   if (i.ratioBajas != null && i.ratioBajasPrev != null && i.ratioBajas > i.ratioBajasPrev + UMBRAL_SUBIDA_BAJAS_PP) {

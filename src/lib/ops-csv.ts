@@ -447,3 +447,65 @@ export const COLUMNAS_TABLA: Partial<Record<OpsTable, readonly string[]>> = {
     "reservado", "coste_medio", "origen_dato", "created_at", "stock_disponible", "en_transito",
   ],
 };
+
+// ─── F4B · Registro de carga: qué dominio alimenta cada fichero ──────────────
+
+import type { DominioCarga } from "./ops-as-of";
+
+/**
+ * Cada tabla importable alimenta UN dominio del reloj de datos. El importador
+ * escribe en `ops_carga_log` para que las RPCs midan contra la fecha efectiva
+ * del dato y no contra el día de hoy.
+ */
+export const DOMINIO_POR_TABLA: Record<OpsTable, DominioCarga> = {
+  ops_fact_ot: "ot",
+  ops_tecnicos: "ot",
+  ops_portfolio_gamas: "ot",
+  ops_benchmark: "ot",
+  ops_pieza_solicitud: "pieza_solicitud",
+  ops_expedicion: "expedicion",
+  ops_expedicion_linea: "expedicion_linea",
+  ops_stock_snapshot: "stock",
+};
+
+/**
+ * Campos cuya fecha máxima define hasta cuándo llega el dato de cada tabla.
+ * Se ordenan por prioridad: se usa el primero que exista en la fila.
+ */
+const CAMPOS_AS_OF: Partial<Record<OpsTable, readonly string[]>> = {
+  ops_fact_ot: ["fecha_cierre", "fecha_creacion"],
+  ops_pieza_solicitud: ["fecha_entrega", "fecha_expedicion", "fecha_solicitud"],
+  ops_expedicion: ["fecha_entrega_real", "expedicion_timestamp", "fecha_expedicion"],
+  ops_stock_snapshot: ["fecha_snapshot"],
+};
+
+const soloFecha = (v: unknown): string | null => {
+  if (typeof v !== "string" || v.length < 10) return null;
+  const d = v.slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null;
+};
+
+/**
+ * Fecha efectiva del lote = máxima fecha observada que NO sea futura respecto
+ * al momento de la carga. Las fechas futuras del ERP son errores de captura y
+ * adelantarían el reloj de toda la sección, así que se descartan.
+ */
+export function fechaAsOfDelLote(
+  t: OpsTable,
+  registros: readonly Record<string, unknown>[],
+  ahora: Date = new Date(),
+): string | null {
+  const campos = CAMPOS_AS_OF[t];
+  if (!campos) return null;
+  const hoy = ahora.toISOString().slice(0, 10);
+  let max: string | null = null;
+  for (const r of registros) {
+    for (const c of campos) {
+      const d = soloFecha(r[c]);
+      if (!d || d > hoy) continue;
+      if (!max || d > max) max = d;
+      break;
+    }
+  }
+  return max;
+}

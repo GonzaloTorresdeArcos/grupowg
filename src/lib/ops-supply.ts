@@ -18,6 +18,7 @@
  */
 
 import { resolverClienteContractual, type ClienteAlias, type ReglaPatron } from "@/lib/ops-cliente-alias";
+import { fmtFechaEs } from "@/lib/ops-as-of";
 import type { ReglaSla } from "@/lib/ops-contractual";
 
 // ─── Etapas de la cadena ─────────────────────────────────────────────────────
@@ -97,6 +98,12 @@ export type BloquePte = {
   abiertas_total: number;
   buckets: Record<string, number>;
   por_cliente: EntidadPte[];
+  /**
+   * F4B · Agrupación por CLIENTE CONTRACTUAL resuelto por alias en la propia RPC.
+   * Es la única agrupación válida para dirección: `cliente_wg` mezcla razones
+   * sociales distintas y separa las que comparten contrato.
+   */
+  por_cliente_contractual: EntidadPte[];
   por_gama: EntidadPte[];
   por_delegacion: EntidadPte[];
   por_sat: EntidadPte[];
@@ -114,6 +121,9 @@ export type GrupoConversion = {
 
 export type BloqueConversion = { con_pieza?: GrupoConversion; sin_pieza?: GrupoConversion };
 
+/** Fila cruda del desglose de conversión por gama que devuelve la RPC. */
+export type FilaConversionGama = GrupoConversion & { gama: string; grupo: "con_pieza" | "sin_pieza" };
+
 export type LeadTimeCrudo = { n: number; medio: number | null; mediana: number | null };
 
 export type BloqueCadena = {
@@ -128,15 +138,22 @@ export type BloqueCadena = {
 };
 
 export type SupplyPayload = {
+  /**
+   * F4B · Fecha efectiva del dato operativo. Todas las antigüedades del bloque
+   * PTE. PIEZAS están medidas contra ella, NO contra el día de hoy.
+   */
+  as_of: string | null;
   rango: { from: string; to: string; prev_from: string; prev_to: string };
   pieza_demanda: BloqueDemanda;
   pieza_demanda_prev: { ots: number; con_pieza: number; pct: number | null };
   pte_piezas_actual: BloquePte;
   conversion: BloqueConversion;
   conversion_prev: BloqueConversion;
+  conversion_por_gama: FilaConversionGama[];
   exposicion_pieza: Array<{ cliente_wg: string; n: number; n30: number }>;
   cadena: BloqueCadena;
 };
+
 
 export const BUCKETS_ANTIGUEDAD: readonly string[] = ["0-5", "6-10", "11-20", "21-30", "31-45", "46-60", ">60"];
 
@@ -193,6 +210,7 @@ export function normalizarSupply(raw: unknown): SupplyPayload {
   const convPrev = (r.conversion_prev ?? {}) as Record<string, unknown>;
 
   return {
+    as_of: r.as_of == null || r.as_of === "" ? null : String(r.as_of).slice(0, 10),
     rango: {
       from: String(rango.from ?? ""), to: String(rango.to ?? ""),
       prev_from: String(rango.prev_from ?? ""), prev_to: String(rango.prev_to ?? ""),
@@ -212,6 +230,7 @@ export function normalizarSupply(raw: unknown): SupplyPayload {
       abiertas_total: int(pte.abiertas_total),
       buckets: obj(pte.buckets),
       por_cliente: normPte(pte.por_cliente),
+      por_cliente_contractual: normPte(pte.por_cliente_contractual),
       por_gama: normPte(pte.por_gama),
       por_delegacion: normPte(pte.por_delegacion),
       por_sat: normPte(pte.por_sat),
@@ -219,6 +238,17 @@ export function normalizarSupply(raw: unknown): SupplyPayload {
     },
     conversion: { con_pieza: normGrupo(conv.con_pieza), sin_pieza: normGrupo(conv.sin_pieza) },
     conversion_prev: { con_pieza: normGrupo(convPrev.con_pieza), sin_pieza: normGrupo(convPrev.sin_pieza) },
+    conversion_por_gama: arr<Record<string, unknown>>(r.conversion_por_gama).map((x) => ({
+      gama: String(x.gama ?? "(sin dato)"),
+      grupo: x.grupo === "con_pieza" ? "con_pieza" : "sin_pieza",
+      n: int(x.n),
+      dias_medio: numOrNull(x.dias_medio),
+      dias_mediana: numOrNull(x.dias_mediana),
+      pct_20d: numOrNull(x.pct_20d),
+      pct_bajas: numOrNull(x.pct_bajas),
+      pct_nff: numOrNull(x.pct_nff),
+    })),
+
     exposicion_pieza: arr<Record<string, unknown>>(r.exposicion_pieza).map((x) => ({
       cliente_wg: String(x.cliente_wg ?? "(sin dato)"),
       n: int(x.n), n30: int(x.n30),
@@ -291,7 +321,7 @@ export const TRAMOS_CADENA: readonly { clave: string; desde: EtapaCadena; hasta:
  * OT, no sobre el momento en que la pieza entró en espera. Es un PROXY.
  */
 export const NOTA_PTE_PIEZAS =
-  "Proxy de antigüedad, no tiempo real de espera de pieza: se mide desde la creación de la OT que hoy está en PTE. PIEZAS, no desde la fecha de solicitud del repuesto (ops_pieza_solicitud aún no la aporta).";
+  "Proxy de antigüedad, no tiempo real de espera de pieza: se mide desde la creación de la OT que está en PTE. PIEZAS hasta la FECHA EFECTIVA DEL DATO (no hasta hoy), no desde la fecha de solicitud del repuesto (ops_pieza_solicitud aún no la aporta).";
 
 
 // ─── Readiness por etapa ─────────────────────────────────────────────────────
@@ -524,9 +554,65 @@ export function compararConSinPieza(c: BloqueConversion): ComparacionPieza {
   };
 }
 
+// ─── F4B · Comparación por gama (mix controlado) ─────────────────────────────
+
+/**
+ * La diferencia global entre OTs con y sin pieza NO es un efecto del suministro:
+ * los dos grupos tienen mix de producto distinto. Comparar DENTRO de cada gama
+ * es la única forma honesta de acercarse, y aun así el resultado es una
+ * asociación observada, nunca una relación causal demostrada.
+ */
+export type ComparacionGama = {
+  gama: string;
+  con: GrupoConversion | null;
+  sin: GrupoConversion | null;
+  suficiente: boolean;
+  deltaDias: number | null;
+  deltaPct20d: number | null;
+  motivo: string | null;
+};
+
+export function compararPorGama(filas: readonly FilaConversionGama[]): ComparacionGama[] {
+  const gamas = [...new Set(filas.map((f) => f.gama))];
+  const out: ComparacionGama[] = gamas.map((gama) => {
+    const con = filas.find((f) => f.gama === gama && f.grupo === "con_pieza") ?? null;
+    const sin = filas.find((f) => f.gama === gama && f.grupo === "sin_pieza") ?? null;
+    const nCon = con?.n ?? 0;
+    const nSin = sin?.n ?? 0;
+    const suficiente = nCon >= MUESTRA_MINIMA && nSin >= MUESTRA_MINIMA;
+    return {
+      gama,
+      con,
+      sin,
+      suficiente,
+      deltaDias: suficiente ? dif(con?.dias_medio, sin?.dias_medio) : null,
+      deltaPct20d: suficiente ? dif(con?.pct_20d, sin?.pct_20d) : null,
+      motivo: suficiente
+        ? null
+        : `Muestra insuficiente en ${gama} (con pieza ${nCon}, sin pieza ${nSin}; mínimo ${MUESTRA_MINIMA} por grupo): no se compara.`,
+    };
+  });
+  return out.sort((a, b) => (b.con?.n ?? 0) + (b.sin?.n ?? 0) - ((a.con?.n ?? 0) + (a.sin?.n ?? 0)));
+}
+
+// ─── F4B · Disciplina causal ─────────────────────────────────────────────────
+
+/**
+ * Aviso obligatorio en todo bloque que enfrente OTs con y sin pieza. Sin
+ * trazabilidad de la solicitud (ops_pieza_solicitud vacía) no se puede separar
+ * espera de proveedor de tiempo de taller ni controlar el mix de producto.
+ */
+export const AVISO_NO_CAUSAL =
+  "Diferencia OBSERVADA entre grupos, no efecto medido del suministro: las OTs con pieza tienen otro mix de producto y de complejidad. Sin trazabilidad de la solicitud de repuesto no se puede atribuir el plazo a la cadena de suministro.";
+
+/** Fórmula única para hablar del vínculo entre pieza y plazo. */
+export const TERMINO_EFECTO = "potencial efecto";
+
+
 // ─── Hallazgos HECHO / HIPÓTESIS / ACCIÓN ────────────────────────────────────
 
 export type Hallazgo = {
+
   id: string;
   hecho: string;
   hipotesis: string;
@@ -553,18 +639,18 @@ export function hallazgosImpactoPieza(cmp: ComparacionPieza): Hallazgo[] {
     out.push({
       id: "dias_con_pieza",
       hecho: `Las OTs con pieza cierran en ${d1(cmp.con.dias_medio)} días de media frente a ${d1(cmp.sin.dias_medio)} sin pieza (+${d1(cmp.deltaDias)} d sobre ${n0(cmp.con.n)} OTs con pieza).`,
-      hipotesis: "La diferencia puede venir del ciclo de suministro, no del tiempo de intervención técnica. Sin trazabilidad de la solicitud no es atribuible a una etapa concreta.",
-      accion: "Cargar ops_pieza_solicitud para separar espera de proveedor de tiempo de taller.",
-      confianza: cmp.con.n >= 200 ? "alta" : "media",
+      hipotesis: `Diferencia observada entre dos grupos con mix de producto distinto: ${TERMINO_EFECTO} de la cadena de suministro sobre el plazo, no medido. Sin trazabilidad de la solicitud no se puede separar espera de proveedor de tiempo de taller.`,
+      accion: "Cargar ops_pieza_solicitud y contrastar la diferencia dentro de cada gama antes de atribuirla al suministro.",
+      confianza: "media",
     });
   }
   if (cmp.deltaPct20d != null && cmp.deltaPct20d < 0) {
     out.push({
       id: "ref20_con_pieza",
       hecho: `Referencia operativa WG ≤20 d (no contractual): ${p1(cmp.con.pct_20d)} con pieza frente a ${p1(cmp.sin.pct_20d)} sin pieza (${(cmp.deltaPct20d * 100).toFixed(1)} pp).`,
-      hipotesis: "La dependencia de repuesto es el principal condicionante del plazo en este período.",
-      accion: "Priorizar el desbloqueo del backlog en PTE. PIEZAS antes de actuar sobre capacidad técnica.",
-      confianza: cmp.con.n >= 200 ? "alta" : "media",
+      hipotesis: `El grupo con pieza queda por debajo de la referencia: ${TERMINO_EFECTO} de la dependencia de repuesto sobre el plazo, pendiente de confirmar con la trazabilidad de la solicitud y a mix comparable.`,
+      accion: "Revisar el backlog en PTE. PIEZAS por gama y cliente antes de concluir que el suministro condiciona el plazo.",
+      confianza: "media",
     });
   }
   if (cmp.deltaBajas != null && Math.abs(cmp.deltaBajas) >= 0.03) {
@@ -572,8 +658,8 @@ export function hallazgosImpactoPieza(cmp: ComparacionPieza): Hallazgo[] {
       id: "bajas_con_pieza",
       hecho: `% de bajas: ${p1(cmp.con.pct_bajas)} con pieza frente a ${p1(cmp.sin.pct_bajas)} sin pieza.`,
       hipotesis: cmp.deltaBajas > 0
-        ? "Puede reflejar aparatos más deteriorados, no peor reparación."
-        : "Las OTs sin pieza concentran diagnósticos que terminan en baja o NFF sin intervención.",
+        ? "Puede reflejar aparatos más deteriorados en el grupo con pieza, no peor reparación."
+        : "Las OTs sin pieza pueden concentrar diagnósticos que terminan en baja o NFF sin intervención.",
       accion: "Contrastar contra el benchmark de familia y cliente antes de leerlo como calidad.",
       confianza: "media",
     });
@@ -582,11 +668,12 @@ export function hallazgosImpactoPieza(cmp: ComparacionPieza): Hallazgo[] {
     out.push({
       id: "sin_diferencia",
       hecho: `No se observa diferencia material entre OTs con pieza (${n0(cmp.con.n)}) y sin pieza (${n0(cmp.sin.n)}) en el período.`,
-      hipotesis: "El suministro no está condicionando el plazo con los filtros activos.",
+      hipotesis: "Con los filtros activos no aparece asociación entre la necesidad de pieza y el plazo; tampoco se descarta.",
       accion: "Mantener el seguimiento; revisar por cliente y gama antes de generalizar.",
       confianza: "media",
     });
   }
+
   return out;
 }
 
@@ -721,8 +808,8 @@ export function lineaEjecutivaRepuestos(
 
   partes.push(
     pte.n === 0
-      ? "ninguna OT actualmente en PTE. PIEZAS"
-      : `${n0(pte.n)} OTs actualmente en PTE. PIEZAS, antigüedad media ${d1(pte.edad_media)} d`,
+      ? "ninguna OT en PTE. PIEZAS a la fecha del dato"
+      : `${n0(pte.n)} OTs en PTE. PIEZAS a ${fmtFechaEs(p.as_of)}, antigüedad media ${d1(pte.edad_media)} d`,
   );
 
   const traz = pctTrazabilidad(p.cadena);
@@ -734,6 +821,7 @@ export function lineaEjecutivaRepuestos(
 
   return `${partes.join(" · ")}.`;
 }
+
 
 /** Frase de cabecera de /operaciones/logistica. */
 export function lineaEjecutivaLogistica(
