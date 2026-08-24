@@ -260,7 +260,7 @@ export function detectarAlertasSla(i: AlertasSlaInput): AlertaSla[] {
         clave: "backlog_30",
         titulo: "Más del 25% de las OTs abiertas supera 30 días",
         evidencia: `${i.n30} de ${i.abiertas} abiertas (${pctTxt(pct30)}) llevan más de 30 días sin cierre.`,
-        impacto: "Riesgo directo de incumplimiento de compromisos con cliente y deterioro de satisfacción.",
+        impacto: "Potencial exposición contractual asociada y deterioro de la experiencia de cliente.",
         accion: "Priorizar desbloqueo del tramo 31-45d antes de que migre a envejecimiento crítico (>60d).",
       });
     }

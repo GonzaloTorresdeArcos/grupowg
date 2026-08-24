@@ -384,7 +384,7 @@ export default function OpsRepuestos() {
 
       {/* D — EXPOSICIÓN CONTRACTUAL */}
       <section>
-        <Eyebrow>D · Exposición contractual por falta de repuesto</Eyebrow>
+        <Eyebrow>D · Potencial exposición contractual asociada a la falta de repuesto</Eyebrow>
         <p className="mt-2 text-[12px] text-ink/50 max-w-3xl">
           Cruce del backlog en PTE. PIEZAS con lo que el Registry declara sobre pausas o exclusiones por falta de
           repuesto. Las reglas están <strong className="text-ink/70">en borrador</strong>: esto identifica dónde mirar,

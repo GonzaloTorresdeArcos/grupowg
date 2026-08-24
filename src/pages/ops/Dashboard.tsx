@@ -526,7 +526,7 @@ const Dashboard = () => {
             ))}
           </div>
           <p className="text-[12px] text-ink/50 mt-4">
-            Exposición contractual: <span className="text-ink/70">identificada, pendiente de cuantificar</span>.
+            Potencial exposición contractual asociada: <span className="text-ink/70">identificada de forma cualitativa, pendiente de validar el Registry</span>.
           </p>
           <Link to="/operaciones/calidad-datos" className="inline-flex items-center gap-1 text-[12px] text-ink/60 hover:text-ink mt-3">
             Ver Calidad de datos <ArrowRight className="h-3 w-3" />
