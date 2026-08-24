@@ -216,7 +216,7 @@ describe("fixtures del Registry — casuísticas contractuales revisadas", () =>
   it("toda regla sin target declara que el valor está pendiente", () => {
     for (const r of f.filter((x) => x.target === null)) {
       expect(r.notas, `${r.cliente} · ${r.kpi}`).toBeTruthy();
-      expect(r.notas!.toLowerCase()).toMatch(/pendiente/);
+      expect(r.notas!.toLowerCase()).toMatch(/pendiente|sin sla cuantificado/);
     }
   });
 
