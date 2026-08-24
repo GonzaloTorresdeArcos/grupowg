@@ -24,7 +24,7 @@ const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   sociedad_wg_ejecutora: null,
   gama_familia: null,
   tipologia_servicio: null,
-  fase: "postventa",
+  fase: null,
   kpi: "Plazo",
   evento_inicio: "creacion_ot",
   evento_fin: "cierre",
@@ -48,7 +48,10 @@ const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   fuente_contractual: null,
   tipo_target: "contractual_target",
   estado_regla: "borrador",
+  estado_extraccion: "extraida_contrato",
+  territorio_calendario: null,
   notas: null,
+
   ...p,
 });
 
