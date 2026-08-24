@@ -1308,6 +1308,7 @@ export type Database = {
         }
         Returns: string
       }
+      ops_cobertura_datos: { Args: never; Returns: Json }
       ops_costes: { Args: { p_from?: string; p_to?: string }; Returns: Json }
       ops_costes_entidades: {
         Args: { p_from?: string; p_to?: string; p_vista?: string }
