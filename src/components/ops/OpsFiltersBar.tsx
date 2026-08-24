@@ -33,8 +33,13 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
 
 
 export const OpsFiltersBar = () => {
-  const { filters, setFilters, reset, options, optionsError, reloadOptions } = useOpsFilters();
+  const {
+    filters, setFilters, reset, options, optionsError, reloadOptions,
+    modo, modoSeleccionado, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+  } = useOpsFilters();
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
+  const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
+  const ytdForzado = preset === "ytd";
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
@@ -43,8 +48,27 @@ export const OpsFiltersBar = () => {
           <OpsPeriodPicker
             value={{ from: filters.from, to: filters.to }}
             onChange={(v) => setFilters({ from: v.from, to: v.to })}
+            cobertura={cobertura}
+            preset={preset}
+            onPreset={(k) => aplicarPreset(k)}
           />
         </div>
+        <label className="flex flex-col gap-1 min-w-[190px]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Comparar con</span>
+          <select
+            value={modo}
+            disabled={ytdForzado}
+            title={ytdForzado
+              ? "En YTD la comparación es siempre interanual homogénea (mismo intervalo exacto del año anterior)"
+              : undefined}
+            onChange={(e) => setModo(e.target.value === "interanual" ? "interanual" : "anterior")}
+            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40 disabled:opacity-60"
+          >
+            <option value="anterior">Período anterior equivalente</option>
+            <option value="interanual">Mismo período del año anterior</option>
+          </select>
+        </label>
+
         <Sel label="Delegación" value={filters.delegacion} options={options.delegaciones}
           onChange={(v) => setFilters({ delegacion: v })} />
         <Sel label="Cliente" value={filters.cliente} options={options.clientes}
