@@ -218,12 +218,14 @@ export const OpsPeriodPicker = ({ value, onChange, className, cobertura, preset,
               <div className="flex items-center justify-between mb-3">
                 <button
                   type="button"
-                  onClick={() => setYear((y) => y - 1)}
-                  className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-ink/[0.05] text-ink/60"
+                  onClick={() => setYear((y) => Math.max(ANIO_MIN, y - 1))}
+                  disabled={year <= ANIO_MIN}
+                  className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-ink/[0.05] text-ink/60 disabled:opacity-30 disabled:cursor-not-allowed"
                   aria-label="Año anterior"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
+
                 <span className="text-sm font-medium text-ink tabular-nums">{year}</span>
                 <button
                   type="button"
