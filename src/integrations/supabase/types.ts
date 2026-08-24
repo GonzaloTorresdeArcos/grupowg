@@ -341,6 +341,120 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_sla_registry: {
+        Row: {
+          bonus: Json | null
+          business_line: string
+          calendario: string
+          cliente: string
+          cliente_wg_patron: string | null
+          created_at: string
+          estado_regla: string
+          evento_fin: string
+          evento_inicio: string
+          exposicion_estado: string
+          fase: string | null
+          fuente_contractual: string | null
+          gama_familia: string | null
+          hard_limit: number | null
+          id: string
+          imputabilidad: string
+          kpi: string
+          meses_consecutivos: number | null
+          notas: string | null
+          pausas_exclusiones: string[]
+          penalizacion: Json | null
+          programa: string
+          regla_medicion: string
+          sociedad_wg_ejecutora: string | null
+          target: number | null
+          tipo_consecuencia: string
+          tipo_target: string
+          tipologia_servicio: string | null
+          umbral_agregado: number | null
+          unidad: string
+          updated_at: string
+          ventana_garantia_dias: number | null
+          ventana_medicion: string
+          vigencia_desde: string | null
+          vigencia_hasta: string | null
+        }
+        Insert: {
+          bonus?: Json | null
+          business_line: string
+          calendario?: string
+          cliente: string
+          cliente_wg_patron?: string | null
+          created_at?: string
+          estado_regla?: string
+          evento_fin: string
+          evento_inicio: string
+          exposicion_estado?: string
+          fase?: string | null
+          fuente_contractual?: string | null
+          gama_familia?: string | null
+          hard_limit?: number | null
+          id?: string
+          imputabilidad?: string
+          kpi: string
+          meses_consecutivos?: number | null
+          notas?: string | null
+          pausas_exclusiones?: string[]
+          penalizacion?: Json | null
+          programa: string
+          regla_medicion: string
+          sociedad_wg_ejecutora?: string | null
+          target?: number | null
+          tipo_consecuencia?: string
+          tipo_target: string
+          tipologia_servicio?: string | null
+          umbral_agregado?: number | null
+          unidad: string
+          updated_at?: string
+          ventana_garantia_dias?: number | null
+          ventana_medicion?: string
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Update: {
+          bonus?: Json | null
+          business_line?: string
+          calendario?: string
+          cliente?: string
+          cliente_wg_patron?: string | null
+          created_at?: string
+          estado_regla?: string
+          evento_fin?: string
+          evento_inicio?: string
+          exposicion_estado?: string
+          fase?: string | null
+          fuente_contractual?: string | null
+          gama_familia?: string | null
+          hard_limit?: number | null
+          id?: string
+          imputabilidad?: string
+          kpi?: string
+          meses_consecutivos?: number | null
+          notas?: string | null
+          pausas_exclusiones?: string[]
+          penalizacion?: Json | null
+          programa?: string
+          regla_medicion?: string
+          sociedad_wg_ejecutora?: string | null
+          target?: number | null
+          tipo_consecuencia?: string
+          tipo_target?: string
+          tipologia_servicio?: string | null
+          umbral_agregado?: number | null
+          unidad?: string
+          updated_at?: string
+          ventana_garantia_dias?: number | null
+          ventana_medicion?: string
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Relationships: []
+      }
       ops_tecnicos: {
         Row: {
           activo: boolean
@@ -1328,6 +1442,7 @@ export type Database = {
           tipo_coste: string
         }[]
       }
+      ops_data_quality: { Args: never; Returns: Json }
       ops_delegacion_ficha: {
         Args: { p_delegacion: string; p_from?: string; p_to?: string }
         Returns: Json
@@ -1481,6 +1596,16 @@ export type Database = {
           p_to?: string
         }
         Returns: Json
+      }
+      ops_sla_registry_resumen: {
+        Args: never
+        Returns: {
+          business_line: string
+          cliente: string
+          estado_regla: string
+          programa: string
+          reglas: number
+        }[]
       }
       ops_tecnico_ficha: { Args: { p_tecnico: string }; Returns: Json }
       ops_tecnicos_scorecard: {
