@@ -369,7 +369,7 @@ const Tecnicos = () => {
                 onClick={() => setGamaFilter(g)}
                 className={`px-2.5 py-1 rounded-full text-[11px] border transition-colors ${gamaFilter === g ? "bg-ink text-bone border-ink" : "border-black/[0.1] text-ink/60 hover:text-ink hover:border-ink/40"}`}
               >
-                {GAMA_LABEL[g] ?? g}
+                {gamaLabel(g, g)}
               </button>
             ))}
           </div>
