@@ -1,15 +1,388 @@
-import { ModuloEnDiseno } from "@/components/ops/ModuloEnDiseno";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useDataQuality } from "@/hooks/useDataQuality";
+import {
+  AVISO_NO_CUMPLIMIENTO,
+  DOMINIOS_CONTRACTUALES,
+  GLIFO_DOMINIO,
+  LABEL_ESTADO_DOMINIO,
+  frescura,
+  readinessRegla,
+  resumenReadiness,
+  type DominioDato,
+  type EstadoDominio,
+} from "@/lib/ops-data-quality";
+import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
+import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
+import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
 
-const CalidadDatos = () => (
-  <ModuloEnDiseno
-    titulo="Calidad de datos"
-    fase="llega en Fase 3 del plan V2"
-    descripcion={[
-      "Cobertura y completitud de cada campo crítico de ops_fact_ot (fechas, canal, código postal, importes, técnico asignado).",
-      "Reglas de validación con severidad y trazabilidad: qué KPIs quedan limitados por cada hueco de dato.",
-      "Histórico de importaciones y evolución de la calidad mes a mes, para saber si el dato mejora o se degrada.",
-    ]}
-  />
+const pct = (v: number | null | undefined) => (v == null ? "—" : `${(v * 100).toFixed(1)}%`);
+const num = (v: number) => v.toLocaleString("es-ES");
+
+const ORDEN_ESTADO: Record<EstadoDominio, number> = { pendiente: 0, parcial: 1, disponible: 2 };
+
+const EstadoPill = ({ estado }: { estado: EstadoDominio }) => (
+  <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-black/[0.08] px-2 py-0.5 text-[11px] text-ink/60">
+    <span aria-hidden>{GLIFO_DOMINIO[estado]}</span>
+    {LABEL_ESTADO_DOMINIO[estado]}
+  </span>
 );
+
+const Barra = ({ v }: { v: number }) => (
+  <div className="h-1.5 w-24 rounded-full bg-black/[0.06]" aria-hidden>
+    <div className="h-full rounded-full bg-ink/40" style={{ width: `${Math.max(2, Math.min(100, v * 100))}%` }} />
+  </div>
+);
+
+const Seccion = ({ id, titulo, sub, children }: { id: string; titulo: string; sub?: string; children: React.ReactNode }) => (
+  <section id={id} className="border border-black/[0.06] rounded-2xl p-6">
+    <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/70">{titulo}</h2>
+    {sub && <p className="mt-1 text-[13px] text-ink/50 max-w-3xl">{sub}</p>}
+    <div className="mt-4">{children}</div>
+  </section>
+);
+
+const CalidadDatos = () => {
+  const { loading, medidas, dominios } = useDataQuality();
+  const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
+
+  useEffect(() => {
+    let vivo = true;
+    supabase
+      .from("ops_sla_registry" as never)
+      .select("*")
+      .then(({ data, error }) => {
+        if (!vivo) return;
+        setReglas(error || !data ? [...FIXTURES_REGISTRY] : (data as unknown as ReglaSla[]));
+      });
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const reglasEfectivas = reglas ?? [];
+  const fresc = medidas ? frescura(medidas) : null;
+
+  const dominiosOrdenados = useMemo(
+    () => [...dominios].sort((a, b) => ORDEN_ESTADO[a.estado] - ORDEN_ESTADO[b.estado] || a.dominio.localeCompare(b.dominio)),
+    [dominios],
+  );
+
+  const campos = useMemo(() => {
+    if (!medidas) return [];
+    return Object.entries(medidas.campos_fact_ot).sort((a, b) => a[1] - b[1]);
+  }, [medidas]);
+
+  const readiness = useMemo(
+    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas) : null),
+    [medidas, reglasEfectivas],
+  );
+
+  const gaps = dominiosOrdenados.filter((d) => d.estado !== "disponible");
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 text-ink/40 py-20 justify-center">
+        <Loader2 className="h-4 w-4 animate-spin" /> Midiendo la calidad del dato…
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Cabecera */}
+      <header className="border border-black/[0.06] rounded-2xl p-6">
+        <h1 className="heading-display text-2xl">Calidad de datos</h1>
+        <p className="mt-2 text-[13px] text-ink/55 max-w-3xl">
+          Estado real de cada dominio de dato, medido sobre el origen cargado. Ningún estado está escrito a mano: todos se
+          derivan de la cobertura observada en <code className="text-[12px]">ops_fact_ot</code> y de la existencia de las
+          fuentes auxiliares.
+        </p>
+        {medidas && (
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-[13px]">
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">OTs cargadas</dt>
+              <dd className="text-ink tabular-nums">{num(medidas.fact_ot.filas)}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Rango de datos</dt>
+              <dd className="text-ink tabular-nums">
+                {medidas.fact_ot.min_fecha_creacion} → {medidas.fact_ot.max_fecha_creacion}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Frescura</dt>
+              <dd className="text-ink">{fresc?.dias == null ? "Desconocida" : `Hace ${fresc.dias} día(s)`}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Reglas en el Registry</dt>
+              <dd className="text-ink tabular-nums">{medidas.registry_reglas}</dd>
+            </div>
+          </dl>
+        )}
+        {fresc?.estado === "envejecido" && (
+          <p className="mt-3 flex items-start gap-2 text-[12px] text-ink/60">
+            <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            {fresc.texto} Las conclusiones del período más reciente pueden estar incompletas.
+          </p>
+        )}
+        {!medidas && (
+          <p className="mt-3 flex items-start gap-2 text-[12px] text-ink/60">
+            <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+            No se han podido leer las medidas reales: se muestra el estado conservador por defecto, en el que ningún dominio
+            se declara disponible.
+          </p>
+        )}
+      </header>
+
+      {/* Matriz de dominios */}
+      <Seccion
+        id="dominios"
+        titulo="Matriz de dominios de dato"
+        sub="Un dominio es disponible solo si su medida alcanza la cobertura exigida. Cada fila declara qué KPIs quedan bloqueados mientras no lo esté."
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                <th className="py-2 pr-4 font-medium">Dominio</th>
+                <th className="py-2 pr-4 font-medium">Estado</th>
+                <th className="py-2 pr-4 font-medium">Fuente</th>
+                <th className="py-2 pr-4 font-medium">Cobertura</th>
+                <th className="py-2 pr-4 font-medium">Medida observada</th>
+                <th className="py-2 font-medium">KPIs bloqueados</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dominiosOrdenados.map((d: DominioDato) => (
+                <tr key={d.id} className="border-b border-black/[0.04] align-top">
+                  <td className="py-2.5 pr-4 text-ink">{d.dominio}</td>
+                  <td className="py-2.5 pr-4"><EstadoPill estado={d.estado} /></td>
+                  <td className="py-2.5 pr-4 text-ink/50">{d.fuente ?? "—"}</td>
+                  <td className="py-2.5 pr-4">
+                    {d.cobertura == null ? (
+                      <span className="text-ink/40">—</span>
+                    ) : (
+                      <span className="flex items-center gap-2 tabular-nums text-ink/70">
+                        {pct(d.cobertura)} <Barra v={d.cobertura} />
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2.5 pr-4 text-ink/55 max-w-md">{d.medida ?? d.detalle}</td>
+                  <td className="py-2.5 text-ink/45">{d.kpisBloqueados.join(" · ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Seccion>
+
+      {/* Cobertura campo a campo */}
+      {medidas && (
+        <Seccion
+          id="campos"
+          titulo="Cobertura campo a campo de ops_fact_ot"
+          sub={`Porcentaje de OTs con valor informado, sobre ${num(medidas.fact_ot.filas)} filas. Ordenado de peor a mejor.`}
+        >
+          <div className="grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            {campos.map(([campo, cob]) => (
+              <div key={campo} className="flex items-center justify-between gap-3 border-b border-black/[0.04] py-1.5 text-[13px]">
+                <span className="text-ink/70 truncate">{campo}</span>
+                <span className="flex items-center gap-2 shrink-0">
+                  <Barra v={cob} />
+                  <span className="tabular-nums text-ink/60 w-14 text-right">{pct(cob)}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 border-t border-black/[0.06] pt-4">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40 mb-2">Campos que no existen en el origen</p>
+            <div className="flex flex-wrap gap-1.5">
+              {medidas.campos_ausentes_fact_ot.map((c) => (
+                <span key={c} className="rounded-full border border-black/[0.06] px-2.5 py-1 text-[12px] text-ink/45">
+                  <span aria-hidden className="mr-1">○</span>{c}
+                </span>
+              ))}
+            </div>
+          </div>
+          <dl className="mt-5 grid gap-4 sm:grid-cols-3 border-t border-black/[0.06] pt-4 text-[13px]">
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">RRHH (ops_rrhh)</dt>
+              <dd className="text-ink/70">{num(medidas.rrhh.filas)} filas · {medidas.rrhh.meses} meses · último {medidas.rrhh.ultimo_mes ?? "—"}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Coste mensual</dt>
+              <dd className="text-ink/70">{num(medidas.coste_mensual.filas)} filas · {medidas.coste_mensual.meses} meses · último {medidas.coste_mensual.ultimo_mes ?? "—"}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Geocodificación</dt>
+              <dd className="text-ink/70">
+                {num(medidas.geo.ots_domicilio_geocodificables)} de {num(medidas.geo.ots_domicilio)} OTs a domicilio ({pct(medidas.geo.pct_geocodificable)})
+              </dd>
+            </div>
+          </dl>
+        </Seccion>
+      )}
+
+      {/* Contractual data readiness */}
+      <Seccion
+        id="readiness"
+        titulo="Contractual data readiness"
+        sub="Qué reglas del Registry serían medibles hoy con los datos existentes, y qué falta exactamente para cada una."
+      >
+        <p className="mb-4 flex items-start gap-2 rounded-xl border border-black/[0.08] bg-black/[0.015] p-3 text-[12px] text-ink/60">
+          <Lock className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          {AVISO_NO_CUMPLIMIENTO}
+        </p>
+        {readiness && (
+          <>
+            <dl className="grid gap-4 sm:grid-cols-3 text-[13px] mb-4">
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Reglas modeladas</dt>
+                <dd className="text-ink tabular-nums text-lg">{readiness.total}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Medibles hoy</dt>
+                <dd className="text-ink tabular-nums text-lg">{readiness.medibles}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Bloqueadas</dt>
+                <dd className="text-ink tabular-nums text-lg">{readiness.noMedibles}</dd>
+              </div>
+            </dl>
+            <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40 mb-2">Bloqueos más frecuentes</p>
+            <ul className="space-y-1 text-[13px] text-ink/60 mb-5">
+              {readiness.bloqueosTop.slice(0, 8).map((b) => (
+                <li key={b.clave}>
+                  <span className="tabular-nums text-ink/80 mr-2">×{b.n}</span>{b.motivo}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                <th className="py-2 pr-4 font-medium">Cliente · programa</th>
+                <th className="py-2 pr-4 font-medium">Indicador</th>
+                <th className="py-2 pr-4 font-medium">Medible hoy</th>
+                <th className="py-2 font-medium">Qué falta</th>
+              </tr>
+            </thead>
+            <tbody>
+              {medidas &&
+                reglasEfectivas.map((r, i) => {
+                  const rd = readinessRegla(r, medidas);
+                  return (
+                    <tr key={r.id ?? `${r.cliente}-${i}`} className="border-b border-black/[0.04] align-top">
+                      <td className="py-2.5 pr-4 text-ink">
+                        {r.cliente}
+                        <span className="block text-[12px] text-ink/45">{r.programa}</span>
+                      </td>
+                      <td className="py-2.5 pr-4 text-ink/70">{r.kpi}</td>
+                      <td className="py-2.5 pr-4">
+                        <EstadoPill estado={rd.medible ? "disponible" : "pendiente"} />
+                      </td>
+                      <td className="py-2.5 text-ink/55">
+                        <ul className="space-y-0.5">
+                          {rd.bloqueos.map((b, j) => <li key={j}>{b.motivo}</li>)}
+                        </ul>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+      </Seccion>
+
+      {/* Registry */}
+      <Seccion
+        id="registry"
+        titulo="SLA & Contractual Registry"
+        sub="Capa de reglas que traduce cada contrato a algo medible. No es gestión documental de contratos."
+      >
+        <p className="mb-4 flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-3 text-[12px] text-ink/70">
+          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          {AVISO_FIXTURES}
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                <th className="py-2 pr-4 font-medium">Cliente</th>
+                <th className="py-2 pr-4 font-medium">Programa</th>
+                <th className="py-2 pr-4 font-medium">Indicador</th>
+                <th className="py-2 pr-4 font-medium">Reloj</th>
+                <th className="py-2 pr-4 font-medium">Objetivo</th>
+                <th className="py-2 pr-4 font-medium">Medición</th>
+                <th className="py-2 pr-4 font-medium">Consecuencia</th>
+                <th className="py-2 font-medium">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reglasEfectivas.map((r, i) => {
+                const c = consecuenciaDeclarada(r);
+                return (
+                  <tr key={r.id ?? `${r.cliente}-reg-${i}`} className="border-b border-black/[0.04] align-top">
+                    <td className="py-2.5 pr-4 text-ink">{r.cliente}</td>
+                    <td className="py-2.5 pr-4 text-ink/55">{r.programa}</td>
+                    <td className="py-2.5 pr-4 text-ink/70">{r.kpi}</td>
+                    <td className="py-2.5 pr-4 text-ink/55 whitespace-nowrap">{r.evento_inicio} → {r.evento_fin}</td>
+                    <td className="py-2.5 pr-4 text-ink/70 whitespace-nowrap tabular-nums">
+                      {r.target == null ? <span className="text-ink/40">Sin SLA cuantificado</span> : `${r.target} ${r.unidad.replace("_", " ")}`}
+                      {r.hard_limit != null && <span className="block text-[12px] text-ink/45">límite duro {r.hard_limit}</span>}
+                    </td>
+                    <td className="py-2.5 pr-4 text-ink/55">
+                      {r.regla_medicion} · {r.ventana_medicion}
+                      {r.umbral_agregado != null && <span className="block text-[12px] text-ink/45">umbral {pct(r.umbral_agregado)}</span>}
+                    </td>
+                    <td className="py-2.5 pr-4 text-ink/55">
+                      {LABEL_CONSECUENCIA[r.tipo_consecuencia]}
+                      <span className="block text-[12px] text-ink/40">{c.cuantificable ? "Cuantificable" : "Pendiente de cuantificar"}</span>
+                    </td>
+                    <td className="py-2.5 text-ink/45">{r.estado_regla}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Seccion>
+
+      {/* Data gap register */}
+      <Seccion
+        id="gaps"
+        titulo="Data gap register"
+        sub="Cada hueco de dato, qué desbloquea y qué decisión permitiría tomar. Sin fechas comprometidas: la prioridad la fija management."
+      >
+        <ul className="space-y-3 text-[13px]">
+          {gaps.map((d) => (
+            <li key={d.id} className="border-b border-black/[0.04] pb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-ink font-medium">{d.dominio}</span>
+                <EstadoPill estado={d.estado} />
+                {DOMINIOS_CONTRACTUALES.includes(d.id) && (
+                  <span className="rounded-full border border-black/[0.08] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-ink/45">
+                    Bloquea cumplimiento contractual
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-ink/55">{d.medida ?? d.detalle}</p>
+              <p className="mt-0.5 text-ink/45">Desbloquea: {d.kpisBloqueados.join(" · ")}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 flex items-start gap-2 text-[12px] text-ink/45">
+          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          Mientras un dominio no esté disponible, los módulos afectados muestran el hueco de forma explícita en lugar de
+          estimar. Ver <Link to="/operaciones" className="underline underline-offset-2">Panorama</Link>.
+        </p>
+      </Seccion>
+    </div>
+  );
+};
 
 export default CalidadDatos;
