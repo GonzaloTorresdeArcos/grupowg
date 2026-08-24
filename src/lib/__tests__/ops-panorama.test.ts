@@ -51,7 +51,7 @@ describe("ecuación de balance", () => {
 
   it("la lectura separa siempre reparaciones de bajas", () => {
     const txt = lecturaBalance(bal());
-    expect(txt).toContain("4.178 son reparaciones");
+    expect(txt).toContain("4178 son reparaciones");
     expect(txt).toContain("1059 son bajas");
     expect(txt).toContain("no se repara");
     expect(pctBajasSalida(bal())).toBeCloseTo(1059 / 5237, 6);
