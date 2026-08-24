@@ -178,14 +178,20 @@ describe("consecuencias declaradas", () => {
   });
 });
 
-describe("fixtures del Registry", () => {
-  it("cubre al menos nueve casuísticas distintas y todas nacen en borrador", () => {
-    expect(FIXTURES_REGISTRY.length).toBeGreaterThanOrEqual(9);
-    for (const r of FIXTURES_REGISTRY) expect(r.estado_regla).toBe("borrador");
+describe("fixtures del Registry — casuísticas contractuales revisadas", () => {
+  const f = FIXTURES_REGISTRY;
+  const de = (c: string) => f.filter((r) => r.cliente === c);
+
+  it("todas nacen en borrador y con la fuente y sociedad declaradas", () => {
+    for (const r of f) {
+      expect(r.estado_regla).toBe("borrador");
+      expect(r.sociedad_wg_ejecutora).toBe("por confirmar");
+      expect(r.fuente_contractual).toContain("pendiente de verificación documental");
+    }
   });
 
-  it("todas las filas traen los campos obligatorios informados", () => {
-    for (const r of FIXTURES_REGISTRY) {
+  it("todas traen los campos obligatorios informados", () => {
+    for (const r of f) {
       for (const c of CAMPOS_OBLIGATORIOS_REGLA) {
         expect(r[c], `${r.cliente} · ${String(c)}`).not.toBeUndefined();
         expect(r[c], `${r.cliente} · ${String(c)}`).not.toBeNull();
@@ -193,17 +199,88 @@ describe("fixtures del Registry", () => {
     }
   });
 
-  it("incluye las casuísticas críticas del negocio", () => {
-    const f = FIXTURES_REGISTRY;
-    expect(f.some((r) => r.target === null)).toBe(true);                       // sin SLA cuantificado
-    expect(f.some((r) => r.unidad === "horas_laborables")).toBe(true);         // reloj laborable
-    expect(f.some((r) => r.hard_limit != null)).toBe(true);                    // objetivo + límite duro
-    expect(f.some((r) => r.pausas_exclusiones.length > 0)).toBe(true);         // exclusiones
-    expect(f.some((r) => r.bonus && r.penalizacion)).toBe(true);               // bonus/malus
-    expect(f.some((r) => r.meses_consecutivos != null)).toBe(true);            // reiteración mensual
-    expect(f.some((r) => r.ventana_garantia_dias != null)).toBe(true);         // repeat repair
-    expect(f.some((r) => r.fase === "preventa")).toBe(true);                   // instalación
-    expect(f.some((r) => r.tipo_consecuencia === "coste_baja")).toBe(true);    // coste de la baja
-    expect(f.some((r) => r.regla_medicion === "reporting")).toBe(true);        // obligación no medible por OT
+  it("los nueve/diez clientes revisados tienen reglas", () => {
+    for (const c of Object.keys(TARGETS_DECLARADOS)) {
+      expect(de(c).length, c).toBeGreaterThan(0);
+    }
+    expect(new Set(f.map((r) => r.cliente)).size).toBe(Object.keys(TARGETS_DECLARADOS).length);
+  });
+
+  it("NO INVENTAR: los targets numéricos por cliente coinciden con los declarados", () => {
+    for (const [cliente, targets] of Object.entries(TARGETS_DECLARADOS)) {
+      const reales = de(cliente).map((r) => r.target).filter((t): t is number => t != null);
+      expect([...reales].sort((a, b) => a - b), cliente).toEqual([...targets].sort((a, b) => a - b));
+    }
+  });
+
+  it("toda regla sin target declara que el valor está pendiente", () => {
+    for (const r of f.filter((x) => x.target === null)) {
+      expect(r.notas, `${r.cliente} · ${r.kpi}`).toBeTruthy();
+      expect(r.notas!.toLowerCase()).toMatch(/pendiente/);
+    }
+  });
+
+  it("METRO/MAKRO: cuatro reglas temporales 8/32/40/64 en horas laborables y dos condiciones", () => {
+    const m = de("METRO / MAKRO");
+    const temporales = m.filter((r) => r.unidad === "horas_laborables");
+    expect(temporales).toHaveLength(4);
+    expect(temporales.map((r) => r.target).sort((a, b) => (a as number) - (b as number))).toEqual([8, 32, 40, 64]);
+    for (const r of temporales) expect(r.calendario).toBe("laborable_es");
+    const cond = new Set(m.map((r) => r.condicion_aplicacion).filter(Boolean));
+    expect(cond).toEqual(new Set(["sin_solicitud_pieza_ni_baja", "con_solicitud_pieza_o_baja"]));
+  });
+
+  it("CARREFOUR: distingue fase preventa/postventa y GAE / no-GAE", () => {
+    const c = de("CARREFOUR");
+    expect(c.some((r) => r.fase === "preventa")).toBe(true);
+    expect(c.some((r) => r.fase === "postventa")).toBe(true);
+    expect(c.some((r) => r.gama_familia === "GAE")).toBe(true);
+    expect(c.some((r) => r.condicion_aplicacion === "no_GAE")).toBe(true);
+  });
+
+  it("ALCAMPO: objetivo interno ≠ límite duro contractual, con hard_limit 21", () => {
+    const a = de("ALCAMPO / AUCHAN");
+    expect(a.filter((r) => r.tipo_target === "internal_operating_target")).toHaveLength(1);
+    expect(a.filter((r) => r.tipo_target === "contractual_hard_limit")).toHaveLength(1);
+    expect(a.filter((r) => r.hard_limit === 21)).toHaveLength(2);
+    for (const r of a) expect(r.pausas_exclusiones).toContain("falta_repuesto");
+  });
+
+  it("VESTEL: clock-start en primera visita y en recogida", () => {
+    const v = de("VESTEL");
+    expect(v.some((r) => r.evento_inicio === "primera_visita")).toBe(true);
+    expect(v.some((r) => r.evento_inicio === "recogida")).toBe(true);
+    expect(v.some((r) => r.regla_medicion === "quality")).toBe(true);
+    expect(v.some((r) => r.regla_medicion === "supply")).toBe(true);
+  });
+
+  it("PC COMPONENTES: promedio mensual y regla de tres meses consecutivos", () => {
+    const p = de("PC COMPONENTES");
+    expect(p.filter((r) => r.regla_medicion === "promedio")).toHaveLength(2);
+    const mc = p.find((r) => r.regla_medicion === "meses_consecutivos")!;
+    expect(mc.meses_consecutivos).toBe(3);
+    expect(mc.umbral_agregado).toBeNull();
+  });
+
+  it("ASSURANT: dos reglas de recurrencia con ventana de garantía 90 días", () => {
+    const rec = de("ASSURANT").filter((r) => r.regla_medicion === "recurrencia");
+    expect(rec).toHaveLength(2);
+    for (const r of rec) expect(r.ventana_garantia_dias).toBe(90);
+  });
+
+  it("CECOTEC y NAVEE/BRIGHTWAY: obligaciones sin valor cuantificado", () => {
+    expect(de("CECOTEC").every((r) => r.target === null)).toBe(true);
+    expect(de("NAVEE / BRIGHTWAY").every((r) => r.ventana_garantia_dias === null)).toBe(true);
+  });
+
+  it("ELECTRO DEPOT y SAUBER: sin SLA cuantificado → no evaluable", () => {
+    for (const c of ["ELECTRO DEPOT", "SAUBER"]) {
+      const r = de(c)[0];
+      expect(r.target).toBeNull();
+      const res = evaluarRegla(r, { eventos: { creacion_ot: "2026-01-01T00:00:00Z", cierre: "2026-01-10T00:00:00Z" } });
+      expect(res.evaluable).toBe(false);
+      expect(res.motivo_no_evaluable).toBe("sin_sla_cuantificado");
+    }
   });
 });
+
