@@ -88,14 +88,23 @@ export type KpisProductividad = {
   coberturaCoste: Cobertura;
 
   // --- F4A.2 · productividad por persona y día trabajado ---
-  /** Días-persona con al menos una expedición. Proxy declarado hasta que exista RRHH. */
+  /**
+   * @internal PROXY: días-persona con al menos una expedición. NO son días
+   * efectivamente trabajados. Prohibido publicarlo en pantalla: solo diagnóstico
+   * en este módulo hasta que `ops_rrhh` esté Disponible en Calidad de datos.
+   */
   diasPersona: number;
   personas: number;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   expedicionesPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   lineasPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   unidadesPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   otsAbastecidasPorPersonaDia: number | null;
   coberturaPersonaDia: Cobertura;
+
   /** Cobertura de las líneas/unidades/OTs dentro de las expediciones con persona y día. */
   coberturaLineasPersonaDia: Cobertura;
   coberturaUnidadesPersonaDia: Cobertura;
