@@ -67,8 +67,17 @@ export type TipoTargetRegistry = (typeof TIPOS_TARGET)[number];
 export const ESTADOS_REGLA = ["borrador", "validada", "obsoleta"] as const;
 export type EstadoRegla = (typeof ESTADOS_REGLA)[number];
 
+/**
+ * Estado de EXTRACCIÓN documental: ¿el valor de la obligación está extraído del
+ * contrato? Es independiente del estado de VALIDACIÓN (`estado_regla`) y de la
+ * MEDIBILIDAD técnica (derivada por readiness, nunca almacenada).
+ */
+export const ESTADOS_EXTRACCION = ["extraida_contrato", "pendiente_extraer"] as const;
+export type EstadoExtraccion = (typeof ESTADOS_EXTRACCION)[number];
+
 export const FASES = ["preventa", "postventa"] as const;
 export type Fase = (typeof FASES)[number];
+
 
 // ─── Fila del Registry ───────────────────────────────────────────────────────
 
