@@ -88,14 +88,23 @@ export type KpisProductividad = {
   coberturaCoste: Cobertura;
 
   // --- F4A.2 · productividad por persona y día trabajado ---
-  /** Días-persona con al menos una expedición. Proxy declarado hasta que exista RRHH. */
+  /**
+   * @internal PROXY: días-persona con al menos una expedición. NO son días
+   * efectivamente trabajados. Prohibido publicarlo en pantalla: solo diagnóstico
+   * en este módulo hasta que `ops_rrhh` esté Disponible en Calidad de datos.
+   */
   diasPersona: number;
   personas: number;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   expedicionesPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   lineasPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   unidadesPorPersonaDia: number | null;
+  /** @internal PROXY — ver `diasPersona`. No usar en páginas. */
   otsAbastecidasPorPersonaDia: number | null;
   coberturaPersonaDia: Cobertura;
+
   /** Cobertura de las líneas/unidades/OTs dentro de las expediciones con persona y día. */
   coberturaLineasPersonaDia: Cobertura;
   coberturaUnidadesPersonaDia: Cobertura;
@@ -489,3 +498,107 @@ export function aplanarJerarquia(nodos: readonly NodoProductividad[]): NodoProdu
   rec(nodos);
   return out;
 }
+
+// ─── F4B.1 · Ratios por persona y día TRABAJADO (fuente ops_rrhh) ────────────
+
+/**
+ * Fila de `ops_rrhh` reducida a lo que necesita el denominador real:
+ * días efectivamente trabajados de una persona en un mes.
+ */
+export type DiaTrabajadoRrhh = {
+  /** Nombre de la persona tal y como aparece en `ops_expedicion.preparado_por`. */
+  persona: string;
+  /** Mes en formato AAAA-MM o AAAA-MM-DD. */
+  mes: string;
+  dias_trabajados: number | null;
+};
+
+export type EstadoRatiosPersona = "medible" | "pendiente_rrhh";
+
+export type RatiosPersonaDia = {
+  estado: EstadoRatiosPersona;
+  /** Denominador real: suma de días trabajados de las personas con expedición. */
+  diasTrabajados: number;
+  personas: number;
+  /** Personas con expedición que NO aparecen en ops_rrhh: quedan fuera del cálculo. */
+  personasSinRrhh: number;
+  expedicionesPorPersonaDia: number | null;
+  lineasPorPersonaDia: number | null;
+  unidadesPorPersonaDia: number | null;
+  otsAbastecidasPorPersonaDia: number | null;
+  /** Expediciones incluidas sobre el total del período. */
+  cobertura: Cobertura;
+};
+
+const mesDe = (iso: string | null): string | null => (iso ? iso.slice(0, 7) : null);
+
+/**
+ * Ratios por persona y día trabajado. Solo se calculan cuando el dominio RRHH
+ * está Disponible (`hayRrhh`) y hay días trabajados reales para esa persona y
+ * mes. Sin RRHH devuelve `pendiente_rrhh` y NINGUNA cifra: el proxy de
+ * `kpisProductividad` no se usa jamás como sustituto en pantalla.
+ */
+export function ratiosPorPersonaDiaRrhh(
+  filas: readonly FilaExpedicion[],
+  rrhh: readonly DiaTrabajadoRrhh[],
+  hayRrhh: boolean,
+): RatiosPersonaDia {
+  const vacio: RatiosPersonaDia = {
+    estado: "pendiente_rrhh",
+    diasTrabajados: 0,
+    personas: 0,
+    personasSinRrhh: 0,
+    expedicionesPorPersonaDia: null,
+    lineasPorPersonaDia: null,
+    unidadesPorPersonaDia: null,
+    otsAbastecidasPorPersonaDia: null,
+    cobertura: cobertura(0, filas.length),
+  };
+  if (!hayRrhh) return vacio;
+
+  const dias = new Map<string, number>();
+  for (const r of rrhh) {
+    const m = mesDe(r.mes);
+    if (!m || !r.persona || r.dias_trabajados == null || r.dias_trabajados <= 0) continue;
+    const k = `${r.persona}§${m}`;
+    dias.set(k, (dias.get(k) ?? 0) + r.dias_trabajados);
+  }
+  if (dias.size === 0) return vacio;
+
+  const conPersona = filas.filter((f) => !!f.preparado_por && mesDe(dia(salida(f))) != null);
+  const incluidas = conPersona.filter((f) => dias.has(`${f.preparado_por}§${mesDe(dia(salida(f)))}`));
+  if (incluidas.length === 0) return { ...vacio, personasSinRrhh: new Set(conPersona.map((f) => f.preparado_por as string)).size };
+
+  // Denominador: días trabajados de los pares persona×mes con actividad medida.
+  const pares = new Set(incluidas.map((f) => `${f.preparado_por}§${mesDe(dia(salida(f)))}`));
+  let diasTrabajados = 0;
+  for (const k of pares) diasTrabajados += dias.get(k) ?? 0;
+
+  const suma = (k: "num_lineas" | "num_unidades" | "num_ot_abastecidas") => {
+    const xs = incluidas.filter((f) => f[k] != null);
+    return xs.length === 0 ? null : xs.reduce((a, f) => a + (f[k] ?? 0), 0) / diasTrabajados;
+  };
+
+  const personasConRrhh = new Set(incluidas.map((f) => f.preparado_por as string));
+  const sinRrhh = new Set(
+    conPersona.filter((f) => !personasConRrhh.has(f.preparado_por as string)).map((f) => f.preparado_por as string),
+  );
+
+  return {
+    estado: "medible",
+    diasTrabajados,
+    personas: personasConRrhh.size,
+    personasSinRrhh: sinRrhh.size,
+    expedicionesPorPersonaDia: diasTrabajados > 0 ? incluidas.length / diasTrabajados : null,
+    lineasPorPersonaDia: diasTrabajados > 0 ? suma("num_lineas") : null,
+    unidadesPorPersonaDia: diasTrabajados > 0 ? suma("num_unidades") : null,
+    otsAbastecidasPorPersonaDia: diasTrabajados > 0 ? suma("num_ot_abastecidas") : null,
+    cobertura: cobertura(incluidas.length, filas.length),
+  };
+}
+
+/** Texto único que se muestra mientras el dominio RRHH no esté Disponible. */
+export const PENDIENTE_RRHH_LABEL = "○ Pendiente — requiere RRHH (días efectivos)";
+
+export const FUENTE_DESBLOQUEO_RRHH =
+  "Fuente que lo desbloquea: ops_rrhh (días trabajados y ausencias por persona y mes) con el dominio «Días trabajados» en estado Disponible en Calidad de datos.";
