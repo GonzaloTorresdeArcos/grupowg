@@ -4,6 +4,7 @@ import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
 
 import { labelPeriodo, diasEntre } from "@/lib/ops-performance";
+import { useOpsFilters } from "@/lib/ops-filters";
 import {
   UMBRALES_DISPERSION,
   LABEL_NIVEL,
