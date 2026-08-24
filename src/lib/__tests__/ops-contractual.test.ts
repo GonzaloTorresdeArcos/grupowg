@@ -150,7 +150,6 @@ describe("fase: null no es 'sin dato', es 'no condiciona'", () => {
 });
 
 
-});
 
 describe("reglas agregadas", () => {
   const res = (ok: boolean, t: number): ResultadoRegla => ({ evaluable: true, unidad: "dias_naturales", transcurrido: t, cumple_target: ok });
