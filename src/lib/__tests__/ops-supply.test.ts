@@ -355,3 +355,15 @@ describe("sin datos simulados en las páginas de supply", () => {
     });
   }
 });
+
+// ─── F4A.1 · Intervalos consecutivos de la cadena ───────────────────────────
+
+describe("cadena E2E como intervalos con readiness propio", () => {
+  it("un intervalo con un extremo sin fuente no publica cifra", () => {
+    const ivs = intervalosCadena(cadenaVacia);
+    expect(ivs.length).toBeGreaterThan(0);
+    expect(ivs.every((i) => i.leadTime === null)).toBe(true);
+    expect(ivs.every((i) => i.estado === "pendiente")).toBe(true);
+    expect(ivs[0].medida).toMatch(/no es calculable/);
+  });
+});
