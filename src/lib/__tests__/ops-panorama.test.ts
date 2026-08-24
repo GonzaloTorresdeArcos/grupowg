@@ -215,7 +215,7 @@ describe("cola de asuntos", () => {
     for (const a of construirAsuntos(input)) {
       expect(a.destino.startsWith("/operaciones")).toBe(true);
     }
-    expect(construirAsuntos(input).find((a) => a.fenomeno === "espera_repuesto")?.destino).toBe("/operaciones/repuestos");
+    expect(construirAsuntos(input).find((a) => a.fenomeno === "espera_repuesto")?.destino).toBe("/operaciones/repuestos#esperando-pieza");
   });
 
   it("sin comparable no marca deterioro por caída de referencia y baja la confianza", () => {

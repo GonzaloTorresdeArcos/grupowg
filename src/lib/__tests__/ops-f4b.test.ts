@@ -219,14 +219,14 @@ describe("F4B · jerarquía almacén → equipo → persona", () => {
 describe("F4B · los ratios por persona y día esperan a RRHH", () => {
   it("sin RRHH son diagnóstico interno, no medida de rendimiento", () => {
     for (const k of INDICADORES_REQUIEREN_RRHH) {
-      expect(estadoIndicador(k, false)).toBe("diagnostico_interno");
+      expect(estadoIndicador(k, false)).toBe("pendiente_rrhh_logistica");
       expect(estadoIndicador(k, true)).toBe("publicable");
     }
     expect(estadoIndicador("lineas_hora", false)).toBe("publicable");
   });
 
   it("la nota explica que el denominador es provisional", () => {
-    expect(NOTA_DIAS_EFECTIVOS).toContain("días efectivamente trabajados");
+    expect(NOTA_DIAS_EFECTIVOS).toContain("días reales de presencia");
     expect(NOTA_DIAS_EFECTIVOS).toContain("ops_rrhh");
   });
 });
@@ -245,7 +245,7 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
 
   it("sin RRHH disponible no devuelve ninguna cifra", () => {
     const r = ratiosPorPersonaDiaRrhh(filasRrhh, rrhh, false);
-    expect(r.estado).toBe("pendiente_rrhh");
+    expect(r.estado).toBe("pendiente_rrhh_logistica");
     expect(r.expedicionesPorPersonaDia).toBeNull();
     expect(r.lineasPorPersonaDia).toBeNull();
     expect(r.unidadesPorPersonaDia).toBeNull();
@@ -267,7 +267,7 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
 
   it("RRHH sin días trabajados útiles no desbloquea nada", () => {
     const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: null }], true);
-    expect(r.estado).toBe("pendiente_rrhh");
+    expect(r.estado).toBe("pendiente_rrhh_logistica");
   });
 
   it("la etiqueta de bloqueo dice qué falta y qué fuente lo desbloquea", () => {
