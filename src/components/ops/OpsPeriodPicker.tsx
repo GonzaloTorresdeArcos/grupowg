@@ -189,26 +189,31 @@ export const OpsPeriodPicker = ({ value, onChange, className, cobertura, preset,
             <span className="font-medium">{cap(label)}</span>
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="p-0 w-[520px]">
-          <div className="grid grid-cols-[180px_1fr] divide-x divide-black/[0.06]">
-            <div className="p-2 flex flex-col gap-0.5">
-              {presets().map((p) => {
-                const cur = p.get();
-                const active = cur.from === value.from && cur.to === value.to;
+        <PopoverContent align="start" className="p-0 w-[min(520px,calc(100vw-2rem))]">
+          <div className="grid grid-cols-1 sm:grid-cols-[190px_1fr] sm:divide-x divide-black/[0.06]">
+            <div className="p-2 flex flex-col gap-0.5 border-b sm:border-b-0 border-black/[0.06]">
+              {PRESET_ITEMS.map((p) => {
+                const disabled = p.key === "historico" && !(cobertura?.min && cobertura?.max);
+                const active = preset === p.key;
                 return (
                   <button
                     key={p.key}
-                    onClick={() => applyPreset(p)}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => applyPreset(p.key)}
+                    title={p.hint}
                     className={cn(
-                      "text-left px-2.5 py-1.5 text-[13px] rounded-md hover:bg-ink/[0.04]",
+                      "text-left px-2.5 py-1.5 text-[13px] rounded-md hover:bg-ink/[0.04] disabled:opacity-40 disabled:cursor-not-allowed",
                       active && "bg-ink/[0.06] text-ink font-medium",
                     )}
                   >
                     {p.label}
+                    {p.hint && <span className="block text-[10px] text-ink/40">{p.hint}</span>}
                   </button>
                 );
               })}
             </div>
+
             <div className="p-3">
               <div className="flex items-center justify-between mb-3">
                 <button
