@@ -25,7 +25,6 @@ import { detectTable, normalizeRow, conflictKey, PLANTILLAS, parseCSV } from "@/
 const cadenaVacia: BloqueCadena = {
   solicitudes: 0,
   expediciones: 0,
-  stock: 0,
   ots_con_pieza_periodo: 2003,
   ots_con_pieza_trazadas: 0,
   lead_times: {},
@@ -138,7 +137,7 @@ describe("compararConSinPieza", () => {
 
 describe("líneas ejecutivas", () => {
   it("repuestos declara la cadena pendiente cuando no hay fuente", () => {
-    const linea = lineaEjecutivaRepuestos(payloadVacio(), "Junio 2026");
+    const linea = lineaEjecutivaRepuestos(payloadVacio(), "Junio 2026", false);
     expect(linea).toContain("Junio 2026");
     expect(linea).toContain("trazabilidad pendiente de fuente");
   });

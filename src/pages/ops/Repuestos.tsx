@@ -131,7 +131,7 @@ export default function OpsRepuestos() {
     [data],
   );
 
-  const etiquetaEntidad = (v: Vista, e: string) => (v === "gama" ? gamaLabel.get(e) ?? e : e);
+  const etiquetaEntidad = (v: Vista, e: string) => (v === "gama" ? gamaLabel[e] ?? e : e);
   const listaDemanda = (v: Vista): EntidadDemanda[] => {
     const d = data?.pieza_demanda;
     if (!d) return [];
