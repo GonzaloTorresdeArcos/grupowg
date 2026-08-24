@@ -103,10 +103,42 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [optionsError, setOptionsError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const reqIdRef = useRef(0);
+  const [modoSeleccionado, setModoState] = useState<ModoComparacion>(() => {
+    try {
+      const raw = localStorage.getItem(MODO_KEY);
+      return raw === "interanual" ? "interanual" : "anterior";
+    } catch { return "anterior"; }
+  });
+  const [cobertura, setCobertura] = useState<Cobertura>({ min: null, max: null });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
   }, [filters]);
+
+  useEffect(() => {
+    try { localStorage.setItem(MODO_KEY, modoSeleccionado); } catch { /* ignore */ }
+  }, [modoSeleccionado]);
+
+  // Cobertura real de datos — consulta ligera, una sola vez por sesión de módulo.
+  useEffect(() => {
+    let cancel = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase.rpc("ops_cobertura_datos" as never);
+        if (cancel || error || !data) return;
+        const src = (Array.isArray(data) ? data[0] : data) as Record<string, unknown>;
+        const val = (k: string) => {
+          const v = src?.[k];
+          return typeof v === "string" && v.length >= 10 ? v.slice(0, 10) : null;
+        };
+        setCobertura({ min: val("min_fecha"), max: val("max_fecha") });
+      } catch (e) {
+        console.error("[ops_cobertura_datos]", e);
+      }
+    })();
+    return () => { cancel = true; };
+  }, []);
+
 
   // Recarga en cascada: cada cambio de filtro pide nuevas opciones compatibles.
   useEffect(() => {
