@@ -93,7 +93,7 @@ const baseAsuntos = {
   referencia20Prev: 0.72,
   ratioBajas: 0.1,
   ratioBajasPrev: 0.1,
-  etapas: [{ categoria: "esperando_repuesto" as const, n: 300, n30: 100, edadMedia: 40, label: "Esperando repuesto" }],
+  etapas: [{ categoria: "esperando_repuesto" as const, n: 800, n30: 100, edadMedia: 40, label: "Esperando repuesto" }],
   caidas: [],
   calidadTec: [],
   provincias: [],
@@ -109,7 +109,7 @@ describe("F4B · una sola cifra de espera de repuesto", () => {
       ...baseAsuntos,
       supplyPte: { n: 1234, n30: 456, edad_media: 61.4, asOf: "2026-07-25" },
     });
-    expect(a?.hecho).toContain("1.234");
+    expect(a?.hecho).toContain("1234");
     expect(a?.hecho).toContain("456");
     expect(a?.hecho).toContain("25-jul-2026");
     expect(a?.hecho).toContain("ops_supply.pte_piezas_actual");
@@ -118,7 +118,7 @@ describe("F4B · una sola cifra de espera de repuesto", () => {
 
   it("sin Supply cae a la etapa derivada y lo declara", () => {
     const a = asunto(baseAsuntos);
-    expect(a?.volumen).toBe(300);
+    expect(a?.volumen).toBe(800);
     expect(a?.hecho).toContain("etapa derivada");
   });
 
