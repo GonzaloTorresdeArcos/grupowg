@@ -12,7 +12,7 @@ import {
   type ReglaSla,
   type ResultadoRegla,
 } from "@/lib/ops-contractual";
-import { FIXTURES_REGISTRY } from "@/lib/ops-contractual-fixtures";
+import { FIXTURES_REGISTRY, TARGETS_DECLARADOS } from "@/lib/ops-contractual-fixtures";
 
 const CAL: CalendarioLaboral = { festivos: ["2026-01-06"], horaInicio: 9, horaFin: 18 };
 
