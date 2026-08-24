@@ -19,7 +19,7 @@ import {
   ratiosPorPersonaDiaRrhh,
   PENDIENTE_RRHH_LABEL,
   FUENTE_DESBLOQUEO_RRHH,
-  type DiaTrabajadoRrhh,
+  type DiaRrhhLogistica,
   type FilaExpedicion,
 } from "@/lib/ops-logistica";
 import { construirAsuntos, situationLine } from "@/lib/ops-panorama";
@@ -241,7 +241,13 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
     exp({ expedicion_id: "4", preparado_por: "ANA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
     exp({ expedicion_id: "5", preparado_por: "SIN FICHA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
   ];
-  const rrhh: DiaTrabajadoRrhh[] = [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: 20 }];
+  // F4B: presencia diaria real (una fila por persona y día), no meses agregados.
+  const rrhh: DiaRrhhLogistica[] = Array.from({ length: 20 }, (_, i) => ({
+    persona_id: "ANA",
+    almacen_base: "CENTRAL",
+    fecha: `2026-06-${String(i + 1).padStart(2, "0")}`,
+    presente: true,
+  }));
 
   it("sin RRHH disponible no devuelve ninguna cifra", () => {
     const r = ratiosPorPersonaDiaRrhh(filasRrhh, rrhh, false);
@@ -266,7 +272,7 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
   });
 
   it("RRHH sin días trabajados útiles no desbloquea nada", () => {
-    const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: null }], true);
+    const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona_id: "ANA", almacen_base: "CENTRAL", fecha: "2026-06-01", presente: false }], true);
     expect(r.estado).toBe("pendiente_rrhh_logistica");
   });
 

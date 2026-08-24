@@ -123,11 +123,10 @@ describe("productividad F4A.2 · persona · día trabajado, OTD y rapidez de sal
     const k = kpisProductividad(FIXTURE);
     expect(FIXTURE.reduce((a, f) => a + (f.num_lineas ?? 0), 0)).toBe(5);
     expect(k.personas).toBe(2);
-    expect(k.diasPersona).toBe(3);
-    expect(k.expedicionesPorPersonaDia).toBeCloseTo(1, 6);
-    expect(k.lineasPorPersonaDia).toBeCloseTo(5 / 3, 6);
-    expect(k.unidadesPorPersonaDia).toBeCloseTo(8 / 3, 6);
-    expect(k.otsAbastecidasPorPersonaDia).toBeCloseTo(4 / 3, 6);
+    // F4B: el proxy "día con expedición" desaparece. Los ratios por persona y
+    // día ya no los publica kpisProductividad: exigen ops_rrhh_logistica.
+    expect("diasPersona" in k).toBe(false);
+    expect("expedicionesPorPersonaDia" in k).toBe(false);
   });
 
   it("OTD solo con entrega prevista y real, declarando cobertura", () => {
@@ -163,15 +162,10 @@ describe("productividad F4A.2 · persona · día trabajado, OTD y rapidez de sal
       fecha_expedicion: null, fecha_entrega_prevista: null, fecha_entrega_real: null,
     }));
     const k = kpisProductividad(sinFechas);
-    expect(k.expedicionesPorPersonaDia).toBeNull();
-    expect(k.lineasPorPersonaDia).toBeNull();
-    expect(k.unidadesPorPersonaDia).toBeNull();
-    expect(k.otsAbastecidasPorPersonaDia).toBeNull();
     expect(k.otdPct).toBeNull();
     expect(k.pctSalidaMismoDia).toBeNull();
     expect(k.pctSalidaMenos24h).toBeNull();
     expect(k.baseSalida).toBeNull();
-    expect(k.diasPersona).toBe(0);
   });
 
   it("los indicadores nuevos están documentados con definición y campos requeridos", () => {
