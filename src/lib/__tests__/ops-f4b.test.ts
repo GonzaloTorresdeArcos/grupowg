@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fechaAsOfDelLote, DOMINIO_POR_TABLA } from "@/lib/ops-csv";
 import {
   desfaseEntre,
@@ -273,7 +274,7 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
 });
 
 describe("F4B.1 · guardia: la página no publica el proxy de días-persona", () => {
-  const fuente = readFileSync(new URL("../../pages/ops/Logistica.tsx", import.meta.url), "utf8");
+  const fuente = readFileSync(resolve(process.cwd(), "src/pages/ops/Logistica.tsx"), "utf8");
 
   it("Logistica.tsx no referencia los ratios proxy de kpisProductividad", () => {
     for (const ident of [
