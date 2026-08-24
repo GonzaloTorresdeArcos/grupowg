@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { PLANTILLAS, detectTable, normalizeRow } from "@/lib/ops-csv";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fechaAsOfDelLote, DOMINIO_POR_TABLA } from "@/lib/ops-csv";
@@ -303,5 +304,63 @@ describe("F4B.1 · guardia: la página no publica el proxy de días-persona", ()
   it("no queda ninguna etiqueta de 'diagnóstico interno' en la página", () => {
     expect(fuente.toLowerCase()).not.toContain("diagnóstico interno");
     expect(fuente).toContain("PENDIENTE_RRHH_LABEL");
+  });
+});
+
+// ─── F4B · cierre: Management Attention Supply y plantilla de presencia ──────
+
+describe("F4B · Management Attention Supply", () => {
+  const conSupply = {
+    ...baseAsuntos,
+    supplyPte: { n: 1234, n30: 456, edad_media: 61.4, n_prev: 1100, asOf: "2026-07-25" },
+  };
+
+  it("sin solicitudes cargadas declara que la cadena no es trazable", () => {
+    const a = construirAsuntos({
+      ...conSupply,
+      supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: null },
+    }).find((x) => x.fenomeno === "supply_sin_trazabilidad");
+    expect(a?.hecho).toContain("ops_pieza_solicitud");
+    expect(a?.confianza).toBe("alta");
+    expect(a?.destino).toBe("/operaciones/calidad-datos#frescura");
+  });
+
+  it("con trazabilidad suficiente el asunto desaparece", () => {
+    const out = construirAsuntos({
+      ...conSupply,
+      supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: 2900 },
+    });
+    expect(out.find((x) => x.fenomeno === "supply_sin_trazabilidad")).toBeUndefined();
+  });
+
+  it("la tendencia del asunto de repuesto usa la cifra previa de Supply", () => {
+    const a = construirAsuntos(conSupply).find((x) => x.fenomeno === "espera_repuesto");
+    expect(a?.hecho).toContain("1100");
+    expect(a?.deterioro).toBe(true);
+  });
+});
+
+describe("F4B · plantilla de presencia diaria de logística", () => {
+  it("el importador detecta y normaliza una fila persona × día", () => {
+    expect(PLANTILLAS.ops_rrhh_logistica).toEqual([
+      "persona_id", "nombre", "equipo", "almacen_base", "fecha", "jornada_horas", "presente",
+    ]);
+    const header = [...PLANTILLAS.ops_rrhh_logistica];
+    expect(detectTable(header)).toBe("ops_rrhh_logistica");
+    const rec = normalizeRow("ops_rrhh_logistica", header, [
+      "P1", "Ana", "PICKING A", "SAN AGUSTIN", "02/06/2026", "8", "si",
+    ]);
+    expect(rec?.persona_id).toBe("P1");
+    expect(rec?.fecha).toBe("2026-06-02");
+    expect(rec?.presente).toBe(true);
+    expect(rec?.origen_dato).toBe("importador");
+    expect(DOMINIO_POR_TABLA.ops_rrhh_logistica).toBe("rrhh_logistica");
+    expect(fechaAsOfDelLote("ops_rrhh_logistica", [{ fecha: "2026-06-02" }], new Date("2026-07-01T00:00:00Z"))).toBe("2026-06-02");
+  });
+
+  it("sin persona o sin día la fila se descarta", () => {
+    const header = [...PLANTILLAS.ops_rrhh_logistica];
+    expect(normalizeRow("ops_rrhh_logistica", header, ["", "Ana", "", "SAN AGUSTIN", "02/06/2026", "8", "si"])).toBeNull();
+    expect(normalizeRow("ops_rrhh_logistica", header, ["P1", "Ana", "", "SAN AGUSTIN", "", "8", "si"])).toBeNull();
   });
 });
