@@ -3,6 +3,8 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ANIO_MIN, type Cobertura, type PresetKey } from "@/lib/ops-periodo";
+
 
 export type OpsPeriod = { from: string; to: string };
 
