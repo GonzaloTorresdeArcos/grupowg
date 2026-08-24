@@ -284,39 +284,69 @@ export default function OpsLogistica() {
         </div>
       </section>
 
-      {/* C — LOGÍSTICA DE CAMPO */}
+      {/* C — PRODUCTIVIDAD DE ALMACÉN */}
       <section>
-        <Eyebrow>C · Logística de campo (desplazamientos técnicos)</Eyebrow>
-        <p className="mt-2 text-[12px] text-ink/50 max-w-3xl">
-          Ya disponible hoy: se calcula con la misma fuente y la misma RPC que alimenta Cobertura &amp; Dispersión,
-          sin duplicar lógica.
+        <Eyebrow>C · Productividad de almacén (picking y expedición)</Eyebrow>
+        <p className="mt-2 text-[12px] text-ink/50 max-w-3xl leading-relaxed">{prod.linea} {NOTA_COMPARABILIDAD}</p>
+        {prodFilas.length === 0 ? (
+          <div className="mt-3 rounded-2xl border border-black/[0.06] bg-white p-6">
+            <p className="text-sm text-ink flex items-center gap-2">
+              <Chip>{GLIFO_FUENTE.pendiente} {LABEL_FUENTE.pendiente}</Chip> Productividad no calculable.
+            </p>
+            <p className="mt-3 text-[13px] text-ink/60 max-w-3xl leading-relaxed">
+              Se activa al cargar la cabecera de expediciones con marcas de picking y el detalle de líneas.
+            </p>
+            <ul className="mt-3 space-y-1.5 text-[12px] text-ink/60 list-disc pl-5">
+              {INDICADORES_PRODUCTIVIDAD.map((i) => (
+                <li key={i.clave}>
+                  <strong className="text-ink/80">{i.label}</strong> — {i.definicion}{" "}
+                  <span className="text-ink/40">Requiere: {i.requiere.join(", ")}.</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-[12px] text-ink/50">
+              Cabeceras exactas:{" "}
+              <code className="font-mono text-[11px] text-ink/70 break-all">{cabeceraPlantilla("ops_expedicion")}</code>
+              <br />
+              <code className="font-mono text-[11px] text-ink/70 break-all">{cabeceraPlantilla("ops_expedicion_linea")}</code>
+            </p>
+          </div>
+        ) : (
+          <div className="mt-3 rounded-xl border border-black/[0.06] bg-white overflow-hidden">
+            <table className="w-full text-[13px]">
+              <thead className="bg-black/[0.02]">
+                <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40">
+                  <th className="px-4 py-2 font-semibold">Almacén base</th>
+                  <th className="px-4 py-2 font-semibold text-right">Expediciones</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas/hora</th>
+                  <th className="px-4 py-2 font-semibold text-right">Min/línea</th>
+                  <th className="px-4 py-2 font-semibold">Comparabilidad</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.05]">
+                {prodFilas.map((f) => (
+                  <tr key={`${f.almacen_base}-${f.entidad}`}>
+                    <td className="px-4 py-2">{f.entidad}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.expediciones)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.lineas)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.lineasHora == null ? "—" : fmtDec(f.lineasHora, 1)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.minutosPorLinea == null ? "—" : fmtDec(f.minutosPorLinea, 1)}</td>
+                    <td className="px-4 py-2 text-[11px] text-ink/50">{f.motivo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="mt-3 text-[12px] text-ink/50">
+          El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}
+          <Link to="/operaciones/dispersion" className="text-ink underline underline-offset-2 hover:text-ink/70">
+            Cobertura &amp; Dispersión
+          </Link>.
         </p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Card
-            label="Coste de desplazamiento"
-            value={campo?.costeDesplazamiento == null ? "—" : fmtEur(campo.costeDesplazamiento)}
-            hint="Importe de desplazamiento imputado a las OTs cerradas del período (ops_costes)."
-          />
-          <Card
-            label="Distancia media por salida"
-            value={campo?.kmMedia == null ? "—" : `${fmtDec(campo.kmMedia, 1)} km`}
-            hint={campo?.kmMediana == null ? "Aproximación desde el maestro de códigos postales." : `Mediana ${fmtDec(campo.kmMediana, 1)} km.`}
-          />
-          <Card
-            label="OTs cerradas del período"
-            value={campo?.cerradas == null ? "—" : fmtNum(campo.cerradas)}
-            hint="Base sobre la que se calcula la logística de campo."
-          />
-          <Card
-            label="Completitud geográfica"
-            value={campo?.geocodificadas == null || !campo.cerradas ? "—" : fmtPct(campo.geocodificadas / campo.cerradas)}
-            hint="OTs cerradas con código postal geocodificado."
-          />
-        </div>
-        <Link to="/operaciones/dispersion" className="mt-3 inline-block text-[12px] text-ink underline underline-offset-2 hover:text-ink/70">
-          Ver Cobertura &amp; Dispersión →
-        </Link>
       </section>
+
 
       {/* D — DEFINICIONES */}
       <section className="rounded-2xl border border-black/[0.06] bg-white p-6">
