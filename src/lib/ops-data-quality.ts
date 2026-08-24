@@ -56,6 +56,14 @@ export type DominioDato = {
 
 // ─── Medidas reales (payload de la RPC ops_data_quality) ─────────────────────
 
+export type FuenteSupply = {
+  existe: boolean;
+  filas: number;
+  ultima_carga: string | null;
+  meses: number;
+  ots_distintas: number;
+};
+
 export type MedidasDataQuality = {
   generado_en: string;
   fact_ot: {
@@ -79,6 +87,14 @@ export type MedidasDataQuality = {
   registry_reglas: number;
   /** Festivos cargados por territorio en ops_calendario_laboral (hoy vacía). */
   calendario_laboral?: Record<string, number>;
+  /** F4A · Supply & Fulfilment: existencia y carga de las tres fuentes nuevas. */
+  supply?: {
+    ops_pieza_solicitud: FuenteSupply;
+    ops_expedicion: FuenteSupply;
+    ops_stock_snapshot: FuenteSupply;
+    ots_con_pieza_total: number;
+    ots_con_pieza_trazadas: number;
+  };
   /** Valores reales de cliente_wg con su volumen y cobertura de eventos. */
   clientes_erp?: Array<{
     cliente_wg: string;
@@ -98,7 +114,9 @@ export type ReglaCompletitud =
   | { tipo: "tabla"; tabla: string }
   | { tipo: "meses"; fuente: "rrhh" | "coste_mensual"; minimo: number }
   | { tipo: "geo"; minimo: number }
-  | { tipo: "derivado"; depende: string[] };
+  | { tipo: "derivado"; depende: string[] }
+  /** F4A: tabla de supply con >0 filas y ≥80% de cobertura de las OTs con pieza. */
+  | { tipo: "supply"; fuente: "ops_pieza_solicitud" | "ops_expedicion" | "ops_stock_snapshot"; minimo: number };
 
 export type DefinicionDominio = {
   id: string;
@@ -257,10 +275,45 @@ export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
   {
     id: "repuestos",
     dominio: "Ciclo de repuesto",
-    fuente: "ops_repuestos (no existe)",
-    detalle: "Solo existe el flag tiene_piezas: no hay fecha de solicitud ni de disponibilidad.",
+    fuente: "ops_pieza_solicitud",
+    detalle: "Hoy solo existe el flag tiene_piezas: la fecha de solicitud y de disponibilidad llegan desde ops_pieza_solicitud vía importador.",
     kpisBloqueados: ["Tiempo de espera de repuesto", "Exclusión de reloj por espera de pieza"],
-    regla: { tipo: "tabla", tabla: "ops_repuestos" },
+    regla: { tipo: "supply", fuente: "ops_pieza_solicitud", minimo: 0.8 },
+  },
+  {
+    id: "repuestos_solicitudes",
+    dominio: "Solicitudes de pieza (ciclo completo)",
+    fuente: "ops_pieza_solicitud",
+    detalle:
+      "Una fila por pieza pedida con sus fechas de necesidad, solicitud, disponibilidad, picking, expedición, entrega y montaje. Fuente prevista: importador (plantilla de solicitudes de pieza).",
+    kpisBloqueados: [
+      "Lead time por etapa de la cadena de suministro",
+      "Tiempo real en espera de repuesto",
+      "Imputabilidad del retraso al proveedor",
+    ],
+    regla: { tipo: "supply", fuente: "ops_pieza_solicitud", minimo: 0.8 },
+  },
+  {
+    id: "expediciones",
+    dominio: "Expediciones y entregas",
+    fuente: "ops_expedicion",
+    detalle:
+      "Envíos con transportista, destino, fechas de expedición y entrega (prevista y real), incidencias y coste. Fuente prevista: importador (plantilla de expediciones).",
+    kpisBloqueados: [
+      "Entrega en plazo (OTD)",
+      "Lead time expedición → entrega",
+      "Coste medio por envío e incidencias por transportista",
+    ],
+    regla: { tipo: "supply", fuente: "ops_expedicion", minimo: 0.8 },
+  },
+  {
+    id: "stock",
+    dominio: "Stock de repuesto",
+    fuente: "ops_stock_snapshot",
+    detalle:
+      "Foto periódica de cantidad, reserva y coste medio por almacén y referencia. Fuente prevista: importador (plantilla de foto de stock).",
+    kpisBloqueados: ["Cobertura de stock frente a demanda", "Roturas de stock", "Inmovilizado y obsolescencia"],
+    regla: { tipo: "supply", fuente: "ops_stock_snapshot", minimo: 0.8 },
   },
   {
     id: "imputabilidad",
@@ -376,6 +429,31 @@ export const derivarDominio = (def: DefinicionDominio, m: MedidasDataQuality): D
       return salida(
         clasificarCobertura(cob, def.regla.minimo),
         `${m.geo.ots_domicilio_geocodificables.toLocaleString("es-ES")} de ${m.geo.ots_domicilio.toLocaleString("es-ES")} OTs a domicilio geocodificables (${pct(cob)}) con ${m.geo.filas_cp_geo} CPs en el maestro.`,
+        { cobertura: cob, esperado: def.regla.minimo },
+      );
+    }
+    case "supply": {
+      const f = m.supply?.[def.regla.fuente];
+      if (!f || f.filas === 0) {
+        return salida(
+          "pendiente",
+          `Sin fuente: ${def.regla.fuente} está creada pero vacía. Se carga desde el importador (${def.regla.fuente === "ops_stock_snapshot" ? "plantilla de foto de stock" : def.regla.fuente === "ops_expedicion" ? "plantilla de expediciones" : "plantilla de solicitudes de pieza"}).`,
+          { cobertura: 0, esperado: def.regla.minimo },
+        );
+      }
+      if (def.regla.fuente === "ops_stock_snapshot") {
+        return salida(
+          "parcial",
+          `${f.filas.toLocaleString("es-ES")} filas de stock en ${f.meses} mes(es)${f.ultima_carga ? ` (última carga ${f.ultima_carga.slice(0, 10)})` : ""}. La completitud por almacén no es verificable contra un maestro de referencias.`,
+          { cobertura: null, esperado: def.regla.minimo },
+        );
+      }
+      const universo = m.supply?.ots_con_pieza_total ?? 0;
+      const trazadas = m.supply?.ots_con_pieza_trazadas ?? 0;
+      const cob = universo > 0 ? trazadas / universo : 0;
+      return salida(
+        cob >= def.regla.minimo ? "disponible" : "parcial",
+        `${f.filas.toLocaleString("es-ES")} filas en ${def.regla.fuente}; cubren ${trazadas.toLocaleString("es-ES")} de ${universo.toLocaleString("es-ES")} OTs con pieza (${pct(cob)}; exigido ${pct(def.regla.minimo)}).`,
         { cobertura: cob, esperado: def.regla.minimo },
       );
     }
