@@ -273,12 +273,6 @@ export type AsuntosInput = {
   provincias: Array<{ provincia: string; abiertas_30: number }>;
   conclusiones: Conclusion[];
   /**
-   * F4B · Cifra AUTORITATIVA de OTs en espera de repuesto, tal cual la devuelve
-   * `ops_supply.pte_piezas_actual`. Cuando está presente manda sobre la etapa
-   * derivada de `etapas`: Panorama y Repuestos NO pueden dar cifras distintas.
-   * `asOf` es la fecha efectiva contra la que está medida la antigüedad.
-   */
-  /**
    * F4B · Única fuente del asunto `espera_repuesto`: `ops_supply.pte_piezas_actual`.
    * Sin este bloque el asunto no se publica.
    */
@@ -293,9 +287,23 @@ export type AsuntosInput = {
     exposicionRegistry?: readonly string[];
   } | null;
 
+  /**
+   * F4B · Management Attention Supply: estado de la trazabilidad de la cadena de
+   * suministro. Sin solicitudes de pieza cargadas, ninguna cifra de espera puede
+   * atribuirse a suministro; el hueco se declara como asunto de dirección.
+   */
+  supplyTrazabilidad?: {
+    /** OTs del período marcadas con necesidad de pieza. */
+    otsConPieza: number;
+    /** Cuántas de ellas tienen solicitud registrada. `null` si no hay fuente. */
+    conSolicitud: number | null;
+  } | null;
 };
 
 /** Fuente declarada de la cifra de espera de repuesto mostrada en el asunto. */
+/** Por debajo de esta cobertura de solicitudes, la cadena no es trazable. */
+export const UMBRAL_TRAZABILIDAD_SUPPLY = 0.5;
+
 export type FuenteEsperaRepuesto = "ops_supply" | "etapa_derivada";
 
 
@@ -389,6 +397,31 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
   }
 
 
+
+  // 3.b Management Attention Supply: hueco de trazabilidad de la cadena.
+  const tz = i.supplyTrazabilidad;
+  if (tz && tz.otsConPieza > 0) {
+    const cob = tz.conSolicitud == null ? null : tz.conSolicitud / tz.otsConPieza;
+    if (cob == null || cob < UMBRAL_TRAZABILIDAD_SUPPLY) {
+      cand.push({
+        fenomeno: "supply_sin_trazabilidad",
+        titulo: "La cadena de suministro no es trazable extremo a extremo",
+        hecho:
+          cob == null
+            ? `${num(tz.otsConPieza)} OTs del período requieren pieza y no hay ninguna solicitud registrada en ops_pieza_solicitud.`
+            : `Solo ${pct1(cob)} de las ${num(tz.otsConPieza)} OTs con pieza tienen solicitud registrada (${num(tz.conSolicitud ?? 0)}).`,
+        hipotesis:
+          "Sin la solicitud no se puede separar espera de proveedor, espera de almacén y tiempo de taller: cualquier lectura de retraso por suministro sería asociación observada, no medición.",
+        accion: "Cargar ops_pieza_solicitud con fechas de solicitud, disponibilidad y montaje antes de fijar objetivos de suministro.",
+        impacto: clasificarImpacto(tz.otsConPieza, univ),
+        confianza: "alta",
+        deterioro: false,
+        volumen: tz.otsConPieza,
+        destino: "/operaciones/calidad-datos#frescura",
+        destinoLabel: "Ver calidad de datos",
+      });
+    }
+  }
 
   // 4. Ratio de bajas creciendo (salida que no repara).
   if (i.ratioBajas != null && i.ratioBajasPrev != null && i.ratioBajas > i.ratioBajasPrev + UMBRAL_SUBIDA_BAJAS_PP) {
