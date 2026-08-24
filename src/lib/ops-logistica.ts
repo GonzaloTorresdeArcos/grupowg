@@ -334,6 +334,45 @@ export const INDICADORES_PRODUCTIVIDAD: readonly IndicadorLogistica[] = [
     requiere: ["picking_fin", "expedicion_timestamp"],
   },
   {
+    clave: "expediciones_persona_dia",
+    label: "Expediciones por persona y día trabajado",
+    definicion:
+      "Expediciones con persona identificada divididas entre los días-persona con al menos una expedición. Día trabajado declarado como proxy hasta disponer de RRHH.",
+    requiere: ["preparado_por", "expedicion_timestamp"],
+  },
+  {
+    clave: "lineas_persona_dia",
+    label: "Líneas por persona y día trabajado",
+    definicion: "Líneas preparadas divididas entre los días-persona con expedición. Solo cuentan las expediciones que informan líneas.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_lineas"],
+  },
+  {
+    clave: "unidades_persona_dia",
+    label: "Unidades por persona y día trabajado",
+    definicion: "Unidades expedidas divididas entre los días-persona con expedición; sin num_unidades el indicador no se calcula.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_unidades"],
+  },
+  {
+    clave: "ots_persona_dia",
+    label: "OTs abastecidas por persona y día trabajado",
+    definicion: "Órdenes de trabajo servidas por las expediciones de esa persona ese día, entre los días-persona con expedición.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_ot_abastecidas"],
+  },
+  {
+    clave: "otd",
+    label: "OTD — % de entrega en plazo",
+    definicion: "Entrega real ≤ entrega prevista, medido solo sobre las expediciones que tienen las dos fechas; la cobertura se declara junto al dato.",
+    requiere: ["fecha_entrega_prevista", "fecha_entrega_real"],
+  },
+  {
+    clave: "salida_rapida",
+    label: "% de expediciones el mismo día y en menos de 24 h",
+    definicion:
+      "Rapidez de salida respecto a la fecha de disponibilidad de la pieza cuando existe enlace vía líneas; si no existe, respecto al inicio de picking. La referencia usada se declara siempre.",
+    requiere: ["expedicion_timestamp", "fecha_disponibilidad (pieza) o picking_inicio"],
+  },
+  {
+
     clave: "reexpedicion",
     label: "% de reexpediciones",
     definicion: "Envíos que repiten uno anterior. Es retrabajo logístico, no volumen nuevo.",
