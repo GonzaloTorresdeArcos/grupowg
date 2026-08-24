@@ -9,7 +9,8 @@ export type OpsTable =
   | "ops_pieza_solicitud"
   | "ops_expedicion"
   | "ops_expedicion_linea"
-  | "ops_stock_snapshot";
+  | "ops_stock_snapshot"
+  | "ops_rrhh_logistica";
 
 
 // ---------- Mapas de columnas por tabla ----------
@@ -108,6 +109,18 @@ const STOCK_MAP: Record<string, string> = {
   coste_medio: "coste_medio",
 };
 
+/** F4B · Presencia diaria real por persona de logística. Sin esta fuente no se
+ *  publica ningún ratio por persona y día: no se admite proxy. */
+const RRHH_LOG_MAP: Record<string, string> = {
+  persona_id: "persona_id", id_persona: "persona_id", persona: "persona_id",
+  nombre: "nombre", nombre_persona: "nombre",
+  equipo: "equipo",
+  almacen: "almacen_base", almacen_base: "almacen_base",
+  fecha: "fecha", dia: "fecha",
+  jornada_horas: "jornada_horas", horas: "jornada_horas",
+  presente: "presente", asistencia: "presente",
+};
+
 /** Estados admitidos por las tablas de supply. Un valor fuera de lista invalida la fila. */
 export const ESTADOS_PIEZA = [
   "solicitada", "pendiente_proveedor", "disponible", "en_picking",
@@ -129,6 +142,7 @@ const NUMERIC = new Set([
   "cantidad", "coste_unitario", "coste_envio", "cantidad_reservada", "coste_medio",
   "coste_transporte", "num_lineas", "num_unidades", "num_ot_abastecidas", "linea",
   "stock_fisico", "stock_disponible", "reservado", "en_transito",
+  "jornada_horas",
 ]);
 const DATE_FIELDS = new Set([
   "fecha_creacion", "fecha_cierre", "fecha_primer_contacto", "fecha_primera_visita", "fecha_baja",
@@ -137,7 +151,7 @@ const DATE_FIELDS = new Set([
   "fecha_entrega_prevista", "fecha_entrega_real", "fecha", "fecha_snapshot",
   "picking_inicio", "picking_fin", "expedicion_timestamp",
 ]);
-const BOOL_FIELDS = new Set(["kpi_20d", "kpi_30d", "tiene_piezas", "activo", "reexpedicion"]);
+const BOOL_FIELDS = new Set(["kpi_20d", "kpi_30d", "tiene_piezas", "activo", "reexpedicion", "presente"]);
 
 
 // ---------- Helpers ----------
@@ -249,6 +263,9 @@ export function detectTable(header: string[]): OpsTable | null {
   const h = new Set(header.map(norm));
   const base = h.has("almacen_base") || h.has("almacen") || h.has("base");
   // Supply primero: comparten cabeceras genéricas con ops_fact_ot.
+  // F4B: presencia diaria por persona (una fila = persona × día).
+  if ((h.has("persona_id") || h.has("id_persona")) && (h.has("fecha") || h.has("dia")) && (h.has("presente") || h.has("jornada_horas") || h.has("horas")))
+    return "ops_rrhh_logistica";
   if (h.has("expedicion_id") && h.has("linea") && h.has("referencia")) return "ops_expedicion_linea";
   if (h.has("referencia_expedicion") || (h.has("expedicion_id") && base && !h.has("referencia"))) return "ops_expedicion";
   if (base && h.has("referencia") && (h.has("fecha") || h.has("fecha_snapshot") || h.has("stock_fisico"))) return "ops_stock_snapshot";
@@ -270,6 +287,7 @@ export function conflictKey(t: OpsTable): string {
     ops_expedicion: "almacen_base,expedicion_id",
     ops_expedicion_linea: "almacen_base,expedicion_id,linea",
     ops_stock_snapshot: "fecha_snapshot,almacen_base,referencia",
+    ops_rrhh_logistica: "persona_id,fecha",
   }[t];
 }
 
@@ -278,7 +296,7 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
   const map = {
     ops_fact_ot: FACT_MAP, ops_tecnicos: TEC_MAP, ops_portfolio_gamas: PORT_MAP, ops_benchmark: BENCH_MAP,
     ops_pieza_solicitud: PIEZA_MAP, ops_expedicion: EXPED_MAP, ops_expedicion_linea: EXPED_LINEA_MAP,
-    ops_stock_snapshot: STOCK_MAP,
+    ops_stock_snapshot: STOCK_MAP, ops_rrhh_logistica: RRHH_LOG_MAP,
   }[t];
   const rec: Record<string, unknown> = {};
   for (let i = 0; i < header.length; i++) {
@@ -355,6 +373,13 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (rec.cantidad == null) rec.cantidad = 1;
     rec.origen_dato = "importador";
   }
+  if (t === "ops_rrhh_logistica") {
+    // Sin persona, almacén y día no hay unidad de presencia: la fila se descarta.
+    if (!rec.persona_id || !rec.fecha) return null;
+    if (!rec.almacen_base) rec.almacen_base = "SIN_ALMACEN";
+    if (rec.presente == null) rec.presente = true;
+    rec.origen_dato = "importador";
+  }
   if (t === "ops_stock_snapshot") {
     if (!rec.fecha_snapshot || !rec.almacen_base || !rec.referencia) return null;
     if (rec.stock_fisico == null) rec.stock_fisico = 0;
@@ -376,6 +401,7 @@ export const TABLE_LABEL: Record<OpsTable, string> = {
   ops_expedicion: "Expediciones — cabecera (ops_expedicion)",
   ops_expedicion_linea: "Expediciones — líneas (ops_expedicion_linea)",
   ops_stock_snapshot: "Foto de stock (ops_stock_snapshot)",
+  ops_rrhh_logistica: "Presencia diaria logística (ops_rrhh_logistica)",
 };
 
 /** Cabeceras EXACTAS de cada plantilla de carga, en orden. Documentadas en Calidad de datos. */
@@ -411,6 +437,9 @@ export const PLANTILLAS: Record<OpsTable, readonly string[]> = {
   ops_stock_snapshot: [
     "fecha_snapshot", "almacen_base", "referencia", "descripcion",
     "stock_fisico", "reservado", "stock_disponible", "en_transito", "coste_medio",
+  ],
+  ops_rrhh_logistica: [
+    "persona_id", "nombre", "equipo", "almacen_base", "fecha", "jornada_horas", "presente",
   ],
 };
 
@@ -466,6 +495,7 @@ export const DOMINIO_POR_TABLA: Record<OpsTable, DominioCarga> = {
   ops_expedicion: "expedicion",
   ops_expedicion_linea: "expedicion_linea",
   ops_stock_snapshot: "stock",
+  ops_rrhh_logistica: "rrhh_logistica",
 };
 
 /**
@@ -477,6 +507,7 @@ const CAMPOS_AS_OF: Partial<Record<OpsTable, readonly string[]>> = {
   ops_pieza_solicitud: ["fecha_entrega", "fecha_expedicion", "fecha_solicitud"],
   ops_expedicion: ["fecha_entrega_real", "expedicion_timestamp", "fecha_expedicion"],
   ops_stock_snapshot: ["fecha_snapshot"],
+  ops_rrhh_logistica: ["fecha"],
 };
 
 const soloFecha = (v: unknown): string | null => {

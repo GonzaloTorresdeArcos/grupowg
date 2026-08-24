@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
@@ -17,6 +18,8 @@ import {
 } from "@/lib/ops-data-quality";
 import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
+import { LABEL_FRESCURA_DOMINIO, fmtFechaEs } from "@/lib/ops-as-of";
+import { useDataFreshness } from "@/hooks/useDataFreshness";
 import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
 
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
@@ -50,6 +53,7 @@ const Seccion = ({ id, titulo, sub, children }: { id: string; titulo: string; su
 
 const CalidadDatos = () => {
   const { loading, medidas, dominios } = useDataQuality();
+  const { todos: frescuras } = useDataFreshness();
   const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
 
@@ -167,6 +171,67 @@ const CalidadDatos = () => {
           </p>
         )}
       </header>
+      <DataAsOf />
+
+      {/* F4B · Frescura por dominio: fecha efectiva del dato, no fecha de carga */}
+      <Seccion
+        id="frescura"
+        titulo="Frescura por dominio"
+        sub="Cada dominio declara su fecha efectiva (hasta cuándo el dato refleja la realidad operativa). Las antigüedades y el backlog se miden contra esa fecha, nunca contra hoy."
+      >
+        {frescuras.length === 0 ? (
+          <p className="text-[13px] text-ink/50">Sin registros de carga: no hay fecha efectiva declarada para ningún dominio.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                  <th className="py-2 pr-4 font-medium">Dominio</th>
+                  <th className="py-2 pr-4 font-medium">Fecha efectiva</th>
+                  <th className="py-2 pr-4 font-medium">Desfase</th>
+                  <th className="py-2 pr-4 font-medium">Estado</th>
+                  <th className="py-2 pr-4 font-medium text-right">Filas</th>
+                  <th className="py-2 font-medium">Fuente</th>
+                </tr>
+              </thead>
+              <tbody>
+                {frescuras.map((f) => (
+                  <tr key={f.dominio} className="border-b border-black/[0.04]">
+                    <td className="py-2.5 pr-4 text-ink">{f.label}</td>
+                    <td className="py-2.5 pr-4 tabular-nums text-ink/70">{fmtFechaEs(f.asOf)}</td>
+                    <td className="py-2.5 pr-4 tabular-nums text-ink/55">{f.dias == null ? "—" : `${f.dias} d`}</td>
+                    <td className="py-2.5 pr-4">
+                      <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-black/[0.08] px-2 py-0.5 text-[11px] text-ink/60">
+                        <span
+                          aria-hidden
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            f.estado === "desactualizado"
+                              ? "bg-red-500"
+                              : f.estado === "aceptable"
+                                ? "bg-amber-500"
+                                : f.estado === "sin_dato"
+                                  ? "bg-ink/25"
+                                  : "bg-emerald-500"
+                          }`}
+                        />
+                        {LABEL_FRESCURA_DOMINIO[f.estado]}
+                      </span>
+                    </td>
+                    <td className="py-2.5 pr-4 tabular-nums text-ink/55 text-right">{num(f.filas)}</td>
+                    <td className="py-2.5 text-ink/45">{f.fuente ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="mt-3 text-[12px] text-ink/45">
+          Fresco ≤ 7 días · Aceptable ≤ 31 días · Desactualizado &gt; 31 días. Un dominio sin fecha efectiva no se puede cruzar
+          con el resto sin declarar el desfase.
+        </p>
+      </Seccion>
+
+
 
       {/* Matriz de dominios */}
       <Seccion

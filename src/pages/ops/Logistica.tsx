@@ -18,6 +18,7 @@ import {
   INDICADORES_PRODUCTIVIDAD,
   LABEL_BASE_SALIDA,
   NOTA_COMPARABILIDAD,
+  NOTA_DIAS_EFECTIVOS,
   kpisProductividad,
   lineaProductividad,
   productividadPor,
@@ -26,7 +27,8 @@ import {
   ratiosPorPersonaDiaRrhh,
   PENDIENTE_RRHH_LABEL,
   FUENTE_DESBLOQUEO_RRHH,
-  type DiaTrabajadoRrhh,
+  type DiaRrhhLogistica,
+  type DimensionProductividad,
   type FilaExpedicion,
   type RefDisponibilidad,
 } from "@/lib/ops-logistica";
@@ -86,7 +88,7 @@ export default function OpsLogistica() {
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
-  const [rrhhDias, setRrhhDias] = useState<DiaTrabajadoRrhh[]>([]);
+  const [rrhhDias, setRrhhDias] = useState<DiaRrhhLogistica[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -153,26 +155,24 @@ export default function OpsLogistica() {
     return () => { vivo = false; };
   }, [filters.from, filters.to, reloadKey]);
 
-  // F4B.1 · El dominio RRHH manda: sin días efectivos no se publica ningún
-  // ratio por persona y día, ni siquiera como diagnóstico.
-  const rrhhDisponible = dominio("dias_trabajados")?.estado === "disponible";
-
+  // F4B · RRHH LOGÍSTICA manda: sin días de presencia reales por persona no se
+  // publica ningún ratio por persona y día. El proxy queda eliminado.
   useEffect(() => {
-    if (!rrhhDisponible) { setRrhhDias([]); return; }
     let vivo = true;
     void (async () => {
       const { data, error } = await supabase
-        .from("ops_rrhh" as never)
-        .select("tecnico,mes,dias_trabajados")
-        .gte("mes", filters.from.slice(0, 8) + "01")
-        .lte("mes", filters.to)
+        .from("ops_rrhh_logistica" as never)
+        .select("persona_id,nombre,equipo,almacen_base,fecha,jornada_horas,presente")
+        .gte("fecha", filters.from)
+        .lte("fecha", filters.to)
         .limit(20000);
-      if (!vivo || error) return;
-      const rows = (data ?? []) as unknown as Array<{ tecnico: string; mes: string; dias_trabajados: number | null }>;
-      setRrhhDias(rows.map((r) => ({ persona: r.tecnico, mes: r.mes, dias_trabajados: r.dias_trabajados })));
+      if (!vivo || error) { if (vivo) setRrhhDias([]); return; }
+      setRrhhDias((data ?? []) as unknown as DiaRrhhLogistica[]);
     })();
     return () => { vivo = false; };
-  }, [rrhhDisponible, filters.from, filters.to, reloadKey]);
+  }, [filters.from, filters.to, reloadKey]);
+
+  const rrhhDisponible = rrhhDias.length > 0;
 
   const etiqueta = labelPeriodo(filters.from, filters.to);
   const hayExpediciones = (log?.total_filas ?? 0) > 0;
@@ -190,12 +190,28 @@ export default function OpsLogistica() {
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
   // F4B · San Agustín concentra la preparación: se lee por almacén → equipo → persona.
   const prodJerarquia = useMemo(() => aplanarJerarquia(jerarquiaProductividad(exped)), [exped]);
+  // Drill: almacén → equipo → persona → día, siempre dentro del mismo almacén.
+  const [dimension, setDimension] = useState<DimensionProductividad>("almacen");
+  const [almacenFoco, setAlmacenFoco] = useState<string | null>(null);
+  const expedFoco = useMemo(
+    () => (almacenFoco ? exped.filter((f) => f.almacen_base === almacenFoco) : exped),
+    [exped, almacenFoco],
+  );
+  const filasDimension = useMemo(
+    () => productividadPor(dimension === "almacen" ? exped : expedFoco, dimension),
+    [exped, expedFoco, dimension],
+  );
+  const almacenesDisponibles = useMemo(
+    () => Array.from(new Set(exped.map((f) => f.almacen_base))).sort(),
+    [exped],
+  );
 
-  // Ratios por persona y día trabajado: calculados SOLO contra ops_rrhh real.
+  // Ratios por persona y día trabajado: SOLO contra ops_rrhh_logistica real.
   const ratiosPersona = useMemo(
     () => ratiosPorPersonaDiaRrhh(exped, rrhhDias, rrhhDisponible),
     [exped, rrhhDias, rrhhDisponible],
   );
+
 
   // KPIs de servicio y rapidez de salida. Sin dato → pendiente de fuente.
   const kpisAvanzados = useMemo(() => {
@@ -206,7 +222,7 @@ export default function OpsLogistica() {
     const bloqueado = r.estado !== "medible";
     const hintPersona = bloqueado
       ? FUENTE_DESBLOQUEO_RRHH
-      : `${fmtNum(r.personas)} personas · ${fmtNum(r.diasTrabajados)} días trabajados (ops_rrhh). ${cob(r.cobertura)}`;
+      : `${fmtNum(r.personas)} personas · ${fmtNum(r.diasTrabajados)} días de presencia (ops_rrhh_logistica). ${cob(r.cobertura)}`;
     const persona = (label: string, v: number | null) => ({
       label,
       valor: bloqueado || v == null ? null : fmtDec(v, 1),
@@ -447,6 +463,63 @@ export default function OpsLogistica() {
           </div>
         )}
 
+        {/* C.1b — Drill Almacén → Equipo → Persona → Día (nunca mezcla almacenes) */}
+        {prodFilas.length > 0 && (
+          <div className="mt-4 rounded-xl border border-black/[0.06] bg-white overflow-hidden">
+            <div className="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-black/[0.05]">
+              {(["almacen", "equipo", "persona", "dia"] as const).map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setDimension(d)}
+                  className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.1em] border ${
+                    dimension === d ? "bg-ink text-bone border-ink" : "border-black/[0.08] text-ink/60 hover:text-ink"
+                  }`}
+                >
+                  {d === "almacen" ? "Almacén" : d === "equipo" ? "Equipo" : d === "persona" ? "Persona" : "Día"}
+                </button>
+              ))}
+              {dimension !== "almacen" && (
+                <select
+                  value={almacenFoco ?? ""}
+                  onChange={(e) => setAlmacenFoco(e.target.value || null)}
+                  className="ml-auto rounded-full border border-black/[0.08] px-3 py-1 text-[11px] text-ink/70 bg-white"
+                  aria-label="Almacén base"
+                >
+                  <option value="">Todos los almacenes</option>
+                  {almacenesDisponibles.map((a) => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <table className="w-full text-[13px]">
+              <thead className="bg-black/[0.02]">
+                <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40">
+                  <th className="px-4 py-2 font-semibold">
+                    {dimension === "almacen" ? "Almacén" : dimension === "equipo" ? "Equipo" : dimension === "persona" ? "Persona" : "Día"}
+                  </th>
+                  <th className="px-4 py-2 font-semibold">Almacén base</th>
+                  <th className="px-4 py-2 font-semibold text-right">Expediciones</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas/hora</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.05]">
+                {filasDimension.map((f) => (
+                  <tr key={`${f.almacen_base}-${f.entidad}`}>
+                    <td className="px-4 py-2 text-ink/80">{f.entidad}</td>
+                    <td className="px-4 py-2 text-[11px] text-ink/50">{f.almacen_base}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.expediciones)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.lineas)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.lineasHora == null ? "—" : fmtDec(f.lineasHora, 1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {/* C.2 — Productividad por persona, servicio y rapidez de salida */}
         <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
           Productividad por persona, servicio y rapidez de salida
@@ -467,9 +540,9 @@ export default function OpsLogistica() {
           ))}
         </div>
         <p className="mt-2 text-[11px] text-ink/40 leading-snug">
-          Los ratios por persona y día solo se calculan contra días efectivamente trabajados de ops_rrhh
-          (persona × mes). {FUENTE_DESBLOQUEO_RRHH}
+          {NOTA_DIAS_EFECTIVOS} {FUENTE_DESBLOQUEO_RRHH}
         </p>
+
 
         <p className="mt-3 text-[12px] text-ink/50">
           El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}

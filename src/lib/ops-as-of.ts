@@ -16,6 +16,7 @@
 export type DominioCarga =
   | "ot"
   | "rrhh"
+  | "rrhh_logistica"
   | "coste"
   | "pieza_solicitud"
   | "expedicion"
@@ -24,11 +25,14 @@ export type DominioCarga =
   | "geo"
   | "registry"
   | "alias"
-  | "calendario";
+  | "calendario"
+  | "csat"
+  | "reclamaciones";
 
 export const LABEL_DOMINIO_CARGA: Record<DominioCarga, string> = {
   ot: "Órdenes de trabajo",
   rrhh: "RRHH (días trabajados)",
+  rrhh_logistica: "RRHH logística (días por persona)",
   coste: "Coste mensual",
   pieza_solicitud: "Solicitudes de pieza",
   expedicion: "Expediciones",
@@ -38,10 +42,13 @@ export const LABEL_DOMINIO_CARGA: Record<DominioCarga, string> = {
   registry: "Registry contractual",
   alias: "Alias cliente ERP → contrato",
   calendario: "Calendario laboral",
+  csat: "Satisfacción de cliente",
+  reclamaciones: "Reclamaciones",
 };
 
 /** Dominio que gobierna el reloj operativo de toda la sección. */
 export const DOMINIO_OPERATIVO: DominioCarga = "ot";
+
 
 export type CargaDominio = {
   dominio: string;
@@ -106,22 +113,26 @@ export function etiquetaAsOf(fecha: string | null | undefined, dominio: DominioC
     : `${LABEL_DOMINIO_CARGA[dominio]} a ${fmtFechaEs(fecha)}`;
 }
 
-// ─── Obsolescencia ───────────────────────────────────────────────────────────
+// ─── Frescura por dominio ────────────────────────────────────────────────────
 
-/** Más de 7 días entre la fecha efectiva y hoy: el cuadro de mando va por detrás. */
+/** Hasta 7 días de desfase, la lectura sigue siendo la foto reciente. */
 export const UMBRAL_OBSOLESCENCIA_DIAS = 7;
+/** Por encima de 31 días el dato ya no describe la operación actual. */
+export const UMBRAL_DESACTUALIZADO_DIAS = 31;
 
-export type EstadoFrescuraDominio = "al_dia" | "obsoleto" | "sin_dato";
+export type EstadoFrescuraDominio = "fresco" | "aceptable" | "desactualizado" | "sin_dato";
 
 export const LABEL_FRESCURA_DOMINIO: Record<EstadoFrescuraDominio, string> = {
-  al_dia: "Al día",
-  obsoleto: "Obsoleto",
+  fresco: "Fresco",
+  aceptable: "Aceptable",
+  desactualizado: "Desactualizado",
   sin_dato: "Sin dato",
 };
 
 export type FrescuraDominio = {
   dominio: string;
   label: string;
+  fuente: string | null;
   asOf: string | null;
   ultimaCarga: string | null;
   filas: number;
@@ -135,6 +146,16 @@ const diasEntre = (desdeIso: string, ahora: Date): number =>
   Math.floor((Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate()) -
     Date.parse(`${desdeIso.slice(0, 10)}T00:00:00Z`)) / 86_400_000);
 
+/** Clasificación en tres tramos: fresco ≤7 d · aceptable ≤31 d · desactualizado >31 d. */
+export const clasificarFrescura = (dias: number | null): EstadoFrescuraDominio =>
+  dias == null
+    ? "sin_dato"
+    : dias <= UMBRAL_OBSOLESCENCIA_DIAS
+      ? "fresco"
+      : dias <= UMBRAL_DESACTUALIZADO_DIAS
+        ? "aceptable"
+        : "desactualizado";
+
 export function frescuraDominio(
   cargas: readonly CargaDominio[],
   dominio: DominioCarga | string,
@@ -146,6 +167,7 @@ export function frescuraDominio(
     return {
       dominio: String(dominio),
       label,
+      fuente: c?.fuente ?? null,
       asOf: null,
       ultimaCarga: c?.last_successful_load ?? null,
       filas: c?.filas ?? 0,
@@ -157,19 +179,20 @@ export function frescuraDominio(
     };
   }
   const dias = diasEntre(c.data_as_of_date, ahora);
-  const estado: EstadoFrescuraDominio = dias > UMBRAL_OBSOLESCENCIA_DIAS ? "obsoleto" : "al_dia";
+  const estado = clasificarFrescura(dias);
   return {
     dominio: String(dominio),
     label,
+    fuente: c.fuente || null,
     asOf: c.data_as_of_date,
     ultimaCarga: c.last_successful_load,
     filas: c.filas,
     dias,
     estado,
     texto:
-      estado === "obsoleto"
-        ? `${label}: dato a ${fmtFechaEs(c.data_as_of_date)}, ${dias} días por detrás de hoy.`
-        : `${label}: dato a ${fmtFechaEs(c.data_as_of_date)} (${dias} días).`,
+      estado === "fresco"
+        ? `${label}: dato a ${fmtFechaEs(c.data_as_of_date)} (${dias} días).`
+        : `${label}: dato a ${fmtFechaEs(c.data_as_of_date)}, ${dias} días por detrás de hoy.`,
   };
 }
 
@@ -178,18 +201,23 @@ export function frescuraDominio(
  * lo que se lee NO es la foto de hoy.
  */
 export function avisoObsolescencia(f: FrescuraDominio): string | null {
-  if (f.estado === "sin_dato") return null;
-  if (f.estado !== "obsoleto" || f.dias == null) return null;
+  if (f.estado === "sin_dato" || f.estado === "fresco" || f.dias == null) return null;
   return `Los datos de ${f.label.toLowerCase()} reflejan la situación a ${fmtFechaEs(f.asOf)}, hace ${f.dias} días. Las antigüedades y el backlog se miden contra esa fecha, no contra hoy: la foto real de hoy puede diferir.`;
 }
 
 /** Frescura de todos los dominios cargados, ordenada por obsolescencia. */
 export function frescuraTodos(cargas: readonly CargaDominio[], ahora: Date = new Date()): FrescuraDominio[] {
-  const orden: Record<EstadoFrescuraDominio, number> = { obsoleto: 0, al_dia: 1, sin_dato: 2 };
+  const orden: Record<EstadoFrescuraDominio, number> = {
+    desactualizado: 0,
+    aceptable: 1,
+    fresco: 2,
+    sin_dato: 3,
+  };
   return cargas
     .map((c) => frescuraDominio(cargas, c.dominio, ahora))
     .sort((a, b) => orden[a.estado] - orden[b.estado] || (b.dias ?? -1) - (a.dias ?? -1));
 }
+
 
 /**
  * Dos dominios que se leen juntos (p. ej. OTs y expediciones) con fechas

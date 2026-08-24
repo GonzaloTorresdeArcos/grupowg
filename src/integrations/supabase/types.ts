@@ -680,6 +680,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_rrhh_logistica: {
+        Row: {
+          almacen_base: string
+          created_at: string
+          equipo: string | null
+          fecha: string
+          id: string
+          jornada_horas: number | null
+          nombre: string | null
+          origen_dato: string
+          persona_id: string
+          presente: boolean
+          updated_at: string
+        }
+        Insert: {
+          almacen_base: string
+          created_at?: string
+          equipo?: string | null
+          fecha: string
+          id?: string
+          jornada_horas?: number | null
+          nombre?: string | null
+          origen_dato?: string
+          persona_id: string
+          presente?: boolean
+          updated_at?: string
+        }
+        Update: {
+          almacen_base?: string
+          created_at?: string
+          equipo?: string | null
+          fecha?: string
+          id?: string
+          jornada_horas?: number | null
+          nombre?: string | null
+          origen_dato?: string
+          persona_id?: string
+          presente?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ops_sla_registry: {
         Row: {
           bonus: Json | null
@@ -1757,7 +1799,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ops_data_freshness: {
+        Row: {
+          created_at: string | null
+          data_as_of_date: string | null
+          dominio: string | null
+          filas: number | null
+          fuente: string | null
+          last_successful_load: string | null
+          notas: string | null
+          origen: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_as_of_date?: string | null
+          dominio?: string | null
+          filas?: number | null
+          fuente?: string | null
+          last_successful_load?: string | null
+          notas?: string | null
+          origen?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_as_of_date?: string | null
+          dominio?: string | null
+          filas?: number | null
+          fuente?: string | null
+          last_successful_load?: string | null
+          notas?: string | null
+          origen?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       grant_admin_by_email: { Args: { _email: string }; Returns: string }

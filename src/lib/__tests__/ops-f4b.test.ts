@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { PLANTILLAS, detectTable, normalizeRow } from "@/lib/ops-csv";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fechaAsOfDelLote, DOMINIO_POR_TABLA } from "@/lib/ops-csv";
@@ -19,7 +20,7 @@ import {
   ratiosPorPersonaDiaRrhh,
   PENDIENTE_RRHH_LABEL,
   FUENTE_DESBLOQUEO_RRHH,
-  type DiaTrabajadoRrhh,
+  type DiaRrhhLogistica,
   type FilaExpedicion,
 } from "@/lib/ops-logistica";
 import { construirAsuntos, situationLine } from "@/lib/ops-panorama";
@@ -41,15 +42,21 @@ describe("F4B · fecha efectiva del dato", () => {
 
   it("declara obsolescencia cuando el dato va más de 7 días por detrás", () => {
     const f = frescuraDominio(cargas(), "ot", new Date("2026-08-24T00:00:00Z"));
-    expect(f.estado).toBe("obsoleto");
+    expect(f.estado).toBe("aceptable");
     expect(f.dias).toBe(30);
     expect(avisoObsolescencia(f)).toContain("no contra hoy");
   });
 
   it("dentro del umbral no genera aviso", () => {
     const f = frescuraDominio(cargas(), "ot", new Date("2026-07-29T00:00:00Z"));
-    expect(f.estado).toBe("al_dia");
+    expect(f.estado).toBe("fresco");
     expect(avisoObsolescencia(f)).toBeNull();
+  });
+
+  it("por encima de 31 días el dominio queda desactualizado", () => {
+    const f = frescuraDominio(cargas(), "ot", new Date("2026-10-01T00:00:00Z"));
+    expect(f.estado).toBe("desactualizado");
+    expect(avisoObsolescencia(f)).toContain("no contra hoy");
   });
 
   it("un desfase pequeño entre dominios no se marca; uno grande sí", () => {
@@ -122,10 +129,8 @@ describe("F4B · una sola cifra de espera de repuesto", () => {
     expect(a?.volumen).toBe(1234);
   });
 
-  it("sin Supply cae a la etapa derivada y lo declara", () => {
-    const a = asunto(baseAsuntos);
-    expect(a?.volumen).toBe(800);
-    expect(a?.hecho).toContain("etapa derivada");
+  it("sin Supply no se publica el asunto: no se calcula en paralelo", () => {
+    expect(asunto(baseAsuntos)).toBeUndefined();
   });
 
   it("no atribuye causalidad al suministro", () => {
@@ -215,14 +220,14 @@ describe("F4B · jerarquía almacén → equipo → persona", () => {
 describe("F4B · los ratios por persona y día esperan a RRHH", () => {
   it("sin RRHH son diagnóstico interno, no medida de rendimiento", () => {
     for (const k of INDICADORES_REQUIEREN_RRHH) {
-      expect(estadoIndicador(k, false)).toBe("diagnostico_interno");
+      expect(estadoIndicador(k, false)).toBe("pendiente_rrhh_logistica");
       expect(estadoIndicador(k, true)).toBe("publicable");
     }
     expect(estadoIndicador("lineas_hora", false)).toBe("publicable");
   });
 
   it("la nota explica que el denominador es provisional", () => {
-    expect(NOTA_DIAS_EFECTIVOS).toContain("días efectivamente trabajados");
+    expect(NOTA_DIAS_EFECTIVOS).toContain("días reales de presencia");
     expect(NOTA_DIAS_EFECTIVOS).toContain("ops_rrhh");
   });
 });
@@ -237,11 +242,17 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
     exp({ expedicion_id: "4", preparado_por: "ANA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
     exp({ expedicion_id: "5", preparado_por: "SIN FICHA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
   ];
-  const rrhh: DiaTrabajadoRrhh[] = [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: 20 }];
+  // F4B: presencia diaria real (una fila por persona y día), no meses agregados.
+  const rrhh: DiaRrhhLogistica[] = Array.from({ length: 20 }, (_, i) => ({
+    persona_id: "ANA",
+    almacen_base: "CENTRAL",
+    fecha: `2026-06-${String(i + 1).padStart(2, "0")}`,
+    presente: true,
+  }));
 
   it("sin RRHH disponible no devuelve ninguna cifra", () => {
     const r = ratiosPorPersonaDiaRrhh(filasRrhh, rrhh, false);
-    expect(r.estado).toBe("pendiente_rrhh");
+    expect(r.estado).toBe("pendiente_rrhh_logistica");
     expect(r.expedicionesPorPersonaDia).toBeNull();
     expect(r.lineasPorPersonaDia).toBeNull();
     expect(r.unidadesPorPersonaDia).toBeNull();
@@ -262,8 +273,8 @@ describe("F4B.1 · ratios por persona y día trabajado", () => {
   });
 
   it("RRHH sin días trabajados útiles no desbloquea nada", () => {
-    const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: null }], true);
-    expect(r.estado).toBe("pendiente_rrhh");
+    const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona_id: "ANA", almacen_base: "CENTRAL", fecha: "2026-06-01", presente: false }], true);
+    expect(r.estado).toBe("pendiente_rrhh_logistica");
   });
 
   it("la etiqueta de bloqueo dice qué falta y qué fuente lo desbloquea", () => {
@@ -293,5 +304,63 @@ describe("F4B.1 · guardia: la página no publica el proxy de días-persona", ()
   it("no queda ninguna etiqueta de 'diagnóstico interno' en la página", () => {
     expect(fuente.toLowerCase()).not.toContain("diagnóstico interno");
     expect(fuente).toContain("PENDIENTE_RRHH_LABEL");
+  });
+});
+
+// ─── F4B · cierre: Management Attention Supply y plantilla de presencia ──────
+
+describe("F4B · Management Attention Supply", () => {
+  const conSupply = {
+    ...baseAsuntos,
+    supplyPte: { n: 1234, n30: 456, edad_media: 61.4, n_prev: 1100, asOf: "2026-07-25" },
+  };
+
+  it("sin solicitudes cargadas declara que la cadena no es trazable", () => {
+    const a = construirAsuntos({
+      ...conSupply,
+      supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: null },
+    }).find((x) => x.fenomeno === "supply_sin_trazabilidad");
+    expect(a?.hecho).toContain("ops_pieza_solicitud");
+    expect(a?.confianza).toBe("alta");
+    expect(a?.destino).toBe("/operaciones/calidad-datos#frescura");
+  });
+
+  it("con trazabilidad suficiente el asunto desaparece", () => {
+    const out = construirAsuntos({
+      ...conSupply,
+      supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: 2900 },
+    });
+    expect(out.find((x) => x.fenomeno === "supply_sin_trazabilidad")).toBeUndefined();
+  });
+
+  it("la tendencia del asunto de repuesto usa la cifra previa de Supply", () => {
+    const a = construirAsuntos(conSupply).find((x) => x.fenomeno === "espera_repuesto");
+    expect(a?.hecho).toContain("1100");
+    expect(a?.deterioro).toBe(true);
+  });
+});
+
+describe("F4B · plantilla de presencia diaria de logística", () => {
+  it("el importador detecta y normaliza una fila persona × día", () => {
+    expect(PLANTILLAS.ops_rrhh_logistica).toEqual([
+      "persona_id", "nombre", "equipo", "almacen_base", "fecha", "jornada_horas", "presente",
+    ]);
+    const header = [...PLANTILLAS.ops_rrhh_logistica];
+    expect(detectTable(header)).toBe("ops_rrhh_logistica");
+    const rec = normalizeRow("ops_rrhh_logistica", header, [
+      "P1", "Ana", "PICKING A", "SAN AGUSTIN", "02/06/2026", "8", "si",
+    ]);
+    expect(rec?.persona_id).toBe("P1");
+    expect(rec?.fecha).toBe("2026-06-02");
+    expect(rec?.presente).toBe(true);
+    expect(rec?.origen_dato).toBe("importador");
+    expect(DOMINIO_POR_TABLA.ops_rrhh_logistica).toBe("rrhh_logistica");
+    expect(fechaAsOfDelLote("ops_rrhh_logistica", [{ fecha: "2026-06-02" }], new Date("2026-07-01T00:00:00Z"))).toBe("2026-06-02");
+  });
+
+  it("sin persona o sin día la fila se descarta", () => {
+    const header = [...PLANTILLAS.ops_rrhh_logistica];
+    expect(normalizeRow("ops_rrhh_logistica", header, ["", "Ana", "", "SAN AGUSTIN", "02/06/2026", "8", "si"])).toBeNull();
+    expect(normalizeRow("ops_rrhh_logistica", header, ["P1", "Ana", "", "SAN AGUSTIN", "", "8", "si"])).toBeNull();
   });
 });

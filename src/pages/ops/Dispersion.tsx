@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
@@ -443,6 +444,7 @@ export default function OpsDispersion() {
           Dónde se produce la demanda, quién la cubre y con qué dependencia de recursos.
         </p>
       </header>
+      <DataAsOf cruza={["geo"]} />
 
       {/* Aviso obligatorio de limitación del dato */}
       <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12px] text-amber-900 leading-relaxed">

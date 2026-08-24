@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import {
@@ -215,6 +216,7 @@ const Delegaciones = () => {
           </p>
         </div>
       </header>
+      <DataAsOf />
 
       {/* Tabla de delegaciones */}
       <section>

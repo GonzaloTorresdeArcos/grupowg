@@ -273,15 +273,37 @@ export type AsuntosInput = {
   provincias: Array<{ provincia: string; abiertas_30: number }>;
   conclusiones: Conclusion[];
   /**
-   * F4B · Cifra AUTORITATIVA de OTs en espera de repuesto, tal cual la devuelve
-   * `ops_supply.pte_piezas_actual`. Cuando está presente manda sobre la etapa
-   * derivada de `etapas`: Panorama y Repuestos NO pueden dar cifras distintas.
-   * `asOf` es la fecha efectiva contra la que está medida la antigüedad.
+   * F4B · Única fuente del asunto `espera_repuesto`: `ops_supply.pte_piezas_actual`.
+   * Sin este bloque el asunto no se publica.
    */
-  supplyPte?: { n: number; n30: number; edad_media: number | null; asOf?: string | null } | null;
+  supplyPte?: {
+    n: number;
+    n30: number;
+    edad_media: number | null;
+    n_prev?: number | null;
+    asOf?: string | null;
+    topClientes?: ReadonlyArray<{ cliente: string; n: number }>;
+    /** Clientes del top con regla contractual que excluye demora por repuesto. */
+    exposicionRegistry?: readonly string[];
+  } | null;
+
+  /**
+   * F4B · Management Attention Supply: estado de la trazabilidad de la cadena de
+   * suministro. Sin solicitudes de pieza cargadas, ninguna cifra de espera puede
+   * atribuirse a suministro; el hueco se declara como asunto de dirección.
+   */
+  supplyTrazabilidad?: {
+    /** OTs del período marcadas con necesidad de pieza. */
+    otsConPieza: number;
+    /** Cuántas de ellas tienen solicitud registrada. `null` si no hay fuente. */
+    conSolicitud: number | null;
+  } | null;
 };
 
 /** Fuente declarada de la cifra de espera de repuesto mostrada en el asunto. */
+/** Por debajo de esta cobertura de solicitudes, la cadena no es trazable. */
+export const UMBRAL_TRAZABILIDAD_SUPPLY = 0.5;
+
 export type FuenteEsperaRepuesto = "ops_supply" | "etapa_derivada";
 
 
@@ -336,35 +358,70 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
   }
 
   // 3. Concentración en espera de repuesto (conector Service ↔ Supply).
-  //    F4B: la cifra la manda Supply. Si `supplyPte` viene informado, es la que
-  //    se muestra; la etapa derivada solo se usa como respaldo cuando no llega.
-  const etapaRep = i.etapas.find((e) => e.categoria === "esperando_repuesto");
-  const rep = i.supplyPte
-    ? { n: i.supplyPte.n, n30: i.supplyPte.n30, edad: i.supplyPte.edad_media }
-    : etapaRep
-      ? { n: etapaRep.n, n30: etapaRep.n30, edad: etapaRep.edadMedia }
-      : null;
-  const fuenteRep: FuenteEsperaRepuesto = i.supplyPte ? "ops_supply" : "etapa_derivada";
+  //    F4B: ÚNICA FUENTE DE VERDAD = ops_supply.pte_piezas_actual. Si Supply no
+  //    llega, el asunto no se publica: no se calcula en paralelo desde etapas.
+  const rep = i.supplyPte;
+  const fuenteRep: FuenteEsperaRepuesto = "ops_supply";
   if (rep && i.abiertas > 0 && rep.n / i.abiertas >= UMBRAL_SHARE_REPUESTO) {
-    const fecha = i.supplyPte?.asOf ? ` a ${fmtFechaEs(i.supplyPte.asOf)}` : "";
+    const fecha = rep.asOf ? ` a ${fmtFechaEs(rep.asOf)}` : "";
+    const tendencia =
+      i.hayComparable && rep.n_prev != null
+        ? ` Tendencia frente al período comparable: ${num(rep.n_prev)} → ${num(rep.n)} OTs.`
+        : " Sin período comparable: no se declara tendencia.";
+    const top = (rep.topClientes ?? []).slice(0, 3);
+    const topTxt = top.length
+      ? ` Concentración por cliente contractual: ${top.map((t) => `${t.cliente} (${num(t.n)})`).join(", ")}.`
+      : "";
+    const exposicion = (rep.exposicionRegistry ?? []).slice(0, 2);
+    const expoTxt = exposicion.length
+      ? ` Potencial exposición contractual asociada: ${exposicion.join(", ")} (regla en borrador).`
+      : "";
     cand.push({
       fenomeno: "espera_repuesto",
       titulo: "Volumen relevante de OTs en espera de repuesto",
       hecho: `${num(rep.n)} OTs abiertas (${pct1(rep.n / i.abiertas)}) están en "${LABEL_CATEGORIA.esperando_repuesto}"${fecha}; ${num(rep.n30)} superan 30 días${
-        rep.edad != null ? ` y la antigüedad media es de ${rep.edad.toFixed(1).replace(".", ",")} días` : ""
-      }. Fuente: ${fuenteRep === "ops_supply" ? "ops_supply.pte_piezas_actual" : "etapa derivada de la OT"}.`,
+        rep.edad_media != null
+          ? ` y la antigüedad media as-of es de ${rep.edad_media.toFixed(1).replace(".", ",")} días (proxy: antigüedad de OT, no tiempo esperando pieza)`
+          : ""
+      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}`,
       hipotesis:
         "Concentración observada en la etapa de espera de repuesto. Sin trazabilidad de la solicitud no se puede afirmar que el suministro sea la causa del retraso: es un potencial efecto por confirmar.",
       accion: "Revisar en Repuestos el desglose por cliente contractual y antigüedad antes de decidir sobre capacidad o proveedor.",
       impacto: clasificarImpacto(rep.n, univ),
       confianza: clasificarConfianza(rep.n, i.hayComparable),
-      deterioro: false,
+      deterioro: rep.n_prev != null && rep.n > rep.n_prev,
       volumen: rep.n,
-      destino: "/operaciones/repuestos",
+      destino: "/operaciones/repuestos#esperando-pieza",
       destinoLabel: "Ver repuestos y stock",
     });
   }
 
+
+
+  // 3.b Management Attention Supply: hueco de trazabilidad de la cadena.
+  const tz = i.supplyTrazabilidad;
+  if (tz && tz.otsConPieza > 0) {
+    const cob = tz.conSolicitud == null ? null : tz.conSolicitud / tz.otsConPieza;
+    if (cob == null || cob < UMBRAL_TRAZABILIDAD_SUPPLY) {
+      cand.push({
+        fenomeno: "supply_sin_trazabilidad",
+        titulo: "La cadena de suministro no es trazable extremo a extremo",
+        hecho:
+          cob == null
+            ? `${num(tz.otsConPieza)} OTs del período requieren pieza y no hay ninguna solicitud registrada en ops_pieza_solicitud.`
+            : `Solo ${pct1(cob)} de las ${num(tz.otsConPieza)} OTs con pieza tienen solicitud registrada (${num(tz.conSolicitud ?? 0)}).`,
+        hipotesis:
+          "Sin la solicitud no se puede separar espera de proveedor, espera de almacén y tiempo de taller: cualquier lectura de retraso por suministro sería asociación observada, no medición.",
+        accion: "Cargar ops_pieza_solicitud con fechas de solicitud, disponibilidad y montaje antes de fijar objetivos de suministro.",
+        impacto: clasificarImpacto(tz.otsConPieza, univ),
+        confianza: "alta",
+        deterioro: false,
+        volumen: tz.otsConPieza,
+        destino: "/operaciones/calidad-datos#frescura",
+        destinoLabel: "Ver calidad de datos",
+      });
+    }
+  }
 
   // 4. Ratio de bajas creciendo (salida que no repara).
   if (i.ratioBajas != null && i.ratioBajasPrev != null && i.ratioBajas > i.ratioBajasPrev + UMBRAL_SUBIDA_BAJAS_PP) {
