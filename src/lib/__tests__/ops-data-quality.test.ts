@@ -145,7 +145,8 @@ describe("contractual data readiness", () => {
       campos_fact_ot: { ...medidas().campos_fact_ot, programa: 1, fecha_primer_contacto: 1 },
       campos_ausentes_fact_ot: [],
     });
-    const r = { ...FIXTURES_REGISTRY[8], calendario: "natural" as const };
+    const base = FIXTURES_REGISTRY.find((x) => x.cliente === "ELECTRO DEPOT ESPAÑA S.L.U")!;
+    const r = { ...base, calendario: "natural" as const };
     expect(readinessRegla(r, perfecto).bloqueos.some((b) => b.tipo === "validacion")).toBe(true);
     expect(readinessRegla({ ...r, estado_regla: "validada" }, perfecto).medible).toBe(true);
   });
