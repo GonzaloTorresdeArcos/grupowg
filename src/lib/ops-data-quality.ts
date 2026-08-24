@@ -12,8 +12,9 @@
  * estima, se interpola ni se rellena por defecto.
  */
 
-import type { EventoOT, ReglaSla } from "@/lib/ops-contractual";
-import { FUENTE_EVENTO, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
+import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual";
+import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
+
 
 export type EstadoDominio = "disponible" | "parcial" | "pendiente";
 
@@ -74,7 +75,10 @@ export type MedidasDataQuality = {
   };
   tablas: Record<string, boolean>;
   registry_reglas: number;
+  /** Festivos cargados por territorio en ops_calendario_laboral (hoy vacía). */
+  calendario_laboral?: Record<string, number>;
 };
+
 
 // ─── Definiciones de dominio ─────────────────────────────────────────────────
 
