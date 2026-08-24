@@ -199,21 +199,30 @@ export function desfaseEntre(
   cargas: readonly CargaDominio[],
   a: DominioCarga,
   b: DominioCarga,
-): { dias: number | null; texto: string } {
+): { a: DominioCarga; b: DominioCarga; dias: number | null; relevante: boolean; texto: string } {
   const fa = asOf(cargas, a);
   const fb = asOf(cargas, b);
   if (!fa || !fb) {
     return {
+      a,
+      b,
       dias: null,
+      relevante: true,
       texto: `Sin fecha efectiva en ${LABEL_DOMINIO_CARGA[!fa ? a : b].toLowerCase()}: los dos dominios no son comparables en el tiempo.`,
     };
   }
   const dias = Math.round((Date.parse(fb) - Date.parse(fa)) / 86_400_000);
   return {
+    a,
+    b,
     dias,
+    // Un desfase dentro del umbral de frescura no cambia la lectura; por encima
+    // sí, porque se estarían cruzando dos fotos de momentos distintos.
+    relevante: Math.abs(dias) > UMBRAL_OBSOLESCENCIA_DIAS,
     texto:
       dias === 0
         ? `${LABEL_DOMINIO_CARGA[a]} y ${LABEL_DOMINIO_CARGA[b].toLowerCase()} están a la misma fecha (${fmtFechaEs(fa)}).`
         : `${LABEL_DOMINIO_CARGA[a]} a ${fmtFechaEs(fa)} frente a ${LABEL_DOMINIO_CARGA[b].toLowerCase()} a ${fmtFechaEs(fb)}: ${Math.abs(dias)} días de desfase entre ambas fuentes.`,
   };
 }
+
