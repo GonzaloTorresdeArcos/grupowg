@@ -105,7 +105,7 @@ const BUCKET_COLOR: Record<BucketId, string> = {
 
 // ─── Página ──────────────────────────────────────────────────────────────────
 const SLA = () => {
-  const { filters, rpcParams } = useOpsFilters();
+  const { filters, rpcParams, prevRange, modo } = useOpsFilters();
   const [data, setData] = useState<Payload | null>(null);
   const [kpisDash, setKpisDash] = useState<{ pct_sla20?: number } | null>(null);
   const [loading, setLoading] = useState(true);
