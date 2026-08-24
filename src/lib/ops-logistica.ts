@@ -14,6 +14,8 @@ export type FilaExpedicion = {
   picking_inicio: string | null;
   picking_fin: string | null;
   expedicion_timestamp: string | null;
+  /** Fecha de salida declarada en cabecera; respaldo cuando no hay marca horaria. */
+  fecha_expedicion?: string | null;
   fecha_entrega_prevista: string | null;
   fecha_entrega_real: string | null;
   estado_expedicion: string;
@@ -24,6 +26,17 @@ export type FilaExpedicion = {
   num_unidades: number | null;
   num_ot_abastecidas: number | null;
 };
+
+/**
+ * Enlace expedición → disponibilidad de la pieza (ops_expedicion_linea → ops_pieza_solicitud).
+ * Se usa como referencia preferente para medir la rapidez de salida.
+ */
+export type RefDisponibilidad = {
+  almacen_base: string;
+  expedicion_id: string;
+  fecha_disponibilidad: string | null;
+};
+
 
 const ms = (a: string | null, b: string | null): number | null => {
   if (!a || !b) return null;
