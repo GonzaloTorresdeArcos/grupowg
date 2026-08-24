@@ -135,7 +135,7 @@ const navee = {
   programa: "Garantía fabricante Navee/Brightway",
 };
 
-export const FIXTURES_REGISTRY: readonly ReglaSla[] = [
+const FILAS: readonly RowBase[] = [
   // ── PROFESIONAL · METRO / MAKRO ────────────────────────────────────────────
   {
     ...metro,
@@ -543,7 +543,25 @@ export const FIXTURES_REGISTRY: readonly ReglaSla[] = [
     exposicion_estado: "pendiente_cuantificar",
     notas: "la arquitectura admite programas sin SLA cuantificado; no aplicar ≤20d como contractual",
   },
-] as const;
+];
+
+/**
+ * (a) Estado de EXTRACCIÓN: `extraida_contrato` solo si el contrato revisado
+ * aporta un valor u obligación cuantificada. Es INDEPENDIENTE del estado de
+ * validación (`estado_regla`, hoy siempre `borrador`) y de la medibilidad
+ * técnica, que la deriva el readiness y nunca se almacena.
+ */
+export const estadoExtraccionDe = (r: RowBase): EstadoExtraccion =>
+  r.target != null || r.meses_consecutivos != null || r.ventana_garantia_dias != null
+    ? "extraida_contrato"
+    : "pendiente_extraer";
+
+export const FIXTURES_REGISTRY: readonly ReglaSla[] = FILAS.map((r) => ({
+  ...r,
+  estado_extraccion: estadoExtraccionDe(r),
+  territorio_calendario: r.calendario === "laborable_es" ? "ES" : null,
+}));
+
 
 /** Targets numéricos declarados por cliente (control anti-invención). */
 export const TARGETS_DECLARADOS: Record<string, number[]> = {
