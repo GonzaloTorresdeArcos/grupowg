@@ -668,8 +668,13 @@ export type ResumenReadiness = {
   puedeDeclararCumplimiento: boolean;
 };
 
-export const resumenReadiness = (reglas: readonly ReglaSla[], m: MedidasDataQuality): ResumenReadiness => {
-  const evaluadas = reglas.map((r) => readinessRegla(r, m));
+export const resumenReadiness = (
+  reglas: readonly ReglaSla[],
+  m: MedidasDataQuality,
+  ctx: ContextoReadiness = {},
+): ResumenReadiness => {
+  const evaluadas = reglas.map((r) => readinessRegla(r, m, ctx));
+
   const mapa = new Map<string, { clave: string; motivo: string; n: number }>();
   for (const e of evaluadas) {
     for (const b of e.bloqueos) {
