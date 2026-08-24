@@ -41,7 +41,9 @@ const base = {
   vigencia_hasta: null,
   fuente_contractual: FUENTE,
   estado_regla: "borrador" as const,
-  fase: "postventa" as const,
+  /** null = la regla NO condiciona por fase y no exige conocer la fase de la OT. */
+  fase: null as ReglaSla["fase"],
+
   ventana_medicion: "por_ot" as const,
   calendario: "natural" as const,
   regla_medicion: "por_ot" as const,
@@ -69,10 +71,13 @@ const carrefour = {
   cliente: "CARREFOUR",
   cliente_wg_patron: "CARREFOUR%",
   programa: "Postventa Carrefour",
+  // Único cliente con obligaciones diferenciadas por fase.
+  fase: "postventa" as const,
   tipo_consecuencia: "coste_baja" as const,
   exposicion_estado: "identificada" as const,
   evento_inicio: "creacion_ot" as const,
 };
+
 
 const alcampo = {
   ...base,
