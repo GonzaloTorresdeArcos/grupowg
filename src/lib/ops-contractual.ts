@@ -139,6 +139,7 @@ export const CAMPOS_OBLIGATORIOS_REGLA: readonly (keyof ReglaSla)[] = [
   "business_line", "cliente", "programa", "kpi", "evento_inicio", "evento_fin",
   "unidad", "calendario", "regla_medicion", "ventana_medicion", "imputabilidad",
   "tipo_consecuencia", "exposicion_estado", "tipo_target", "estado_regla",
+  "estado_extraccion",
 ];
 
 // ─── Calendario laboral inyectable ───────────────────────────────────────────
@@ -153,17 +154,65 @@ export type CalendarioLaboral = {
   horaFin?: number;
 };
 
+export const AMBITOS_CALENDARIO = ["nacional", "autonomico", "local"] as const;
+export type AmbitoCalendario = (typeof AMBITOS_CALENDARIO)[number];
+
+/** Fila de `public.ops_calendario_laboral` (hoy la tabla está vacía). */
+export type FestivoCalendario = {
+  territorio: string;
+  ambito: AmbitoCalendario;
+  fecha: string;
+  descripcion?: string | null;
+  fuente?: string | null;
+};
+
+/**
+ * Calendario territorial cargado desde datos. NUNCA se construye por defecto:
+ * si no hay festivos cargados para el territorio, `construirCalendario`
+ * devuelve null y el motor deja la regla como no evaluable. Está PROHIBIDO
+ * sustituirlo silenciosamente por un lunes–viernes implícito.
+ */
+export type CalendarioLaborable = {
+  territorio: string;
+  festivos: Date[];
+  ambitos: AmbitoCalendario[];
+};
+
+export const construirCalendario = (
+  territorio: string | null | undefined,
+  filas: readonly FestivoCalendario[],
+): CalendarioLaborable | null => {
+  if (!territorio) return null;
+  const propias = filas.filter((f) => f.territorio === territorio);
+  if (propias.length === 0) return null;
+  return {
+    territorio,
+    festivos: propias.map((f) => new Date(`${f.fecha}T00:00:00Z`)),
+    ambitos: Array.from(new Set(propias.map((f) => f.ambito))),
+  };
+};
+
+/** Adapta un calendario territorial al formato que consume el motor. */
+export const aCalendarioLaboral = (c: CalendarioLaborable | null): CalendarioLaboral | null =>
+  c ? { festivos: c.festivos.map((d) => d.toISOString().slice(0, 10)) } : null;
+
 // ─── Entrada de eventos de una OT ────────────────────────────────────────────
 
 export type EventosOT = {
   /** Marcas de tiempo ISO por evento. Ausencia = evento no registrado. */
   eventos: Partial<Record<EventoOT, string>>;
   /**
+   * Fase de la OT. `undefined` = dato NO disponible (distinto de `regla.fase === null`,
+   * que significa que la regla no condiciona por fase).
+   */
+  fase?: Fase | null;
+  /**
    * Pausas declaradas por tipo (en horas). SOLO se descuentan si la regla las
    * declara en `pausas_exclusiones`. Nunca se pausa un reloj automáticamente.
    */
   pausas?: Partial<Record<string, number>>;
 };
+
 
 // ─── Resultado ───────────────────────────────────────────────────────────────
 
