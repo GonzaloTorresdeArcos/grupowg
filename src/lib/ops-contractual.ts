@@ -94,6 +94,10 @@ export type ReglaSla = {
   tipologia_servicio: string | null;
   /** Condición contractual de aplicación de la regla (p. ej. 'sin_solicitud_pieza_ni_baja'). */
   condicion_aplicacion?: string | null;
+  /**
+   * `null` = la regla NO condiciona por fase: aplica tanto en preventa como en
+   * postventa y NO exige conocer la fase de la OT. Un valor concreto sí la exige.
+   */
   fase: Fase | null;
   kpi: string;
   evento_inicio: EventoInicio;
