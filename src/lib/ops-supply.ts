@@ -283,7 +283,16 @@ export const TRAMOS_CADENA: readonly { clave: string; desde: EtapaCadena; hasta:
   { clave: "picking_expedicion", desde: "picking", hasta: "expedicion" },
   { clave: "expedicion_entrega", desde: "expedicion", hasta: "entrega" },
   { clave: "entrega_montaje", desde: "entrega", hasta: "montaje" },
+  { clave: "montaje_cierre", desde: "montaje", hasta: "cierre" },
 ] as const;
+
+/**
+ * F4A.1 · La antigüedad de PTE. PIEZAS se calcula sobre la etapa ACTUAL de la
+ * OT, no sobre el momento en que la pieza entró en espera. Es un PROXY.
+ */
+export const NOTA_PTE_PIEZAS =
+  "Proxy de antigüedad, no tiempo real de espera de pieza: se mide desde la creación de la OT que hoy está en PTE. PIEZAS, no desde la fecha de solicitud del repuesto (ops_pieza_solicitud aún no la aporta).";
+
 
 // ─── Readiness por etapa ─────────────────────────────────────────────────────
 
@@ -359,6 +368,119 @@ export function pctTrazabilidad(c: BloqueCadena): number | null {
   if (c.solicitudes === 0 || c.ots_con_pieza_periodo === 0) return null;
   return c.ots_con_pieza_trazadas / c.ots_con_pieza_periodo;
 }
+
+// ─── F4A.1 · Cadena E2E como intervalos consecutivos ─────────────────────────
+
+/**
+ * La cadena se lee como INTERVALOS entre dos etapas consecutivas, cada uno con
+ * su propio readiness. Un intervalo solo emite cifra si sus dos extremos tienen
+ * fuente; si no, se declara pendiente y no se muestra ningún número.
+ */
+export type IntervaloCadena = {
+  clave: string;
+  desde: EtapaCadena;
+  hasta: EtapaCadena;
+  label: string;
+  estado: EstadoFuente;
+  leadTime: LeadTime | null;
+  medida: string;
+};
+
+const PEOR: Record<EstadoFuente, number> = { disponible: 0, parcial: 1, pendiente: 2 };
+
+export function intervalosCadena(c: BloqueCadena): IntervaloCadena[] {
+  const readiness = new Map(readinessCadena(c).map((r) => [r.etapa, r]));
+  return TRAMOS_CADENA.map((t): IntervaloCadena => {
+    const a = readiness.get(t.desde);
+    const b = readiness.get(t.hasta);
+    const estado: EstadoFuente =
+      !a || !b ? "pendiente" : PEOR[a.estado] >= PEOR[b.estado] ? a.estado : b.estado;
+    const raw = c.lead_times[t.clave];
+    const leadTime = estado === "pendiente" || !raw || raw.n === 0 ? null : { n: raw.n, medio: raw.medio, mediana: raw.mediana };
+    const label = `${LABEL_ETAPA[t.desde]} → ${LABEL_ETAPA[t.hasta]}`;
+    const medida =
+      estado === "pendiente"
+        ? `Sin fuente en uno de los extremos (${FUENTE_ETAPA[t.desde]} / ${FUENTE_ETAPA[t.hasta]}): el intervalo no es calculable.`
+        : leadTime == null
+          ? "Fuentes presentes pero ningún par de fechas completo: sin pares no hay intervalo."
+          : `${leadTime.n.toLocaleString("es-ES")} pares con ambas fechas · mediana ${d1(leadTime.mediana)} d.`;
+    return { clave: t.clave, desde: t.desde, hasta: t.hasta, label, estado, leadTime, medida };
+  });
+}
+
+// ─── F4A.1 · Stock: fill rate y stock-out ────────────────────────────────────
+
+export type FilaStock = {
+  referencia: string;
+  stock_fisico: number;
+  stock_disponible: number | null;
+  reservado: number | null;
+  en_transito: number | null;
+};
+
+export type IndicadoresStock = {
+  referencias: number;
+  /** Referencias con disponible ≤ 0 (usa físico − reservado si no viene disponible). */
+  stockOut: number;
+  pctStockOut: number | null;
+  unidadesFisicas: number;
+  unidadesReservadas: number | null;
+  unidadesEnTransito: number | null;
+  /** Frase con la medida. Vacío de datos ⇒ nada de cifras. */
+  medida: string;
+};
+
+const disponibleDe = (f: FilaStock): number =>
+  f.stock_disponible != null ? f.stock_disponible : f.stock_fisico - (f.reservado ?? 0);
+
+export function indicadoresStock(filas: readonly FilaStock[]): IndicadoresStock {
+  if (filas.length === 0) {
+    return {
+      referencias: 0, stockOut: 0, pctStockOut: null,
+      unidadesFisicas: 0, unidadesReservadas: null, unidadesEnTransito: null,
+      medida: "Sin foto de stock cargada: ops_stock_snapshot está vacía.",
+    };
+  }
+  const stockOut = filas.filter((f) => disponibleDe(f) <= 0).length;
+  const reservadas = filas.some((f) => f.reservado != null)
+    ? filas.reduce((a, f) => a + (f.reservado ?? 0), 0)
+    : null;
+  const transito = filas.some((f) => f.en_transito != null)
+    ? filas.reduce((a, f) => a + (f.en_transito ?? 0), 0)
+    : null;
+  return {
+    referencias: filas.length,
+    stockOut,
+    pctStockOut: stockOut / filas.length,
+    unidadesFisicas: filas.reduce((a, f) => a + f.stock_fisico, 0),
+    unidadesReservadas: reservadas,
+    unidadesEnTransito: transito,
+    medida: `${n0(filas.length)} referencias en la foto · ${n0(stockOut)} sin disponible (${p1(stockOut / filas.length)}).`,
+  };
+}
+
+export type FillRate = { valor: number | null; lineas: number; servidas: number; medida: string };
+
+/**
+ * Fill rate = líneas servidas desde stock sobre líneas solicitadas. Requiere
+ * detalle de línea; sin él NO se estima: se devuelve null con el motivo.
+ */
+export function fillRate(lineasSolicitadas: number, lineasServidasDeStock: number): FillRate {
+  if (lineasSolicitadas <= 0) {
+    return {
+      valor: null, lineas: 0, servidas: 0,
+      medida: "Sin líneas de solicitud cargadas: el fill rate no es calculable (ops_pieza_solicitud / ops_expedicion_linea vacías).",
+    };
+  }
+  const v = lineasServidasDeStock / lineasSolicitadas;
+  return {
+    valor: v,
+    lineas: lineasSolicitadas,
+    servidas: lineasServidasDeStock,
+    medida: `${n0(lineasServidasDeStock)} de ${n0(lineasSolicitadas)} líneas servidas desde stock (${p1(v)}).`,
+  };
+}
+
 
 // ─── Comparación con pieza vs sin pieza ──────────────────────────────────────
 
@@ -468,7 +590,7 @@ export function hallazgosImpactoPieza(cmp: ComparacionPieza): Hallazgo[] {
   return out;
 }
 
-// ─── Exposición contractual por falta de repuesto ────────────────────────────
+// ─── Potencial exposición contractual asociada a la falta de repuesto ────────────────────────────
 
 /** Claves del Registry que declaran pausa o exclusión por falta de repuesto. */
 export const CLAVES_EXCLUSION_REPUESTO: readonly string[] = [
@@ -478,7 +600,7 @@ export const CLAVES_EXCLUSION_REPUESTO: readonly string[] = [
 export type EstadoExposicion = "exposicion_identificada" | "regla_sin_exclusion" | "cliente_sin_regla";
 
 export const LABEL_EXPOSICION: Record<EstadoExposicion, string> = {
-  exposicion_identificada: "Exposición identificada",
+  exposicion_identificada: "Potencial exposición identificada",
   regla_sin_exclusion: "Regla sin exclusión declarada",
   cliente_sin_regla: "Cliente sin regla en el Registry",
 };

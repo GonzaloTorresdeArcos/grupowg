@@ -13,7 +13,16 @@ import {
   pctTrazabilidad,
   type SupplyPayload,
 } from "@/lib/ops-supply";
+import {
+  INDICADORES_PRODUCTIVIDAD,
+  NOTA_COMPARABILIDAD,
+  kpisProductividad,
+  lineaProductividad,
+  productividadPor,
+  type FilaExpedicion,
+} from "@/lib/ops-logistica";
 import { AlertTriangle, Info, Loader2, RefreshCw } from "lucide-react";
+
 
 type LogisticaPayload = {
   total_filas: number;
@@ -27,14 +36,12 @@ type LogisticaPayload = {
   por_destino: Array<{ entidad: string; n: number; coste_medio: number | null }>;
 };
 
-/** Campos reutilizados de la RPC ops_dispersion (bloque C, logística de campo). */
-type CampoPayload = {
-  kmMedia: number | null;
-  kmMediana: number | null;
-  cerradas: number | null;
-  geocodificadas: number | null;
-  costeDesplazamiento: number | null;
-};
+/** Columnas de ops_expedicion necesarias para la productividad de almacén. */
+const COLS_EXPEDICION =
+  "almacen_base,expedicion_id,preparado_por,equipo,picking_inicio,picking_fin,expedicion_timestamp," +
+  "fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
+  "coste_transporte,num_lineas,num_unidades,num_ot_abastecidas";
+
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{children}</p>
@@ -63,14 +70,12 @@ const KPIS_PREVISTOS: { kpi: string; def: string }[] = [
   { kpi: "Desglose por transportista y por tipo de destino", def: "Mismas métricas abiertas por transportista y por destino_tipo, nunca mezclados." },
 ];
 
-const num = (v: unknown): number | null => (v == null || v === "" ? null : Number(v));
-
 export default function OpsLogistica() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
   const [log, setLog] = useState<LogisticaPayload | null>(null);
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
-  const [campo, setCampo] = useState<CampoPayload | null>(null);
+  const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -103,32 +108,21 @@ export default function OpsLogistica() {
     })();
   }, [rpcParams, filters.from, filters.to, prevRange.from, prevRange.to, reloadKey]);
 
-  // (C) Logística de campo — reutiliza las RPC existentes (ops_dispersion para km,
-  // ops_costes para el importe de desplazamiento). Sin duplicar lógica de cálculo.
+  // (C) Productividad de almacén — detalle de expediciones del período.
   useEffect(() => {
     let vivo = true;
     void (async () => {
-      const [rDisp, rCost] = await Promise.all([
-        supabase.rpc("ops_dispersion" as never, {
-          p_from: filters.from, p_to: filters.to,
-          p_delegacion: filters.delegacion, p_gama: filters.gama, p_familia: filters.familia,
-        } as never),
-        supabase.rpc("ops_costes" as never, { p_from: filters.from, p_to: filters.to } as never),
-      ]);
-      if (!vivo || rDisp.error || rCost.error) return;
-      const d = (rDisp.data ?? {}) as Record<string, unknown>;
-      const k = (d.kpis ?? {}) as Record<string, unknown>;
-      const c = ((rCost.data ?? {}) as Record<string, unknown>).kpis as Record<string, unknown> | undefined;
-      setCampo({
-        kmMedia: num(k.km_media),
-        kmMediana: num(k.km_mediana),
-        cerradas: num(k.cerradas),
-        geocodificadas: num(k.geocodificadas),
-        costeDesplazamiento: num(c?.coste_desplazamiento),
-      });
+      const { data, error } = await supabase
+        .from("ops_expedicion" as never)
+        .select(COLS_EXPEDICION)
+        .gte("fecha_expedicion", filters.from)
+        .lte("fecha_expedicion", `${filters.to}T23:59:59`)
+        .limit(5000);
+      if (!vivo || error) return;
+      setExped((data ?? []) as unknown as FilaExpedicion[]);
     })();
     return () => { vivo = false; };
-  }, [filters.from, filters.to, filters.delegacion, filters.gama, filters.familia]);
+  }, [filters.from, filters.to, reloadKey]);
 
   const etiqueta = labelPeriodo(filters.from, filters.to);
   const hayExpediciones = (log?.total_filas ?? 0) > 0;
@@ -138,6 +132,13 @@ export default function OpsLogistica() {
   );
   const domExp = dominio("expediciones");
   const traz = supply ? pctTrazabilidad(supply.cadena) : null;
+
+  const prod = useMemo(
+    () => ({ kpis: kpisProductividad(exped), linea: lineaProductividad(kpisProductividad(exped), etiqueta) }),
+    [exped, etiqueta],
+  );
+  const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
+
 
   const otd = log && log.periodo.otd_n > 0 ? log.periodo.otd_ok / log.periodo.otd_n : null;
   const otdPrev = log && log.periodo_prev.otd_n > 0 ? log.periodo_prev.otd_ok / log.periodo_prev.otd_n : null;
@@ -284,39 +285,69 @@ export default function OpsLogistica() {
         </div>
       </section>
 
-      {/* C — LOGÍSTICA DE CAMPO */}
+      {/* C — PRODUCTIVIDAD DE ALMACÉN */}
       <section>
-        <Eyebrow>C · Logística de campo (desplazamientos técnicos)</Eyebrow>
-        <p className="mt-2 text-[12px] text-ink/50 max-w-3xl">
-          Ya disponible hoy: se calcula con la misma fuente y la misma RPC que alimenta Cobertura &amp; Dispersión,
-          sin duplicar lógica.
+        <Eyebrow>C · Productividad de almacén (picking y expedición)</Eyebrow>
+        <p className="mt-2 text-[12px] text-ink/50 max-w-3xl leading-relaxed">{prod.linea} {NOTA_COMPARABILIDAD}</p>
+        {prodFilas.length === 0 ? (
+          <div className="mt-3 rounded-2xl border border-black/[0.06] bg-white p-6">
+            <p className="text-sm text-ink flex items-center gap-2">
+              <Chip>{GLIFO_FUENTE.pendiente} {LABEL_FUENTE.pendiente}</Chip> Productividad no calculable.
+            </p>
+            <p className="mt-3 text-[13px] text-ink/60 max-w-3xl leading-relaxed">
+              Se activa al cargar la cabecera de expediciones con marcas de picking y el detalle de líneas.
+            </p>
+            <ul className="mt-3 space-y-1.5 text-[12px] text-ink/60 list-disc pl-5">
+              {INDICADORES_PRODUCTIVIDAD.map((i) => (
+                <li key={i.clave}>
+                  <strong className="text-ink/80">{i.label}</strong> — {i.definicion}{" "}
+                  <span className="text-ink/40">Requiere: {i.requiere.join(", ")}.</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-[12px] text-ink/50">
+              Cabeceras exactas:{" "}
+              <code className="font-mono text-[11px] text-ink/70 break-all">{cabeceraPlantilla("ops_expedicion")}</code>
+              <br />
+              <code className="font-mono text-[11px] text-ink/70 break-all">{cabeceraPlantilla("ops_expedicion_linea")}</code>
+            </p>
+          </div>
+        ) : (
+          <div className="mt-3 rounded-xl border border-black/[0.06] bg-white overflow-hidden">
+            <table className="w-full text-[13px]">
+              <thead className="bg-black/[0.02]">
+                <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40">
+                  <th className="px-4 py-2 font-semibold">Almacén base</th>
+                  <th className="px-4 py-2 font-semibold text-right">Expediciones</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas/hora</th>
+                  <th className="px-4 py-2 font-semibold text-right">Min/línea</th>
+                  <th className="px-4 py-2 font-semibold">Comparabilidad</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.05]">
+                {prodFilas.map((f) => (
+                  <tr key={`${f.almacen_base}-${f.entidad}`}>
+                    <td className="px-4 py-2">{f.entidad}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.expediciones)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.lineas)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.lineasHora == null ? "—" : fmtDec(f.lineasHora, 1)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.minutosPorLinea == null ? "—" : fmtDec(f.minutosPorLinea, 1)}</td>
+                    <td className="px-4 py-2 text-[11px] text-ink/50">{f.motivo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="mt-3 text-[12px] text-ink/50">
+          El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}
+          <Link to="/operaciones/dispersion" className="text-ink underline underline-offset-2 hover:text-ink/70">
+            Cobertura &amp; Dispersión
+          </Link>.
         </p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Card
-            label="Coste de desplazamiento"
-            value={campo?.costeDesplazamiento == null ? "—" : fmtEur(campo.costeDesplazamiento)}
-            hint="Importe de desplazamiento imputado a las OTs cerradas del período (ops_costes)."
-          />
-          <Card
-            label="Distancia media por salida"
-            value={campo?.kmMedia == null ? "—" : `${fmtDec(campo.kmMedia, 1)} km`}
-            hint={campo?.kmMediana == null ? "Aproximación desde el maestro de códigos postales." : `Mediana ${fmtDec(campo.kmMediana, 1)} km.`}
-          />
-          <Card
-            label="OTs cerradas del período"
-            value={campo?.cerradas == null ? "—" : fmtNum(campo.cerradas)}
-            hint="Base sobre la que se calcula la logística de campo."
-          />
-          <Card
-            label="Completitud geográfica"
-            value={campo?.geocodificadas == null || !campo.cerradas ? "—" : fmtPct(campo.geocodificadas / campo.cerradas)}
-            hint="OTs cerradas con código postal geocodificado."
-          />
-        </div>
-        <Link to="/operaciones/dispersion" className="mt-3 inline-block text-[12px] text-ink underline underline-offset-2 hover:text-ink/70">
-          Ver Cobertura &amp; Dispersión →
-        </Link>
       </section>
+
 
       {/* D — DEFINICIONES */}
       <section className="rounded-2xl border border-black/[0.06] bg-white p-6">

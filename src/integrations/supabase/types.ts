@@ -190,60 +190,168 @@ export type Database = {
       }
       ops_expedicion: {
         Row: {
+          almacen_base: string
           coste_envio: number | null
+          coste_transporte: number | null
           created_at: string
+          destino: string | null
           destino_cp: string | null
           destino_tipo: string | null
+          equipo: string | null
           estado_expedicion: string
+          expedicion_id: string
+          expedicion_origen_id: string | null
+          expedicion_timestamp: string | null
           fecha_entrega_prevista: string | null
           fecha_entrega_real: string | null
           fecha_expedicion: string | null
           id: string
           incidencia: string | null
+          num_lineas: number | null
           num_ot: string | null
+          num_ot_abastecidas: number | null
+          num_unidades: number | null
           origen: string | null
           origen_dato: string
+          persona_id: string | null
+          picking_fin: string | null
+          picking_inicio: string | null
+          preparado_por: string | null
+          procedencia_conteo: string
+          reexpedicion: boolean
           referencia_expedicion: string
+          tipo_incidencia: string | null
           transportista: string | null
           updated_at: string
         }
         Insert: {
+          almacen_base?: string
           coste_envio?: number | null
+          coste_transporte?: number | null
           created_at?: string
+          destino?: string | null
           destino_cp?: string | null
           destino_tipo?: string | null
+          equipo?: string | null
           estado_expedicion?: string
+          expedicion_id: string
+          expedicion_origen_id?: string | null
+          expedicion_timestamp?: string | null
           fecha_entrega_prevista?: string | null
           fecha_entrega_real?: string | null
           fecha_expedicion?: string | null
           id?: string
           incidencia?: string | null
+          num_lineas?: number | null
           num_ot?: string | null
+          num_ot_abastecidas?: number | null
+          num_unidades?: number | null
           origen?: string | null
           origen_dato?: string
+          persona_id?: string | null
+          picking_fin?: string | null
+          picking_inicio?: string | null
+          preparado_por?: string | null
+          procedencia_conteo?: string
+          reexpedicion?: boolean
           referencia_expedicion: string
+          tipo_incidencia?: string | null
           transportista?: string | null
           updated_at?: string
         }
         Update: {
+          almacen_base?: string
           coste_envio?: number | null
+          coste_transporte?: number | null
           created_at?: string
+          destino?: string | null
           destino_cp?: string | null
           destino_tipo?: string | null
+          equipo?: string | null
           estado_expedicion?: string
+          expedicion_id?: string
+          expedicion_origen_id?: string | null
+          expedicion_timestamp?: string | null
           fecha_entrega_prevista?: string | null
           fecha_entrega_real?: string | null
           fecha_expedicion?: string | null
           id?: string
           incidencia?: string | null
+          num_lineas?: number | null
           num_ot?: string | null
+          num_ot_abastecidas?: number | null
+          num_unidades?: number | null
           origen?: string | null
           origen_dato?: string
+          persona_id?: string | null
+          picking_fin?: string | null
+          picking_inicio?: string | null
+          preparado_por?: string | null
+          procedencia_conteo?: string
+          reexpedicion?: boolean
           referencia_expedicion?: string
+          tipo_incidencia?: string | null
           transportista?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      ops_expedicion_linea: {
+        Row: {
+          almacen_base: string
+          cantidad: number
+          created_at: string
+          descripcion: string | null
+          expedicion_id: string
+          id: string
+          linea: number
+          num_ot: string | null
+          origen_dato: string
+          pieza_solicitud_id: string | null
+          referencia: string
+        }
+        Insert: {
+          almacen_base?: string
+          cantidad?: number
+          created_at?: string
+          descripcion?: string | null
+          expedicion_id: string
+          id?: string
+          linea: number
+          num_ot?: string | null
+          origen_dato?: string
+          pieza_solicitud_id?: string | null
+          referencia: string
+        }
+        Update: {
+          almacen_base?: string
+          cantidad?: number
+          created_at?: string
+          descripcion?: string | null
+          expedicion_id?: string
+          id?: string
+          linea?: number
+          num_ot?: string | null
+          origen_dato?: string
+          pieza_solicitud_id?: string | null
+          referencia?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ops_expedicion_linea_fk"
+            columns: ["almacen_base", "expedicion_id"]
+            isOneToOne: false
+            referencedRelation: "ops_expedicion"
+            referencedColumns: ["almacen_base", "expedicion_id"]
+          },
+          {
+            foreignKeyName: "ops_expedicion_linea_pieza_solicitud_id_fkey"
+            columns: ["pieza_solicitud_id"]
+            isOneToOne: false
+            referencedRelation: "ops_pieza_solicitud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ops_fact_ot: {
         Row: {
@@ -661,40 +769,46 @@ export type Database = {
       }
       ops_stock_snapshot: {
         Row: {
-          almacen: string
-          cantidad: number
-          cantidad_reservada: number | null
+          almacen_base: string
           coste_medio: number | null
           created_at: string
           descripcion: string | null
-          fecha: string
+          en_transito: number | null
+          fecha_snapshot: string
           id: string
           origen_dato: string
           referencia: string
+          reservado: number | null
+          stock_disponible: number | null
+          stock_fisico: number
         }
         Insert: {
-          almacen: string
-          cantidad?: number
-          cantidad_reservada?: number | null
+          almacen_base: string
           coste_medio?: number | null
           created_at?: string
           descripcion?: string | null
-          fecha: string
+          en_transito?: number | null
+          fecha_snapshot: string
           id?: string
           origen_dato?: string
           referencia: string
+          reservado?: number | null
+          stock_disponible?: number | null
+          stock_fisico?: number
         }
         Update: {
-          almacen?: string
-          cantidad?: number
-          cantidad_reservada?: number | null
+          almacen_base?: string
           coste_medio?: number | null
           created_at?: string
           descripcion?: string | null
-          fecha?: string
+          en_transito?: number | null
+          fecha_snapshot?: string
           id?: string
           origen_dato?: string
           referencia?: string
+          reservado?: number | null
+          stock_disponible?: number | null
+          stock_fisico?: number
         }
         Relationships: []
       }

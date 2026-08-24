@@ -14,7 +14,14 @@
 
 import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual";
 import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
-import { resolverClienteContractual, type ClienteAlias, type ReglaPatron } from "@/lib/ops-cliente-alias";
+import {
+  derivacionesPrograma,
+  resolverClienteContractual,
+  type ClienteAlias,
+  type DerivacionPrograma,
+  type ProcedenciaPrograma,
+  type ReglaPatron,
+} from "@/lib/ops-cliente-alias";
 
 
 
@@ -32,6 +39,20 @@ export const LABEL_ESTADO_DOMINIO: Record<EstadoDominio, string> = {
   parcial: "Parcial",
   pendiente: "Pendiente",
 };
+
+/**
+ * F4A.1 · Prioridad del gap en el Data Gap Register. No es una opinión: la fija
+ * el número de KPIs y de reglas contractuales que quedan bloqueados por él.
+ */
+export type PrioridadGap = "alta" | "media" | "baja";
+
+export const LABEL_PRIORIDAD_GAP: Record<PrioridadGap, string> = {
+  alta: "Alta",
+  media: "Media",
+  baja: "Baja",
+};
+
+export const ORDEN_PRIORIDAD_GAP: Record<PrioridadGap, number> = { alta: 0, media: 1, baja: 2 };
 
 export type DominioDato = {
   id: string;
@@ -52,7 +73,12 @@ export type DominioDato = {
   esperado?: number;
   /** Frase con la medida real que produjo el estado. */
   medida?: string;
+  /** Prioridad en el Data Gap Register. */
+  prioridad?: PrioridadGap;
+  /** Desglose por cliente contractual cuando la cobertura es desigual. */
+  detallePorCliente?: Array<{ cliente: string; cobertura: number; universo: number }>;
 };
+
 
 // ─── Medidas reales (payload de la RPC ops_data_quality) ─────────────────────
 
@@ -125,6 +151,8 @@ export type DefinicionDominio = {
   detalle: string;
   kpisBloqueados: string[];
   regla: ReglaCompletitud;
+  /** Prioridad declarada en el Data Gap Register (por defecto media). */
+  prioridad?: PrioridadGap;
 };
 
 export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
@@ -135,6 +163,7 @@ export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
     detalle: "Número de OT, cliente y situación: base de todo recuento.",
     kpisBloqueados: ["Cualquier recuento"],
     regla: { tipo: "campos", campos: ["num_ot", "cliente_wg", "situacion", "estado"], minimo: 0.99 },
+    prioridad: "alta",
   },
   {
     id: "fechas_ciclo",
@@ -143,7 +172,26 @@ export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
     detalle: "Creación, primer contacto, primera visita y cierre: sostienen todos los relojes de plazo.",
     kpisBloqueados: ["Plazos por evento", "Referencia operativa ≤20d por tramo"],
     regla: { tipo: "campos", campos: ["fecha_creacion", "fecha_cierre", "fecha_primer_contacto", "fecha_primera_visita"], minimo: 0.95 },
+    prioridad: "alta",
   },
+  {
+    // F4A.1 · Gap propio y de PRIORIDAD ALTA: el primer contacto es el evento de
+    // inicio de la mayoría de las reglas del Registry, y su cobertura no es
+    // homogénea por cliente contractual.
+    id: "primer_contacto",
+    dominio: "Fecha de primer contacto",
+    fuente: "ops_fact_ot.fecha_primer_contacto",
+    detalle:
+      "Evento de inicio de la mayor parte de las reglas del Registry (contacto, cita, respuesta). Su cobertura desigual por cliente impide medir plazos contractuales cliente a cliente.",
+    kpisBloqueados: [
+      "Plazo de primer contacto por cliente contractual",
+      "Reglas del Registry con evento de inicio 'primer contacto'",
+      "Tiempo de respuesta comparable entre clientes",
+    ],
+    regla: { tipo: "campos", campos: ["fecha_primer_contacto"], minimo: 0.95 },
+    prioridad: "alta",
+  },
+
   {
     id: "producto",
     dominio: "Producto y gama",
@@ -378,8 +426,10 @@ export const derivarDominio = (def: DefinicionDominio, m: MedidasDataQuality): D
     fuente: def.fuente,
     medida,
     cobertura: null,
+    prioridad: def.prioridad ?? "media",
     ...extra,
   });
+
 
   switch (def.regla.tipo) {
     case "campos": {
@@ -472,8 +522,56 @@ export const derivarDominio = (def: DefinicionDominio, m: MedidasDataQuality): D
   }
 };
 
-export const derivarDominios = (m: MedidasDataQuality): DominioDato[] =>
-  DEFINICIONES_DOMINIO.map((d) => derivarDominio(d, m));
+/**
+ * F4A.1 · Desglose del gap de primer contacto por cliente contractual. Solo
+ * incluye clientes cuya cobertura queda por debajo del 95% exigido: son los que
+ * bloquean reglas del Registry con evento de inicio «primer contacto».
+ */
+export const clientesConPrimerContactoParcial = (
+  universos: Map<string, UniversoCliente> | null | undefined,
+  minimo = 0.95,
+): Array<{ cliente: string; cobertura: number; universo: number }> => {
+  if (!universos) return [];
+  return [...universos.values()]
+    .map((u) => ({
+      cliente: u.cliente_contractual,
+      cobertura: u.cobertura.fecha_primer_contacto ?? 0,
+      universo: u.universo_total,
+    }))
+    .filter((x) => x.cobertura < minimo)
+    .sort((a, b) => a.cobertura - b.cobertura || b.universo - a.universo);
+};
+
+export const derivarDominios = (
+  m: MedidasDataQuality,
+  universos?: Map<string, UniversoCliente> | null,
+): DominioDato[] =>
+  DEFINICIONES_DOMINIO.map((d) => {
+    const dom = derivarDominio(d, m);
+    if (d.id !== "primer_contacto") return dom;
+    const porCliente = clientesConPrimerContactoParcial(universos);
+    if (!porCliente.length) return dom;
+    const cabeza = porCliente
+      .slice(0, 4)
+      .map((c) => `${c.cliente} ${pct(c.cobertura)} (${c.universo.toLocaleString("es-ES")} OTs)`)
+      .join("; ");
+    return {
+      ...dom,
+      detallePorCliente: porCliente,
+      medida: `${dom.medida} ${porCliente.length} cliente(s) contractual(es) por debajo del 95%: ${cabeza}${porCliente.length > 4 ? "…" : "."}`,
+    };
+  });
+
+/** Gaps abiertos ordenados por prioridad y luego por peor cobertura. */
+export const gapsOrdenados = (dominios: readonly DominioDato[]): DominioDato[] =>
+  dominios
+    .filter((d) => d.estado !== "disponible")
+    .sort(
+      (a, b) =>
+        ORDEN_PRIORIDAD_GAP[a.prioridad ?? "media"] - ORDEN_PRIORIDAD_GAP[b.prioridad ?? "media"] ||
+        (a.cobertura ?? 0) - (b.cobertura ?? 0),
+    );
+
 
 // ─── Fallback estático (sin medidas cargadas todavía) ────────────────────────
 
@@ -552,6 +650,10 @@ export type ReadinessRegla = {
   universoCliente: number | null;
   /** De dónde sale la cobertura declarada arriba. */
   fuenteCobertura: "cliente" | "global";
+  /** F4A.1 · De dónde sale el programa con el que se asigna la regla a la OT. */
+  procedencia_programa: ProcedenciaPrograma;
+  /** Programa derivado del alias cuando la procedencia es `derived_alias`. */
+  programaDerivado: string | null;
 };
 
 // ─── Universo de OTs por cliente contractual ─────────────────────────────────
@@ -629,7 +731,29 @@ export const universosPorCliente = (
   return out;
 };
 
-export type ContextoReadiness = { universos?: Map<string, UniversoCliente> | null };
+export type ContextoReadiness = {
+  universos?: Map<string, UniversoCliente> | null;
+  /** F4A.1 · Derivación de programa por cliente contractual (alias → programa único). */
+  programas?: Map<string, DerivacionPrograma> | null;
+};
+
+/** Construye el contexto completo de readiness a partir de medidas y alias. */
+export const contextoReadiness = (
+  m: MedidasDataQuality,
+  aliases: readonly ClienteAlias[],
+  reglas: readonly ReglaSla[],
+): ContextoReadiness => {
+  const patrones: ReglaPatron[] = reglas.map((r) => ({
+    cliente: r.cliente,
+    cliente_wg_patron: r.cliente_wg_patron,
+    programa: r.programa,
+  }));
+  return {
+    universos: universosPorCliente(m, aliases, reglas),
+    programas: derivacionesPrograma(aliases, patrones),
+  };
+};
+
 
 const coberturaEvento = (ev: EventoOT, m: MedidasDataQuality): number | null => {
   const campo = FUENTE_EVENTO[ev];
@@ -689,14 +813,27 @@ export const readinessRegla = (
   }
 
 
+  // F4A.1 · El bloqueo por «programa» desaparece SOLO si el alias del cliente
+  // resuelve a un programa único; en ese caso la procedencia es `derived_alias`.
+  const derivacion = ctx.programas?.get(regla.cliente) ?? null;
+  const procedencia_programa: ProcedenciaPrograma = m.campos_fact_ot.programa !== undefined
+    ? "explicit_ot"
+    : (derivacion?.procedencia ?? "unresolved");
+
   for (const dim of dimensionesRequeridas(regla)) {
+    if (dim === "programa" && procedencia_programa === "derived_alias") continue;
     const presente = m.campos_fact_ot[dim] !== undefined && !m.campos_ausentes_fact_ot.includes(dim);
     if (!presente) {
-      bloqueos.push({ tipo: "dimension", clave: dim, motivo: `La OT no lleva «${dim}»: no se puede asignar la regla.` });
+      const motivo =
+        dim === "programa"
+          ? `La OT no lleva «programa» y ${derivacion?.motivo ?? `no hay alias que derive el programa de «${regla.cliente}»`}`
+          : `La OT no lleva «${dim}»: no se puede asignar la regla.`;
+      bloqueos.push({ tipo: "dimension", clave: dim, motivo });
     } else if ((m.campos_fact_ot[dim] ?? 0) < 0.95) {
       bloqueos.push({ tipo: "dimension", clave: dim, motivo: `Cobertura de ${dim}: ${pct(m.campos_fact_ot[dim] ?? 0)}.` });
     }
   }
+
 
   if (regla.calendario !== "natural" || regla.unidad === "horas_laborables" || regla.unidad === "dias_laborables") {
     const filas = m.calendario_laboral?.[regla.territorio_calendario ?? ""] ?? 0;
@@ -734,8 +871,11 @@ export const readinessRegla = (
     estadoCobertura,
     universoCliente: universo?.universo_total ?? null,
     fuenteCobertura,
+    procedencia_programa,
+    programaDerivado: derivacion?.programa ?? null,
   };
 };
+
 
 
 
@@ -749,9 +889,12 @@ export type ResumenReadiness = {
   porValidacion: Record<string, number>;
   /** Motivos agregados ordenados por frecuencia. */
   bloqueosTop: Array<{ clave: string; motivo: string; n: number }>;
+  /** F4A.1 · Reparto de reglas por procedencia del programa. */
+  porProcedenciaPrograma: Record<ProcedenciaPrograma, number>;
   /** Siempre false en F3B: no se declara cumplimiento contractual. */
   puedeDeclararCumplimiento: boolean;
 };
+
 
 export const resumenReadiness = (
   reglas: readonly ReglaSla[],
@@ -774,6 +917,12 @@ export const resumenReadiness = (
   for (const e of evaluadas) porMedibilidad[e.medibilidad] += 1;
   const porValidacion: Record<string, number> = {};
   for (const r of reglas) porValidacion[r.estado_regla] = (porValidacion[r.estado_regla] ?? 0) + 1;
+  const porProcedenciaPrograma: Record<ProcedenciaPrograma, number> = {
+    explicit_ot: 0,
+    derived_alias: 0,
+    unresolved: 0,
+  };
+  for (const e of evaluadas) porProcedenciaPrograma[e.procedencia_programa] += 1;
   return {
     total: reglas.length,
     medibles,
@@ -785,6 +934,7 @@ export const resumenReadiness = (
     },
     porValidacion,
     bloqueosTop: [...mapa.values()].sort((a, b) => b.n - a.n),
+    porProcedenciaPrograma,
     puedeDeclararCumplimiento: medibles > 0 && medibles === reglas.length,
   };
 
