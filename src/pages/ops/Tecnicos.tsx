@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -318,6 +319,7 @@ const Tecnicos = () => {
           con reglas explícitas, no con un score oculto.
         </p>
       </header>
+      <DataAsOf />
 
       {/* BANNER DE PERÍODO */}
       <div className="rounded-2xl border border-black/[0.06] bg-white px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">

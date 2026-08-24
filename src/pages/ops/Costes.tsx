@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtEur, fmtNum, fmtPct, useOpsFilters } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -159,6 +160,7 @@ const Costes = () => {
           Coste laboral y coste de red externa por entidad, con productividad ajustada por calidad. Este análisis es una <strong>referencia operativa</strong>: no es base única de decisiones de nómina, proveedores o plantilla.
         </p>
       </header>
+      <DataAsOf cruza={["coste"]} />
 
       {/* Selector de período + comparabilidad */}
       <div className="flex flex-wrap items-center gap-4 border border-black/[0.06] rounded-2xl bg-white px-5 py-4">

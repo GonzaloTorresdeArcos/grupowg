@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
 import { Loader2 } from "lucide-react";
@@ -61,6 +62,7 @@ const Sats = () => {
           contra la mediana del grupo.
         </p>
       </header>
+      <DataAsOf />
 
       <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
         <table className="w-full text-sm">

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
@@ -318,6 +319,7 @@ const Hub = () => {
           en su propia sección.
         </p>
       </header>
+      <DataAsOf />
 
       <div role="tablist" aria-label="Secciones del HUB" className="flex flex-wrap gap-1.5 border-b border-black/[0.06] pb-2">
         {TABS.map((t) => (

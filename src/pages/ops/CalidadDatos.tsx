@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
@@ -170,6 +171,7 @@ const CalidadDatos = () => {
           </p>
         )}
       </header>
+      <DataAsOf />
 
       {/* F4B · Frescura por dominio: fecha efectiva del dato, no fecha de carga */}
       <Seccion
