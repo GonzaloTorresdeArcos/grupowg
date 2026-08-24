@@ -1367,12 +1367,15 @@ export type Database = {
           despl_medio: number
           dias_medio: number
           equipo: string
+          gama_atendida: string
+          nombre_display: string
           pct_bajas: number
           pct_bajas_esp: number
           pct_nff: number
           pct_nff_esp: number
           pct_sla20: number
           tecnicos_activos: number
+          tipo_entidad: string
         }[]
       }
       ops_evolucion: {

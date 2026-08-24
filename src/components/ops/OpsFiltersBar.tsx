@@ -1,6 +1,8 @@
 import { useOpsFilters } from "@/lib/ops-filters";
+import { gamaDisplayMap } from "@/lib/ops-gamas";
 import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
+
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
   label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
@@ -45,7 +47,9 @@ export const OpsFiltersBar = () => {
         <Sel label="Cliente" value={filters.cliente} options={options.clientes}
           onChange={(v) => setFilters({ cliente: v })} />
         <Sel label="Gama" value={filters.gama} options={options.gamas}
+          displayMap={gamaDisplayMap(Array.isArray(options.gamas) ? options.gamas : [])}
           onChange={(v) => setFilters({ gama: v })} />
+
         <Sel label="Familia" value={filters.familia} options={options.familias}
           onChange={(v) => setFilters({ familia: v })} />
         <Sel label="Marca" value={filters.marca} options={options.marcas}

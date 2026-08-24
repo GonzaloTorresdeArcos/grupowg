@@ -382,6 +382,15 @@ describe("delegación · esDelegacionReal", () => {
       expect(esDelegacionReal(g as any)).toBe(false);
     }
   });
+  it("prioriza tipo_entidad sobre el nombre cuando la RPC lo aporta", () => {
+    expect(esDelegacionReal("Gama PAE", "equipo_central")).toBe(false);
+    expect(esDelegacionReal("Barcelona", "delegacion")).toBe(true);
+    // Nombre ambiguo pero tipo estructural explícito
+    expect(esDelegacionReal("Central (sin gama)", "equipo_central")).toBe(false);
+    expect(esDelegacionReal("Equipo Blanca (Central)", "equipo_central")).toBe(false);
+    expect(esDelegacionReal("Las Palmas", "delegacion")).toBe(true);
+  });
+
 });
 
 describe("estadoDelegacionMulti", () => {

@@ -776,13 +776,21 @@ export const UMBRAL_MIN_DELEGACION = 50; // menos → "información insuficiente
 // entidades.
 const ETIQUETAS_GAMA = /^(gama\s+(pae|marr[oó]n|blanca|movilidad|clima|profesional)|central\s+\(sin gama\)|madrid\s+·\s+.+)$/i;
 
-export function esDelegacionReal(nombre: string | null | undefined): boolean {
+// Cuando la fuente aporta tipo_entidad ('delegacion' | 'equipo_central') el
+// filtro es ESTRUCTURAL. Si no llega el tipo (consumidores antiguos), se
+// mantiene el fallback por nombre.
+export function esDelegacionReal(
+  nombre: string | null | undefined,
+  tipoEntidad?: string | null,
+): boolean {
+  if (tipoEntidad) return tipoEntidad === "delegacion";
   if (!nombre) return false;
   const t = nombre.trim();
   if (!t) return false;
   if (ETIQUETAS_GAMA.test(t)) return false;
   return true;
 }
+
 
 export type EstadoProduccionDeleg =
   | "sobre_periodo_anterior" | "estable" | "por_debajo" | "insuficiente";

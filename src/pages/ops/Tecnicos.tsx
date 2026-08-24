@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
+import { gamaLabel } from "@/lib/ops-gamas";
+
 import {
   prevPeriod,
   labelPeriodo,
@@ -87,11 +89,8 @@ const SLA_STYLE: Record<EstadoSLA, string> = {
 };
 
 const GAMA_ORDER = ["Gama Blanca", "Gama PAE", "Gama Marron", "Gama Movilidad"] as const;
-const GAMA_LABEL: Record<string, string> = {
-  "Gama Blanca": "Blanca", "Gama PAE": "PAE",
-  "Gama Marron": "Marrón", "Gama Movilidad": "Movilidad",
-};
-const gamaLabel = (g: string | null | undefined) => (g ? GAMA_LABEL[g] ?? g : "—");
+// Etiquetas de display centralizadas (el valor interno no cambia).
+
 
 // -----------------------------------------------------------------------------
 // Formateo auxiliar

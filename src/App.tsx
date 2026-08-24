@@ -50,6 +50,11 @@ const OpsSats = lazy(() => import("./pages/ops/Sats.tsx"));
 const OpsImportar = lazy(() => import("./pages/ops/Importar.tsx"));
 const OpsCostes = lazy(() => import("./pages/ops/Costes.tsx"));
 const OpsDispersion = lazy(() => import("./pages/ops/Dispersion.tsx"));
+const OpsHub = lazy(() => import("./pages/ops/Hub.tsx"));
+const OpsLogistica = lazy(() => import("./pages/ops/Logistica.tsx"));
+const OpsRepuestos = lazy(() => import("./pages/ops/Repuestos.tsx"));
+const OpsCalidadDatos = lazy(() => import("./pages/ops/CalidadDatos.tsx"));
+
 
 
 import { CookieConsentProvider } from "./hooks/useCookieConsent.tsx";
@@ -153,7 +158,13 @@ const App = () => (
                 <Route path="/operaciones/dispersion" element={<OpsDispersion />} />
                 <Route path="/operaciones/sats" element={<OpsSats />} />
                 <Route path="/operaciones/importar" element={<OpsImportar />} />
+                {/* Navegación V2 */}
+                <Route path="/operaciones/hub" element={<OpsHub />} />
+                <Route path="/operaciones/logistica" element={<OpsLogistica />} />
+                <Route path="/operaciones/repuestos" element={<OpsRepuestos />} />
+                <Route path="/operaciones/calidad-datos" element={<OpsCalidadDatos />} />
               </Route>
+
 
 
               <Route element={<Layout />}>

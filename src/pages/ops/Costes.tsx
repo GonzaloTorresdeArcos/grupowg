@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtEur, fmtNum, fmtPct } from "@/lib/ops-filters";
+import { gamaLabel } from "@/lib/ops-gamas";
+
 import { Loader2, ChevronDown, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OpsPeriodPicker } from "@/components/ops/OpsPeriodPicker";
@@ -521,8 +523,9 @@ const VistaEntidad = ({ vista, onVistaChange, rows, loading, umbral, onUmbralCha
               </thead>
               <tbody>
                 {filas.map((r) => (
-                  <FilaEntidad key={r.entidad} r={r} mediana={mediana} />
+                  <FilaEntidad key={r.entidad} r={r} mediana={mediana} esGama={vista === "gamas"} />
                 ))}
+
                 {filas.length === 0 && (
                   <tr><td colSpan={8} className="px-4 py-8 text-center text-ink/50 text-xs">Sin datos en el período.</td></tr>
                 )}
@@ -578,14 +581,15 @@ const toneProductividad: Record<EstadoProductividad, string> = {
   informacion_insuficiente: "bg-ink/[0.04] text-ink/50 border-black/[0.06]",
 };
 
-const FilaEntidad = ({ r, mediana }: { r: EntidadRow & { clasificacion: ClasificacionProductividad }; mediana: number }) => {
+const FilaEntidad = ({ r, mediana, esGama }: { r: EntidadRow & { clasificacion: ClasificacionProductividad }; mediana: number; esGama?: boolean }) => {
   const tone = r.eur_cierre == null || mediana <= 0 ? "text-ink"
     : r.eur_cierre < mediana ? "text-emerald-700"
     : r.eur_cierre > mediana * 1.25 ? "text-red-700"
     : "text-amber-700";
   return (
     <tr className="border-b border-black/[0.04] hover:bg-ink/[0.015]">
-      <td className="px-4 py-3 font-medium text-ink">{r.entidad}</td>
+      <td className="px-4 py-3 font-medium text-ink">{esGama ? gamaLabel(r.entidad, r.entidad) : r.entidad}</td>
+
       <td className="px-4 py-3 text-right tabular-nums text-ink">{fmtNum(r.cerradas)}</td>
       <td className="px-4 py-3 text-right tabular-nums text-ink/70">{r.pct_bajas != null ? fmtPct(r.pct_bajas) : "—"}</td>
       <td className="px-4 py-3 text-right tabular-nums text-ink/70">{r.pct_sla20 != null ? fmtPct(r.pct_sla20) : "—"}</td>
