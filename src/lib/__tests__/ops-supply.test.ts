@@ -25,6 +25,9 @@ import { detectTable, normalizeRow, conflictKey, PLANTILLAS, parseCSV } from "@/
 const cadenaVacia: BloqueCadena = {
   solicitudes: 0,
   expediciones: 0,
+  stock_filas: 0,
+  etapas: {},
+  expediciones_estado: {},
   ots_con_pieza_periodo: 2003,
   ots_con_pieza_trazadas: 0,
   lead_times: {},
