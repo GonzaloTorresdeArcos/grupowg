@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtDec, fmtPct, fmtEur } from "@/lib/ops-filters";
@@ -20,6 +21,9 @@ import {
   kpisProductividad,
   lineaProductividad,
   productividadPor,
+  jerarquiaProductividad,
+  aplanarJerarquia,
+  NOTA_DIAS_EFECTIVOS,
   type FilaExpedicion,
   type RefDisponibilidad,
 } from "@/lib/ops-logistica";
@@ -159,6 +163,8 @@ export default function OpsLogistica() {
     return { kpis, linea: lineaProductividad(kpis, etiqueta) };
   }, [exped, refs, etiqueta]);
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
+  // F4B · San Agustín concentra la preparación: se lee por almacén → equipo → persona.
+  const prodJerarquia = useMemo(() => aplanarJerarquia(jerarquiaProductividad(exped)), [exped]);
 
   // KPIs de productividad por persona/día, OTD y rapidez de salida. Sin dato → pendiente de fuente.
   const kpisAvanzados = useMemo(() => {
@@ -239,6 +245,7 @@ export default function OpsLogistica() {
         <h1 className="heading-display text-3xl md:text-4xl text-ink mt-1">Logística &amp; Expediciones</h1>
         <p className="mt-3 text-[13px] text-ink/70 max-w-4xl leading-relaxed">{linea}</p>
       </header>
+      <DataAsOf className="mt-3" dominio="expedicion" cruza={["ot", "expedicion_linea"]} />
 
       {/* A — EXPEDICIONES DEL PERÍODO */}
       <section>
@@ -380,7 +387,7 @@ export default function OpsLogistica() {
             <table className="w-full text-[13px]">
               <thead className="bg-black/[0.02]">
                 <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40">
-                  <th className="px-4 py-2 font-semibold">Almacén base</th>
+                  <th className="px-4 py-2 font-semibold">Almacén · equipo · persona</th>
                   <th className="px-4 py-2 font-semibold text-right">Expediciones</th>
                   <th className="px-4 py-2 font-semibold text-right">Líneas</th>
                   <th className="px-4 py-2 font-semibold text-right">Líneas/hora</th>
@@ -389,9 +396,16 @@ export default function OpsLogistica() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/[0.05]">
-                {prodFilas.map((f) => (
-                  <tr key={`${f.almacen_base}-${f.entidad}`}>
-                    <td className="px-4 py-2">{f.entidad}</td>
+                {prodJerarquia.map((f) => (
+                  <tr key={`${f.nivel}-${f.almacen_base}-${f.padre ?? ""}-${f.entidad}`} className={f.nivel === "almacen" ? "bg-black/[0.015]" : undefined}>
+                    <td className={`px-4 py-2 ${f.nivel === "almacen" ? "font-medium text-ink" : f.nivel === "equipo" ? "pl-8 text-ink/80" : "pl-14 text-ink/70"}`}>
+                      {f.entidad}
+                      {f.nivel !== "almacen" && (
+                        <span className="ml-2 text-[10px] uppercase tracking-[0.1em] text-ink/30">
+                          {f.nivel === "equipo" ? "Equipo" : "Persona"}
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.expediciones)}</td>
                     <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.lineas)}</td>
                     <td className="px-4 py-2 text-right tabular-nums">{f.lineasHora == null ? "—" : fmtDec(f.lineasHora, 1)}</td>
@@ -420,8 +434,7 @@ export default function OpsLogistica() {
           ))}
         </div>
         <p className="mt-2 text-[11px] text-ink/40 leading-snug">
-          Día trabajado = día con al menos una expedición de esa persona. Es un proxy declarado hasta que exista la
-          fuente de RRHH con días efectivos y ausencias.
+{NOTA_DIAS_EFECTIVOS}
         </p>
         <p className="mt-3 text-[12px] text-ink/50">
           El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}

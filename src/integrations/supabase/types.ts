@@ -107,6 +107,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_carga_log: {
+        Row: {
+          created_at: string
+          data_as_of_date: string | null
+          dominio: string
+          filas: number | null
+          fuente: string | null
+          id: string
+          last_successful_load: string | null
+          notas: string | null
+          origen: string
+        }
+        Insert: {
+          created_at?: string
+          data_as_of_date?: string | null
+          dominio: string
+          filas?: number | null
+          fuente?: string | null
+          id?: string
+          last_successful_load?: string | null
+          notas?: string | null
+          origen?: string
+        }
+        Update: {
+          created_at?: string
+          data_as_of_date?: string | null
+          dominio?: string
+          filas?: number | null
+          fuente?: string | null
+          id?: string
+          last_successful_load?: string | null
+          notas?: string | null
+          origen?: string
+        }
+        Relationships: []
+      }
       ops_cliente_contrato_alias: {
         Row: {
           cliente_contractual: string
@@ -1770,6 +1806,7 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_as_of: { Args: { p_dominio?: string }; Returns: string }
       ops_clasifica_gama: {
         Args: {
           p_cliente: string

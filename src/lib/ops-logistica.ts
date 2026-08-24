@@ -404,3 +404,88 @@ export function lineaProductividad(k: KpisProductividad, etiquetaPeriodo: string
   );
   return `${partes.join(" · ")}.`;
 }
+
+// ─── F4B · Días efectivos: el proxy no se publica como productividad ─────────
+
+/**
+ * Los ratios "por persona y día" se calculan hoy sobre DÍAS-PERSONA CON
+ * EXPEDICIÓN, no sobre días efectivamente trabajados. Ese proxy infla la
+ * productividad de quien trabaja a tiempo parcial y penaliza a quien tuvo días
+ * sin expedir estando presente. Hasta que `ops_rrhh` aporte días trabajados y
+ * ausencias del personal de almacén, estos indicadores se muestran como
+ * DIAGNÓSTICO INTERNO y nunca como medida de rendimiento de una persona.
+ */
+export const INDICADORES_REQUIEREN_RRHH: readonly string[] = [
+  "expediciones_persona_dia",
+  "lineas_persona_dia",
+  "unidades_persona_dia",
+  "ots_persona_dia",
+] as const;
+
+export const NOTA_DIAS_EFECTIVOS =
+  "Denominador provisional: días-persona con al menos una expedición, no días efectivamente trabajados. Sin días trabajados y ausencias en ops_rrhh estos ratios no son una medida de rendimiento personal y no deben usarse para comparar personas.";
+
+export type EstadoIndicador = "publicable" | "diagnostico_interno";
+
+export const estadoIndicador = (clave: string, hayRrhh: boolean): EstadoIndicador =>
+  !hayRrhh && INDICADORES_REQUIEREN_RRHH.includes(clave) ? "diagnostico_interno" : "publicable";
+
+export const LABEL_ESTADO_INDICADOR: Record<EstadoIndicador, string> = {
+  publicable: "Medida",
+  diagnostico_interno: "Diagnóstico interno (pendiente RRHH)",
+};
+
+// ─── F4B · Vista jerárquica almacén → equipo → persona ───────────────────────
+
+/**
+ * San Agustín concentra el grueso de la preparación: leer una lista plana de
+ * personas mezcla equipos con mix de trabajo distinto. La jerarquía mantiene la
+ * regla de comparabilidad: SOLO se compara dentro del mismo almacén y equipo.
+ */
+export type NodoProductividad = FilaProductividad & {
+  nivel: "almacen" | "equipo" | "persona";
+  padre: string | null;
+  hijos: NodoProductividad[];
+};
+
+const nodo = (f: FilaProductividad, nivel: NodoProductividad["nivel"], padre: string | null): NodoProductividad => ({
+  ...f,
+  nivel,
+  padre,
+  hijos: [],
+});
+
+export function jerarquiaProductividad(filas: readonly FilaExpedicion[]): NodoProductividad[] {
+  const almacenes = productividadPor(filas, "almacen").map((f) => nodo(f, "almacen", null));
+
+  for (const a of almacenes) {
+    const delAlmacen = filas.filter((f) => f.almacen_base === a.almacen_base);
+    const equipos = productividadPor(delAlmacen, "equipo").map((f) => nodo(f, "equipo", a.entidad));
+
+    for (const e of equipos) {
+      const delEquipo = delAlmacen.filter((f) => (f.equipo ?? "") === e.entidad);
+      e.hijos = productividadPor(delEquipo, "persona").map((f) => nodo(f, "persona", e.entidad));
+    }
+
+    // Personas sin equipo declarado cuelgan directamente del almacén: no se
+    // inventa un equipo para ellas ni se reparten entre los existentes.
+    const sinEquipo = delAlmacen.filter((f) => !f.equipo);
+    const sueltas = productividadPor(sinEquipo, "persona").map((f) => nodo(f, "persona", a.entidad));
+
+    a.hijos = [...equipos, ...sueltas];
+  }
+  return almacenes;
+}
+
+/** Aplana la jerarquía conservando el orden de lectura para pintar la tabla. */
+export function aplanarJerarquia(nodos: readonly NodoProductividad[]): NodoProductividad[] {
+  const out: NodoProductividad[] = [];
+  const rec = (ns: readonly NodoProductividad[]) => {
+    for (const n of ns) {
+      out.push(n);
+      rec(n.hijos);
+    }
+  };
+  rec(nodos);
+  return out;
+}

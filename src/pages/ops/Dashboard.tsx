@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
@@ -14,6 +15,7 @@ import {
   type TecnicoConclInput,
 } from "@/lib/ops-performance";
 import { LABEL_CATEGORIA } from "@/lib/ops-sla";
+import { normalizarSupply, type SupplyPayload } from "@/lib/ops-supply";
 import {
   agruparEtapasPanorama,
   construirAsuntos,
@@ -165,6 +167,8 @@ const Dashboard = () => {
   const [scorePrev, setScorePrev] = useState<ScoreRow[]>([]);
   const [showEvo, setShowEvo] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
+  // F4B · Supply manda sobre la etapa derivada para la cifra de espera de pieza.
+  const [supply, setSupply] = useState<SupplyPayload | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -198,6 +202,7 @@ const Dashboard = () => {
         supabase.rpc("ops_tecnicos_scorecard" as never, scoreParams as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scorePrevParams as never),
       ]);
+      const sup = await supabase.rpc("ops_supply" as never, { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } as never);
       setKpis((k.data ?? null) as Kpis | null);
       setKpisPrev((kp.data ?? null) as Kpis | null);
       setPano((pn.data ?? null) as PanoramaPayload | null);
@@ -208,6 +213,8 @@ const Dashboard = () => {
       setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
       setScore((s.data ?? []) as ScoreRow[]);
       setScorePrev((sp.data ?? []) as ScoreRow[]);
+      const supRes = sup as { data: unknown; error: unknown };
+      setSupply(supRes.error || !supRes.data ? null : normalizarSupply(supRes.data));
       setLoading(false);
     })();
   }, [rpcParams, filters.from, filters.to, prevRange]);
@@ -292,8 +299,16 @@ const Dashboard = () => {
       calidadTec: alertas?.calidad ?? [],
       provincias: alertas?.provincias ?? [],
       conclusiones,
+      supplyPte: supply
+        ? {
+            n: supply.pte_piezas_actual.n,
+            n30: supply.pte_piezas_actual.n30,
+            edad_media: supply.pte_piezas_actual.edad_media,
+            asOf: supply.as_of,
+          }
+        : null,
     });
-  }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre]);
+  }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
 
   if (loading || !kpis) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
@@ -329,6 +344,7 @@ const Dashboard = () => {
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
       </header>
+      <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}
       <p className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
@@ -340,6 +356,7 @@ const Dashboard = () => {
           varBacklogPct: vBacklog,
           referencia20: kpis.pct_sla20 ?? null,
           nAsuntos: asuntos.length,
+          asOf: supply?.as_of ?? null,
         })}
       </p>
 

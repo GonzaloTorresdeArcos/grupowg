@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, CheckCircle2, AlertTriangle, FileText, Loader2 } from "lucide-react";
 import {
-  parseCSV, detectTable, normalizeRow, conflictKey, TABLE_LABEL, type OpsTable,
+  parseCSV, detectTable, normalizeRow, conflictKey, TABLE_LABEL,
+  DOMINIO_POR_TABLA, fechaAsOfDelLote, type OpsTable,
 } from "@/lib/ops-csv";
+import { fmtFechaEs, LABEL_DOMINIO_CARGA } from "@/lib/ops-as-of";
 
 type Parsed = {
   file: string;
@@ -22,7 +24,12 @@ type Result = {
   updated: number;
   errors: number;
   errorSample: string[];
+  /** F4B · Fecha efectiva registrada en ops_carga_log para este dominio. */
+  asOf?: string | null;
+  dominio?: string;
+  logError?: string | null;
 };
+
 
 const CHUNK = 500;
 
@@ -153,8 +160,28 @@ const Importar = () => {
         }
         setProgress(Math.min(100, Math.round(((i + slice.length) / parsed.records.length) * 100)));
       }
+      // F4B · Registro del reloj de datos. Solo se anota si de verdad entraron
+      // filas: una importación fallida no puede adelantar la fecha efectiva.
+      const dominio = DOMINIO_POR_TABLA[parsed.table];
+      const filasOk = res.inserted + res.updated;
+      if (filasOk > 0) {
+        const asOfLote = fechaAsOfDelLote(parsed.table, parsed.records);
+        const { error: logErr } = await supabase.from("ops_carga_log").insert({
+          dominio,
+          fuente: parsed.file,
+          last_successful_load: new Date().toISOString(),
+          data_as_of_date: asOfLote,
+          filas: filasOk,
+          origen: "importador",
+          notas: res.errors > 0 ? `${res.errors} filas con error` : null,
+        } as never);
+        res.asOf = asOfLote;
+        res.dominio = LABEL_DOMINIO_CARGA[dominio];
+        res.logError = logErr?.message ?? null;
+      }
       setResult(res);
       toast.success(`Importación completa · ${res.inserted} nuevas · ${res.updated} actualizadas`);
+
     } catch (e) {
       const err = e instanceof Error ? e.message : "Error al importar";
       toast.error(err);
@@ -289,6 +316,22 @@ const Importar = () => {
             <div><p className="text-[10px] uppercase tracking-[0.14em] text-ink/40">Actualizadas</p><p className="font-display text-2xl tabular-nums text-ink">{result.updated.toLocaleString("es-ES")}</p></div>
             <div><p className="text-[10px] uppercase tracking-[0.14em] text-ink/40">Errores</p><p className={`font-display text-2xl tabular-nums ${result.errors > 0 ? "text-red-600" : "text-ink"}`}>{result.errors.toLocaleString("es-ES")}</p></div>
           </div>
+          {result.dominio && (
+            <div className="text-xs rounded-lg border border-black/[0.08] bg-black/[0.02] p-3 text-ink/70 space-y-1">
+              <p>
+                Dominio actualizado: <span className="font-medium text-ink">{result.dominio}</span>
+                {result.asOf
+                  ? <> · datos operativos a <span className="font-medium text-ink">{fmtFechaEs(result.asOf)}</span></>
+                  : <> · sin fecha efectiva deducible en este fichero</>}
+              </p>
+              {result.logError && (
+                <p className="text-amber-700">
+                  No se pudo registrar la carga en el histórico ({result.logError}): las fechas mostradas en la sección pueden quedar desactualizadas.
+                </p>
+              )}
+            </div>
+          )}
+
           {result.errorSample.length > 0 && (
             <div className="text-xs text-red-700 bg-red-50 border border-red-100 rounded-lg p-3 space-y-1">
               {result.errorSample.map((e, i) => <p key={i}>{e}</p>)}

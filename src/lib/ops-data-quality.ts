@@ -15,6 +15,15 @@
 import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual";
 import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
 import {
+  asOf,
+  frescuraDominio,
+  frescuraTodos,
+  normalizarCargas,
+  type CargaDominio,
+  type DominioCarga,
+  type FrescuraDominio,
+} from "@/lib/ops-as-of";
+import {
   derivacionesPrograma,
   resolverClienteContractual,
   type ClienteAlias,
@@ -129,7 +138,16 @@ export type MedidasDataQuality = {
     cob_primera_visita: number | null;
     cob_cierre: number | null;
   }>;
+  /**
+   * F4B · Registro de cargas por dominio (`ops_carga_log`). Cada entrada declara
+   * hasta qué fecha el dato refleja la realidad operativa (`data_as_of_date`),
+   * que es el reloj contra el que se calculan antigüedades y backlog.
+   */
+  cargas?: CargaDominio[];
+  /** Atajo: fecha efectiva del dominio operativo (ops_fact_ot). */
+  as_of_ot?: string | null;
 };
+
 
 
 
@@ -618,6 +636,35 @@ export const frescura = (m: MedidasDataQuality, ahora: Date = new Date()): Fresc
     texto: `Última importación hace ${dias} día(s). Datos de OT desde ${m.fact_ot.min_fecha_creacion ?? "?"} hasta ${m.fact_ot.max_fecha_creacion ?? "?"}.`,
   };
 };
+
+// ─── F4B · Fecha efectiva por dominio ────────────────────────────────────────
+
+/** Registro de cargas normalizado. Vacío mientras la RPC no lo devuelva. */
+export const cargasDe = (m: MedidasDataQuality | null | undefined): CargaDominio[] =>
+  normalizarCargas(m?.cargas ?? []);
+
+/**
+ * Fecha efectiva del dominio operativo. Es el reloj de toda la sección: las
+ * antigüedades se miden contra ella, nunca contra el día de hoy.
+ */
+export const asOfOperativo = (m: MedidasDataQuality | null | undefined): string | null =>
+  m?.as_of_ot ?? asOf(cargasDe(m), "ot");
+
+export const asOfDominio = (m: MedidasDataQuality | null | undefined, dominio: DominioCarga): string | null =>
+  asOf(cargasDe(m), dominio);
+
+export const frescuraDe = (
+  m: MedidasDataQuality | null | undefined,
+  dominio: DominioCarga,
+  ahora: Date = new Date(),
+): FrescuraDominio => frescuraDominio(cargasDe(m), dominio, ahora);
+
+export const frescuraPorDominio = (
+  m: MedidasDataQuality | null | undefined,
+  ahora: Date = new Date(),
+): FrescuraDominio[] => frescuraTodos(cargasDe(m), ahora);
+
+
 
 // ─── Contractual data readiness ──────────────────────────────────────────────
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2, Download, ChevronDown, ChevronRight, Info, AlertTriangle } from "lucide-react";
@@ -264,6 +265,7 @@ const SLA = () => {
           Una OT envejecida no es necesariamente un problema del técnico — primero se identifica en qué etapa está ahora.
         </p>
       </header>
+      <DataAsOf className="mt-3" />
 
       {/* Limitación crítica de datos */}
       <section className="border border-sky-200 bg-sky-50/60 rounded-xl p-4 flex gap-3">
