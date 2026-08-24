@@ -112,7 +112,26 @@ export const OpsFiltersBar = () => {
             </button>
           </span>
         )}
+        <span className="w-full text-[11px] text-ink/50">
+          Comparando: <strong className="text-ink/70">{labelComparativa(filters.from, filters.to, modo)}</strong>
+          {ytdForzado && " · YTD homogéneo: mismo intervalo exacto del año anterior"}
+          {sinComparable && (
+            <span className="ml-2 text-amber-700" title={TOOLTIP_SIN_COMPARABLE}>
+              — {TOOLTIP_SIN_COMPARABLE} ({prevRange.from} → {prevRange.to})
+            </span>
+          )}
+        </span>
+        {(cob === "parcial" || cob === "fuera") && (
+          <span role="status" className="w-full inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+            <Info className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+            {cob === "fuera"
+              ? "El período seleccionado está fuera de los datos cargados — no se muestran cifras, no se rellenan con ceros."
+              : "Parte del período seleccionado no tiene datos cargados; esos tramos aparecen como “sin datos”, nunca como cero."}
+            {" "}Datos disponibles desde {fechaLarga(cobertura.min)} hasta {fechaLarga(cobertura.max)}.
+          </span>
+        )}
       </div>
     </div>
+
   );
 };
