@@ -301,6 +301,15 @@ export const evaluarRegla = (
     return { ...base, motivo_no_evaluable: "regla_agregada_requiere_conjunto" };
   }
 
+  // FASE: `regla.fase === null` no es condición y no exige el dato en la OT.
+  // Solo una regla con fase específica obliga a conocer la fase de la OT.
+  if (regla.fase != null) {
+    if (ot.fase == null) return { ...base, motivo_no_evaluable: "fase_ot_desconocida" };
+    if (ot.fase !== regla.fase) return { ...base, motivo_no_evaluable: "fase_no_aplica" };
+  }
+
+
+
   const tIni = ot.eventos[regla.evento_inicio];
   if (!tIni) return { ...base, motivo_no_evaluable: `falta ${regla.evento_inicio}` };
   const tFin = ot.eventos[regla.evento_fin];
