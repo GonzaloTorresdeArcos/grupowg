@@ -158,7 +158,7 @@ describe("líneas ejecutivas", () => {
 
 describe("exposicionContractualPieza", () => {
   const aliases: ClienteAlias[] = [
-    { cliente_wg_real: "ALCAMPO", cliente_contractual: "ALCAMPO", origen: "manual" },
+    { cliente_wg_real: "ALCAMPO", cliente_contractual: "ALCAMPO / AUCHAN", origen: "manual" },
   ];
 
   it("clasifica Alcampo con exclusión declarada y un cliente sin regla", () => {
@@ -167,7 +167,7 @@ describe("exposicionContractualPieza", () => {
       { cliente_wg: "CLIENTE INEXISTENTE SL", n: 12, n30: 3 },
     ];
     const out = exposicionContractualPieza(filas, aliases, FIXTURES_REGISTRY);
-    const alcampo = out.find((f) => f.clienteContractual === "ALCAMPO");
+    const alcampo = out.find((f) => f.clienteContractual === "ALCAMPO / AUCHAN");
     expect(alcampo?.estado).toBe("exposicion_identificada");
     expect(alcampo?.clavesDeclaradas.length).toBeGreaterThan(0);
 
@@ -200,7 +200,7 @@ describe("importador de las tres plantillas de supply", () => {
     `${PLANTILLAS[t].join(",")}\n${fila}`;
 
   it("auto-detecta ops_pieza_solicitud", () => {
-    const rows = parseCSV(csv("ops_pieza_solicitud", "OT1,REF1,Motor,1,Proveedor,,01/06/2026,,,,,,solicitada,12,5,wg"));
+    const rows = parseCSV(csv("ops_pieza_solicitud", "OT1,REF1,Motor,1,Proveedor,,01/06/2026,,,,,,solicitada,12,wg"));
     expect(detectTable(rows[0])).toBe("ops_pieza_solicitud");
   });
 
@@ -216,7 +216,7 @@ describe("importador de las tres plantillas de supply", () => {
   });
 
   it("la clave natural hace el upsert idempotente: dos cargas iguales no duplican", () => {
-    const rows = parseCSV(csv("ops_pieza_solicitud", "OT1,REF1,Motor,1,Proveedor,,01/06/2026,,,,,,solicitada,12,5,wg"));
+    const rows = parseCSV(csv("ops_pieza_solicitud", "OT1,REF1,Motor,1,Proveedor,,01/06/2026,,,,,,solicitada,12,wg"));
     const a = normalizeRow("ops_pieza_solicitud", rows[0], rows[1]);
     const b = normalizeRow("ops_pieza_solicitud", rows[0], rows[1]);
     const key = conflictKey("ops_pieza_solicitud").split(",");
