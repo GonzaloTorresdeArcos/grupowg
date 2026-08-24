@@ -391,13 +391,14 @@ export const derivarDominios = (m: MedidasDataQuality): DominioDato[] =>
 export const DOMINIOS_DATOS: readonly DominioDato[] = DEFINICIONES_DOMINIO.map((d) => ({
   id: d.id,
   dominio: d.dominio,
-  estado: d.regla.tipo === "campos" && d.regla.minimo <= 0.99 && d.id === "dias_trabajados" ? "parcial" : "pendiente",
+  // "parcial" solo donde consta carga incompleta conocida; el resto, pendiente.
+  estado: (d.id === "dias_trabajados" ? "parcial" : "pendiente") as EstadoDominio,
   detalle: d.detalle,
   kpisBloqueados: d.kpisBloqueados,
   fuente: d.fuente,
   cobertura: null,
   medida: "Medida no cargada todavía.",
-})).map((d) => (d.id === "dias_trabajados" ? { ...d, estado: "parcial" as EstadoDominio } : d));
+}));
 
 export const dominioDato = (id: string, dominios: readonly DominioDato[] = DOMINIOS_DATOS): DominioDato | undefined =>
   dominios.find((d) => d.id === id);
