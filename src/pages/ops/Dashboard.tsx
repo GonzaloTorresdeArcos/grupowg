@@ -33,12 +33,11 @@ import {
   type EtapaSqlPanorama,
 } from "@/lib/ops-panorama";
 import {
-  DOMINIOS_DATOS,
   GLIFO_DOMINIO,
   LABEL_ESTADO_DOMINIO,
-  dominioDato,
   type DominioDato,
 } from "@/lib/ops-data-quality";
+import { useDataQuality } from "@/hooks/useDataQuality";
 import {
   Loader2, ChevronDown, ChevronUp, Info, ArrowRight, Lock, AlertTriangle,
 } from "lucide-react";
@@ -129,7 +128,8 @@ const TargetChip = ({ tipo }: { tipo: keyof typeof LABEL_TARGET }) => (
 );
 
 const DominioChip = ({ id }: { id: string }) => {
-  const d: DominioDato | undefined = dominioDato(id);
+  const { dominio } = useDataQuality();
+  const d: DominioDato | undefined = dominio(id);
   if (!d) return null;
   return (
     <div
@@ -151,6 +151,7 @@ const DominioChip = ({ id }: { id: string }) => {
 // ─── Página ──────────────────────────────────────────────────────────────────
 const Dashboard = () => {
   const { rpcParams, filters, prevRange, modo, sinComparable } = useOpsFilters();
+  const { dominios, dominio: dominioDq } = useDataQuality();
   const [loading, setLoading] = useState(true);
   const [kpis, setKpis] = useState<Kpis | null>(null);
   const [kpisPrev, setKpisPrev] = useState<Kpis | null>(null);
@@ -191,7 +192,7 @@ const Dashboard = () => {
         supabase.rpc("ops_panorama" as never, { ...rpcParams, p_meses: 12 } as never),
         supabase.rpc("ops_panorama" as never, { ...prevRpc, p_meses: 1 } as never),
         supabase.rpc("ops_evolucion" as never, secundarios as never),
-        supabase.rpc("ops_alertas" as never, { p_from: filters.from, p_to: filters.to } as never),
+        supabase.rpc("ops_alertas" as never, rpcParams as never),
         supabase.rpc("ops_equipos" as never, equipParams as never),
         supabase.rpc("ops_equipos" as never, equipPrev as never),
         supabase.rpc("ops_tecnicos_scorecard" as never, scoreParams as never),
@@ -490,7 +491,7 @@ const Dashboard = () => {
             <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40 mb-2">Pendiente de fuente de datos</p>
             <div className="flex flex-wrap gap-2 text-[12px] text-ink/40">
               {["ftf", "reincidencias", "csat"].map((id) => {
-                const d = dominioDato(id);
+                const d = dominioDq(id);
                 return d ? (
                   <span key={id} className="inline-flex items-center gap-1.5 border border-black/[0.06] rounded-full px-2.5 py-1 cursor-help" title={d.detalle}>
                     <span aria-hidden>{GLIFO_DOMINIO[d.estado]}</span>{d.dominio}
@@ -713,10 +714,10 @@ const Dashboard = () => {
             <div>
               <p className="text-ink font-medium mb-1">Dominios de dato pendientes</p>
               <ul className="space-y-0.5">
-                {DOMINIOS_DATOS.filter((d) => d.estado !== "disponible").map((d) => (
+                {dominios.filter((d) => d.estado !== "disponible").map((d) => (
                   <li key={d.id}>
                     <span aria-hidden className="mr-1">{GLIFO_DOMINIO[d.estado]}</span>
-                    <strong className="text-ink">{d.dominio}</strong> — {d.detalle}
+                    <strong className="text-ink">{d.dominio}</strong> — {d.medida ?? d.detalle}
                   </li>
                 ))}
               </ul>
