@@ -126,7 +126,7 @@ const SLA = () => {
     })();
   }, [rpcParams]);
 
-  const prev = prevPeriod(filters.from, filters.to);
+  const prev = prevRange;
   const L = diasEntre(filters.from, filters.to);
   const Lprev = diasEntre(prev.from, prev.to);
 

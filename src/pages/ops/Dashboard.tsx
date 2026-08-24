@@ -91,7 +91,7 @@ const ExecCard = ({
 
 // ---------------- main ----------------
 const Dashboard = () => {
-  const { rpcParams, filters } = useOpsFilters();
+  const { rpcParams, filters, prevRange, modo } = useOpsFilters();
   const [loading, setLoading] = useState(true);
   const [kpis, setKpis] = useState<Kpis | null>(null);
   const [kpisPrev, setKpisPrev] = useState<Kpis | null>(null);
@@ -107,7 +107,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setLoading(true);
-    const prev = prevPeriod(filters.from, filters.to);
+    const prev = prevRange;
     const filtroSecundarios = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia, p_marca: rpcParams.p_marca,
@@ -149,7 +149,7 @@ const Dashboard = () => {
       setScorePrev((sp.data ?? []) as ScoreRow[]);
       setLoading(false);
     })();
-  }, [rpcParams, filters.from, filters.to]);
+  }, [rpcParams, filters.from, filters.to, prevRange]);
 
   if (loading || !kpis) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
