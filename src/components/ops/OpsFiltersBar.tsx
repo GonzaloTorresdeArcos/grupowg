@@ -1,7 +1,10 @@
 import { useOpsFilters } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
+import { estadoCobertura, fechaLarga, TOOLTIP_SIN_COMPARABLE } from "@/lib/ops-periodo";
+import { labelComparativa } from "@/lib/ops-performance";
 import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
+
 
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
