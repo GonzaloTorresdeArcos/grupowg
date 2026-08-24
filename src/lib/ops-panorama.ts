@@ -336,34 +336,44 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
   }
 
   // 3. Concentración en espera de repuesto (conector Service ↔ Supply).
-  //    F4B: la cifra la manda Supply. Si `supplyPte` viene informado, es la que
-  //    se muestra; la etapa derivada solo se usa como respaldo cuando no llega.
-  const etapaRep = i.etapas.find((e) => e.categoria === "esperando_repuesto");
-  const rep = i.supplyPte
-    ? { n: i.supplyPte.n, n30: i.supplyPte.n30, edad: i.supplyPte.edad_media }
-    : etapaRep
-      ? { n: etapaRep.n, n30: etapaRep.n30, edad: etapaRep.edadMedia }
-      : null;
-  const fuenteRep: FuenteEsperaRepuesto = i.supplyPte ? "ops_supply" : "etapa_derivada";
+  //    F4B: ÚNICA FUENTE DE VERDAD = ops_supply.pte_piezas_actual. Si Supply no
+  //    llega, el asunto no se publica: no se calcula en paralelo desde etapas.
+  const rep = i.supplyPte;
+  const fuenteRep: FuenteEsperaRepuesto = "ops_supply";
   if (rep && i.abiertas > 0 && rep.n / i.abiertas >= UMBRAL_SHARE_REPUESTO) {
-    const fecha = i.supplyPte?.asOf ? ` a ${fmtFechaEs(i.supplyPte.asOf)}` : "";
+    const fecha = rep.asOf ? ` a ${fmtFechaEs(rep.asOf)}` : "";
+    const tendencia =
+      i.hayComparable && rep.n_prev != null
+        ? ` Tendencia frente al período comparable: ${num(rep.n_prev)} → ${num(rep.n)} OTs.`
+        : " Sin período comparable: no se declara tendencia.";
+    const top = (rep.topClientes ?? []).slice(0, 3);
+    const topTxt = top.length
+      ? ` Concentración por cliente contractual: ${top.map((t) => `${t.cliente} (${num(t.n)})`).join(", ")}.`
+      : "";
+    const exposicion = (rep.exposicionRegistry ?? []).slice(0, 2);
+    const expoTxt = exposicion.length
+      ? ` Potencial exposición contractual asociada: ${exposicion.join(", ")} (regla en borrador).`
+      : "";
     cand.push({
       fenomeno: "espera_repuesto",
       titulo: "Volumen relevante de OTs en espera de repuesto",
       hecho: `${num(rep.n)} OTs abiertas (${pct1(rep.n / i.abiertas)}) están en "${LABEL_CATEGORIA.esperando_repuesto}"${fecha}; ${num(rep.n30)} superan 30 días${
-        rep.edad != null ? ` y la antigüedad media es de ${rep.edad.toFixed(1).replace(".", ",")} días` : ""
-      }. Fuente: ${fuenteRep === "ops_supply" ? "ops_supply.pte_piezas_actual" : "etapa derivada de la OT"}.`,
+        rep.edad_media != null
+          ? ` y la antigüedad media as-of es de ${rep.edad_media.toFixed(1).replace(".", ",")} días (proxy: antigüedad de OT, no tiempo esperando pieza)`
+          : ""
+      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}`,
       hipotesis:
         "Concentración observada en la etapa de espera de repuesto. Sin trazabilidad de la solicitud no se puede afirmar que el suministro sea la causa del retraso: es un potencial efecto por confirmar.",
       accion: "Revisar en Repuestos el desglose por cliente contractual y antigüedad antes de decidir sobre capacidad o proveedor.",
       impacto: clasificarImpacto(rep.n, univ),
       confianza: clasificarConfianza(rep.n, i.hayComparable),
-      deterioro: false,
+      deterioro: rep.n_prev != null && rep.n > rep.n_prev,
       volumen: rep.n,
-      destino: "/operaciones/repuestos",
+      destino: "/operaciones/repuestos#esperando-pieza",
       destinoLabel: "Ver repuestos y stock",
     });
   }
+
 
 
   // 4. Ratio de bajas creciendo (salida que no repara).
