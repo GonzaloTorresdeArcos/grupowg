@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { fechaAsOfDelLote, DOMINIO_POR_TABLA } from "@/lib/ops-csv";
 import {
   desfaseEntre,
@@ -14,6 +15,10 @@ import {
   estadoIndicador,
   INDICADORES_REQUIEREN_RRHH,
   NOTA_DIAS_EFECTIVOS,
+  ratiosPorPersonaDiaRrhh,
+  PENDIENTE_RRHH_LABEL,
+  FUENTE_DESBLOQUEO_RRHH,
+  type DiaTrabajadoRrhh,
   type FilaExpedicion,
 } from "@/lib/ops-logistica";
 import { construirAsuntos, situationLine } from "@/lib/ops-panorama";
@@ -218,5 +223,74 @@ describe("F4B · los ratios por persona y día esperan a RRHH", () => {
   it("la nota explica que el denominador es provisional", () => {
     expect(NOTA_DIAS_EFECTIVOS).toContain("días efectivamente trabajados");
     expect(NOTA_DIAS_EFECTIVOS).toContain("ops_rrhh");
+  });
+});
+
+// ─── F4B.1 · El proxy no llega a pantalla; el cálculo real espera a RRHH ─────
+
+describe("F4B.1 · ratios por persona y día trabajado", () => {
+  const filasRrhh = [
+    exp({ expedicion_id: "1", preparado_por: "ANA", expedicion_timestamp: "2026-06-02T09:00:00Z" }),
+    exp({ expedicion_id: "2", preparado_por: "ANA", expedicion_timestamp: "2026-06-03T09:00:00Z" }),
+    exp({ expedicion_id: "3", preparado_por: "ANA", expedicion_timestamp: "2026-06-04T09:00:00Z" }),
+    exp({ expedicion_id: "4", preparado_por: "ANA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
+    exp({ expedicion_id: "5", preparado_por: "SIN FICHA", expedicion_timestamp: "2026-06-05T09:00:00Z" }),
+  ];
+  const rrhh: DiaTrabajadoRrhh[] = [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: 20 }];
+
+  it("sin RRHH disponible no devuelve ninguna cifra", () => {
+    const r = ratiosPorPersonaDiaRrhh(filasRrhh, rrhh, false);
+    expect(r.estado).toBe("pendiente_rrhh");
+    expect(r.expedicionesPorPersonaDia).toBeNull();
+    expect(r.lineasPorPersonaDia).toBeNull();
+    expect(r.unidadesPorPersonaDia).toBeNull();
+    expect(r.otsAbastecidasPorPersonaDia).toBeNull();
+  });
+
+  it("con RRHH divide por días efectivamente trabajados, no por días con expedición", () => {
+    const r = ratiosPorPersonaDiaRrhh(filasRrhh, rrhh, true);
+    expect(r.estado).toBe("medible");
+    expect(r.diasTrabajados).toBe(20);
+    expect(r.personas).toBe(1);
+    expect(r.personasSinRrhh).toBe(1);        // SIN FICHA queda fuera, no se estima
+    expect(r.expedicionesPorPersonaDia).toBeCloseTo(4 / 20, 6);
+    expect(r.lineasPorPersonaDia).toBeCloseTo(12 / 20, 6);
+    expect(r.unidadesPorPersonaDia).toBeCloseTo(20 / 20, 6);
+    expect(r.otsAbastecidasPorPersonaDia).toBeCloseTo(4 / 20, 6);
+    expect(r.cobertura.n).toBe(4);
+  });
+
+  it("RRHH sin días trabajados útiles no desbloquea nada", () => {
+    const r = ratiosPorPersonaDiaRrhh(filasRrhh, [{ persona: "ANA", mes: "2026-06-01", dias_trabajados: null }], true);
+    expect(r.estado).toBe("pendiente_rrhh");
+  });
+
+  it("la etiqueta de bloqueo dice qué falta y qué fuente lo desbloquea", () => {
+    expect(PENDIENTE_RRHH_LABEL).toContain("Pendiente");
+    expect(PENDIENTE_RRHH_LABEL).toContain("RRHH");
+    expect(FUENTE_DESBLOQUEO_RRHH).toContain("ops_rrhh");
+  });
+});
+
+describe("F4B.1 · guardia: la página no publica el proxy de días-persona", () => {
+  const fuente = readFileSync(new URL("../../pages/ops/Logistica.tsx", import.meta.url), "utf8");
+
+  it("Logistica.tsx no referencia los ratios proxy de kpisProductividad", () => {
+    for (const ident of [
+      "expedicionesPorPersonaDia",
+      "lineasPorPersonaDia",
+      "unidadesPorPersonaDia",
+      "otsAbastecidasPorPersonaDia",
+    ]) {
+      const usos = fuente.split(ident).length - 1;
+      // Solo puede aparecer dentro de la rama gated por RRHH (ratiosPersona.*)
+      const gated = fuente.split(new RegExp(`r\\.${ident}`)).length - 1;
+      expect(usos, ident).toBe(gated);
+    }
+  });
+
+  it("no queda ninguna etiqueta de 'diagnóstico interno' en la página", () => {
+    expect(fuente.toLowerCase()).not.toContain("diagnóstico interno");
+    expect(fuente).toContain("PENDIENTE_RRHH_LABEL");
   });
 });
