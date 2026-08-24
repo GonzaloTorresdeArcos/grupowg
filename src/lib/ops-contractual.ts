@@ -435,6 +435,7 @@ export const dimensionesRequeridas = (r: ReglaSla): string[] => {
   if (r.gama_familia) out.push("gama_real");
   if (r.tipologia_servicio) out.push("tipologia_servicio");
   if (r.fase) out.push("fase");
+  if (r.condicion_aplicacion) out.push("condicion_aplicacion");
   if (r.imputabilidad === "por_determinar" || r.imputabilidad === "mixta") out.push("imputabilidad");
   if (r.pausas_exclusiones.length > 0) out.push("exclusion_sla");
   return out;
