@@ -68,20 +68,44 @@ const PIEZA_MAP: Record<string, string> = {
 
 const EXPED_MAP: Record<string, string> = {
   num_ot: "num_ot", ot: "num_ot",
+  almacen_base: "almacen_base", almacen: "almacen_base", base: "almacen_base",
+  expedicion_id: "expedicion_id",
   referencia_expedicion: "referencia_expedicion",
   transportista: "transportista", origen: "origen",
-  destino_cp: "destino_cp", destino_tipo: "destino_tipo",
+  destino: "destino", destino_cp: "destino_cp", destino_tipo: "destino_tipo",
+  preparado_por: "preparado_por", persona_id: "persona_id", equipo: "equipo",
+  picking_inicio: "picking_inicio", picking_fin: "picking_fin",
+  expedicion_timestamp: "expedicion_timestamp",
   fecha_expedicion: "fecha_expedicion",
   fecha_entrega_prevista: "fecha_entrega_prevista",
   fecha_entrega_real: "fecha_entrega_real",
   estado_expedicion: "estado_expedicion",
-  coste_envio: "coste_envio", incidencia: "incidencia",
+  tipo_incidencia: "tipo_incidencia",
+  reexpedicion: "reexpedicion", expedicion_origen_id: "expedicion_origen_id",
+  coste_envio: "coste_envio", coste_transporte: "coste_transporte",
+  num_lineas: "num_lineas", num_unidades: "num_unidades",
+  num_ot_abastecidas: "num_ot_abastecidas",
+  incidencia: "incidencia",
+};
+
+const EXPED_LINEA_MAP: Record<string, string> = {
+  almacen_base: "almacen_base", almacen: "almacen_base", base: "almacen_base",
+  expedicion_id: "expedicion_id",
+  linea: "linea", num_linea: "linea",
+  referencia: "referencia", descripcion: "descripcion",
+  cantidad: "cantidad", unidades: "cantidad",
+  num_ot: "num_ot", ot: "num_ot",
 };
 
 const STOCK_MAP: Record<string, string> = {
-  fecha: "fecha", almacen: "almacen", referencia: "referencia",
-  descripcion: "descripcion", cantidad: "cantidad",
-  cantidad_reservada: "cantidad_reservada", coste_medio: "coste_medio",
+  fecha: "fecha_snapshot", fecha_snapshot: "fecha_snapshot",
+  almacen: "almacen_base", almacen_base: "almacen_base",
+  referencia: "referencia", descripcion: "descripcion",
+  cantidad: "stock_fisico", stock_fisico: "stock_fisico",
+  cantidad_reservada: "reservado", reservado: "reservado",
+  stock_disponible: "stock_disponible", disponible: "stock_disponible",
+  en_transito: "en_transito",
+  coste_medio: "coste_medio",
 };
 
 /** Estados admitidos por las tablas de supply. Un valor fuera de lista invalida la fila. */
@@ -100,14 +124,18 @@ const NUMERIC = new Set([
   "importe_mo", "importe_desplazamiento", "fact_cli", "fact_sat",
   "ots", "dias_medio", "pct_bajas", "pct_nff",
   "cantidad", "coste_unitario", "coste_envio", "cantidad_reservada", "coste_medio",
+  "coste_transporte", "num_lineas", "num_unidades", "num_ot_abastecidas", "linea",
+  "stock_fisico", "stock_disponible", "reservado", "en_transito",
 ]);
 const DATE_FIELDS = new Set([
   "fecha_creacion", "fecha_cierre", "fecha_primer_contacto", "fecha_primera_visita", "fecha_baja",
   "fecha_necesidad", "fecha_solicitud", "fecha_disponibilidad", "fecha_picking",
   "fecha_expedicion", "fecha_entrega", "fecha_montaje",
-  "fecha_entrega_prevista", "fecha_entrega_real", "fecha",
+  "fecha_entrega_prevista", "fecha_entrega_real", "fecha", "fecha_snapshot",
+  "picking_inicio", "picking_fin", "expedicion_timestamp",
 ]);
-const BOOL_FIELDS = new Set(["kpi_20d", "kpi_30d", "tiene_piezas", "activo"]);
+const BOOL_FIELDS = new Set(["kpi_20d", "kpi_30d", "tiene_piezas", "activo", "reexpedicion"]);
+
 
 // ---------- Helpers ----------
 export const norm = (s: string) =>
