@@ -98,7 +98,7 @@ type Props = {
 };
 
 
-export const OpsPeriodPicker = ({ value, onChange, className }: Props) => {
+export const OpsPeriodPicker = ({ value, onChange, className, cobertura, preset, onPreset }: Props) => {
   const [open, setOpen] = useState(false);
   const [year, setYear] = useState<number>(() => parseYM(value.from).y);
   const [pendingStart, setPendingStart] = useState<{ y: number; m: number } | null>(null);
