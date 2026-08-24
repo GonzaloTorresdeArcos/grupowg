@@ -324,18 +324,37 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     rec.origen_dato = "importador";
   }
   if (t === "ops_expedicion") {
-    if (!rec.referencia_expedicion) return null;
+    // Clave natural F4A.1: almacén base + identificador de expedición.
+    if (!rec.expedicion_id && rec.referencia_expedicion) rec.expedicion_id = rec.referencia_expedicion;
+    if (!rec.referencia_expedicion && rec.expedicion_id) rec.referencia_expedicion = rec.expedicion_id;
+    if (!rec.expedicion_id) return null;
+    if (!rec.almacen_base) rec.almacen_base = "SIN_ALMACEN";
     const est = String(rec.estado_expedicion ?? "").trim().toLowerCase().replace(/\s+/g, "_");
     if (est && !(ESTADOS_EXPEDICION as readonly string[]).includes(est)) return null;
     rec.estado_expedicion = est || "preparada";
     const dest = String(rec.destino_tipo ?? "").trim().toLowerCase().replace(/\s+/g, "_");
     if (dest && !(DESTINOS_EXPEDICION as readonly string[]).includes(dest)) return null;
     rec.destino_tipo = dest || null;
+    if (rec.reexpedicion == null) rec.reexpedicion = false;
+    // Si vienen conteos en la cabecera, quedan declarados; si no, los derivará la línea.
+    rec.procedencia_conteo = rec.num_lineas != null || rec.num_unidades != null ? "cabecera" : "derivado_lineas";
+    if (rec.fecha_expedicion == null && rec.expedicion_timestamp != null) rec.fecha_expedicion = rec.expedicion_timestamp;
+    rec.origen_dato = "importador";
+  }
+  if (t === "ops_expedicion_linea") {
+    if (!rec.expedicion_id || !rec.referencia) return null;
+    if (!rec.almacen_base) rec.almacen_base = "SIN_ALMACEN";
+    if (rec.linea == null) return null;
+    if (rec.cantidad == null) rec.cantidad = 1;
     rec.origen_dato = "importador";
   }
   if (t === "ops_stock_snapshot") {
-    if (!rec.fecha || !rec.almacen || !rec.referencia) return null;
-    if (rec.cantidad == null) rec.cantidad = 0;
+    if (!rec.fecha_snapshot || !rec.almacen_base || !rec.referencia) return null;
+    if (rec.stock_fisico == null) rec.stock_fisico = 0;
+    // Disponible declarado o derivado; nunca inventado si falta reservado.
+    if (rec.stock_disponible == null && rec.reservado != null) {
+      rec.stock_disponible = Number(rec.stock_fisico) - Number(rec.reservado);
+    }
     rec.origen_dato = "importador";
   }
   return rec;
@@ -347,7 +366,8 @@ export const TABLE_LABEL: Record<OpsTable, string> = {
   ops_portfolio_gamas: "Portfolio marca → gama (ops_portfolio_gamas)",
   ops_benchmark: "Benchmark familia × cliente (ops_benchmark)",
   ops_pieza_solicitud: "Solicitudes de pieza (ops_pieza_solicitud)",
-  ops_expedicion: "Expediciones (ops_expedicion)",
+  ops_expedicion: "Expediciones — cabecera (ops_expedicion)",
+  ops_expedicion_linea: "Expediciones — líneas (ops_expedicion_linea)",
   ops_stock_snapshot: "Foto de stock (ops_stock_snapshot)",
 };
 
@@ -371,14 +391,22 @@ export const PLANTILLAS: Record<OpsTable, readonly string[]> = {
     "estado_pieza", "coste_unitario", "imputabilidad_retraso",
   ],
   ops_expedicion: [
-    "num_ot", "referencia_expedicion", "transportista", "origen", "destino_cp", "destino_tipo",
-    "fecha_expedicion", "fecha_entrega_prevista", "fecha_entrega_real",
-    "estado_expedicion", "coste_envio", "incidencia",
+    "almacen_base", "expedicion_id", "num_ot", "preparado_por", "persona_id", "equipo",
+    "picking_inicio", "picking_fin", "expedicion_timestamp",
+    "transportista", "origen", "destino", "destino_cp", "destino_tipo",
+    "fecha_entrega_prevista", "fecha_entrega_real",
+    "estado_expedicion", "tipo_incidencia", "reexpedicion", "expedicion_origen_id",
+    "coste_transporte", "num_lineas", "num_unidades", "num_ot_abastecidas",
+  ],
+  ops_expedicion_linea: [
+    "almacen_base", "expedicion_id", "linea", "referencia", "descripcion", "cantidad", "num_ot",
   ],
   ops_stock_snapshot: [
-    "fecha", "almacen", "referencia", "descripcion", "cantidad", "cantidad_reservada", "coste_medio",
+    "fecha_snapshot", "almacen_base", "referencia", "descripcion",
+    "stock_fisico", "reservado", "stock_disponible", "en_transito", "coste_medio",
   ],
 };
+
 
 /** Fila de cabecera lista para pegar en un CSV. */
 export const cabeceraPlantilla = (t: OpsTable): string => PLANTILLAS[t].join(",");
