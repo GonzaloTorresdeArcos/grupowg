@@ -39,7 +39,7 @@ type LogisticaPayload = {
 /** Columnas de ops_expedicion necesarias para la productividad de almacén. */
 const COLS_EXPEDICION =
   "almacen_base,expedicion_id,preparado_por,equipo,picking_inicio,picking_fin,expedicion_timestamp," +
-  "fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
+  "fecha_expedicion,fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
   "coste_transporte,num_lineas,num_unidades,num_ot_abastecidas";
 
 
