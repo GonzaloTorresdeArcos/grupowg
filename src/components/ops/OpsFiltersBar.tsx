@@ -56,6 +56,8 @@ export const OpsFiltersBar = () => {
         <label className="flex flex-col gap-1 min-w-[190px]">
           <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Comparar con</span>
           <select
+            aria-label="Modo de comparación"
+            data-testid="ops-modo-comparacion"
             value={modo}
             disabled={ytdForzado}
             title={ytdForzado
