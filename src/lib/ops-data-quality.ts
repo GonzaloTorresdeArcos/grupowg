@@ -543,6 +543,10 @@ export type ResumenReadiness = {
   total: number;
   medibles: number;
   noMedibles: number;
+  /** Reparto por las tres dimensiones independientes del Registry. */
+  porMedibilidad: Record<Medibilidad, number>;
+  porExtraccion: { extraida_contrato: number; pendiente_extraer: number };
+  porValidacion: Record<string, number>;
   /** Motivos agregados ordenados por frecuencia. */
   bloqueosTop: Array<{ clave: string; motivo: string; n: number }>;
   /** Siempre false en F3B: no se declara cumplimiento contractual. */
@@ -561,13 +565,24 @@ export const resumenReadiness = (reglas: readonly ReglaSla[], m: MedidasDataQual
     }
   }
   const medibles = evaluadas.filter((e) => e.medible).length;
+  const porMedibilidad: Record<Medibilidad, number> = { medible: 0, parcial: 0, pendiente: 0 };
+  for (const e of evaluadas) porMedibilidad[e.medibilidad] += 1;
+  const porValidacion: Record<string, number> = {};
+  for (const r of reglas) porValidacion[r.estado_regla] = (porValidacion[r.estado_regla] ?? 0) + 1;
   return {
     total: reglas.length,
     medibles,
     noMedibles: reglas.length - medibles,
+    porMedibilidad,
+    porExtraccion: {
+      extraida_contrato: reglas.filter((r) => r.estado_extraccion === "extraida_contrato").length,
+      pendiente_extraer: reglas.filter((r) => r.estado_extraccion === "pendiente_extraer").length,
+    },
+    porValidacion,
     bloqueosTop: [...mapa.values()].sort((a, b) => b.n - a.n),
     puedeDeclararCumplimiento: medibles > 0 && medibles === reglas.length,
   };
+
 };
 
 export const AVISO_NO_CUMPLIMIENTO =
