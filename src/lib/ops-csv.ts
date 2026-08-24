@@ -336,8 +336,12 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (dest && !(DESTINOS_EXPEDICION as readonly string[]).includes(dest)) return null;
     rec.destino_tipo = dest || null;
     if (rec.reexpedicion == null) rec.reexpedicion = false;
-    // Si vienen conteos en la cabecera, quedan declarados; si no, los derivará la línea.
-    rec.procedencia_conteo = rec.num_lineas != null || rec.num_unidades != null ? "cabecera" : "derivado_lineas";
+    // Si la cabecera trae conteos, quedan DECLARADOS; si no, los derivará el trigger de líneas.
+    rec.procedencia_conteo =
+      rec.num_lineas != null || rec.num_unidades != null || rec.num_ot_abastecidas != null
+        ? "declarado"
+        : "derivado_lineas";
+
     if (rec.fecha_expedicion == null && rec.expedicion_timestamp != null) rec.fecha_expedicion = rec.expedicion_timestamp;
     rec.origen_dato = "importador";
   }
