@@ -153,26 +153,24 @@ export default function OpsLogistica() {
     return () => { vivo = false; };
   }, [filters.from, filters.to, reloadKey]);
 
-  // F4B.1 · El dominio RRHH manda: sin días efectivos no se publica ningún
-  // ratio por persona y día, ni siquiera como diagnóstico.
-  const rrhhDisponible = dominio("dias_trabajados")?.estado === "disponible";
-
+  // F4B · RRHH LOGÍSTICA manda: sin días de presencia reales por persona no se
+  // publica ningún ratio por persona y día. El proxy queda eliminado.
   useEffect(() => {
-    if (!rrhhDisponible) { setRrhhDias([]); return; }
     let vivo = true;
     void (async () => {
       const { data, error } = await supabase
-        .from("ops_rrhh" as never)
-        .select("tecnico,mes,dias_trabajados")
-        .gte("mes", filters.from.slice(0, 8) + "01")
-        .lte("mes", filters.to)
+        .from("ops_rrhh_logistica" as never)
+        .select("persona_id,nombre,equipo,almacen_base,fecha,jornada_horas,presente")
+        .gte("fecha", filters.from)
+        .lte("fecha", filters.to)
         .limit(20000);
-      if (!vivo || error) return;
-      const rows = (data ?? []) as unknown as Array<{ tecnico: string; mes: string; dias_trabajados: number | null }>;
-      setRrhhDias(rows.map((r) => ({ persona: r.tecnico, mes: r.mes, dias_trabajados: r.dias_trabajados })));
+      if (!vivo || error) { if (vivo) setRrhhDias([]); return; }
+      setRrhhDias((data ?? []) as unknown as DiaRrhhLogistica[]);
     })();
     return () => { vivo = false; };
-  }, [rrhhDisponible, filters.from, filters.to, reloadKey]);
+  }, [filters.from, filters.to, reloadKey]);
+
+  const rrhhDisponible = rrhhDias.length > 0;
 
   const etiqueta = labelPeriodo(filters.from, filters.to);
   const hayExpediciones = (log?.total_filas ?? 0) > 0;
@@ -190,12 +188,28 @@ export default function OpsLogistica() {
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
   // F4B · San Agustín concentra la preparación: se lee por almacén → equipo → persona.
   const prodJerarquia = useMemo(() => aplanarJerarquia(jerarquiaProductividad(exped)), [exped]);
+  // Drill: almacén → equipo → persona → día, siempre dentro del mismo almacén.
+  const [dimension, setDimension] = useState<DimensionProductividad>("almacen");
+  const [almacenFoco, setAlmacenFoco] = useState<string | null>(null);
+  const expedFoco = useMemo(
+    () => (almacenFoco ? exped.filter((f) => f.almacen_base === almacenFoco) : exped),
+    [exped, almacenFoco],
+  );
+  const filasDimension = useMemo(
+    () => productividadPor(dimension === "almacen" ? exped : expedFoco, dimension),
+    [exped, expedFoco, dimension],
+  );
+  const almacenesDisponibles = useMemo(
+    () => Array.from(new Set(exped.map((f) => f.almacen_base))).sort(),
+    [exped],
+  );
 
-  // Ratios por persona y día trabajado: calculados SOLO contra ops_rrhh real.
+  // Ratios por persona y día trabajado: SOLO contra ops_rrhh_logistica real.
   const ratiosPersona = useMemo(
     () => ratiosPorPersonaDiaRrhh(exped, rrhhDias, rrhhDisponible),
     [exped, rrhhDias, rrhhDisponible],
   );
+
 
   // KPIs de servicio y rapidez de salida. Sin dato → pendiente de fuente.
   const kpisAvanzados = useMemo(() => {
