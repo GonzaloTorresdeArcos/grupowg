@@ -119,7 +119,25 @@ export default function OpsLogistica() {
         .lte("fecha_expedicion", `${filters.to}T23:59:59`)
         .limit(5000);
       if (!vivo || error) return;
-      setExped((data ?? []) as unknown as FilaExpedicion[]);
+      const filas = (data ?? []) as unknown as FilaExpedicion[];
+      setExped(filas);
+      // Enlace línea → pieza para conocer la fecha de disponibilidad real.
+      const { data: dl } = await supabase
+        .from("ops_expedicion_linea" as never)
+        .select("almacen_base,expedicion_id,ops_pieza_solicitud(fecha_disponibilidad)")
+        .limit(20000);
+      if (!vivo) return;
+      const rows = (dl ?? []) as unknown as Array<{
+        almacen_base: string; expedicion_id: string;
+        ops_pieza_solicitud: { fecha_disponibilidad: string | null } | null;
+      }>;
+      setRefs(
+        rows.map((r) => ({
+          almacen_base: r.almacen_base,
+          expedicion_id: r.expedicion_id,
+          fecha_disponibilidad: r.ops_pieza_solicitud?.fecha_disponibilidad ?? null,
+        })),
+      );
     })();
     return () => { vivo = false; };
   }, [filters.from, filters.to, reloadKey]);
