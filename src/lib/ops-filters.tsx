@@ -224,6 +224,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     setFiltersState((f) => ({ ...f, ...partial }));
   const reset = () => setFiltersState(defaultFilters());
   const reloadOptions = () => setReloadKey((k) => k + 1);
+  const setModo = useCallback((m: ModoComparacion) => setModoState(m), []);
 
   const rpcParams = useMemo(() => ({
     p_from: filters.from, p_to: filters.to,
@@ -233,12 +234,42 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     p_tecnico: filters.tecnico, p_canal: filters.canal,
   }), [filters]);
 
+  const preset = useMemo(
+    () => detectarPreset({ from: filters.from, to: filters.to }, cobertura),
+    [filters.from, filters.to, cobertura],
+  );
+
+  // Regla estricta YTD: la comparación equivalente inmediata no tiene sentido
+  // (año a medias contra tramo arbitrario), así que en YTD se fuerza interanual.
+  const modo: ModoComparacion = preset === "ytd" ? "interanual" : modoSeleccionado;
+
+  const prevRange = useMemo(
+    () => prevPeriod(filters.from, filters.to, modo),
+    [filters.from, filters.to, modo],
+  );
+  const sinComparable = useMemo(
+    () => sinPeriodoComparable(prevRange, cobertura),
+    [prevRange, cobertura],
+  );
+
+  // Cambiar de preset NUNCA toca los filtros activos: solo from/to.
+  const aplicarPreset = useCallback((key: PresetKey, refISO?: string) => {
+    setFiltersState((f) => {
+      const r = resolverPreset(key, { from: f.from, to: f.to }, cobertura, refISO);
+      return { ...f, from: r.from, to: r.to };
+    });
+  }, [cobertura]);
+
   return (
-    <OpsFiltersContext.Provider value={{ filters, setFilters, reset, options, loadingOptions, optionsError, reloadOptions, rpcParams }}>
+    <OpsFiltersContext.Provider value={{
+      filters, setFilters, reset, options, loadingOptions, optionsError, reloadOptions, rpcParams,
+      modo, modoSeleccionado, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+    }}>
       {children}
     </OpsFiltersContext.Provider>
   );
 };
+
 
 export const useOpsFilters = () => {
   const ctx = useContext(OpsFiltersContext);
