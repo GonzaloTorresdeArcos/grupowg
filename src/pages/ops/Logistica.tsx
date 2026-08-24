@@ -26,7 +26,8 @@ import {
   ratiosPorPersonaDiaRrhh,
   PENDIENTE_RRHH_LABEL,
   FUENTE_DESBLOQUEO_RRHH,
-  type DiaTrabajadoRrhh,
+  type DiaRrhhLogistica,
+  type DimensionProductividad,
   type FilaExpedicion,
   type RefDisponibilidad,
 } from "@/lib/ops-logistica";
@@ -86,7 +87,7 @@ export default function OpsLogistica() {
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
-  const [rrhhDias, setRrhhDias] = useState<DiaTrabajadoRrhh[]>([]);
+  const [rrhhDias, setRrhhDias] = useState<DiaRrhhLogistica[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -220,7 +221,7 @@ export default function OpsLogistica() {
     const bloqueado = r.estado !== "medible";
     const hintPersona = bloqueado
       ? FUENTE_DESBLOQUEO_RRHH
-      : `${fmtNum(r.personas)} personas · ${fmtNum(r.diasTrabajados)} días trabajados (ops_rrhh). ${cob(r.cobertura)}`;
+      : `${fmtNum(r.personas)} personas · ${fmtNum(r.diasTrabajados)} días de presencia (ops_rrhh_logistica). ${cob(r.cobertura)}`;
     const persona = (label: string, v: number | null) => ({
       label,
       valor: bloqueado || v == null ? null : fmtDec(v, 1),
