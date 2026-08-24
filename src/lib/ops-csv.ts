@@ -118,6 +118,9 @@ export const ESTADOS_EXPEDICION = [
 ] as const;
 export const DESTINOS_EXPEDICION = ["cliente", "sat", "delegacion", "taller", "proveedor"] as const;
 export const IMPUTABILIDADES_PIEZA = ["wg", "proveedor", "cliente", "sat", "por_determinar"] as const;
+/** Valores admitidos por la CHECK de ops_expedicion.procedencia_conteo. */
+export const PROCEDENCIAS_CONTEO = ["declarado", "derivado_lineas"] as const;
+export type ProcedenciaConteo = (typeof PROCEDENCIAS_CONTEO)[number];
 
 const NUMERIC = new Set([
   "dias_cierre", "sla_cierre_dlab", "anio_garantia",
