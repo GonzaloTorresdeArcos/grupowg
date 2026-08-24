@@ -889,9 +889,12 @@ export type ResumenReadiness = {
   porValidacion: Record<string, number>;
   /** Motivos agregados ordenados por frecuencia. */
   bloqueosTop: Array<{ clave: string; motivo: string; n: number }>;
+  /** F4A.1 · Reparto de reglas por procedencia del programa. */
+  porProcedenciaPrograma: Record<ProcedenciaPrograma, number>;
   /** Siempre false en F3B: no se declara cumplimiento contractual. */
   puedeDeclararCumplimiento: boolean;
 };
+
 
 export const resumenReadiness = (
   reglas: readonly ReglaSla[],
