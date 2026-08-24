@@ -14,6 +14,8 @@
 
 import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual";
 import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
+import { resolverClienteContractual, type ClienteAlias, type ReglaPatron } from "@/lib/ops-cliente-alias";
+
 
 
 export type EstadoDominio = "disponible" | "parcial" | "pendiente";
@@ -443,7 +445,12 @@ export const frescura = (m: MedidasDataQuality, ahora: Date = new Date()): Fresc
 
 // ─── Contractual data readiness ──────────────────────────────────────────────
 
-export type BloqueoReadiness = { tipo: "evento" | "dimension" | "calendario" | "target" | "validacion"; clave: string; motivo: string };
+export type BloqueoReadiness = {
+  tipo: "evento" | "dimension" | "calendario" | "target" | "validacion" | "cliente";
+  clave: string;
+  motivo: string;
+};
+
 
 export type Medibilidad = "medible" | "parcial" | "pendiente";
 
