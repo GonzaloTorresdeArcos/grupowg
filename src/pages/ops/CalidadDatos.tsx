@@ -14,7 +14,9 @@ import {
   type EstadoDominio,
 } from "@/lib/ops-data-quality";
 import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
+import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
 import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
+
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
 
 const pct = (v: number | null | undefined) => (v == null ? "—" : `${(v * 100).toFixed(1)}%`);
