@@ -244,9 +244,11 @@ export function parseCSV(text: string): string[][] {
 // ---------- Detección de tabla por cabeceras ----------
 export function detectTable(header: string[]): OpsTable | null {
   const h = new Set(header.map(norm));
+  const base = h.has("almacen_base") || h.has("almacen") || h.has("base");
   // Supply primero: comparten cabeceras genéricas con ops_fact_ot.
-  if (h.has("referencia_expedicion")) return "ops_expedicion";
-  if (h.has("almacen") && h.has("referencia") && h.has("fecha")) return "ops_stock_snapshot";
+  if (h.has("expedicion_id") && h.has("linea") && h.has("referencia")) return "ops_expedicion_linea";
+  if (h.has("referencia_expedicion") || (h.has("expedicion_id") && base && !h.has("referencia"))) return "ops_expedicion";
+  if (base && h.has("referencia") && (h.has("fecha") || h.has("fecha_snapshot") || h.has("stock_fisico"))) return "ops_stock_snapshot";
   if ((h.has("num_ot") || h.has("ot")) && h.has("referencia") && !h.has("situacion")) return "ops_pieza_solicitud";
   if (h.has("num_ot") || h.has("numot") || h.has("ot")) return "ops_fact_ot";
   if ((h.has("tecnico") || h.has("nombre")) && (h.has("activo") || h.has("delegacion")) && !h.has("mes")) return "ops_tecnicos";
@@ -262,8 +264,9 @@ export function conflictKey(t: OpsTable): string {
     ops_portfolio_gamas: "marca,cliente_wg",
     ops_benchmark: "familia,cliente_wg",
     ops_pieza_solicitud: "num_ot,referencia",
-    ops_expedicion: "referencia_expedicion",
-    ops_stock_snapshot: "fecha,almacen,referencia",
+    ops_expedicion: "almacen_base,expedicion_id",
+    ops_expedicion_linea: "almacen_base,expedicion_id,linea",
+    ops_stock_snapshot: "fecha_snapshot,almacen_base,referencia",
   }[t];
 }
 
@@ -271,13 +274,15 @@ export function conflictKey(t: OpsTable): string {
 export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Record<string, unknown> | null {
   const map = {
     ops_fact_ot: FACT_MAP, ops_tecnicos: TEC_MAP, ops_portfolio_gamas: PORT_MAP, ops_benchmark: BENCH_MAP,
-    ops_pieza_solicitud: PIEZA_MAP, ops_expedicion: EXPED_MAP, ops_stock_snapshot: STOCK_MAP,
+    ops_pieza_solicitud: PIEZA_MAP, ops_expedicion: EXPED_MAP, ops_expedicion_linea: EXPED_LINEA_MAP,
+    ops_stock_snapshot: STOCK_MAP,
   }[t];
   const rec: Record<string, unknown> = {};
   for (let i = 0; i < header.length; i++) {
     const col = map[norm(header[i])];
     if (!col) continue;
     const v = (raw[i] ?? "").trim();
+
     if (DATE_FIELDS.has(col)) rec[col] = parseDate(v);
     else if (NUMERIC.has(col)) {
       const n = parseNum(v);
