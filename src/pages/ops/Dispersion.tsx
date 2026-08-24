@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
+import { gamaDisplayMap } from "@/lib/ops-gamas";
+
 import { prevPeriod, labelPeriodo, diasEntre } from "@/lib/ops-performance";
 import {
   UMBRALES_DISPERSION,
@@ -388,8 +390,9 @@ export default function OpsDispersion() {
       <span className="text-ink/30">—</span>
     );
 
-  const Sel = ({ label, value, options, onChange }: {
+  const Sel = ({ label, value, options, onChange, displayMap }: {
     label: string; value: string | null; options: string[]; onChange: (v: string | null) => void;
+    displayMap?: Record<string, string>;
   }) => {
     // Blindaje: cualquier payload no-array degrada a lista vacía, nunca rompe el render.
     const list = Array.isArray(options) ? options : [];
@@ -402,11 +405,12 @@ export default function OpsDispersion() {
           className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
         >
           <option value="">Todas</option>
-          {list.map((o) => <option key={o} value={o}>{o}</option>)}
+          {list.map((o) => <option key={o} value={o}>{displayMap?.[o] ?? o}</option>)}
         </select>
       </label>
     );
   };
+
 
   const completitudItems = kpis && data ? [
     { label: "Con provincia", pct: pctCompleto(kpis.con_provincia, kpis.cerradas) },
@@ -463,7 +467,7 @@ export default function OpsDispersion() {
           <OpsPeriodPicker value={range} onChange={setRange} />
         </div>
         <Sel label="Delegación" value={delegacion} options={delOpts} onChange={setDelegacion} />
-        <Sel label="Gama" value={gama} options={gamaOpts} onChange={setGama} />
+        <Sel label="Gama" value={gama} options={gamaOpts} displayMap={gamaDisplayMap(Array.isArray(gamaOpts) ? gamaOpts : [])} onChange={setGama} />
         <Sel label="Familia" value={familia} options={famOpts} onChange={setFamilia} />
         {optsErr && (
           <span role="alert" className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-red-50 border border-red-200 text-[11px] text-red-800">

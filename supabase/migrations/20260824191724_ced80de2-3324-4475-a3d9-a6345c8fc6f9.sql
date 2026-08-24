@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.ops_equipos(date, date, text, text) TO PUBLIC;

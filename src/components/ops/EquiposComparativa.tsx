@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
+import { esDelegacionReal } from "@/lib/ops-performance";
+import { gamaLabel } from "@/lib/ops-gamas";
 import { Loader2 } from "lucide-react";
 
 type EquipoRow = {
@@ -18,7 +20,12 @@ type EquipoRow = {
   despl_medio: number;
   abiertas: number;
   abiertas_30: number;
+  // Ampliación aditiva de ops_equipos (F1 V2): separación entidad ↔ gama.
+  tipo_entidad?: "equipo_central" | "delegacion" | null;
+  nombre_display?: string | null;
+  gama_atendida?: string | null;
 };
+
 
 const slaTone = (v: number) => {
   const pct = Number(v) * 100;
@@ -42,8 +49,9 @@ const Pair = ({ v, esp, tone }: { v: number; esp: number; tone: string }) => (
   </span>
 );
 
-export const EquiposComparativa = () => {
+export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: boolean }) => {
   const { rpcParams } = useOpsFilters();
+
   const [rows, setRows] = useState<EquipoRow[] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -78,14 +86,20 @@ export const EquiposComparativa = () => {
   }
 
   // Ocultar Tenerife si está cerrada (residual)
-  const visible = rows.filter(
+  let visible = rows.filter(
     (r) => !(/tenerife/i.test(r.equipo) && r.tecnicos_activos === 0 && r.cerradas < 10)
   );
 
+  // Vista HUB: solo equipos organizativos de Central (filtro estructural con
+  // fallback por nombre si la RPC aún no aporta tipo_entidad).
+  if (soloCentral) {
+    visible = visible.filter((r) => !esDelegacionReal(r.equipo, r.tipo_entidad ?? undefined));
+  }
+
   // Central primero, luego delegaciones; dentro, por cerradas desc
   const sorted = [...visible].sort((a, b) => {
-    const aC = /central/i.test(a.ambito) ? 0 : 1;
-    const bC = /central/i.test(b.ambito) ? 0 : 1;
+    const aC = a.tipo_entidad ? (a.tipo_entidad === "equipo_central" ? 0 : 1) : /central/i.test(a.ambito) ? 0 : 1;
+    const bC = b.tipo_entidad ? (b.tipo_entidad === "equipo_central" ? 0 : 1) : /central/i.test(b.ambito) ? 0 : 1;
     if (aC !== bC) return aC - bC;
     return b.cerradas - a.cerradas;
   });
@@ -98,15 +112,19 @@ export const EquiposComparativa = () => {
         </p>
         <h2 className="font-display text-xl tracking-tight text-ink">Comparativa de equipos</h2>
         <p className="text-xs text-ink/50 mt-1">
-          Equipos de gama de Central San Agustín y delegaciones territoriales.
+          {soloCentral
+            ? "Equipos organizativos del HUB Central San Agustín. La gama atendida se muestra como dimensión de producto, no como unidad organizativa."
+            : "Equipos organizativos de Central San Agustín y delegaciones territoriales."}{" "}
           Bajas y NFF se comparan con el esperado según mix familia × cliente.
         </p>
       </div>
+
       <div className="overflow-x-auto">
         <table className="w-full text-[13px]">
           <thead>
             <tr className="text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.05]">
-              <th className="px-4 py-3">Equipo</th>
+              <th className="px-4 py-3">Unidad organizativa</th>
+              <th className="px-4 py-3">Gama atendida</th>
               <th className="px-4 py-3">Ámbito</th>
               <th className="px-4 py-3 text-right">Técnicos</th>
               <th className="px-4 py-3 text-right">Cerradas</th>
@@ -121,8 +139,18 @@ export const EquiposComparativa = () => {
           <tbody>
             {sorted.map((r) => (
               <tr key={r.equipo} className="border-b border-black/[0.04] hover:bg-ink/[0.015]">
-                <td className="px-4 py-3 font-medium text-ink">{r.equipo}</td>
+                <td className="px-4 py-3 font-medium text-ink">{r.nombre_display || r.equipo}</td>
+                <td className="px-4 py-3">
+                  {r.gama_atendida ? (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-black/[0.04] text-[11px] text-ink/70">
+                      {gamaLabel(r.gama_atendida)}
+                    </span>
+                  ) : (
+                    <span className="text-ink/30 text-xs">—</span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-ink/60 text-xs">{r.ambito}</td>
+
                 <td className="px-4 py-3 text-right tabular-nums text-ink">{fmtNum(r.tecnicos_activos)}</td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink">{fmtNum(r.cerradas)}</td>
                 <td className={`px-4 py-3 text-right tabular-nums font-medium ${slaTone(r.pct_sla20)}`}>
