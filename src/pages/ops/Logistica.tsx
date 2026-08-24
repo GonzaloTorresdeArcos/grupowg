@@ -462,6 +462,63 @@ export default function OpsLogistica() {
           </div>
         )}
 
+        {/* C.1b — Drill Almacén → Equipo → Persona → Día (nunca mezcla almacenes) */}
+        {prodFilas.length > 0 && (
+          <div className="mt-4 rounded-xl border border-black/[0.06] bg-white overflow-hidden">
+            <div className="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-black/[0.05]">
+              {(["almacen", "equipo", "persona", "dia"] as const).map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setDimension(d)}
+                  className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.1em] border ${
+                    dimension === d ? "bg-ink text-bone border-ink" : "border-black/[0.08] text-ink/60 hover:text-ink"
+                  }`}
+                >
+                  {d === "almacen" ? "Almacén" : d === "equipo" ? "Equipo" : d === "persona" ? "Persona" : "Día"}
+                </button>
+              ))}
+              {dimension !== "almacen" && (
+                <select
+                  value={almacenFoco ?? ""}
+                  onChange={(e) => setAlmacenFoco(e.target.value || null)}
+                  className="ml-auto rounded-full border border-black/[0.08] px-3 py-1 text-[11px] text-ink/70 bg-white"
+                  aria-label="Almacén base"
+                >
+                  <option value="">Todos los almacenes</option>
+                  {almacenesDisponibles.map((a) => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+            <table className="w-full text-[13px]">
+              <thead className="bg-black/[0.02]">
+                <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40">
+                  <th className="px-4 py-2 font-semibold">
+                    {dimension === "almacen" ? "Almacén" : dimension === "equipo" ? "Equipo" : dimension === "persona" ? "Persona" : "Día"}
+                  </th>
+                  <th className="px-4 py-2 font-semibold">Almacén base</th>
+                  <th className="px-4 py-2 font-semibold text-right">Expediciones</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas</th>
+                  <th className="px-4 py-2 font-semibold text-right">Líneas/hora</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.05]">
+                {filasDimension.map((f) => (
+                  <tr key={`${f.almacen_base}-${f.entidad}`}>
+                    <td className="px-4 py-2 text-ink/80">{f.entidad}</td>
+                    <td className="px-4 py-2 text-[11px] text-ink/50">{f.almacen_base}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.expediciones)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{fmtNum(f.lineas)}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{f.lineasHora == null ? "—" : fmtDec(f.lineasHora, 1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {/* C.2 — Productividad por persona, servicio y rapidez de salida */}
         <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
           Productividad por persona, servicio y rapidez de salida
@@ -482,9 +539,9 @@ export default function OpsLogistica() {
           ))}
         </div>
         <p className="mt-2 text-[11px] text-ink/40 leading-snug">
-          Los ratios por persona y día solo se calculan contra días efectivamente trabajados de ops_rrhh
-          (persona × mes). {FUENTE_DESBLOQUEO_RRHH}
+          {NOTA_DIAS_EFECTIVOS} {FUENTE_DESBLOQUEO_RRHH}
         </p>
+
 
         <p className="mt-3 text-[12px] text-ink/50">
           El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}
