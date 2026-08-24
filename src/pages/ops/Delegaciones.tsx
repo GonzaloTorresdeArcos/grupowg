@@ -315,6 +315,14 @@ const Delegaciones = () => {
         </div>
       </section>
 
+      {/* Comparativa de equipos por gama (procede del Panorama operativo) */}
+      <DelegacionesResumen
+        equiposNow={equiposNow}
+        equiposPrev={equiposPrev}
+        mediaCompaniaBajas={mediaEmpresaBajas}
+      />
+
+
       {/* Avisos de calidad de datos */}
       {validaciones.size > 0 && (
         <section>
