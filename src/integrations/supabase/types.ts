@@ -188,6 +188,63 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_expedicion: {
+        Row: {
+          coste_envio: number | null
+          created_at: string
+          destino_cp: string | null
+          destino_tipo: string | null
+          estado_expedicion: string
+          fecha_entrega_prevista: string | null
+          fecha_entrega_real: string | null
+          fecha_expedicion: string | null
+          id: string
+          incidencia: string | null
+          num_ot: string | null
+          origen: string | null
+          origen_dato: string
+          referencia_expedicion: string
+          transportista: string | null
+          updated_at: string
+        }
+        Insert: {
+          coste_envio?: number | null
+          created_at?: string
+          destino_cp?: string | null
+          destino_tipo?: string | null
+          estado_expedicion?: string
+          fecha_entrega_prevista?: string | null
+          fecha_entrega_real?: string | null
+          fecha_expedicion?: string | null
+          id?: string
+          incidencia?: string | null
+          num_ot?: string | null
+          origen?: string | null
+          origen_dato?: string
+          referencia_expedicion: string
+          transportista?: string | null
+          updated_at?: string
+        }
+        Update: {
+          coste_envio?: number | null
+          created_at?: string
+          destino_cp?: string | null
+          destino_tipo?: string | null
+          estado_expedicion?: string
+          fecha_entrega_prevista?: string | null
+          fecha_entrega_real?: string | null
+          fecha_expedicion?: string | null
+          id?: string
+          incidencia?: string | null
+          num_ot?: string | null
+          origen?: string | null
+          origen_dato?: string
+          referencia_expedicion?: string
+          transportista?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ops_fact_ot: {
         Row: {
           anio_garantia: number | null
@@ -322,6 +379,72 @@ export type Database = {
           tecnico?: string | null
           tiene_piezas?: boolean | null
           tipo_recurso?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_pieza_solicitud: {
+        Row: {
+          cantidad: number
+          coste_unitario: number | null
+          created_at: string
+          descripcion: string | null
+          estado_pieza: string
+          fecha_disponibilidad: string | null
+          fecha_entrega: string | null
+          fecha_expedicion: string | null
+          fecha_montaje: string | null
+          fecha_necesidad: string | null
+          fecha_picking: string | null
+          fecha_solicitud: string | null
+          id: string
+          imputabilidad_retraso: string | null
+          num_ot: string
+          origen_dato: string
+          proveedor: string | null
+          referencia: string
+          updated_at: string
+        }
+        Insert: {
+          cantidad?: number
+          coste_unitario?: number | null
+          created_at?: string
+          descripcion?: string | null
+          estado_pieza?: string
+          fecha_disponibilidad?: string | null
+          fecha_entrega?: string | null
+          fecha_expedicion?: string | null
+          fecha_montaje?: string | null
+          fecha_necesidad?: string | null
+          fecha_picking?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          imputabilidad_retraso?: string | null
+          num_ot: string
+          origen_dato?: string
+          proveedor?: string | null
+          referencia: string
+          updated_at?: string
+        }
+        Update: {
+          cantidad?: number
+          coste_unitario?: number | null
+          created_at?: string
+          descripcion?: string | null
+          estado_pieza?: string
+          fecha_disponibilidad?: string | null
+          fecha_entrega?: string | null
+          fecha_expedicion?: string | null
+          fecha_montaje?: string | null
+          fecha_necesidad?: string | null
+          fecha_picking?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          imputabilidad_retraso?: string | null
+          num_ot?: string
+          origen_dato?: string
+          proveedor?: string | null
+          referencia?: string
           updated_at?: string
         }
         Relationships: []
@@ -533,6 +656,45 @@ export type Database = {
           ventana_medicion?: string
           vigencia_desde?: string | null
           vigencia_hasta?: string | null
+        }
+        Relationships: []
+      }
+      ops_stock_snapshot: {
+        Row: {
+          almacen: string
+          cantidad: number
+          cantidad_reservada: number | null
+          coste_medio: number | null
+          created_at: string
+          descripcion: string | null
+          fecha: string
+          id: string
+          origen_dato: string
+          referencia: string
+        }
+        Insert: {
+          almacen: string
+          cantidad?: number
+          cantidad_reservada?: number | null
+          coste_medio?: number | null
+          created_at?: string
+          descripcion?: string | null
+          fecha: string
+          id?: string
+          origen_dato?: string
+          referencia: string
+        }
+        Update: {
+          almacen?: string
+          cantidad?: number
+          cantidad_reservada?: number | null
+          coste_medio?: number | null
+          created_at?: string
+          descripcion?: string | null
+          fecha?: string
+          id?: string
+          origen_dato?: string
+          referencia?: string
         }
         Relationships: []
       }
@@ -1625,6 +1787,15 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_logistica: {
+        Args: {
+          p_from?: string
+          p_prev_from?: string
+          p_prev_to?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_panorama: {
         Args: {
           p_canal?: string
@@ -1687,6 +1858,88 @@ export type Database = {
           programa: string
           reglas: number
         }[]
+      }
+      ops_supply: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_prev_from?: string
+          p_prev_to?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_supply_filtrada: {
+        Args: {
+          p_canal: string
+          p_cliente: string
+          p_delegacion: string
+          p_familia: string
+          p_gama: string
+          p_marca: string
+          p_provincia: string
+          p_sat: string
+          p_tecnico: string
+        }
+        Returns: {
+          anio_garantia: number | null
+          aparato: string | null
+          canal: string | null
+          capital: string | null
+          cliente_wg: string | null
+          codigo_postal: string | null
+          created_at: string
+          delegacion: string | null
+          dias_cierre: number | null
+          es_anulado: boolean
+          es_baja: boolean
+          es_nff: boolean
+          estado: string | null
+          fact_cli: number | null
+          fact_sat: number | null
+          familia: string | null
+          fecha_baja: string | null
+          fecha_cierre: string | null
+          fecha_creacion: string | null
+          fecha_primer_contacto: string | null
+          fecha_primera_visita: string | null
+          gama_origen: string | null
+          gama_real: string | null
+          id: string
+          importe_desplazamiento: number | null
+          importe_mo: number | null
+          incidencia: string | null
+          kpi_20d: boolean | null
+          kpi_30d: boolean | null
+          marca: string | null
+          modelo: string | null
+          municipio: string | null
+          num_ot: string
+          provincia: string | null
+          sat: string | null
+          seccion: string | null
+          situacion: string | null
+          sla_cierre_dlab: number | null
+          subfamilia: string | null
+          tecnico: string | null
+          tiene_piezas: boolean | null
+          tipo_recurso: string | null
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "ops_fact_ot"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       ops_tecnico_ficha: { Args: { p_tecnico: string }; Returns: Json }
       ops_tecnicos_scorecard: {
