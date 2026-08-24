@@ -113,6 +113,7 @@ const Tecnicos = () => {
   const [gamaFilter, setGamaFilter] = useState<string | null>(null);
   const [umbral, setUmbral] = useState<number>(UMBRAL_MIN_DEFAULT);
   const [showDefs, setShowDefs] = useState(false);
+  const [showPend, setShowPend] = useState(false);
 
   // ---- Fetch ---------------------------------------------------------------
   useEffect(() => {
@@ -539,7 +540,38 @@ const Tecnicos = () => {
           <BucketCard title="Requiere validación" nivel="atencion_requerida" rows={incentivos.requiere_validacion} onOpen={setSel} />
           <BucketCard title="Información insuficiente" nivel="informacion_insuficiente" rows={incentivos.informacion_insuficiente} onOpen={setSel} />
         </div>
+
+        {/* Indicador provisional de producción y calidad (procede del Panorama operativo) */}
+        <div className="mt-4 border border-black/[0.06] rounded-2xl bg-white p-5">
+          <p className="font-display text-lg text-ink">Indicador provisional de producción y calidad</p>
+          <p className="text-[12px] text-amber-800 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-3">
+            Este indicador se basa únicamente en los datos de producción y bajas disponibles actualmente.
+            No debe utilizarse como base única para decisiones de nómina o incentivos definitivos.
+          </p>
+          <button
+            onClick={() => setShowPend((s) => !s)}
+            className="mt-4 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/50 hover:text-ink transition-colors"
+          >
+            {showPend ? "▾" : "▸"} Datos pendientes para el modelo definitivo
+          </button>
+          {showPend && (
+            <ul className="text-[12px] text-ink/60 grid sm:grid-cols-2 gap-x-4 gap-y-1 list-disc pl-4 mt-3">
+              <li>Trabajos asignados</li>
+              <li>Días y horas trabajadas</li>
+              <li>Vacaciones y bajas laborales</li>
+              <li>First Time Fix</li>
+              <li>Reincidencias</li>
+              <li>Cumplimiento SLA</li>
+              <li>Reclamaciones y satisfacción</li>
+              <li>Complejidad de producto</li>
+              <li>Desplazamientos</li>
+              <li>Causas ajenas al técnico</li>
+              <li>Disponibilidad y consumo de repuestos</li>
+            </ul>
+          )}
+        </div>
       </section>
+
 
       {/* DEFINICIONES */}
       <section className="border-t border-black/[0.06] pt-6">
