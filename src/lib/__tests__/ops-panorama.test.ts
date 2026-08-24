@@ -52,7 +52,7 @@ describe("ecuación de balance", () => {
   it("la lectura separa siempre reparaciones de bajas", () => {
     const txt = lecturaBalance(bal());
     expect(txt).toContain("4.178 son reparaciones");
-    expect(txt).toContain("1.059 son bajas");
+    expect(txt).toContain("1059 son bajas");
     expect(txt).toContain("no se repara");
     expect(pctBajasSalida(bal())).toBeCloseTo(1059 / 5237, 6);
   });
@@ -104,14 +104,14 @@ describe("situation line", () => {
     const s = situationLine(base);
     expect(s).toContain("Junio 2026");
     expect(s).toContain("12.438 OTs");
-    expect(s).toContain("Backlog 1.284 ↓6.2% vs junio 2025");
+    expect(s).toContain("Backlog 1284 ↓6.2% vs junio 2025");
     expect(s).toContain("Referencia operativa ≤20d: 78.4%");
     expect(s).toContain("3 asuntos requieren atención");
   });
 
   it("omite la variación cuando no hay comparable", () => {
     const s = situationLine({ ...base, comparadaLabel: null, varBacklogPct: null });
-    expect(s).toContain("Backlog 1.284 ·");
+    expect(s).toContain("Backlog 1284 ·");
     expect(s).not.toContain("vs");
   });
 
@@ -203,7 +203,7 @@ describe("cola de asuntos", () => {
   it("los HECHOS reproducen las cifras del módulo origen", () => {
     const out = construirAsuntos(input);
     const backlog = out.find((a) => a.fenomeno === "backlog_envejecido");
-    expect(backlog?.hecho).toContain("1.200 de 3.958");
+    expect(backlog?.hecho).toContain("1200 de 3958");
     const rep = out.find((a) => a.fenomeno === "espera_repuesto");
     expect(rep?.hecho).toContain("900 OTs abiertas");
     const sla = out.find((a) => a.fenomeno === "referencia_operativa_20d");
