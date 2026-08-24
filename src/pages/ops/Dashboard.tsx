@@ -304,9 +304,14 @@ const Dashboard = () => {
             n: supply.pte_piezas_actual.n,
             n30: supply.pte_piezas_actual.n30,
             edad_media: supply.pte_piezas_actual.edad_media,
+            n_prev: supply.pte_piezas_actual.n_prev,
             asOf: supply.as_of,
+            topClientes: supply.pte_piezas_actual.por_cliente_contractual
+              .slice(0, 3)
+              .map((c) => ({ cliente: c.entidad, n: c.n })),
           }
         : null,
+
     });
   }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
 
