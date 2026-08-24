@@ -86,6 +86,7 @@ export default function OpsLogistica() {
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
+  const [rrhhDias, setRrhhDias] = useState<DiaTrabajadoRrhh[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
