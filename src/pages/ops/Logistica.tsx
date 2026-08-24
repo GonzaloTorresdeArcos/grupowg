@@ -13,7 +13,16 @@ import {
   pctTrazabilidad,
   type SupplyPayload,
 } from "@/lib/ops-supply";
+import {
+  INDICADORES_PRODUCTIVIDAD,
+  NOTA_COMPARABILIDAD,
+  kpisProductividad,
+  lineaProductividad,
+  productividadPor,
+  type FilaExpedicion,
+} from "@/lib/ops-logistica";
 import { AlertTriangle, Info, Loader2, RefreshCw } from "lucide-react";
+
 
 type LogisticaPayload = {
   total_filas: number;
