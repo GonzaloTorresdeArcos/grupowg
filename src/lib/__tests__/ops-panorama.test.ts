@@ -237,6 +237,7 @@ describe("cola de asuntos", () => {
       ratioBajas: 0.2,
       ratioBajasPrev: 0.2,
       etapas: [{ categoria: "pendiente_reparacion", n: 500, n30: 10, edadMedia: 8 }],
+      supplyPte: null,
       caidas: [],
       calidadTec: [],
       provincias: [],
