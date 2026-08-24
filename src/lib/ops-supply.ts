@@ -283,7 +283,16 @@ export const TRAMOS_CADENA: readonly { clave: string; desde: EtapaCadena; hasta:
   { clave: "picking_expedicion", desde: "picking", hasta: "expedicion" },
   { clave: "expedicion_entrega", desde: "expedicion", hasta: "entrega" },
   { clave: "entrega_montaje", desde: "entrega", hasta: "montaje" },
+  { clave: "montaje_cierre", desde: "montaje", hasta: "cierre" },
 ] as const;
+
+/**
+ * F4A.1 · La antigüedad de PTE. PIEZAS se calcula sobre la etapa ACTUAL de la
+ * OT, no sobre el momento en que la pieza entró en espera. Es un PROXY.
+ */
+export const NOTA_PTE_PIEZAS =
+  "Proxy de antigüedad, no tiempo real de espera de pieza: se mide desde la creación de la OT que hoy está en PTE. PIEZAS, no desde la fecha de solicitud del repuesto (ops_pieza_solicitud aún no la aporta).";
+
 
 // ─── Readiness por etapa ─────────────────────────────────────────────────────
 
