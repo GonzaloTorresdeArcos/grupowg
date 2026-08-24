@@ -463,7 +463,88 @@ export type ReadinessRegla = {
   coberturaEventos: number | null;
   /** Clasificación de esa cobertura: disponible ≥95%, parcial ≥80%, limitado <80%. */
   estadoCobertura: EstadoCobertura | null;
+  /** OTs del universo del cliente contractual de la regla (null si no se resolvió). */
+  universoCliente: number | null;
+  /** De dónde sale la cobertura declarada arriba. */
+  fuenteCobertura: "cliente" | "global";
 };
+
+// ─── Universo de OTs por cliente contractual ─────────────────────────────────
+
+/** Campos de ops_fact_ot cuya cobertura se mide por cliente en la RPC. */
+const COBERTURA_POR_CLIENTE: Record<string, "cob_primer_contacto" | "cob_primera_visita" | "cob_cierre"> = {
+  fecha_primer_contacto: "cob_primer_contacto",
+  fecha_primera_visita: "cob_primera_visita",
+  fecha_cierre: "cob_cierre",
+};
+
+export type UniversoCliente = {
+  cliente_contractual: string;
+  universo_total: number;
+  /** Cobertura ponderada por volumen de OTs, por campo de ops_fact_ot. */
+  cobertura: Record<string, number>;
+  valoresPorAlias: number;
+  valoresPorPatron: number;
+};
+
+/**
+ * Agrega los valores reales de `cliente_wg` en universos por cliente CONTRACTUAL
+ * (alias explícito → patrón del Registry → sin resolver) y pondera la cobertura
+ * de cada evento por volumen de OTs. Sin esto, el readiness mediría la cobertura
+ * global de la tabla, que no es la del cliente de la regla.
+ */
+export const universosPorCliente = (
+  m: MedidasDataQuality,
+  aliases: readonly ClienteAlias[],
+  reglas: readonly ReglaSla[],
+): Map<string, UniversoCliente> | null => {
+  const valores = m.clientes_erp;
+  if (!valores?.length) return null;
+  const patrones: ReglaPatron[] = reglas.map((r) => ({
+    cliente: r.cliente,
+    cliente_wg_patron: r.cliente_wg_patron,
+    programa: r.programa,
+  }));
+  const acc = new Map<string, UniversoCliente & { sumas: Record<string, number> }>();
+  for (const v of valores) {
+    const res = resolverClienteContractual(v.cliente_wg, aliases, patrones);
+    if (!res.cliente_contractual) continue;
+    const prev =
+      acc.get(res.cliente_contractual) ??
+      {
+        cliente_contractual: res.cliente_contractual,
+        universo_total: 0,
+        cobertura: {},
+        valoresPorAlias: 0,
+        valoresPorPatron: 0,
+        sumas: {} as Record<string, number>,
+      };
+    prev.universo_total += v.ots;
+    if (res.metodo === "alias_explicito") prev.valoresPorAlias += 1;
+    else prev.valoresPorPatron += 1;
+    for (const [campo, clave] of Object.entries(COBERTURA_POR_CLIENTE)) {
+      prev.sumas[campo] = (prev.sumas[campo] ?? 0) + v.ots * (v[clave] ?? 0);
+    }
+    acc.set(res.cliente_contractual, prev);
+  }
+  const out = new Map<string, UniversoCliente>();
+  for (const [k, u] of acc) {
+    const cobertura: Record<string, number> = {};
+    for (const campo of Object.keys(COBERTURA_POR_CLIENTE)) {
+      cobertura[campo] = u.universo_total > 0 ? (u.sumas[campo] ?? 0) / u.universo_total : 0;
+    }
+    out.set(k, {
+      cliente_contractual: u.cliente_contractual,
+      universo_total: u.universo_total,
+      cobertura,
+      valoresPorAlias: u.valoresPorAlias,
+      valoresPorPatron: u.valoresPorPatron,
+    });
+  }
+  return out;
+};
+
+export type ContextoReadiness = { universos?: Map<string, UniversoCliente> | null };
 
 const coberturaEvento = (ev: EventoOT, m: MedidasDataQuality): number | null => {
   const campo = FUENTE_EVENTO[ev];
@@ -475,10 +556,29 @@ const coberturaEvento = (ev: EventoOT, m: MedidasDataQuality): number | null => 
  * Determina si una regla del Registry es HOY medible con los datos existentes.
  * Cualquier bloqueo la deja como no medible; una cobertura de evento entre el
  * 80% y el 95% no bloquea pero degrada la medibilidad a «parcial».
+ *
+ * La cobertura se mide en el UNIVERSO DEL CLIENTE de la regla cuando hay datos
+ * por cliente; solo si la medida no los trae se cae a la cobertura global, y se
+ * declara como tal.
  */
-export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): ReadinessRegla => {
+export const readinessRegla = (
+  regla: ReglaSla,
+  m: MedidasDataQuality,
+  ctx: ContextoReadiness = {},
+): ReadinessRegla => {
   const bloqueos: BloqueoReadiness[] = [];
   const coberturas: number[] = [];
+
+  const universos = ctx.universos ?? null;
+  const universo = universos?.get(regla.cliente) ?? null;
+  const fuenteCobertura: "cliente" | "global" = universo ? "cliente" : "global";
+  if (universos && !universo) {
+    bloqueos.push({
+      tipo: "cliente",
+      clave: "cliente_no_identificado_en_datos",
+      motivo: `Ningún valor de cliente_wg resuelve al cliente contractual «${regla.cliente}»: sin universo de OTs no hay nada que medir.`,
+    });
+  }
 
   for (const ev of eventosRequeridos(regla)) {
     const campo = FUENTE_EVENTO[ev];
@@ -486,20 +586,23 @@ export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): Readines
       bloqueos.push({ tipo: "evento", clave: ev, motivo: `El evento «${ev}» no tiene campo de origen en ops_fact_ot.` });
       continue;
     }
-    const cob = coberturaEvento(ev, m);
+    const porCliente = universo && campo in universo.cobertura ? universo.cobertura[campo] : null;
+    const cob = porCliente ?? coberturaEvento(ev, m);
     if (cob == null) {
       bloqueos.push({ tipo: "evento", clave: ev, motivo: `Campo ${campo} no medido.` });
       continue;
     }
     coberturas.push(cob);
+    const ambito = porCliente == null ? " (cobertura global, no por cliente)" : ` en ${regla.cliente}`;
     if (clasificarCoberturaEvento(cob) === "limitado") {
       bloqueos.push({
         tipo: "evento",
         clave: ev,
-        motivo: `Cobertura de ${campo}: ${pct(cob)} (<80%): readiness limitado, no representativo.`,
+        motivo: `Cobertura de ${campo}${ambito}: ${pct(cob)} (<80%): readiness limitado, no representativo.`,
       });
     }
   }
+
 
   for (const dim of dimensionesRequeridas(regla)) {
     const presente = m.campos_fact_ot[dim] !== undefined && !m.campos_ausentes_fact_ot.includes(dim);
