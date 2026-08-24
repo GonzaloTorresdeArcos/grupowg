@@ -23,7 +23,10 @@ import {
   productividadPor,
   jerarquiaProductividad,
   aplanarJerarquia,
-  NOTA_DIAS_EFECTIVOS,
+  ratiosPorPersonaDiaRrhh,
+  PENDIENTE_RRHH_LABEL,
+  FUENTE_DESBLOQUEO_RRHH,
+  type DiaTrabajadoRrhh,
   type FilaExpedicion,
   type RefDisponibilidad,
 } from "@/lib/ops-logistica";
