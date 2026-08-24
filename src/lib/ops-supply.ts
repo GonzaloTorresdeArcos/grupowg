@@ -590,7 +590,7 @@ export function hallazgosImpactoPieza(cmp: ComparacionPieza): Hallazgo[] {
   return out;
 }
 
-// ─── Exposición contractual por falta de repuesto ────────────────────────────
+// ─── Potencial exposición contractual asociada a la falta de repuesto ────────────────────────────
 
 /** Claves del Registry que declaran pausa o exclusión por falta de repuesto. */
 export const CLAVES_EXCLUSION_REPUESTO: readonly string[] = [
@@ -600,7 +600,7 @@ export const CLAVES_EXCLUSION_REPUESTO: readonly string[] = [
 export type EstadoExposicion = "exposicion_identificada" | "regla_sin_exclusion" | "cliente_sin_regla";
 
 export const LABEL_EXPOSICION: Record<EstadoExposicion, string> = {
-  exposicion_identificada: "Exposición identificada",
+  exposicion_identificada: "Potencial exposición identificada",
   regla_sin_exclusion: "Regla sin exclusión declarada",
   cliente_sin_regla: "Cliente sin regla en el Registry",
 };
