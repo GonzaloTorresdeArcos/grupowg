@@ -77,7 +77,16 @@ export type MedidasDataQuality = {
   registry_reglas: number;
   /** Festivos cargados por territorio en ops_calendario_laboral (hoy vacía). */
   calendario_laboral?: Record<string, number>;
+  /** Valores reales de cliente_wg con su volumen y cobertura de eventos. */
+  clientes_erp?: Array<{
+    cliente_wg: string;
+    ots: number;
+    cob_primer_contacto: number | null;
+    cob_primera_visita: number | null;
+    cob_cierre: number | null;
+  }>;
 };
+
 
 
 // ─── Definiciones de dominio ─────────────────────────────────────────────────
