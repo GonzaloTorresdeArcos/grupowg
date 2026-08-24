@@ -251,7 +251,7 @@ describe("importador de las plantillas de supply", () => {
     expect(rec?.picking_fin).toBe("2026-06-01T08:30:00");
     expect(rec?.estado_expedicion).toBe("preparada");
     expect(rec?.coste_transporte).toBe(7);
-    expect(rec?.procedencia_conteo).toBe("cabecera");
+    expect(rec?.procedencia_conteo).toBe("declarado");
     expect(conflictKey("ops_expedicion")).toBe("almacen_base,expedicion_id");
   });
 
