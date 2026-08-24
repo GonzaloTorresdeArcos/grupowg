@@ -46,6 +46,7 @@ const Seccion = ({ id, titulo, sub, children }: { id: string; titulo: string; su
 const CalidadDatos = () => {
   const { loading, medidas, dominios } = useDataQuality();
   const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
+  const [aliases, setAliases] = useState<ClienteAlias[]>([]);
 
   useEffect(() => {
     let vivo = true;
@@ -55,6 +56,13 @@ const CalidadDatos = () => {
       .then(({ data, error }) => {
         if (!vivo) return;
         setReglas(error || !data ? [...FIXTURES_REGISTRY] : (data as unknown as ReglaSla[]));
+      });
+    supabase
+      .from("ops_cliente_contrato_alias" as never)
+      .select("*")
+      .then(({ data, error }) => {
+        if (!vivo) return;
+        setAliases(error || !data ? [] : (data as unknown as ClienteAlias[]));
       });
     return () => {
       vivo = false;
@@ -78,6 +86,17 @@ const CalidadDatos = () => {
     () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas) : null),
     [medidas, reglasEfectivas],
   );
+
+  const resumen = useMemo(() => {
+    const valores = medidas?.clientes_erp;
+    if (!valores?.length) return null;
+    return resumenAliases(
+      valores.map((v) => ({ cliente_wg: v.cliente_wg, ots: v.ots })),
+      aliases,
+      reglasEfectivas.map((r) => ({ cliente: r.cliente, cliente_wg_patron: r.cliente_wg_patron, programa: r.programa })),
+    );
+  }, [medidas, aliases, reglasEfectivas]);
+
 
   const gaps = dominiosOrdenados.filter((d) => d.estado !== "disponible");
 
