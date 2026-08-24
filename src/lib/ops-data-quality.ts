@@ -934,6 +934,7 @@ export const resumenReadiness = (
     },
     porValidacion,
     bloqueosTop: [...mapa.values()].sort((a, b) => b.n - a.n),
+    porProcedenciaPrograma,
     puedeDeclararCumplimiento: medibles > 0 && medibles === reglas.length,
   };
 
