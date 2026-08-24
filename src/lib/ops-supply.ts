@@ -12,7 +12,7 @@
  *    cuenta como 0: se excluye del denominador.
  *  - ≤20 días es SIEMPRE "Referencia operativa WG (no contractual)".
  *  - La exposición contractual por falta de repuesto se declara cualitativa:
- *    sin € y sin % de cumplimiento.
+ *    sin importes y sin % de cumplimiento.
  *
  * Sin React, sin red, sin dependencias externas.
  */
@@ -628,7 +628,7 @@ export type FilaExposicion = {
 };
 
 /**
- * Clasificación CUALITATIVA: sin €, sin % de cumplimiento y sin extrapolar.
+ * Clasificación CUALITATIVA: sin importes, sin % de cumplimiento y sin extrapolar.
  * Las reglas están en borrador, así que la confianza nunca es "alta" por sí sola.
  */
 export function exposicionContractualPieza(

@@ -15,11 +15,13 @@ import {
 } from "@/lib/ops-supply";
 import {
   INDICADORES_PRODUCTIVIDAD,
+  LABEL_BASE_SALIDA,
   NOTA_COMPARABILIDAD,
   kpisProductividad,
   lineaProductividad,
   productividadPor,
   type FilaExpedicion,
+  type RefDisponibilidad,
 } from "@/lib/ops-logistica";
 import { AlertTriangle, Info, Loader2, RefreshCw } from "lucide-react";
 
@@ -39,7 +41,7 @@ type LogisticaPayload = {
 /** Columnas de ops_expedicion necesarias para la productividad de almacén. */
 const COLS_EXPEDICION =
   "almacen_base,expedicion_id,preparado_por,equipo,picking_inicio,picking_fin,expedicion_timestamp," +
-  "fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
+  "fecha_expedicion,fecha_entrega_prevista,fecha_entrega_real,estado_expedicion,tipo_incidencia,reexpedicion," +
   "coste_transporte,num_lineas,num_unidades,num_ot_abastecidas";
 
 
@@ -76,6 +78,7 @@ export default function OpsLogistica() {
   const [log, setLog] = useState<LogisticaPayload | null>(null);
   const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
+  const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -119,7 +122,25 @@ export default function OpsLogistica() {
         .lte("fecha_expedicion", `${filters.to}T23:59:59`)
         .limit(5000);
       if (!vivo || error) return;
-      setExped((data ?? []) as unknown as FilaExpedicion[]);
+      const filas = (data ?? []) as unknown as FilaExpedicion[];
+      setExped(filas);
+      // Enlace línea → pieza para conocer la fecha de disponibilidad real.
+      const { data: dl } = await supabase
+        .from("ops_expedicion_linea" as never)
+        .select("almacen_base,expedicion_id,ops_pieza_solicitud(fecha_disponibilidad)")
+        .limit(20000);
+      if (!vivo) return;
+      const rows = (dl ?? []) as unknown as Array<{
+        almacen_base: string; expedicion_id: string;
+        ops_pieza_solicitud: { fecha_disponibilidad: string | null } | null;
+      }>;
+      setRefs(
+        rows.map((r) => ({
+          almacen_base: r.almacen_base,
+          expedicion_id: r.expedicion_id,
+          fecha_disponibilidad: r.ops_pieza_solicitud?.fecha_disponibilidad ?? null,
+        })),
+      );
     })();
     return () => { vivo = false; };
   }, [filters.from, filters.to, reloadKey]);
@@ -133,11 +154,53 @@ export default function OpsLogistica() {
   const domExp = dominio("expediciones");
   const traz = supply ? pctTrazabilidad(supply.cadena) : null;
 
-  const prod = useMemo(
-    () => ({ kpis: kpisProductividad(exped), linea: lineaProductividad(kpisProductividad(exped), etiqueta) }),
-    [exped, etiqueta],
-  );
+  const prod = useMemo(() => {
+    const kpis = kpisProductividad(exped, refs);
+    return { kpis, linea: lineaProductividad(kpis, etiqueta) };
+  }, [exped, refs, etiqueta]);
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
+
+  // KPIs de productividad por persona/día, OTD y rapidez de salida. Sin dato → pendiente de fuente.
+  const kpisAvanzados = useMemo(() => {
+    const k = prod.kpis;
+    const cob = (c: { n: number; total: number }) => `Sobre ${fmtNum(c.n)} de ${fmtNum(c.total)} expediciones.`;
+    const baseTxt = k.baseSalida ? LABEL_BASE_SALIDA[k.baseSalida] : "sin referencia de partida disponible";
+    return [
+      {
+        label: "Expediciones / persona · día",
+        valor: k.expedicionesPorPersonaDia == null ? null : fmtDec(k.expedicionesPorPersonaDia, 1),
+        hint: `${fmtNum(k.personas)} personas · ${fmtNum(k.diasPersona)} días-persona. ${cob(k.coberturaPersonaDia)}`,
+      },
+      {
+        label: "Líneas / persona · día",
+        valor: k.lineasPorPersonaDia == null ? null : fmtDec(k.lineasPorPersonaDia, 1),
+        hint: cob(k.coberturaLineasPersonaDia),
+      },
+      {
+        label: "Unidades / persona · día",
+        valor: k.unidadesPorPersonaDia == null ? null : fmtDec(k.unidadesPorPersonaDia, 1),
+        hint: cob(k.coberturaUnidadesPersonaDia),
+      },
+      {
+        label: "OTs abastecidas / persona · día",
+        valor: k.otsAbastecidasPorPersonaDia == null ? null : fmtDec(k.otsAbastecidasPorPersonaDia, 1),
+        hint: cob(k.coberturaOtsPersonaDia),
+      },
+      {
+        label: "OTD · entrega en plazo",
+        valor: k.otdPct == null ? null : fmtPct(k.otdPct),
+        hint: `Entrega real ≤ prevista. ${cob(k.coberturaOtd)}`,
+      },
+      {
+        label: "Salida mismo día · < 24 h",
+        valor:
+          k.pctSalidaMismoDia == null
+            ? null
+            : `${fmtPct(k.pctSalidaMismoDia)} · ${fmtPct(k.pctSalidaMenos24h)}`,
+        hint: `${baseTxt}. ${cob(k.coberturaSalida)}`,
+      },
+    ];
+  }, [prod.kpis]);
 
 
   const otd = log && log.periodo.otd_n > 0 ? log.periodo.otd_ok / log.periodo.otd_n : null;
@@ -340,6 +403,26 @@ export default function OpsLogistica() {
             </table>
           </div>
         )}
+
+        {/* C.2 — Productividad por persona, servicio y rapidez de salida */}
+        <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
+          Productividad por persona, servicio y rapidez de salida
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {kpisAvanzados.map((k) => (
+            <div key={k.label} className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{k.label}</p>
+              <p className="mt-2 heading-display text-2xl text-ink">
+                {k.valor ?? <span className="text-ink/40 text-sm">{GLIFO_FUENTE.pendiente} Pendiente de fuente</span>}
+              </p>
+              <p className="mt-1 text-[11px] text-ink/50 leading-snug">{k.hint}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-[11px] text-ink/40 leading-snug">
+          Día trabajado = día con al menos una expedición de esa persona. Es un proxy declarado hasta que exista la
+          fuente de RRHH con días efectivos y ausencias.
+        </p>
         <p className="mt-3 text-[12px] text-ink/50">
           El desplazamiento del técnico a domicilio no es logística de almacén: se mide en{" "}
           <Link to="/operaciones/dispersion" className="text-ink underline underline-offset-2 hover:text-ink/70">

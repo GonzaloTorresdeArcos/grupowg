@@ -118,6 +118,9 @@ export const ESTADOS_EXPEDICION = [
 ] as const;
 export const DESTINOS_EXPEDICION = ["cliente", "sat", "delegacion", "taller", "proveedor"] as const;
 export const IMPUTABILIDADES_PIEZA = ["wg", "proveedor", "cliente", "sat", "por_determinar"] as const;
+/** Valores admitidos por la CHECK de ops_expedicion.procedencia_conteo. */
+export const PROCEDENCIAS_CONTEO = ["declarado", "derivado_lineas"] as const;
+export type ProcedenciaConteo = (typeof PROCEDENCIAS_CONTEO)[number];
 
 const NUMERIC = new Set([
   "dias_cierre", "sla_cierre_dlab", "anio_garantia",
@@ -336,8 +339,12 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (dest && !(DESTINOS_EXPEDICION as readonly string[]).includes(dest)) return null;
     rec.destino_tipo = dest || null;
     if (rec.reexpedicion == null) rec.reexpedicion = false;
-    // Si vienen conteos en la cabecera, quedan declarados; si no, los derivará la línea.
-    rec.procedencia_conteo = rec.num_lineas != null || rec.num_unidades != null ? "cabecera" : "derivado_lineas";
+    // Si la cabecera trae conteos, quedan DECLARADOS; si no, los derivará el trigger de líneas.
+    rec.procedencia_conteo =
+      rec.num_lineas != null || rec.num_unidades != null || rec.num_ot_abastecidas != null
+        ? "declarado"
+        : "derivado_lineas";
+
     if (rec.fecha_expedicion == null && rec.expedicion_timestamp != null) rec.fecha_expedicion = rec.expedicion_timestamp;
     rec.origen_dato = "importador";
   }
@@ -410,3 +417,33 @@ export const PLANTILLAS: Record<OpsTable, readonly string[]> = {
 
 /** Fila de cabecera lista para pegar en un CSV. */
 export const cabeceraPlantilla = (t: OpsTable): string => PLANTILLAS[t].join(",");
+
+/**
+ * Columnas reales de las tablas de supply tal y como existen en la migración.
+ * Sirve de contrato: toda cabecera de PLANTILLAS debe existir aquí.
+ */
+export const COLUMNAS_TABLA: Partial<Record<OpsTable, readonly string[]>> = {
+  ops_pieza_solicitud: [
+    "id", "num_ot", "referencia", "descripcion", "cantidad", "proveedor",
+    "fecha_necesidad", "fecha_solicitud", "fecha_disponibilidad", "fecha_picking",
+    "fecha_expedicion", "fecha_entrega", "fecha_montaje", "estado_pieza",
+    "coste_unitario", "imputabilidad_retraso", "origen_dato", "created_at", "updated_at",
+  ],
+  ops_expedicion: [
+    "id", "num_ot", "referencia_expedicion", "transportista", "origen", "destino_cp",
+    "destino_tipo", "fecha_expedicion", "fecha_entrega_prevista", "fecha_entrega_real",
+    "estado_expedicion", "coste_envio", "incidencia", "origen_dato", "created_at",
+    "updated_at", "almacen_base", "expedicion_id", "preparado_por", "persona_id", "equipo",
+    "picking_inicio", "picking_fin", "expedicion_timestamp", "destino", "tipo_incidencia",
+    "reexpedicion", "expedicion_origen_id", "coste_transporte", "num_lineas",
+    "num_unidades", "num_ot_abastecidas", "procedencia_conteo",
+  ],
+  ops_expedicion_linea: [
+    "id", "almacen_base", "expedicion_id", "linea", "referencia", "descripcion",
+    "cantidad", "num_ot", "pieza_solicitud_id", "origen_dato", "created_at",
+  ],
+  ops_stock_snapshot: [
+    "id", "fecha_snapshot", "almacen_base", "referencia", "descripcion", "stock_fisico",
+    "reservado", "coste_medio", "origen_dato", "created_at", "stock_disponible", "en_transito",
+  ],
+};

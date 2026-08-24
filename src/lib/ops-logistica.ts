@@ -14,6 +14,8 @@ export type FilaExpedicion = {
   picking_inicio: string | null;
   picking_fin: string | null;
   expedicion_timestamp: string | null;
+  /** Fecha de salida declarada en cabecera; respaldo cuando no hay marca horaria. */
+  fecha_expedicion?: string | null;
   fecha_entrega_prevista: string | null;
   fecha_entrega_real: string | null;
   estado_expedicion: string;
@@ -24,6 +26,17 @@ export type FilaExpedicion = {
   num_unidades: number | null;
   num_ot_abastecidas: number | null;
 };
+
+/**
+ * Enlace expedición → disponibilidad de la pieza (ops_expedicion_linea → ops_pieza_solicitud).
+ * Se usa como referencia preferente para medir la rapidez de salida.
+ */
+export type RefDisponibilidad = {
+  almacen_base: string;
+  expedicion_id: string;
+  fecha_disponibilidad: string | null;
+};
+
 
 const ms = (a: string | null, b: string | null): number | null => {
   if (!a || !b) return null;
@@ -48,6 +61,9 @@ const cobertura = (n: number, total: number): Cobertura => ({
   n, total, pct: total > 0 ? n / total : null,
 });
 
+/** Referencia usada para medir la rapidez de salida del bulto. */
+export type BaseSalida = "fecha_disponibilidad_pieza" | "picking_inicio" | null;
+
 export type KpisProductividad = {
   expediciones: number;
   /** Minutos de picking por expedición. Solo con inicio y fin. */
@@ -70,9 +86,47 @@ export type KpisProductividad = {
   /** Coste medio de transporte, solo sobre las que lo informan. */
   costeTransporteMedio: number | null;
   coberturaCoste: Cobertura;
+
+  // --- F4A.2 · productividad por persona y día trabajado ---
+  /** Días-persona con al menos una expedición. Proxy declarado hasta que exista RRHH. */
+  diasPersona: number;
+  personas: number;
+  expedicionesPorPersonaDia: number | null;
+  lineasPorPersonaDia: number | null;
+  unidadesPorPersonaDia: number | null;
+  otsAbastecidasPorPersonaDia: number | null;
+  coberturaPersonaDia: Cobertura;
+  /** Cobertura de las líneas/unidades/OTs dentro de las expediciones con persona y día. */
+  coberturaLineasPersonaDia: Cobertura;
+  coberturaUnidadesPersonaDia: Cobertura;
+  coberturaOtsPersonaDia: Cobertura;
+
+  // --- F4A.2 · servicio de transporte ---
+  /** OTD: entrega real ≤ prevista, solo sobre expediciones con ambas fechas. */
+  otdPct: number | null;
+  coberturaOtd: Cobertura;
+
+  // --- F4A.2 · rapidez de salida ---
+  baseSalida: BaseSalida;
+  pctSalidaMismoDia: number | null;
+  pctSalidaMenos24h: number | null;
+  coberturaSalida: Cobertura;
 };
 
-export function kpisProductividad(filas: readonly FilaExpedicion[]): KpisProductividad {
+const dia = (ts: string | null | undefined): string | null => {
+  if (!ts) return null;
+  const t = Date.parse(ts);
+  if (!Number.isFinite(t)) return null;
+  return new Date(t).toISOString().slice(0, 10);
+};
+
+/** Marca temporal de salida efectiva de la expedición. */
+const salida = (f: FilaExpedicion): string | null => f.expedicion_timestamp ?? f.fecha_expedicion ?? null;
+
+export function kpisProductividad(
+  filas: readonly FilaExpedicion[],
+  refs: readonly RefDisponibilidad[] = [],
+): KpisProductividad {
   const total = filas.length;
   const pickMs = filas.map((f) => ms(f.picking_inicio, f.picking_fin)).filter((x): x is number => x != null);
   const pickMin = pickMs.map((x) => x / 60_000);
@@ -93,6 +147,47 @@ export function kpisProductividad(filas: readonly FilaExpedicion[]): KpisProduct
   const reexp = filas.filter((f) => f.reexpedicion).length;
   const inc = filas.filter((f) => f.estado_expedicion === "incidencia" || !!f.tipo_incidencia).length;
 
+  // --- persona × día trabajado (día con ≥1 expedición de esa persona) ---
+  const conPersonaDia = filas.filter((f) => !!f.preparado_por && dia(salida(f)) != null);
+  const clavesDia = new Set(conPersonaDia.map((f) => `${f.preparado_por}§${dia(salida(f))}`));
+  const personas = new Set(conPersonaDia.map((f) => f.preparado_por as string)).size;
+  const diasPersona = clavesDia.size;
+  const conL = conPersonaDia.filter((f) => f.num_lineas != null);
+  const conU = conPersonaDia.filter((f) => f.num_unidades != null);
+  const conO = conPersonaDia.filter((f) => f.num_ot_abastecidas != null);
+  const sum = (xs: readonly FilaExpedicion[], k: "num_lineas" | "num_unidades" | "num_ot_abastecidas") =>
+    xs.reduce((a, f) => a + (f[k] ?? 0), 0);
+
+  // --- OTD ---
+  const conOtd = filas.filter((f) => !!f.fecha_entrega_prevista && !!f.fecha_entrega_real);
+  const otdOk = conOtd.filter(
+    (f) => Date.parse(f.fecha_entrega_real as string) <= Date.parse(f.fecha_entrega_prevista as string),
+  ).length;
+
+  // --- rapidez de salida: disponibilidad de pieza si existe; si no, picking_inicio ---
+  const mapaRef = new Map<string, string>();
+  for (const r of refs) {
+    if (!r.fecha_disponibilidad) continue;
+    const k = `${r.almacen_base}§${r.expedicion_id}`;
+    const prev = mapaRef.get(k);
+    // La pieza que marca el ritmo es la última en estar disponible.
+    if (!prev || Date.parse(r.fecha_disponibilidad) > Date.parse(prev)) mapaRef.set(k, r.fecha_disponibilidad);
+  }
+  const conDisp = filas.filter(
+    (f) => mapaRef.has(`${f.almacen_base}§${f.expedicion_id}`) && salida(f) != null,
+  );
+  const conPick = filas.filter((f) => f.picking_inicio != null && salida(f) != null);
+  const usaDisp = conDisp.length > 0;
+  const universoSalida = usaDisp ? conDisp : conPick;
+  const baseSalida: BaseSalida = universoSalida.length === 0 ? null : usaDisp ? "fecha_disponibilidad_pieza" : "picking_inicio";
+  const refSalida = (f: FilaExpedicion): string | null =>
+    usaDisp ? (mapaRef.get(`${f.almacen_base}§${f.expedicion_id}`) ?? null) : f.picking_inicio;
+  const mismoDia = universoSalida.filter((f) => dia(refSalida(f)) === dia(salida(f))).length;
+  const menos24 = universoSalida.filter((f) => {
+    const d = ms(refSalida(f), salida(f));
+    return d != null && d <= 86_400_000;
+  }).length;
+
   return {
     expediciones: total,
     minutosPickingMedio: media(pickMin),
@@ -109,8 +204,35 @@ export function kpisProductividad(filas: readonly FilaExpedicion[]): KpisProduct
     pctIncidencia: total > 0 ? inc / total : null,
     costeTransporteMedio: media(conCoste.map((f) => f.coste_transporte as number)),
     coberturaCoste: cobertura(conCoste.length, total),
+
+    diasPersona,
+    personas,
+    expedicionesPorPersonaDia: diasPersona > 0 ? conPersonaDia.length / diasPersona : null,
+    lineasPorPersonaDia: diasPersona > 0 && conL.length > 0 ? sum(conL, "num_lineas") / diasPersona : null,
+    unidadesPorPersonaDia: diasPersona > 0 && conU.length > 0 ? sum(conU, "num_unidades") / diasPersona : null,
+    otsAbastecidasPorPersonaDia:
+      diasPersona > 0 && conO.length > 0 ? sum(conO, "num_ot_abastecidas") / diasPersona : null,
+    coberturaPersonaDia: cobertura(conPersonaDia.length, total),
+    coberturaLineasPersonaDia: cobertura(conL.length, conPersonaDia.length),
+    coberturaUnidadesPersonaDia: cobertura(conU.length, conPersonaDia.length),
+    coberturaOtsPersonaDia: cobertura(conO.length, conPersonaDia.length),
+
+    otdPct: conOtd.length > 0 ? otdOk / conOtd.length : null,
+    coberturaOtd: cobertura(conOtd.length, total),
+
+    baseSalida,
+    pctSalidaMismoDia: universoSalida.length > 0 ? mismoDia / universoSalida.length : null,
+    pctSalidaMenos24h: universoSalida.length > 0 ? menos24 / universoSalida.length : null,
+    coberturaSalida: cobertura(universoSalida.length, total),
   };
 }
+
+/** Texto que declara qué referencia se ha usado para la rapidez de salida. */
+export const LABEL_BASE_SALIDA: Record<"fecha_disponibilidad_pieza" | "picking_inicio", string> = {
+  fecha_disponibilidad_pieza: "referencia: fecha de disponibilidad de la pieza (vía líneas de expedición)",
+  picking_inicio: "referencia: inicio de picking (no hay disponibilidad de pieza enlazada)",
+};
+
 
 /** Productividad por persona o por equipo. Nunca se mezclan almacenes distintos. */
 export type FilaProductividad = {
@@ -212,6 +334,45 @@ export const INDICADORES_PRODUCTIVIDAD: readonly IndicadorLogistica[] = [
     requiere: ["picking_fin", "expedicion_timestamp"],
   },
   {
+    clave: "expediciones_persona_dia",
+    label: "Expediciones por persona y día trabajado",
+    definicion:
+      "Expediciones con persona identificada divididas entre los días-persona con al menos una expedición. Día trabajado declarado como proxy hasta disponer de RRHH.",
+    requiere: ["preparado_por", "expedicion_timestamp"],
+  },
+  {
+    clave: "lineas_persona_dia",
+    label: "Líneas por persona y día trabajado",
+    definicion: "Líneas preparadas divididas entre los días-persona con expedición. Solo cuentan las expediciones que informan líneas.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_lineas"],
+  },
+  {
+    clave: "unidades_persona_dia",
+    label: "Unidades por persona y día trabajado",
+    definicion: "Unidades expedidas divididas entre los días-persona con expedición; sin num_unidades el indicador no se calcula.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_unidades"],
+  },
+  {
+    clave: "ots_persona_dia",
+    label: "OTs abastecidas por persona y día trabajado",
+    definicion: "Órdenes de trabajo servidas por las expediciones de esa persona ese día, entre los días-persona con expedición.",
+    requiere: ["preparado_por", "expedicion_timestamp", "num_ot_abastecidas"],
+  },
+  {
+    clave: "otd",
+    label: "OTD — % de entrega en plazo",
+    definicion: "Entrega real ≤ entrega prevista, medido solo sobre las expediciones que tienen las dos fechas; la cobertura se declara junto al dato.",
+    requiere: ["fecha_entrega_prevista", "fecha_entrega_real"],
+  },
+  {
+    clave: "salida_rapida",
+    label: "% de expediciones el mismo día y en menos de 24 h",
+    definicion:
+      "Rapidez de salida respecto a la fecha de disponibilidad de la pieza cuando existe enlace vía líneas; si no existe, respecto al inicio de picking. La referencia usada se declara siempre.",
+    requiere: ["expedicion_timestamp", "fecha_disponibilidad (pieza) o picking_inicio"],
+  },
+  {
+
     clave: "reexpedicion",
     label: "% de reexpediciones",
     definicion: "Envíos que repiten uno anterior. Es retrabajo logístico, no volumen nuevo.",
