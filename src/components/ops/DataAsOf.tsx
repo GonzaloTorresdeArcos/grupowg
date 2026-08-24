@@ -42,7 +42,13 @@ export const DataAsOf = ({
         <span
           aria-hidden
           className={`h-1.5 w-1.5 rounded-full ${
-            f.estado === "obsoleto" ? "bg-amber-500" : f.estado === "sin_dato" ? "bg-ink/25" : "bg-emerald-500"
+            f.estado === "desactualizado"
+              ? "bg-red-500"
+              : f.estado === "aceptable"
+                ? "bg-amber-500"
+                : f.estado === "sin_dato"
+                  ? "bg-ink/25"
+                  : "bg-emerald-500"
           }`}
         />
         {etiquetaAsOf(f.asOf, dominio)}
