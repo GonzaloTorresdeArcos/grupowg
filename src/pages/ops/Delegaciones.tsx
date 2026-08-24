@@ -8,6 +8,8 @@ import {
   LABEL_GLOBAL_DELEG, type EstadoGlobalDeleg, type EstadoDelegacionMulti,
   type ValidacionDelegInput, type DelegHallazgoInput,
 } from "@/lib/ops-performance";
+import { DelegacionesResumen } from "@/components/ops/DelegacionesResumen";
+import type { EquipoRow } from "@/lib/ops-performance";
 import { Loader2, Info, X, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 
 type KpiRow = {
