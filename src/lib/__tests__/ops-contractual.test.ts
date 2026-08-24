@@ -1,8 +1,12 @@
 import { describe, it, expect } from "vitest";
 import {
   CAMPOS_OBLIGATORIOS_REGLA,
+  aCalendarioLaboral,
+  clasificarCoberturaEvento,
+  construirCalendario,
   consecuenciaDeclarada,
   diasLaborables,
+  evaluarCumplimientoConCobertura,
   evaluarRegla,
   evaluarReglaAgregada,
   evaluarMesesConsecutivos,
@@ -15,6 +19,15 @@ import {
 import { FIXTURES_REGISTRY, TARGETS_DECLARADOS } from "@/lib/ops-contractual-fixtures";
 
 const CAL: CalendarioLaboral = { festivos: ["2026-01-06"], horaInicio: 9, horaFin: 18 };
+
+const okRes = (cumple: boolean): ResultadoRegla => ({
+  evaluable: true,
+  unidad: "dias_naturales",
+  transcurrido: cumple ? 1 : 99,
+  cumple_target: cumple,
+});
+const noEvalRes = (): ResultadoRegla => ({ evaluable: false, unidad: "dias_naturales", motivo_no_evaluable: "falta cierre" });
+
 
 const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   business_line: "Postventa",
