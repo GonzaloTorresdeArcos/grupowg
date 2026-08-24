@@ -160,6 +160,48 @@ export default function OpsLogistica() {
   }, [exped, refs, etiqueta]);
   const prodFilas = useMemo(() => productividadPor(exped, "almacen"), [exped]);
 
+  // KPIs de productividad por persona/día, OTD y rapidez de salida. Sin dato → pendiente de fuente.
+  const kpisAvanzados = useMemo(() => {
+    const k = prod.kpis;
+    const cob = (c: { n: number; total: number }) => `Sobre ${fmtNum(c.n)} de ${fmtNum(c.total)} expediciones.`;
+    const baseTxt = k.baseSalida ? LABEL_BASE_SALIDA[k.baseSalida] : "sin referencia de partida disponible";
+    return [
+      {
+        label: "Expediciones / persona · día",
+        valor: k.expedicionesPorPersonaDia == null ? null : fmtDec(k.expedicionesPorPersonaDia, 1),
+        hint: `${fmtNum(k.personas)} personas · ${fmtNum(k.diasPersona)} días-persona. ${cob(k.coberturaPersonaDia)}`,
+      },
+      {
+        label: "Líneas / persona · día",
+        valor: k.lineasPorPersonaDia == null ? null : fmtDec(k.lineasPorPersonaDia, 1),
+        hint: cob(k.coberturaLineasPersonaDia),
+      },
+      {
+        label: "Unidades / persona · día",
+        valor: k.unidadesPorPersonaDia == null ? null : fmtDec(k.unidadesPorPersonaDia, 1),
+        hint: cob(k.coberturaUnidadesPersonaDia),
+      },
+      {
+        label: "OTs abastecidas / persona · día",
+        valor: k.otsAbastecidasPorPersonaDia == null ? null : fmtDec(k.otsAbastecidasPorPersonaDia, 1),
+        hint: cob(k.coberturaOtsPersonaDia),
+      },
+      {
+        label: "OTD · entrega en plazo",
+        valor: k.otdPct == null ? null : fmtPct(k.otdPct),
+        hint: `Entrega real ≤ prevista. ${cob(k.coberturaOtd)}`,
+      },
+      {
+        label: "Salida mismo día · < 24 h",
+        valor:
+          k.pctSalidaMismoDia == null
+            ? null
+            : `${fmtPct(k.pctSalidaMismoDia)} · ${fmtPct(k.pctSalidaMenos24h)}`,
+        hint: `${baseTxt}. ${cob(k.coberturaSalida)}`,
+      },
+    ];
+  }, [prod.kpis]);
+
 
   const otd = log && log.periodo.otd_n > 0 ? log.periodo.otd_ok / log.periodo.otd_n : null;
   const otdPrev = log && log.periodo_prev.otd_n > 0 ? log.periodo_prev.otd_ok / log.periodo_prev.otd_n : null;
