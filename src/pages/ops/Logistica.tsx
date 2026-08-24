@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtDec, fmtPct, fmtEur } from "@/lib/ops-filters";
@@ -239,6 +240,7 @@ export default function OpsLogistica() {
         <h1 className="heading-display text-3xl md:text-4xl text-ink mt-1">Logística &amp; Expediciones</h1>
         <p className="mt-3 text-[13px] text-ink/70 max-w-4xl leading-relaxed">{linea}</p>
       </header>
+      <DataAsOf className="mt-3" dominio="expedicion" cruza={["ot", "expedicion_linea"]} />
 
       {/* A — EXPEDICIONES DEL PERÍODO */}
       <section>

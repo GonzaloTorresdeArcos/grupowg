@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
@@ -341,6 +342,7 @@ const Dashboard = () => {
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
       </header>
+      <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}
       <p className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
