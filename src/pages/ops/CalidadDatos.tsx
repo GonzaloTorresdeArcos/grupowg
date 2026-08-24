@@ -17,6 +17,8 @@ import {
 } from "@/lib/ops-data-quality";
 import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
+import { LABEL_FRESCURA_DOMINIO, fmtFechaEs } from "@/lib/ops-as-of";
+import { useDataFreshness } from "@/hooks/useDataFreshness";
 import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
 
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
@@ -50,6 +52,7 @@ const Seccion = ({ id, titulo, sub, children }: { id: string; titulo: string; su
 
 const CalidadDatos = () => {
   const { loading, medidas, dominios } = useDataQuality();
+  const { todos: frescuras } = useDataFreshness();
   const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
 
