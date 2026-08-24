@@ -41,15 +41,21 @@ describe("F4B · fecha efectiva del dato", () => {
 
   it("declara obsolescencia cuando el dato va más de 7 días por detrás", () => {
     const f = frescuraDominio(cargas(), "ot", new Date("2026-08-24T00:00:00Z"));
-    expect(f.estado).toBe("obsoleto");
+    expect(f.estado).toBe("aceptable");
     expect(f.dias).toBe(30);
     expect(avisoObsolescencia(f)).toContain("no contra hoy");
   });
 
   it("dentro del umbral no genera aviso", () => {
     const f = frescuraDominio(cargas(), "ot", new Date("2026-07-29T00:00:00Z"));
-    expect(f.estado).toBe("al_dia");
+    expect(f.estado).toBe("fresco");
     expect(avisoObsolescencia(f)).toBeNull();
+  });
+
+  it("por encima de 31 días el dominio queda desactualizado", () => {
+    const f = frescuraDominio(cargas(), "ot", new Date("2026-10-01T00:00:00Z"));
+    expect(f.estado).toBe("desactualizado");
+    expect(avisoObsolescencia(f)).toContain("no contra hoy");
   });
 
   it("un desfase pequeño entre dominios no se marca; uno grande sí", () => {
@@ -122,10 +128,8 @@ describe("F4B · una sola cifra de espera de repuesto", () => {
     expect(a?.volumen).toBe(1234);
   });
 
-  it("sin Supply cae a la etapa derivada y lo declara", () => {
-    const a = asunto(baseAsuntos);
-    expect(a?.volumen).toBe(800);
-    expect(a?.hecho).toContain("etapa derivada");
+  it("sin Supply no se publica el asunto: no se calcula en paralelo", () => {
+    expect(asunto(baseAsuntos)).toBeUndefined();
   });
 
   it("no atribuye causalidad al suministro", () => {
