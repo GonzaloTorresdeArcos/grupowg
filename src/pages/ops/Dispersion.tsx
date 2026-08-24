@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
 
-import { prevPeriod, labelPeriodo, diasEntre } from "@/lib/ops-performance";
+import { labelPeriodo, diasEntre } from "@/lib/ops-performance";
 import {
   UMBRALES_DISPERSION,
   LABEL_NIVEL,
@@ -26,7 +26,6 @@ import {
   type DispSat,
 } from "@/lib/ops-dispersion";
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
-import { OpsPeriodPicker } from "@/components/ops/OpsPeriodPicker";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 const defaultRange = () => {
@@ -79,7 +78,9 @@ const fmtRel = (d: number | null) => (d == null ? "—" : `${d >= 0 ? "+" : ""}$
 const num = (v: unknown): number | null => (v == null ? null : Number(v));
 
 export default function OpsDispersion() {
-  const [range, setRange] = useState(defaultRange);
+  // Contexto temporal ÚNICO: período y modo de comparación globales.
+  const { filters, prevRange } = useOpsFilters();
+  const range = { from: filters.from, to: filters.to };
   const [delegacion, setDelegacion] = useState<string | null>(null);
   const [gama, setGama] = useState<string | null>(null);
   const [familia, setFamilia] = useState<string | null>(null);
@@ -131,7 +132,7 @@ export default function OpsDispersion() {
     const myReq = ++reqIdRef.current;
     setLoading(true);
     setErrorMsg(null);
-    const prev = prevPeriod(range.from, range.to);
+    const prev = prevRange;
     const mk = (from: string, to: string) => ({
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
     });
@@ -156,7 +157,7 @@ export default function OpsDispersion() {
       setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
       setLoading(false);
     });
-  }, [range.from, range.to, delegacion, gama, familia, reloadKey]);
+  }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia, reloadKey]);
 
   // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
   useEffect(() => {
@@ -164,7 +165,7 @@ export default function OpsDispersion() {
   }, [data, provSel]);
 
   // ── Derivados ────────────────────────────────────────────────────────────
-  const prev = prevPeriod(range.from, range.to);
+  const prev = prevRange;
   const L = diasEntre(range.from, range.to);
   const Lprev = diasEntre(prev.from, prev.to);
 
@@ -462,9 +463,9 @@ export default function OpsDispersion() {
 
       {/* Filtros */}
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-black/[0.06] bg-white p-3">
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período</span>
-          <OpsPeriodPicker value={range} onChange={setRange} />
+        <div className="flex flex-col gap-1 text-xs text-ink/60">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Período global</span>
+          <span className="text-ink font-medium">{labelPeriodo(range.from, range.to)}</span>
         </div>
         <Sel label="Delegación" value={delegacion} options={delOpts} onChange={setDelegacion} />
         <Sel label="Gama" value={gama} options={gamaOpts} displayMap={gamaDisplayMap(Array.isArray(gamaOpts) ? gamaOpts : [])} onChange={setGama} />
