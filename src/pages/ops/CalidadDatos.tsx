@@ -20,6 +20,7 @@ import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
 import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
 
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
+import { PLANTILLAS, TABLE_LABEL, type OpsTable } from "@/lib/ops-csv";
 
 const pct = (v: number | null | undefined) => (v == null ? "—" : `${(v * 100).toFixed(1)}%`);
 const num = (v: number) => v.toLocaleString("es-ES");
@@ -461,6 +462,28 @@ const CalidadDatos = () => {
             </tbody>
           </table>
         </div>
+      </Seccion>
+
+      {/* Plantillas de carga */}
+      <Seccion
+        id="plantillas"
+        titulo="Plantillas de carga"
+        sub="Cabeceras exactas que acepta el importador. El orden es indiferente, el nombre no. La carga es idempotente: repetir un fichero actualiza, no duplica."
+      >
+        <div className="space-y-4">
+          {(Object.keys(PLANTILLAS) as OpsTable[]).map((t) => (
+            <div key={t} className="border-b border-black/[0.04] pb-4 last:border-0">
+              <p className="text-[13px] font-medium text-ink">{TABLE_LABEL[t]}</p>
+              <p className="mt-1 font-mono text-[11px] text-ink/55 break-all leading-relaxed">
+                {PLANTILLAS[t].join(",")}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-[12px] text-ink/45">
+          Cargar en <Link to="/operaciones/importar" className="underline underline-offset-2">Importar CSV</Link>.
+          Fechas dd/mm/aaaa o aaaa-mm-dd; decimales con coma o punto; separador , o ;.
+        </p>
       </Seccion>
 
       {/* Data gap register */}
