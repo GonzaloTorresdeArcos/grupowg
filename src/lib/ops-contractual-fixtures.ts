@@ -9,7 +9,14 @@
  * ni por la referencia operativa interna (≤20 días).
  */
 
-import type { ReglaSla } from "@/lib/ops-contractual";
+import type { EstadoExtraccion, ReglaSla } from "@/lib/ops-contractual";
+
+/**
+ * Fila del pliego sin los dos campos derivados (`estado_extraccion` se deduce de
+ * si el contrato aporta valor; `territorio_calendario`, del calendario declarado).
+ */
+type RowBase = Omit<ReglaSla, "estado_extraccion" | "territorio_calendario">;
+
 
 export const AVISO_FIXTURES =
   "Reglas en estado borrador procedentes de la revisión contractual de Dirección. Pendientes de verificación documental campo a campo. No se usan para calcular cumplimiento contractual.";
@@ -34,7 +41,9 @@ const base = {
   vigencia_hasta: null,
   fuente_contractual: FUENTE,
   estado_regla: "borrador" as const,
-  fase: "postventa" as const,
+  /** null = la regla NO condiciona por fase y no exige conocer la fase de la OT. */
+  fase: null as ReglaSla["fase"],
+
   ventana_medicion: "por_ot" as const,
   calendario: "natural" as const,
   regla_medicion: "por_ot" as const,
@@ -62,10 +71,13 @@ const carrefour = {
   cliente: "CARREFOUR",
   cliente_wg_patron: "CARREFOUR%",
   programa: "Postventa Carrefour",
+  // Único cliente con obligaciones diferenciadas por fase.
+  fase: "postventa" as const,
   tipo_consecuencia: "coste_baja" as const,
   exposicion_estado: "identificada" as const,
   evento_inicio: "creacion_ot" as const,
 };
+
 
 const alcampo = {
   ...base,
@@ -123,7 +135,7 @@ const navee = {
   programa: "Garantía fabricante Navee/Brightway",
 };
 
-export const FIXTURES_REGISTRY: readonly ReglaSla[] = [
+const FILAS: readonly RowBase[] = [
   // ── PROFESIONAL · METRO / MAKRO ────────────────────────────────────────────
   {
     ...metro,
@@ -531,7 +543,25 @@ export const FIXTURES_REGISTRY: readonly ReglaSla[] = [
     exposicion_estado: "pendiente_cuantificar",
     notas: "la arquitectura admite programas sin SLA cuantificado; no aplicar ≤20d como contractual",
   },
-] as const;
+];
+
+/**
+ * (a) Estado de EXTRACCIÓN: `extraida_contrato` solo si el contrato revisado
+ * aporta un valor u obligación cuantificada. Es INDEPENDIENTE del estado de
+ * validación (`estado_regla`, hoy siempre `borrador`) y de la medibilidad
+ * técnica, que la deriva el readiness y nunca se almacena.
+ */
+export const estadoExtraccionDe = (r: RowBase): EstadoExtraccion =>
+  r.target != null || r.meses_consecutivos != null || r.ventana_garantia_dias != null
+    ? "extraida_contrato"
+    : "pendiente_extraer";
+
+export const FIXTURES_REGISTRY: readonly ReglaSla[] = FILAS.map((r) => ({
+  ...r,
+  estado_extraccion: estadoExtraccionDe(r),
+  territorio_calendario: r.calendario === "laborable_es" ? "ES" : null,
+}));
+
 
 /** Targets numéricos declarados por cliente (control anti-invención). */
 export const TARGETS_DECLARADOS: Record<string, number[]> = {

@@ -12,8 +12,9 @@
  * estima, se interpola ni se rellena por defecto.
  */
 
-import type { EventoOT, ReglaSla } from "@/lib/ops-contractual";
-import { FUENTE_EVENTO, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
+import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual";
+import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
+
 
 export type EstadoDominio = "disponible" | "parcial" | "pendiente";
 
@@ -74,7 +75,19 @@ export type MedidasDataQuality = {
   };
   tablas: Record<string, boolean>;
   registry_reglas: number;
+  /** Festivos cargados por territorio en ops_calendario_laboral (hoy vacía). */
+  calendario_laboral?: Record<string, number>;
+  /** Valores reales de cliente_wg con su volumen y cobertura de eventos. */
+  clientes_erp?: Array<{
+    cliente_wg: string;
+    ots: number;
+    cob_primer_contacto: number | null;
+    cob_primera_visita: number | null;
+    cob_cierre: number | null;
+  }>;
 };
+
+
 
 // ─── Definiciones de dominio ─────────────────────────────────────────────────
 
@@ -432,12 +445,24 @@ export const frescura = (m: MedidasDataQuality, ahora: Date = new Date()): Fresc
 
 export type BloqueoReadiness = { tipo: "evento" | "dimension" | "calendario" | "target" | "validacion"; clave: string; motivo: string };
 
+export type Medibilidad = "medible" | "parcial" | "pendiente";
+
+export const LABEL_MEDIBILIDAD: Record<Medibilidad, string> = {
+  medible: "Medible",
+  parcial: "Parcial",
+  pendiente: "Pendiente",
+};
+
 export type ReadinessRegla = {
   regla: ReglaSla;
   medible: boolean;
+  /** (c) Medibilidad técnica DERIVADA. Nunca es una columna del Registry. */
+  medibilidad: Medibilidad;
   bloqueos: BloqueoReadiness[];
   /** Cobertura del peor evento con fuente disponible (null si ninguno la tiene). */
   coberturaEventos: number | null;
+  /** Clasificación de esa cobertura: disponible ≥95%, parcial ≥80%, limitado <80%. */
+  estadoCobertura: EstadoCobertura | null;
 };
 
 const coberturaEvento = (ev: EventoOT, m: MedidasDataQuality): number | null => {
@@ -448,7 +473,8 @@ const coberturaEvento = (ev: EventoOT, m: MedidasDataQuality): number | null => 
 
 /**
  * Determina si una regla del Registry es HOY medible con los datos existentes.
- * Sin excepción: cualquier bloqueo la deja como no medible.
+ * Cualquier bloqueo la deja como no medible; una cobertura de evento entre el
+ * 80% y el 95% no bloquea pero degrada la medibilidad a «parcial».
  */
 export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): ReadinessRegla => {
   const bloqueos: BloqueoReadiness[] = [];
@@ -463,11 +489,15 @@ export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): Readines
     const cob = coberturaEvento(ev, m);
     if (cob == null) {
       bloqueos.push({ tipo: "evento", clave: ev, motivo: `Campo ${campo} no medido.` });
-    } else {
-      coberturas.push(cob);
-      if (cob < 0.95) {
-        bloqueos.push({ tipo: "evento", clave: ev, motivo: `Cobertura de ${campo}: ${pct(cob)} (se exige ≥95%).` });
-      }
+      continue;
+    }
+    coberturas.push(cob);
+    if (clasificarCoberturaEvento(cob) === "limitado") {
+      bloqueos.push({
+        tipo: "evento",
+        clave: ev,
+        motivo: `Cobertura de ${campo}: ${pct(cob)} (<80%): readiness limitado, no representativo.`,
+      });
     }
   }
 
@@ -481,7 +511,14 @@ export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): Readines
   }
 
   if (regla.calendario !== "natural" || regla.unidad === "horas_laborables" || regla.unidad === "dias_laborables") {
-    bloqueos.push({ tipo: "calendario", clave: regla.calendario, motivo: "No hay calendario laboral con festivos cargado." });
+    const filas = m.calendario_laboral?.[regla.territorio_calendario ?? ""] ?? 0;
+    if (filas === 0) {
+      bloqueos.push({
+        tipo: "calendario",
+        clave: regla.territorio_calendario ?? regla.calendario,
+        motivo: `Sin festivos cargados para el territorio «${regla.territorio_calendario ?? "no declarado"}»: no se sustituye por lunes–viernes.`,
+      });
+    }
   }
   if (regla.target == null) {
     bloqueos.push({ tipo: "target", clave: regla.kpi, motivo: "El contrato no define un objetivo cuantificado." });
@@ -496,18 +533,29 @@ export const readinessRegla = (regla: ReglaSla, m: MedidasDataQuality): Readines
     bloqueos.push({ tipo: "validacion", clave: regla.estado_regla, motivo: "Regla en borrador: no validada contra el clausulado." });
   }
 
+  const coberturaEventos = coberturas.length ? Math.min(...coberturas) : null;
+  const estadoCobertura = coberturaEventos == null ? null : clasificarCoberturaEvento(coberturaEventos);
+  const medible = bloqueos.length === 0;
+
   return {
     regla,
-    medible: bloqueos.length === 0,
+    medible,
+    medibilidad: !medible ? "pendiente" : estadoCobertura === "parcial" ? "parcial" : "medible",
     bloqueos,
-    coberturaEventos: coberturas.length ? Math.min(...coberturas) : null,
+    coberturaEventos,
+    estadoCobertura,
   };
 };
+
 
 export type ResumenReadiness = {
   total: number;
   medibles: number;
   noMedibles: number;
+  /** Reparto por las tres dimensiones independientes del Registry. */
+  porMedibilidad: Record<Medibilidad, number>;
+  porExtraccion: { extraida_contrato: number; pendiente_extraer: number };
+  porValidacion: Record<string, number>;
   /** Motivos agregados ordenados por frecuencia. */
   bloqueosTop: Array<{ clave: string; motivo: string; n: number }>;
   /** Siempre false en F3B: no se declara cumplimiento contractual. */
@@ -526,13 +574,24 @@ export const resumenReadiness = (reglas: readonly ReglaSla[], m: MedidasDataQual
     }
   }
   const medibles = evaluadas.filter((e) => e.medible).length;
+  const porMedibilidad: Record<Medibilidad, number> = { medible: 0, parcial: 0, pendiente: 0 };
+  for (const e of evaluadas) porMedibilidad[e.medibilidad] += 1;
+  const porValidacion: Record<string, number> = {};
+  for (const r of reglas) porValidacion[r.estado_regla] = (porValidacion[r.estado_regla] ?? 0) + 1;
   return {
     total: reglas.length,
     medibles,
     noMedibles: reglas.length - medibles,
+    porMedibilidad,
+    porExtraccion: {
+      extraida_contrato: reglas.filter((r) => r.estado_extraccion === "extraida_contrato").length,
+      pendiente_extraer: reglas.filter((r) => r.estado_extraccion === "pendiente_extraer").length,
+    },
+    porValidacion,
     bloqueosTop: [...mapa.values()].sort((a, b) => b.n - a.n),
     puedeDeclararCumplimiento: medibles > 0 && medibles === reglas.length,
   };
+
 };
 
 export const AVISO_NO_CUMPLIMIENTO =

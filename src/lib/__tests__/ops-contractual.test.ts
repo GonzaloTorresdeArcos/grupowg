@@ -24,7 +24,7 @@ const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   sociedad_wg_ejecutora: null,
   gama_familia: null,
   tipologia_servicio: null,
-  fase: "postventa",
+  fase: null,
   kpi: "Plazo",
   evento_inicio: "creacion_ot",
   evento_fin: "cierre",
@@ -48,7 +48,10 @@ const regla = (p: Partial<ReglaSla> = {}): ReglaSla => ({
   fuente_contractual: null,
   tipo_target: "contractual_target",
   estado_regla: "borrador",
+  estado_extraccion: "extraida_contrato",
+  territorio_calendario: null,
   notas: null,
+
   ...p,
 });
 
@@ -121,6 +124,32 @@ describe("motor de evaluación: nunca fabrica cumplimiento", () => {
     expect(r.imputable).toBe("por_determinar");
   });
 });
+
+describe("fase: null no es 'sin dato', es 'no condiciona'", () => {
+  const eventos = { eventos: { creacion_ot: "2026-01-01T00:00:00Z", cierre: "2026-01-03T00:00:00Z" } };
+
+  it("regla con fase null evalúa aunque la OT no traiga fase", () => {
+    expect(evaluarRegla(regla({ fase: null }), eventos).evaluable).toBe(true);
+  });
+
+  it("regla con fase concreta y OT sin fase → fase_ot_desconocida", () => {
+    const r = evaluarRegla(regla({ fase: "postventa" }), eventos);
+    expect(r.evaluable).toBe(false);
+    expect(r.motivo_no_evaluable).toBe("fase_ot_desconocida");
+    expect(r.cumple_target).toBeUndefined();
+  });
+
+  it("regla con fase concreta y OT de otra fase → fase_no_aplica", () => {
+    const r = evaluarRegla(regla({ fase: "postventa" }), { ...eventos, fase: "preventa" });
+    expect(r.motivo_no_evaluable).toBe("fase_no_aplica");
+  });
+
+  it("regla con fase concreta y OT de esa fase → evaluable", () => {
+    expect(evaluarRegla(regla({ fase: "postventa" }), { ...eventos, fase: "postventa" }).evaluable).toBe(true);
+  });
+});
+
+
 
 describe("reglas agregadas", () => {
   const res = (ok: boolean, t: number): ResultadoRegla => ({ evaluable: true, unidad: "dias_naturales", transcurrido: t, cumple_target: ok });

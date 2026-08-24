@@ -71,6 +71,78 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_calendario_laboral: {
+        Row: {
+          ambito: string
+          created_at: string
+          descripcion: string | null
+          fecha: string
+          fuente: string | null
+          id: string
+          territorio: string
+          vigencia_desde: string | null
+          vigencia_hasta: string | null
+        }
+        Insert: {
+          ambito: string
+          created_at?: string
+          descripcion?: string | null
+          fecha: string
+          fuente?: string | null
+          id?: string
+          territorio: string
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Update: {
+          ambito?: string
+          created_at?: string
+          descripcion?: string | null
+          fecha?: string
+          fuente?: string | null
+          id?: string
+          territorio?: string
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Relationships: []
+      }
+      ops_cliente_contrato_alias: {
+        Row: {
+          cliente_contractual: string
+          cliente_wg_real: string
+          created_at: string
+          id: string
+          notas: string | null
+          origen: string
+          programa: string | null
+          vigencia_desde: string | null
+          vigencia_hasta: string | null
+        }
+        Insert: {
+          cliente_contractual: string
+          cliente_wg_real: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          origen?: string
+          programa?: string | null
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Update: {
+          cliente_contractual?: string
+          cliente_wg_real?: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          origen?: string
+          programa?: string | null
+          vigencia_desde?: string | null
+          vigencia_hasta?: string | null
+        }
+        Relationships: []
+      }
       ops_coste_mensual: {
         Row: {
           coste_total: number
@@ -350,6 +422,7 @@ export type Database = {
           cliente_wg_patron: string | null
           condicion_aplicacion: string | null
           created_at: string
+          estado_extraccion: string
           estado_regla: string
           evento_fin: string
           evento_inicio: string
@@ -369,6 +442,7 @@ export type Database = {
           regla_medicion: string
           sociedad_wg_ejecutora: string | null
           target: number | null
+          territorio_calendario: string | null
           tipo_consecuencia: string
           tipo_target: string
           tipologia_servicio: string | null
@@ -388,6 +462,7 @@ export type Database = {
           cliente_wg_patron?: string | null
           condicion_aplicacion?: string | null
           created_at?: string
+          estado_extraccion?: string
           estado_regla?: string
           evento_fin: string
           evento_inicio: string
@@ -407,6 +482,7 @@ export type Database = {
           regla_medicion: string
           sociedad_wg_ejecutora?: string | null
           target?: number | null
+          territorio_calendario?: string | null
           tipo_consecuencia?: string
           tipo_target: string
           tipologia_servicio?: string | null
@@ -426,6 +502,7 @@ export type Database = {
           cliente_wg_patron?: string | null
           condicion_aplicacion?: string | null
           created_at?: string
+          estado_extraccion?: string
           estado_regla?: string
           evento_fin?: string
           evento_inicio?: string
@@ -445,6 +522,7 @@ export type Database = {
           regla_medicion?: string
           sociedad_wg_ejecutora?: string | null
           target?: number | null
+          territorio_calendario?: string | null
           tipo_consecuencia?: string
           tipo_target?: string
           tipologia_servicio?: string | null

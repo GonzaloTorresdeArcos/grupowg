@@ -67,8 +67,17 @@ export type TipoTargetRegistry = (typeof TIPOS_TARGET)[number];
 export const ESTADOS_REGLA = ["borrador", "validada", "obsoleta"] as const;
 export type EstadoRegla = (typeof ESTADOS_REGLA)[number];
 
+/**
+ * Estado de EXTRACCIÓN documental: ¿el valor de la obligación está extraído del
+ * contrato? Es independiente del estado de VALIDACIÓN (`estado_regla`) y de la
+ * MEDIBILIDAD técnica (derivada por readiness, nunca almacenada).
+ */
+export const ESTADOS_EXTRACCION = ["extraida_contrato", "pendiente_extraer"] as const;
+export type EstadoExtraccion = (typeof ESTADOS_EXTRACCION)[number];
+
 export const FASES = ["preventa", "postventa"] as const;
 export type Fase = (typeof FASES)[number];
+
 
 // ─── Fila del Registry ───────────────────────────────────────────────────────
 
@@ -85,6 +94,10 @@ export type ReglaSla = {
   tipologia_servicio: string | null;
   /** Condición contractual de aplicación de la regla (p. ej. 'sin_solicitud_pieza_ni_baja'). */
   condicion_aplicacion?: string | null;
+  /**
+   * `null` = la regla NO condiciona por fase: aplica tanto en preventa como en
+   * postventa y NO exige conocer la fase de la OT. Un valor concreto sí la exige.
+   */
   fase: Fase | null;
   kpi: string;
   evento_inicio: EventoInicio;
@@ -111,15 +124,22 @@ export type ReglaSla = {
   vigencia_hasta: string | null;
   fuente_contractual: string | null;
   tipo_target: TipoTargetRegistry;
+  /** (b) Estado de VALIDACIÓN contra clausulado. */
   estado_regla: EstadoRegla;
+  /** (a) Estado de EXTRACCIÓN documental del valor de la obligación. */
+  estado_extraccion: EstadoExtraccion;
+  /** Territorio del calendario laboral aplicable (null = no aplica calendario). */
+  territorio_calendario: string | null;
   notas: string | null;
 };
+
 
 /** Campos obligatorios de una fila del Registry (usado por los tests de fixtures). */
 export const CAMPOS_OBLIGATORIOS_REGLA: readonly (keyof ReglaSla)[] = [
   "business_line", "cliente", "programa", "kpi", "evento_inicio", "evento_fin",
   "unidad", "calendario", "regla_medicion", "ventana_medicion", "imputabilidad",
   "tipo_consecuencia", "exposicion_estado", "tipo_target", "estado_regla",
+  "estado_extraccion",
 ];
 
 // ─── Calendario laboral inyectable ───────────────────────────────────────────
@@ -134,17 +154,65 @@ export type CalendarioLaboral = {
   horaFin?: number;
 };
 
+export const AMBITOS_CALENDARIO = ["nacional", "autonomico", "local"] as const;
+export type AmbitoCalendario = (typeof AMBITOS_CALENDARIO)[number];
+
+/** Fila de `public.ops_calendario_laboral` (hoy la tabla está vacía). */
+export type FestivoCalendario = {
+  territorio: string;
+  ambito: AmbitoCalendario;
+  fecha: string;
+  descripcion?: string | null;
+  fuente?: string | null;
+};
+
+/**
+ * Calendario territorial cargado desde datos. NUNCA se construye por defecto:
+ * si no hay festivos cargados para el territorio, `construirCalendario`
+ * devuelve null y el motor deja la regla como no evaluable. Está PROHIBIDO
+ * sustituirlo silenciosamente por un lunes–viernes implícito.
+ */
+export type CalendarioLaborable = {
+  territorio: string;
+  festivos: Date[];
+  ambitos: AmbitoCalendario[];
+};
+
+export const construirCalendario = (
+  territorio: string | null | undefined,
+  filas: readonly FestivoCalendario[],
+): CalendarioLaborable | null => {
+  if (!territorio) return null;
+  const propias = filas.filter((f) => f.territorio === territorio);
+  if (propias.length === 0) return null;
+  return {
+    territorio,
+    festivos: propias.map((f) => new Date(`${f.fecha}T00:00:00Z`)),
+    ambitos: Array.from(new Set(propias.map((f) => f.ambito))),
+  };
+};
+
+/** Adapta un calendario territorial al formato que consume el motor. */
+export const aCalendarioLaboral = (c: CalendarioLaborable | null): CalendarioLaboral | null =>
+  c ? { festivos: c.festivos.map((d) => d.toISOString().slice(0, 10)) } : null;
+
 // ─── Entrada de eventos de una OT ────────────────────────────────────────────
 
 export type EventosOT = {
   /** Marcas de tiempo ISO por evento. Ausencia = evento no registrado. */
   eventos: Partial<Record<EventoOT, string>>;
   /**
+   * Fase de la OT. `undefined` = dato NO disponible (distinto de `regla.fase === null`,
+   * que significa que la regla no condiciona por fase).
+   */
+  fase?: Fase | null;
+  /**
    * Pausas declaradas por tipo (en horas). SOLO se descuentan si la regla las
    * declara en `pausas_exclusiones`. Nunca se pausa un reloj automáticamente.
    */
   pausas?: Partial<Record<string, number>>;
 };
+
 
 // ─── Resultado ───────────────────────────────────────────────────────────────
 
@@ -233,6 +301,15 @@ export const evaluarRegla = (
     return { ...base, motivo_no_evaluable: "regla_agregada_requiere_conjunto" };
   }
 
+  // FASE: `regla.fase === null` no es condición y no exige el dato en la OT.
+  // Solo una regla con fase específica obliga a conocer la fase de la OT.
+  if (regla.fase != null) {
+    if (ot.fase == null) return { ...base, motivo_no_evaluable: "fase_ot_desconocida" };
+    if (ot.fase !== regla.fase) return { ...base, motivo_no_evaluable: "fase_no_aplica" };
+  }
+
+
+
   const tIni = ot.eventos[regla.evento_inicio];
   if (!tIni) return { ...base, motivo_no_evaluable: `falta ${regla.evento_inicio}` };
   const tFin = ot.eventos[regla.evento_fin];
@@ -291,7 +368,7 @@ export const evaluarRegla = (
 
 // ─── Reglas agregadas ────────────────────────────────────────────────────────
 
-export type ResultadoAgregado = {
+export type ResultadoAgregadoBasico = {
   evaluable: boolean;
   motivo_no_evaluable?: string;
   denominador: number;
@@ -308,7 +385,8 @@ export type ResultadoAgregado = {
 export const evaluarReglaAgregada = (
   regla: ReglaSla,
   resultados: ResultadoRegla[],
-): ResultadoAgregado => {
+): ResultadoAgregadoBasico => {
+
   const evaluables = resultados.filter((r) => r.evaluable);
   const denominador = evaluables.length;
   if (denominador === 0) {
@@ -331,6 +409,82 @@ export const evaluarReglaAgregada = (
   }
   return { evaluable: true, denominador, numerador, valor: pct, cumple_umbral: pct >= regla.umbral_agregado };
 };
+
+// ─── Cobertura del evento en el universo de OTs ──────────────────────────────
+
+/**
+ * Umbrales de cobertura del evento requerido. Sustituyen al bloqueo binario al
+ * 95%: por debajo se degrada la confianza, nunca se rellena el hueco.
+ */
+export const UMBRAL_COBERTURA_DISPONIBLE = 0.95;
+export const UMBRAL_COBERTURA_PARCIAL = 0.8;
+
+export type EstadoCobertura = "disponible" | "parcial" | "limitado";
+
+export const clasificarCoberturaEvento = (cobertura: number): EstadoCobertura => {
+  if (cobertura >= UMBRAL_COBERTURA_DISPONIBLE) return "disponible";
+  if (cobertura >= UMBRAL_COBERTURA_PARCIAL) return "parcial";
+  return "limitado";
+};
+
+export type ResultadoAgregado = {
+  numerador: number;
+  /** OTs con el evento requerido y por tanto evaluables. */
+  denominador_evaluado: number;
+  /** OTs del universo del cliente/período, tengan o no el evento. */
+  universo_total: number;
+  cobertura: number;
+  estado_cobertura: EstadoCobertura;
+  /** null si no hay denominador o si la cobertura es limitada. */
+  pct_cumplimiento: number | null;
+  texto: string;
+};
+
+const pct1 = (v: number) => `${(v * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+const miles = (v: number) => v.toLocaleString("es-ES");
+
+/**
+ * Cumplimiento agregado con cobertura declarada.
+ * PROHIBIDO: contar las OTs sin evento como cumplidas o incumplidas, y
+ * extrapolar el porcentaje al universo total. El denominador son SIEMPRE las
+ * OTs evaluables y la cobertura se declara junto al resultado.
+ */
+export const evaluarCumplimientoConCobertura = (
+  resultados: readonly ResultadoRegla[],
+  universoTotal: number,
+): ResultadoAgregado => {
+  const evaluables = resultados.filter((r) => r.evaluable);
+  const denominador_evaluado = evaluables.length;
+  const numerador = evaluables.filter((r) => r.cumple_target === true).length;
+  const cobertura = universoTotal > 0 ? denominador_evaluado / universoTotal : 0;
+  const estado_cobertura = clasificarCoberturaEvento(cobertura);
+  const ratio = denominador_evaluado > 0 ? numerador / denominador_evaluado : null;
+
+  if (estado_cobertura === "limitado") {
+    return {
+      numerador,
+      denominador_evaluado,
+      universo_total: universoTotal,
+      cobertura,
+      estado_cobertura,
+      pct_cumplimiento: null,
+      texto: `readiness limitado: cobertura del evento ${pct1(cobertura)} — no representativo`,
+    };
+  }
+
+  const glifo = estado_cobertura === "parcial" ? " ◐" : "";
+  return {
+    numerador,
+    denominador_evaluado,
+    universo_total: universoTotal,
+    cobertura,
+    estado_cobertura,
+    pct_cumplimiento: ratio,
+    texto: `${pct1(ratio ?? 0)} cumplimiento sobre ${miles(denominador_evaluado)} OTs evaluables · cobertura del evento ${pct1(cobertura)}${glifo}`,
+  };
+};
+
+
 
 /** Regla de N meses consecutivos de incumplimiento. */
 export const evaluarMesesConsecutivos = (
