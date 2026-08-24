@@ -917,6 +917,12 @@ export const resumenReadiness = (
   for (const e of evaluadas) porMedibilidad[e.medibilidad] += 1;
   const porValidacion: Record<string, number> = {};
   for (const r of reglas) porValidacion[r.estado_regla] = (porValidacion[r.estado_regla] ?? 0) + 1;
+  const porProcedenciaPrograma: Record<ProcedenciaPrograma, number> = {
+    explicit_ot: 0,
+    derived_alias: 0,
+    unresolved: 0,
+  };
+  for (const e of evaluadas) porProcedenciaPrograma[e.procedencia_programa] += 1;
   return {
     total: reglas.length,
     medibles,
