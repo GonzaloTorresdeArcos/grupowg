@@ -8,7 +8,9 @@ export type OpsTable =
   | "ops_benchmark"
   | "ops_pieza_solicitud"
   | "ops_expedicion"
+  | "ops_expedicion_linea"
   | "ops_stock_snapshot";
+
 
 // ---------- Mapas de columnas por tabla ----------
 const FACT_MAP: Record<string, string> = {
