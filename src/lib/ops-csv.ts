@@ -263,6 +263,9 @@ export function detectTable(header: string[]): OpsTable | null {
   const h = new Set(header.map(norm));
   const base = h.has("almacen_base") || h.has("almacen") || h.has("base");
   // Supply primero: comparten cabeceras genéricas con ops_fact_ot.
+  // F4B: presencia diaria por persona (una fila = persona × día).
+  if ((h.has("persona_id") || h.has("id_persona")) && (h.has("fecha") || h.has("dia")) && (h.has("presente") || h.has("jornada_horas") || h.has("horas")))
+    return "ops_rrhh_logistica";
   if (h.has("expedicion_id") && h.has("linea") && h.has("referencia")) return "ops_expedicion_linea";
   if (h.has("referencia_expedicion") || (h.has("expedicion_id") && base && !h.has("referencia"))) return "ops_expedicion";
   if (base && h.has("referencia") && (h.has("fecha") || h.has("fecha_snapshot") || h.has("stock_fisico"))) return "ops_stock_snapshot";
@@ -284,6 +287,7 @@ export function conflictKey(t: OpsTable): string {
     ops_expedicion: "almacen_base,expedicion_id",
     ops_expedicion_linea: "almacen_base,expedicion_id,linea",
     ops_stock_snapshot: "fecha_snapshot,almacen_base,referencia",
+    ops_rrhh_logistica: "persona_id,fecha",
   }[t];
 }
 
@@ -367,6 +371,13 @@ export function normalizeRow(t: OpsTable, header: string[], raw: string[]): Reco
     if (!rec.almacen_base) rec.almacen_base = "SIN_ALMACEN";
     if (rec.linea == null) return null;
     if (rec.cantidad == null) rec.cantidad = 1;
+    rec.origen_dato = "importador";
+  }
+  if (t === "ops_rrhh_logistica") {
+    // Sin persona, almacén y día no hay unidad de presencia: la fila se descarta.
+    if (!rec.persona_id || !rec.fecha) return null;
+    if (!rec.almacen_base) rec.almacen_base = "SIN_ALMACEN";
+    if (rec.presente == null) rec.presente = true;
     rec.origen_dato = "importador";
   }
   if (t === "ops_stock_snapshot") {
@@ -484,6 +495,7 @@ export const DOMINIO_POR_TABLA: Record<OpsTable, DominioCarga> = {
   ops_expedicion: "expedicion",
   ops_expedicion_linea: "expedicion_linea",
   ops_stock_snapshot: "stock",
+  ops_rrhh_logistica: "rrhh_logistica",
 };
 
 /**
@@ -495,6 +507,7 @@ const CAMPOS_AS_OF: Partial<Record<OpsTable, readonly string[]>> = {
   ops_pieza_solicitud: ["fecha_entrega", "fecha_expedicion", "fecha_solicitud"],
   ops_expedicion: ["fecha_entrega_real", "expedicion_timestamp", "fecha_expedicion"],
   ops_stock_snapshot: ["fecha_snapshot"],
+  ops_rrhh_logistica: ["fecha"],
 };
 
 const soloFecha = (v: unknown): string | null => {
