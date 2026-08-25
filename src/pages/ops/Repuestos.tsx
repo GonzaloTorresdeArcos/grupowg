@@ -9,7 +9,6 @@ import { useDataQuality } from "@/hooks/useDataQuality";
 import { ETIQUETA_REFERENCIA_OPERATIVA } from "@/lib/ops-panorama";
 import { PLANTILLAS, cabeceraPlantilla } from "@/lib/ops-csv";
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
-import { FIXTURES_REGISTRY } from "@/lib/ops-contractual-fixtures";
 import type { ReglaSla } from "@/lib/ops-contractual";
 import {
   BUCKETS_ANTIGUEDAD,
