@@ -332,8 +332,21 @@ const Dashboard = () => {
   }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
 
   if (loading || !kpis) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
+    // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
+    return (
+      <div className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
+        <div className="h-6 w-2/3 rounded bg-black/[0.06]" />
+        <div className="h-4 w-1/3 rounded bg-black/[0.04]" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <div key={i} className="h-24 rounded-2xl border border-black/[0.06] bg-black/[0.02]" />
+          ))}
+        </div>
+        <div className="h-40 rounded-2xl border border-black/[0.06] bg-black/[0.02]" />
+      </div>
+    );
   }
+
 
   const periodoLbl = labelPeriodo(filters.from, filters.to);
   const comparadaLbl = hayComparable ? labelComparativa(filters.from, filters.to, modo).split(" vs. ")[1] ?? null : null;
