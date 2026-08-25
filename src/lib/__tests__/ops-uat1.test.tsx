@@ -98,7 +98,7 @@ describe("UAT-3 · el backlog anterior se reconstruye contra la fecha efectiva d
 
 describe("UAT-6 · Dispersión declara los km en una sola línea", () => {
   it("la cabecera usa el aviso corto", () => {
-    expect(AVISO_KM_CORTO).toBe("Distancia aproximada base→CP; km reales por intervención no disponibles.");
+    expect(AVISO_KM_CORTO).toBe("Distancia aproximada base→CP; no hay km reales por intervención.");
     expect(leer("src/pages/ops/Dispersion.tsx")).toContain("{AVISO_KM_CORTO}");
   });
 

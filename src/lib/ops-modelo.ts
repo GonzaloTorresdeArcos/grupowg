@@ -189,7 +189,7 @@ export const AVISO_KM =
  * en Calidad de datos: no se pierde ninguna limitación, cambia dónde se lee.
  */
 export const AVISO_KM_CORTO =
-  "Distancia aproximada base→CP; km reales por intervención no disponibles.";
+  "Distancia aproximada base→CP; no hay km reales por intervención.";
 
 
 
