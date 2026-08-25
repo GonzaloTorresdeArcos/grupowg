@@ -569,12 +569,13 @@ export default function OpsDispersion() {
                   onChange={(e) => setProvSel(e.target.value || null)}
                   className="h-7 px-2 rounded-md border border-black/[0.08] bg-white text-[12px] text-ink"
                 >
-                  <option value="">Todas las provincias</option>
+                  <option value="">Selecciona provincia…</option>
                   {(data.provincias ?? []).map((p) => (
                     <option key={p.provincia} value={p.provincia}>{p.provincia}</option>
                   ))}
                 </select>
               )}
+
             </div>
 
             {vista === "provincias" && (
