@@ -13,10 +13,34 @@
  *  (c) las páginas no derivan estado vacío de datos sin query resuelta.
  */
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const rpcMock = vi.fn();
+const childRpcHookMock = vi.fn();
+
+vi.mock("@/hooks/useAuth", () => ({
+  useAuth: () => ({
+    user: { id: "usuario-sin-management" },
+    session: { access_token: "jwt-authenticated" },
+    loading: false,
+  }),
+}));
+
+vi.mock("@/hooks/useIsManagement", () => ({
+  useIsManagement: () => ({ isManagement: false, loading: false }),
+}));
+
+vi.mock("@/lib/ops-session", async () => {
+  const real = await vi.importActual<typeof import("@/lib/ops-session")>("@/lib/ops-session");
+  return { ...real, useOpsSession: () => ({ hasSession: true, perdida: false }) };
+});
+
+vi.mock("react-router-dom", async () => {
+  const real = await vi.importActual<Record<string, unknown>>("react-router-dom");
+  return { ...real, useLocation: () => ({ pathname: "/operaciones", search: "", hash: "", state: null, key: "test" }) };
+});
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -38,7 +62,23 @@ import {
 
 beforeEach(() => {
   rpcMock.mockReset();
+  childRpcHookMock.mockReset();
   _resetSesionOps();
+});
+
+describe("OpsProtectedRoute · authenticated sin management", () => {
+  it("muestra acceso restringido y no monta el árbol que activaría RPC", async () => {
+    const { OpsProtectedRoute } = await import("@/components/ops/OpsProtectedRoute");
+    const PaginaOps = () => {
+      childRpcHookMock();
+      return <div>contenido operativo</div>;
+    };
+    render(<OpsProtectedRoute><PaginaOps /></OpsProtectedRoute>);
+    expect(screen.getByText("Acceso restringido a Dirección")).toBeInTheDocument();
+    expect(screen.queryByText("contenido operativo")).not.toBeInTheDocument();
+    expect(childRpcHookMock).not.toHaveBeenCalled();
+    expect(rpcMock).not.toHaveBeenCalled();
+  });
 });
 
 describe("(a) opsRpc nunca envía sin JWT de usuario", () => {
@@ -118,4 +158,47 @@ describe("(c) las páginas de /operaciones no derivan vacíos sin query resuelta
       }
     });
   }
+
+  const paginasCriticas = [
+    "Dashboard.tsx", "Delegaciones.tsx", "SLA.tsx", "Tecnicos.tsx",
+    "Sats.tsx", "Costes.tsx", "Hub.tsx", "Dispersion.tsx",
+    "Repuestos.tsx", "Logistica.tsx", "CalidadDatos.tsx",
+  ];
+
+  for (const nombre of paginasCriticas) {
+    it(`${nombre}: un fallo no se transforma en cero, null o colección vacía`, () => {
+      const ruta = resolve(process.cwd(), dir, nombre);
+      const src = readFileSync(ruta, "utf8");
+      expect(/(?:isError|error)\s*\?\s*(?:\[\]|null|0)/.test(src), ruta).toBe(false);
+      expect(/(?:q|query)\.data\s*\?\?\s*(?:\[\]|null)/.test(src) && !/OpsErrorBlock|fallos|isError/.test(src), ruta).toBe(false);
+      expect(/OpsErrorBlock|fallos|isError/.test(src), ruta).toBe(true);
+    });
+  }
+});
+
+describe.each([
+  ["Dashboard", "ops_panorama_resumen"],
+  ["Delegaciones", "ops_delegaciones"],
+  ["SLA", "ops_sla_resumen"],
+  ["Tecnicos", "ops_tecnicos_scorecard"],
+  ["Sats", "ops_sats_ranking"],
+  ["Costes", "ops_costes"],
+  ["Hub", "ops_delegacion_ficha"],
+  ["Dispersion", "ops_dispersion_resumen"],
+  ["Repuestos", "ops_supply_resumen"],
+  ["Logistica", "ops_logistica"],
+  ["CalidadDatos", "ops_data_quality"],
+])("%s · pérdida de identidad", (_pagina, rpc) => {
+  it("42501 marca sesión perdida y nunca entrega un payload cero/vacío", async () => {
+    publicarSesionOps("jwt-management");
+    rpcMock.mockResolvedValue({
+      data: null,
+      error: { code: "42501", message: `permission denied for function ${rpc}` },
+    });
+
+    let resultado: unknown = "sin resolver";
+    await expect(opsRpc(rpc).then((data) => { resultado = data; })).rejects.toMatchObject({ code: "42501" });
+    expect(resultado).toBe("sin resolver");
+    expect(sesionOpsPerdida()).toBe(true);
+  });
 });
