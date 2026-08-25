@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import {
   variacion, ratioBajas, prevPeriod, labelPeriodo, diasEntre,
@@ -59,61 +59,46 @@ const Delta = ({ v, favorable }: { v: number | null; favorable: "up" | "down" })
 
 const Delegaciones = () => {
   const { filters, rpcParams, prevRange, modo } = useOpsFilters();
-  const [now, setNow] = useState<Data | null>(null);
-  const [prev, setPrev] = useState<Data | null>(null);
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
-  const [ficha, setFicha] = useState<Ficha | null>(null);
-  const [loadingFicha, setLoadingFicha] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
-
 
   const dNow = diasEntre(filters.from, filters.to);
   const dPrev = diasEntre(prevRange.from, prevRange.to);
   const mismasDuraciones = dNow === dPrev;
 
-  const [equiposNow, setEquiposNow] = useState<EquipoRow[]>([]);
-  const [equiposPrev, setEquiposPrev] = useState<EquipoRow[]>([]);
-
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      const paramsNow = {
-        p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-        p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
-      };
-      const paramsPrev = { ...paramsNow, p_from: prevRange.from, p_to: prevRange.to };
-      const equipNow = {
-        p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-        p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
-      };
-      const equipPrev = { ...equipNow, p_from: prevRange.from, p_to: prevRange.to };
-      const [n, p, eq, eqp] = await Promise.all([
-        supabase.rpc("ops_delegaciones" as never, paramsNow as never),
-        supabase.rpc("ops_delegaciones" as never, paramsPrev as never),
-        supabase.rpc("ops_equipos" as never, equipNow as never),
-        supabase.rpc("ops_equipos" as never, equipPrev as never),
-      ]);
-      setNow((n.data ?? null) as Data | null);
-      setPrev((p.data ?? null) as Data | null);
-      setEquiposNow((eq.data ?? []) as EquipoRow[]);
-      setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
-      setLoading(false);
-    })();
+  const specs = useMemo(() => {
+    const paramsNow = {
+      p_from: rpcParams.p_from, p_to: rpcParams.p_to,
+      p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+    };
+    const paramsPrev = { ...paramsNow, p_from: prevRange.from, p_to: prevRange.to };
+    const equipNow = {
+      p_from: rpcParams.p_from, p_to: rpcParams.p_to,
+      p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
+    };
+    const equipPrev = { ...equipNow, p_from: prevRange.from, p_to: prevRange.to };
+    return [
+      { rpc: "ops_delegaciones", params: paramsNow },
+      { rpc: "ops_delegaciones", params: paramsPrev },
+      { rpc: "ops_equipos", params: equipNow },
+      { rpc: "ops_equipos", params: equipPrev },
+    ];
   }, [rpcParams, prevRange.from, prevRange.to]);
 
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const now = (q[0].data ?? null) as Data | null;
+  const prev = (q[1].data ?? null) as Data | null;
+  const equiposNow = useMemo(() => (q[2].data ?? []) as EquipoRow[], [q[2].data]);
+  const equiposPrev = useMemo(() => (q[3].data ?? []) as EquipoRow[], [q[3].data]);
 
-  useEffect(() => {
-    if (!selected) { setFicha(null); return; }
-    setLoadingFicha(true);
-    (async () => {
-      const { data } = await supabase.rpc("ops_delegacion_ficha" as never, {
-        p_delegacion: selected, p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-      } as never);
-      setFicha((data ?? null) as Ficha | null);
-      setLoadingFicha(false);
-    })();
-  }, [selected, rpcParams.p_from, rpcParams.p_to]);
+  const fichaQ = useOpsRpc<Ficha | null>(
+    "ops_delegacion_ficha",
+    { p_delegacion: selected, p_from: rpcParams.p_from, p_to: rpcParams.p_to },
+    { enabled: !!selected },
+  );
+  const ficha = selected ? (fichaQ.data ?? null) : null;
+  const loadingFicha = !!selected && fichaQ.isPending;
 
   if (loading || !now) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;

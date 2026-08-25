@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -53,23 +53,11 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 // -----------------------------------------------------------------------------
 const VistaGeneral = () => {
   const { filters, rpcParams } = useOpsFilters();
-  const [ficha, setFicha] = useState<Ficha | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    (async () => {
-      const { data, error } = await supabase.rpc("ops_delegacion_ficha" as never, {
-        p_delegacion: HUB_DELEGACION, p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-      } as never);
-      if (!alive) return;
-      if (error) console.error("[ops_delegacion_ficha·hub]", error);
-      setFicha((data ?? null) as Ficha | null);
-      setLoading(false);
-    })();
-    return () => { alive = false; };
-  }, [rpcParams.p_from, rpcParams.p_to]);
+  const q = useOpsRpc<Ficha | null>("ops_delegacion_ficha", {
+    p_delegacion: HUB_DELEGACION, p_from: rpcParams.p_from, p_to: rpcParams.p_to,
+  });
+  const ficha = (q.data ?? null) as Ficha | null;
+  const loading = q.isPending;
 
   if (loading) {
     return <div className="flex items-center justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
