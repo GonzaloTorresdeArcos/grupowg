@@ -285,6 +285,16 @@ const Dashboard = () => {
   const stAtencion = estadoDe(2, 3, 4, 5, 6, 7);
   const stComparativa = estadoDe(3, 4);
 
+  // Hitos UAT: primeros KPI (tanda crítica resuelta), Panorama usable (crítico
+  // pintado) y carga completa (secundario resuelto).
+  useEffect(() => {
+    if (criticoListo) { registrarHito("primeros_kpi"); registrarHito("panorama_usable"); }
+  }, [criticoListo]);
+  useEffect(() => {
+    if (criticoListo && !cargandoSecundario) registrarHito("carga_completa");
+  }, [criticoListo, cargandoSecundario]);
+
+
 
 
 
