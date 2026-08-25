@@ -91,6 +91,9 @@ export const OpsLayout = () => {
   // A1 · Si el snapshot de datos cambió desde la última visita, la caché de
   // análisis de esta sesión se invalida al montar la sección.
   useAsOfCacheGuard();
+  // Hito UAT: el armazón de la sección ya está en pantalla.
+  useEffect(() => { registrarHito("shell"); }, []);
+
 
   const handleSignOut = async () => {
     await signOut();
