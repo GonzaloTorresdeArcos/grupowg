@@ -121,7 +121,41 @@ const Sparkline = ({ values, title }: { values: Array<number | null>; title: str
   );
 };
 
+/** Estado de carga propio de un bloque secundario. */
+type EstadoBloque = { cargando: boolean; error: boolean; vacio: boolean };
+
+/**
+ * Indicador de bloque: etiqueta «Actualizando…» mientras su propia query esté
+ * pendiente o refrescando, y su propio error si falla. Independiente del
+ * indicador global de cabecera.
+ */
+const BloqueEstado = ({ estado, nombre }: { estado: EstadoBloque; nombre: string }) => {
+  if (estado.error) {
+    return (
+      <p data-testid={`error-${nombre}`} className="text-[11px] text-red-700 inline-flex items-center gap-1.5">
+        <AlertTriangle className="h-3 w-3" aria-hidden /> No se ha podido cargar este bloque.
+      </p>
+    );
+  }
+  if (!estado.cargando) return null;
+  return (
+    <p data-testid={`actualizando-${nombre}`} className="text-[11px] text-ink/40 inline-flex items-center gap-1.5">
+      <Loader2 className="h-3 w-3 animate-spin" aria-hidden /> Actualizando…
+    </p>
+  );
+};
+
+/** Esqueleto propio del bloque mientras no hay ningún dato que mostrar. */
+const BloqueSkeleton = ({ alto = "h-24", nombre }: { alto?: string; nombre: string }) => (
+  <div
+    data-testid={`skeleton-${nombre}`}
+    aria-busy="true"
+    className={`${alto} rounded-xl border border-black/[0.06] bg-black/[0.02] animate-pulse`}
+  />
+);
+
 const TargetChip = ({ tipo }: { tipo: keyof typeof LABEL_TARGET }) => (
+
   <span
     className="inline-flex items-center rounded-full border border-black/[0.08] bg-black/[0.02] px-2 py-0.5 text-[10px] text-ink/60 cursor-help"
     title={DESC_TARGET[tipo]}
