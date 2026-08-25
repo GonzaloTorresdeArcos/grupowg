@@ -629,12 +629,18 @@ export default function OpsDispersion() {
               </Section>
             )}
 
-            {vista === "municipios" && (
-              <Section title={`Municipios${provSel ? ` de ${provSel}` : ""} — ${fmtNum(munRowsAll.length)} con actividad${munRowsAll.length > MUN_CAP ? ` (mostrando ${MUN_CAP})` : ""}`}>
+            {vista === "municipios" && !provSel && (
+              <div className="rounded-xl border border-dashed border-black/[0.12] bg-white px-4 py-5 text-[13px] text-ink/60">
+                Selecciona una provincia para cargar sus municipios.
+                {data.municipios_total != null && <> Hay <b>{fmtNum(data.municipios_total)}</b> municipios con actividad en el período; se cargan bajo demanda para no penalizar el tiempo de carga.</>}
+              </div>
+            )}
+
+            {vista === "municipios" && provSel && (
+              <Section title={`Municipios de ${provSel} — ${fmtNum(munTotal)} con actividad${detalleQ.isFetching ? " · actualizando…" : ""}`}>
                 <table className="min-w-full text-[12px]">
                   <thead className="bg-black/[0.02] text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/50">
                     <tr>
-                      {!provSel && <th className="px-3 py-2 text-left">Provincia</th>}
                       <Th k="municipio" label="Municipio" right={false} />
                       <Th k="cerradas" label="Cerradas" />
                       <Th k="abiertas" label="Abiertas" />
@@ -649,7 +655,6 @@ export default function OpsDispersion() {
                   <tbody className="divide-y divide-black/[0.04]">
                     {munRows.map((m) => (
                       <tr key={`${m.provincia}-${m.municipio}`} className="hover:bg-black/[0.02]">
-                        {!provSel && <td className="px-3 py-2 text-ink/60 whitespace-nowrap">{m.provincia}</td>}
                         <td className="px-3 py-2 text-ink font-medium">{m.municipio}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{fmtNum(num(m.cerradas))}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{fmtNum(num(m.abiertas))}</td>
@@ -664,12 +669,22 @@ export default function OpsDispersion() {
                       </tr>
                     ))}
                     {!munRows.length && (
-                      <tr><td colSpan={10} className="px-4 py-6 text-center text-ink/50">Sin municipios con actividad suficiente en el período</td></tr>
+                      <tr><td colSpan={9} className="px-4 py-6 text-center text-ink/50">{detalleQ.isPending ? "Cargando…" : "Sin municipios con actividad suficiente en el período"}</td></tr>
                     )}
                   </tbody>
                 </table>
+                {munTotal > MUN_PAGINA && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t border-black/[0.06] text-[12px] text-ink/60">
+                    <span className="tabular-nums">{fmtNum(munPagina * MUN_PAGINA + 1)}–{fmtNum(Math.min((munPagina + 1) * MUN_PAGINA, munTotal))} de {fmtNum(munTotal)}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => setMunPagina((p) => Math.max(0, p - 1))} disabled={munPagina === 0} className="rounded-full border border-black/[0.1] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Anterior</button>
+                      <button onClick={() => setMunPagina((p) => p + 1)} disabled={(munPagina + 1) * MUN_PAGINA >= munTotal} className="rounded-full border border-black/[0.1] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Siguiente</button>
+                    </div>
+                  </div>
+                )}
               </Section>
             )}
+
 
             {vista === "tecnicos" && (
               <Section title="Técnicos propios — extensión territorial vs. su delegación">
