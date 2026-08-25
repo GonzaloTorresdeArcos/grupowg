@@ -52,7 +52,6 @@ type Payload = {
   buckets: BucketRow[]; etapas: EtapaSql[];
   delegaciones: DelegRow[]; tecnicos: TecRow[]; tec_etapas: TecEtapasSql[];
   clientes: ClienteRow[]; producto: ProdRow[];
-  evo_deleg: EvoDelegRow[]; evo_tec: EvoTecRow[];
   calidad: CalidadSql;
   prov_30: Array<{ provincia: string; n: number }>;
   sat_30: Array<{ sat: string; n: number }>;
@@ -128,6 +127,16 @@ const SLA = () => {
   const q = useOpsRpcs<unknown>(specs);
   const loading = q.some((r) => r.isPending);
   const data = (q[0].data ?? null) as Payload | null;
+  // Las series de backlog (12 meses) son la parte cara del cálculo: se piden
+  // aparte y solo cuando el resumen ya está en pantalla.
+  const evoParams = useMemo(() => {
+    const { p_from: _f, p_to: _t, ...dims } = rpcParams;
+    return dims;
+  }, [rpcParams]);
+  const evoQ = useOpsRpc<{ evo_deleg: EvoDelegRow[]; evo_tec: EvoTecRow[] }>(
+    "ops_sla_evolucion", evoParams, { enabled: !loading },
+  );
+  const evoData = evoQ.data ?? null;
   const kpisDash = (q[1].data ?? null) as { pct_sla20?: number } | null;
 
   // El detalle respeta los filtros globales (sin período: el backlog es a fecha de datos).
@@ -156,24 +165,24 @@ const SLA = () => {
   const bucketMap = useMemo(() => new Map((data?.buckets ?? []).map((b) => [b.bucket, b])), [data]);
 
   const seriesDeleg = useMemo(() => {
-    if (!data) return [] as { delegacion: string; serieEdad: Array<number | null> }[];
+    if (!evoData) return [] as { delegacion: string; serieEdad: Array<number | null> }[];
     const map = new Map<string, Array<number | null>>();
-    for (const r of data.evo_deleg) {
+    for (const r of evoData?.evo_deleg ?? []) {
       if (!map.has(r.delegacion)) map.set(r.delegacion, []);
       map.get(r.delegacion)!.push(r.edad_media);
     }
     return [...map.entries()].map(([delegacion, serieEdad]) => ({ delegacion, serieEdad }));
-  }, [data]);
+  }, [evoData]);
 
   const seriesTec = useMemo(() => {
-    if (!data) return [] as { tecnico: string; serie: Array<number | null> }[];
+    if (!evoData) return [] as { tecnico: string; serie: Array<number | null> }[];
     const map = new Map<string, Array<number | null>>();
-    for (const r of data.evo_tec) {
+    for (const r of evoData?.evo_tec ?? []) {
       if (!map.has(r.tecnico)) map.set(r.tecnico, []);
       map.get(r.tecnico)!.push(r.abiertas);
     }
     return [...map.entries()].map(([tecnico, serie]) => ({ tecnico, serie }));
-  }, [data]);
+  }, [evoData]);
 
   const pctRepuesto30 = useMemo(() => {
     if (!data || data.snapshot.n30 <= 0) return null;
