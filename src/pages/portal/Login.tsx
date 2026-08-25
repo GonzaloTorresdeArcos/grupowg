@@ -19,7 +19,13 @@ const PortalLogin = () => {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<"signin" | "signup">("signin");
 
-  const from = (location.state as { from?: string } | null)?.from || "/portal";
+  // Ruta de vuelta: `state.from` (navegación interna) o `?next=` (redirección
+  // del guardia de /operaciones al perderse la sesión).
+  const from =
+    (location.state as { from?: string } | null)?.from ||
+    new URLSearchParams(location.search).get("next") ||
+    "/portal";
+
 
   useEffect(() => {
     if (!authLoading && user) navigate(from, { replace: true });
