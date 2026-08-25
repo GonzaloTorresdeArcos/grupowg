@@ -91,3 +91,83 @@ export function usePerfMarcas(): PerfMarca[] {
   }, []);
   return estado;
 }
+
+/* ─── Hitos de escenario (protocolo UAT en navegador) ─────────────────────── */
+
+/**
+ * Marcas de escenario que Dirección necesita para el UAT: cuándo aparece el
+ * armazón de la página, cuándo los primeros KPI, cuándo el Panorama es usable
+ * y cuándo termina toda la carga. Se miden desde el arranque de la navegación.
+ */
+export const HITOS = {
+  shell: "Shell visible",
+  primeros_kpi: "Primeros KPI",
+  panorama_usable: "Panorama usable",
+  carga_completa: "Carga completa",
+} as const;
+
+export type HitoId = keyof typeof HITOS;
+
+export type PerfHito = { id: HitoId; ms: number };
+
+let hitos: PerfHito[] = [];
+const oyentesHitos = new Set<(h: PerfHito[]) => void>();
+
+const t0Navegacion = (): number => {
+  if (typeof performance === "undefined") return 0;
+  return 0; // performance.now() ya es relativo al inicio de la navegación
+};
+
+/** Registra un hito una sola vez por navegación (el primero manda). */
+export const registrarHito = (id: HitoId): void => {
+  if (!perfActivo()) return;
+  if (hitos.some((h) => h.id === id)) return;
+  const ahora = typeof performance !== "undefined" ? performance.now() : Date.now();
+  hitos = [...hitos, { id, ms: Math.round(ahora - t0Navegacion()) }];
+  for (const f of oyentesHitos) f(hitos);
+};
+
+export const leerHitos = (): PerfHito[] => hitos;
+
+export const limpiarHitos = (): void => {
+  hitos = [];
+  for (const f of oyentesHitos) f(hitos);
+};
+
+export function usePerfHitos(): PerfHito[] {
+  const [estado, setEstado] = useState<PerfHito[]>(hitos);
+  useEffect(() => {
+    const f = (h: PerfHito[]) => setEstado(h);
+    oyentesHitos.add(f);
+    return () => {
+      oyentesHitos.delete(f);
+    };
+  }, []);
+  return estado;
+}
+
+/**
+ * Informe en texto plano (tabla de hitos + tabla de RPC) para que Dirección lo
+ * pegue en el chat. `caché` es "sí" cuando la vista no ha necesitado red para
+ * ese dato: las marcas solo se emiten cuando hay llamada real al servidor.
+ */
+export const informeTexto = (ms: PerfMarca[], hs: PerfHito[], contexto?: string): string => {
+  const r = resumirMarcas(ms);
+  const lineas: string[] = [];
+  lineas.push(`INFORME UAT /operaciones${contexto ? ` · ${contexto}` : ""}`);
+  lineas.push(`URL: ${typeof window !== "undefined" ? window.location.href : "-"}`);
+  lineas.push("");
+  lineas.push("HITOS DE ESCENARIO");
+  for (const id of Object.keys(HITOS) as HitoId[]) {
+    const h = hs.find((x) => x.id === id);
+    lineas.push(`- ${HITOS[id]}: ${h ? `${h.ms} ms` : "no alcanzado"}`);
+  }
+  lineas.push("");
+  lineas.push(`RPC (${r.llamadas} llamadas · ${r.msTotal} ms suma · ${r.msMax} ms máx · ${formatearBytes(r.bytes)} · ${r.errores} errores)`);
+  lineas.push("rpc | ms | kB | caché | error");
+  for (const m of [...ms].reverse()) {
+    lineas.push(`${m.rpc} | ${Math.round(m.ms)} | ${Math.round(m.bytes / 1024)} | no | ${m.error ? "sí" : "no"}`);
+  }
+  return lineas.join("\n");
+};
+
