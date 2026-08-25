@@ -158,14 +158,19 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [optionsQ.data]);
 
-  // Auto-limpieza: si un valor seleccionado ya no está entre las opciones válidas, lo quitamos.
-  useEffect(() => {
-    if (optionsQ.isPending || optionsQ.error) return;
-    const patch: Partial<OpsFilters> = {};
+  /**
+   * Saneado de la combinación activa contra las opciones vigentes: un valor que
+   * ya no existe en la cascada equivale a "sin filtro". Es una función pura que
+   * usan tanto la auto-limpieza (que persiste el cambio) como `rpcParams` (que
+   * publica ya saneado, sin esperar al efecto).
+   */
+  const filtrosSaneados = useMemo(() => {
+    if (optionsQ.isPending || optionsQ.error) return filters;
+    const out = { ...filters };
     const check = (key: keyof OpsFilters, list: string[]) => {
       const v = filters[key];
       if (typeof v === "string" && v && list.length > 0 && !list.includes(v)) {
-        (patch as Record<string, null>)[key as string] = null;
+        (out as Record<string, unknown>)[key as string] = null;
       }
     };
     check("delegacion", options.delegaciones);
@@ -177,9 +182,13 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     check("sat", options.sats);
     check("tecnico", options.tecnicos);
     check("canal", options.canales);
-    if (Object.keys(patch).length > 0) setFiltersState((f) => ({ ...f, ...patch }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, optionsQ.isPending, optionsQ.error  ]);
+    return out;
+  }, [filters, options, optionsQ.isPending, optionsQ.error]);
+
+  // Auto-limpieza: persiste el saneado en el estado (y en localStorage).
+  useEffect(() => {
+    if (filtrosSaneados !== filters) setFiltersState(filtrosSaneados);
+  }, [filtrosSaneados, filters]);
 
   const setFilters = (partial: Partial<OpsFilters>) =>
     setFiltersState((f) => ({ ...f, ...partial }));
@@ -193,23 +202,24 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
    * Cambiar un filtro puede invalidar otro (p. ej. elegir delegación deja fuera
    * al técnico seleccionado). Si publicáramos en cuanto cambia el filtro, todas
    * las páginas lanzarían su tanda de RPC con la combinación intermedia y otra
-   * vez tras la auto-limpieza. Por eso, mientras `ops_filter_options` está en
-   * vuelo, se mantiene la última combinación publicada: se publica una sola vez,
-   * ya saneada, cuando la cascada ha resuelto.
+   * vez tras la auto-limpieza. Por eso: (1) mientras `ops_filter_options` está
+   * en vuelo se mantiene la última combinación publicada, y (2) al resolver, se
+   * publica la combinación YA saneada — una sola vez.
    */
   const rpcParamsRef = useRef<Record<string, string | null> | null>(null);
   const rpcParams = useMemo(() => {
+    const f = filtrosSaneados;
     const candidato = {
-      p_from: filters.from, p_to: filters.to,
-      p_delegacion: filters.delegacion, p_cliente: filters.cliente,
-      p_gama: filters.gama, p_familia: filters.familia, p_marca: filters.marca,
-      p_provincia: filters.provincia, p_sat: filters.sat,
-      p_tecnico: filters.tecnico, p_canal: filters.canal,
+      p_from: f.from, p_to: f.to,
+      p_delegacion: f.delegacion, p_cliente: f.cliente,
+      p_gama: f.gama, p_familia: f.familia, p_marca: f.marca,
+      p_provincia: f.provincia, p_sat: f.sat,
+      p_tecnico: f.tecnico, p_canal: f.canal,
     };
     const previo = rpcParamsRef.current;
     if (!previo) { rpcParamsRef.current = candidato; return candidato; }
-    // Cascada en vuelo: congelamos la combinación anterior (la UI no se bloquea,
-    // solo evita disparar RPC con un estado que va a cambiar en milisegundos).
+    // Cascada en vuelo: la UI no se bloquea, solo se evita disparar RPC con un
+    // estado intermedio que va a cambiar en milisegundos.
     if (optionsQ.isFetching) return previo;
     const igual = Object.keys(candidato).every(
       (k) => (candidato as Record<string, string | null>)[k] === previo[k],
@@ -217,7 +227,8 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     if (igual) return previo;
     rpcParamsRef.current = candidato;
     return candidato;
-  }, [filters, optionsQ.isFetching]);
+  }, [filtrosSaneados, optionsQ.isFetching]);
+
 
 
   const preset = useMemo(
