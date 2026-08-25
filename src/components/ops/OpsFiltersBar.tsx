@@ -1,4 +1,6 @@
+import { useIsFetching } from "@tanstack/react-query";
 import { useOpsFilters } from "@/lib/ops-filters";
+import { OPS_QUERY_ROOT } from "@/lib/ops-query";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
 import { estadoCobertura, fechaLarga, TOOLTIP_SIN_COMPARABLE } from "@/lib/ops-periodo";
 import { labelComparativa } from "@/lib/ops-performance";
@@ -37,6 +39,9 @@ export const OpsFiltersBar = () => {
     filters, setFilters, reset, options, optionsError, reloadOptions,
     modo, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
   } = useOpsFilters();
+  // A3 · Indicador no bloqueante: la UI sigue mostrando la última foto válida
+  // mientras se resuelve la nueva tanda de RPC.
+  const fetching = useIsFetching({ queryKey: [OPS_QUERY_ROOT] });
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
   const ytdForzado = preset === "ytd";
@@ -91,6 +96,16 @@ export const OpsFiltersBar = () => {
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
           onChange={(v) => setFilters({ canal: v })} />
+        {fetching > 0 && (
+          <span
+            role="status"
+            data-testid="ops-actualizando"
+            className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-ink/[0.04] border border-black/[0.06] text-[11px] text-ink/60"
+          >
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ink/40 animate-pulse" />
+            Actualizando…
+          </span>
+        )}
         <button onClick={reset}
           className="h-8 px-3 rounded-md border border-black/[0.08] text-[12px] text-ink/70 hover:text-ink hover:border-ink/40 flex items-center gap-1">
           <X className="h-3 w-3" /> Limpiar
