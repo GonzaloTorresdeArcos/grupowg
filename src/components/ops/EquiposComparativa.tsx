@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
 import { esDelegacionReal } from "@/lib/ops-performance";

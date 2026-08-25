@@ -108,9 +108,6 @@ const fmtPctSigned = (v: number | null | undefined) =>
 // =============================================================================
 const Tecnicos = () => {
   const { rpcParams, prevRange, modo } = useOpsFilters();
-  const [rowsRaw, setRowsRaw] = useState<Row[]>([]);
-  const [rowsPrev, setRowsPrev] = useState<Row[]>([]);
-  const [loading, setLoading] = useState(true);
   const [sel, setSel] = useState<EnrichedRow | null>(null);
   const [search, setSearch] = useState("");
   const [gamaFilter, setGamaFilter] = useState<string | null>(null);

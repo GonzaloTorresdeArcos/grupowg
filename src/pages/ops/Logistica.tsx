@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtDec, fmtPct, fmtEur } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
