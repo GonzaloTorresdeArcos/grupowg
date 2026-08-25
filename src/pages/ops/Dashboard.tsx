@@ -431,7 +431,7 @@ const Dashboard = () => {
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
         {cargandoSecundario && (
-          <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
+          <p data-testid="indicador-cabecera" className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
             <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
             Completando análisis (series, equipos y supply)…
           </p>
@@ -443,7 +443,7 @@ const Dashboard = () => {
       <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}
-      <p className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
+      <p data-testid="situation-line" className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
         {situationLine({
           periodoLabel: periodoLbl,
           comparadaLabel: comparadaLbl,
@@ -457,8 +457,9 @@ const Dashboard = () => {
       </p>
 
       {/* A — DEMANDA & OUTPUT */}
-      <section>
+      <section data-testid="bloque-a">
         <Eyebrow>A · Demanda y output</Eyebrow>
+
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
           {balance ? (
             <>
