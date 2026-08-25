@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface AgreementData {
@@ -57,8 +57,8 @@ interface DraftPdfData {
 }
 
 /** Genera un PDF borrador (sin firma) para que el usuario lo lea/descargue. Devuelve un Blob. */
-export function generateDraftAgreementPdf(d: DraftPdfData = {}): Blob {
-  const doc = buildAgreementDoc({
+export async function generateDraftAgreementPdf(d: DraftPdfData = {}): Promise<Blob> {
+  const doc = await buildAgreementDoc({
     signerName: d.signerName || "—",
     signerDni: d.signerDni,
     signerEmail: d.signerEmail || "—",
@@ -71,7 +71,9 @@ export function generateDraftAgreementPdf(d: DraftPdfData = {}): Blob {
   return doc.output("blob");
 }
 
-function buildAgreementDoc(d: AgreementData & { isDraft?: boolean }): jsPDF {
+async function buildAgreementDoc(d: AgreementData & { isDraft?: boolean }): Promise<jsPDFType> {
+  // Carga diferida: jsPDF solo entra en el bundle cuando se genera un PDF.
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const w = doc.internal.pageSize.getWidth();
   const margin = 56;
@@ -183,7 +185,7 @@ function buildAgreementDoc(d: AgreementData & { isDraft?: boolean }): jsPDF {
 
 /** Genera el PDF del acuerdo y lo sube a Storage. Devuelve { path }. */
 export async function generateAndUploadAgreement(d: AgreementData): Promise<{ path: string; blob: Blob }> {
-  const doc = buildAgreementDoc(d);
+  const doc = await buildAgreementDoc(d);
   const blob = doc.output("blob");
   const path = `${d.applicationId || d.draftId || "anon"}/${Date.now()}-acuerdo.pdf`;
 

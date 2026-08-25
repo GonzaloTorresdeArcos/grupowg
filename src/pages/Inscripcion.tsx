@@ -153,7 +153,7 @@ const Inscripcion = () => {
   const [agreementOpen, setAgreementOpen] = useState(false);
 
   const downloadDraftAgreement = () => {
-    const blob = generateDraftAgreementPdf({
+    const blob = await generateDraftAgreementPdf({
       signerName: signerName || s1.razon_social,
       signerDni,
       signerEmail: s1.email,
