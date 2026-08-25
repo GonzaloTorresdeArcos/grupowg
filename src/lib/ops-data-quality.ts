@@ -16,6 +16,7 @@ import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual"
 import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
 import {
   asOf,
+  fmtFechaEs,
   frescuraDominio,
   frescuraTodos,
   normalizarCargas,
@@ -660,6 +661,23 @@ export const cargasDe = (m: MedidasDataQuality | null | undefined): CargaDominio
  */
 export const asOfOperativo = (m: MedidasDataQuality | null | undefined): string | null =>
   m?.as_of_ot ?? asOf(cargasDe(m), "ot");
+
+/**
+ * UAT-1 · Etiqueta del rango de datos de OT para Calidad de datos.
+ *
+ * Distingue la fecha de la última OT creada (max(fecha_creacion), el extremo
+ * del rango de creación) de la fecha efectiva del dato (último evento
+ * operativo válido, `ops_as_of('ot')`), que es el reloj contra el que se miden
+ * antigüedades y backlog. Ningún cálculo nuevo: solo reformatea con
+ * `fmtFechaEs` los valores que ya se mostraban (min/max fecha_creacion y la
+ * fecha efectiva del dominio OT).
+ */
+export function etiquetaRangoOt(m: MedidasDataQuality): string {
+  const desde = fmtFechaEs(m.fact_ot.min_fecha_creacion);
+  const hastaCreacion = fmtFechaEs(m.fact_ot.max_fecha_creacion);
+  const asOf = fmtFechaEs(asOfOperativo(m));
+  return `Desde ${desde} · OT creadas hasta ${hastaCreacion} · eventos operativos hasta ${asOf} · fecha efectiva de datos: ${asOf}.`;
+}
 
 export const asOfDominio = (m: MedidasDataQuality | null | undefined, dominio: DominioCarga): string | null =>
   asOf(cargasDe(m), dominio);
