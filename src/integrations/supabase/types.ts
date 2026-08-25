@@ -1947,10 +1947,16 @@ export type Database = {
       }
       ops_delegaciones: {
         Args: {
+          p_canal?: string
           p_cliente?: string
+          p_delegacion?: string
           p_familia?: string
           p_from?: string
           p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
           p_to?: string
         }
         Returns: Json

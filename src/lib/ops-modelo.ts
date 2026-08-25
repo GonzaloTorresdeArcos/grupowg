@@ -183,6 +183,16 @@ export const AVISO_KM =
   "todos los registros cargados: se declaran pendientes de fuente, no como dato real. Rutas, tiempos de viaje y km " +
   "por intervención: pendientes.";
 
+/**
+ * UAT-6 · Versión de una línea para la cabecera de las páginas operativas.
+ * El texto completo (AVISO_KM) se lee en el panel de Definiciones del módulo y
+ * en Calidad de datos: no se pierde ninguna limitación, cambia dónde se lee.
+ */
+export const AVISO_KM_CORTO =
+  "Distancia aproximada base→CP; no hay km reales por intervención.";
+
+
+
 // ─── 3. Trazabilidad de los 7 campos críticos (F0) ───────────────────────────
 
 export type TrazaCampo = {

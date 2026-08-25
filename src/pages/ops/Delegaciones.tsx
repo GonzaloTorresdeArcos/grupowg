@@ -67,11 +67,18 @@ const Delegaciones = () => {
   const mismasDuraciones = dNow === dPrev;
 
   const specs = useMemo(() => {
+    // UAT-1 · ops_delegaciones recibe los 11 filtros globales. Antes solo se
+    // enviaban from/to/cliente/gama/familia y la página contradecía al Panorama
+    // en cuanto había marca, delegación, provincia, SAT, técnico o canal activos.
     const paramsNow = {
       p_from: rpcParams.p_from, p_to: rpcParams.p_to,
       p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
+      p_marca: rpcParams.p_marca, p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
+      p_tecnico: rpcParams.p_tecnico, p_canal: rpcParams.p_canal,
+      p_delegacion: rpcParams.p_delegacion,
     };
     const paramsPrev = { ...paramsNow, p_from: prevRange.from, p_to: prevRange.to };
+
     const equipNow = {
       p_from: rpcParams.p_from, p_to: rpcParams.p_to,
       p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,

@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
+import { useDataFreshness } from "@/hooks/useDataFreshness";
+import { fmtFechaEs } from "@/lib/ops-as-of";
 import { Loader2, Download, ChevronDown, ChevronRight, Info, AlertTriangle } from "lucide-react";
+
 import {
   prevPeriod, labelPeriodo, diasEntre, estadoBacklogDeleg, esDelegacionReal, variacion,
 } from "@/lib/ops-performance";
@@ -12,9 +15,10 @@ import {
   detectarAlertasSla, validarCalidadDatosSla, compararSlaDashboard, generarHallazgosSla,
   UMBRAL_PCT_ABIERTAS_30_CRITICO, MESES_CRECIMIENTO_CONSECUTIVO, UMBRAL_PCT_REPUESTO_EN_30,
   DELTA_SLA_DETERIORO, UMBRAL_BACKLOG_TECNICO_ALERTA, UMBRAL_MUESTRA_CLIENTE_DEF,
-  UMBRAL_MUESTRA_PRODUCTO_DEF, TOLERANCIA_SLA_DASHBOARD,
+  UMBRAL_MUESTRA_PRODUCTO_DEF, TOLERANCIA_SLA_DASHBOARD, copyBacklogAnterior,
   type BucketId, type EtapaSql, type TecEtapasSql, type CalidadSql, type Tendencia,
 } from "@/lib/ops-sla";
+
 
 // ─── Tipos del payload RPC ───────────────────────────────────────────────────
 type Tramos = { t0_10: number; t11_20: number; t21_30: number; t_30_plus: number; total: number; n_sla20: number; pct_sla20: number | null };
@@ -113,6 +117,10 @@ const BUCKET_COLOR: Record<BucketId, string> = {
 // ─── Página ──────────────────────────────────────────────────────────────────
 const SLA = () => {
   const { filters, rpcParams, prevRange, modo } = useOpsFilters();
+  // UAT-3 · El snapshot anterior se reconstruye en SQL a (ops_as_of('ot') − L),
+  // nunca a CURRENT_DATE. El copy debe declarar esa fecha real.
+  const { asOf: asOfOt } = useDataFreshness("ot");
+
   const [umbralCliente, setUmbralCliente] = useState(UMBRAL_MUESTRA_CLIENTE_DEF);
   const [umbralProducto, setUmbralProducto] = useState(UMBRAL_MUESTRA_PRODUCTO_DEF);
   const [defsOpen, setDefsOpen] = useState(false);
@@ -316,7 +324,7 @@ const SLA = () => {
         {L !== Lprev && (
           <Chip tone="text-amber-700 bg-amber-50 border-amber-200" label="Distinta duración — compara proporciones, no absolutos" />
         )}
-        <span className="text-ink/40 text-[11px]">El backlog anterior se reconstruye a fecha de hoy − {L} días (exacto en conteos y antigüedades).</span>
+        <span className="text-ink/40 text-[11px]">{copyBacklogAnterior(asOfOt, L)}</span>
       </section>
 
       {/* FASE B — Resumen ejecutivo */}
