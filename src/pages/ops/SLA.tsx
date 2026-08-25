@@ -41,6 +41,11 @@ type Abierta = {
   tecnico: string | null; sat: string | null; delegacion: string | null; estado: string;
   fecha_creacion: string | null; dias_abierta: number;
 };
+/** Respuesta de ops_sla_detalle: página de OTs abiertas de un tramo o etapa. */
+type Detalle = {
+  tipo: "bucket" | "etapa"; clave: string; total: number;
+  limit: number; offset: number; rows: Abierta[];
+};
 type Payload = {
   tramos: Tramos; sla_prev: SlaPrev | null; flujo: Flujo;
   snapshot: Snapshot; snapshot_prev: Snapshot | null;
@@ -49,10 +54,12 @@ type Payload = {
   clientes: ClienteRow[]; producto: ProdRow[];
   evo_deleg: EvoDelegRow[]; evo_tec: EvoTecRow[];
   calidad: CalidadSql;
-  abiertas: Abierta[];
   prov_30: Array<{ provincia: string; n: number }>;
   sat_30: Array<{ sat: string; n: number }>;
 };
+
+const DETALLE_PAGINA = 50;
+
 
 // ─── Helpers de presentación ─────────────────────────────────────────────────
 type Tone = "favorable" | "desfavorable" | "requiere_interpretacion" | "neutro";
