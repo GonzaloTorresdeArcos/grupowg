@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2, Download, ChevronDown, ChevronRight, Info, AlertTriangle } from "lucide-react";
 import {
@@ -107,25 +107,18 @@ const BUCKET_COLOR: Record<BucketId, string> = {
 // ─── Página ──────────────────────────────────────────────────────────────────
 const SLA = () => {
   const { filters, rpcParams, prevRange, modo } = useOpsFilters();
-  const [data, setData] = useState<Payload | null>(null);
-  const [kpisDash, setKpisDash] = useState<{ pct_sla20?: number } | null>(null);
-  const [loading, setLoading] = useState(true);
   const [umbralCliente, setUmbralCliente] = useState(UMBRAL_MUESTRA_CLIENTE_DEF);
   const [umbralProducto, setUmbralProducto] = useState(UMBRAL_MUESTRA_PRODUCTO_DEF);
   const [defsOpen, setDefsOpen] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      const [{ data: d }, { data: k }] = await Promise.all([
-        supabase.rpc("ops_sla" as never, rpcParams as never),
-        supabase.rpc("ops_kpis" as never, rpcParams as never),
-      ]);
-      setData((d ?? null) as Payload | null);
-      setKpisDash((k ?? null) as { pct_sla20?: number } | null);
-      setLoading(false);
-    })();
-  }, [rpcParams]);
+  const specs = useMemo(() => [
+    { rpc: "ops_sla", params: rpcParams },
+    { rpc: "ops_kpis", params: rpcParams },
+  ], [rpcParams]);
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const data = (q[0].data ?? null) as Payload | null;
+  const kpisDash = (q[1].data ?? null) as { pct_sla20?: number } | null;
 
   const prev = prevRange;
   const L = diasEntre(filters.from, filters.to);
