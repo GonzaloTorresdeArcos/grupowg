@@ -23,6 +23,14 @@ import { useDataFreshness } from "@/hooks/useDataFreshness";
 
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
 import { PLANTILLAS, TABLE_LABEL, type OpsTable } from "@/lib/ops-csv";
+import {
+  AVISO_KM,
+  DECISION_RUTAS_LEGADO,
+  LABEL_NIVEL_KM,
+  SEMANTICA_KM,
+  TRAZABILIDAD_F0,
+  VENTANAS_PROPIAS,
+} from "@/lib/ops-modelo";
 
 const pct = (v: number | null | undefined) => (v == null ? "—" : `${(v * 100).toFixed(1)}%`);
 const num = (v: number) => v.toLocaleString("es-ES");
