@@ -383,6 +383,9 @@ const Dashboard = () => {
             Completando análisis (series, equipos y supply)…
           </p>
         )}
+      </header>
+
+
 
       <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
