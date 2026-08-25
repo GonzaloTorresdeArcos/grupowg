@@ -1,6 +1,7 @@
 import { useQueries, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { perfActivo, registrarMarca, tamanoAprox } from "@/lib/ops-perf";
 
 /**
  * Capa única de acceso a las RPC de /operaciones.
@@ -90,7 +91,6 @@ export function useOpsRpc<T>(
     queryKey: opsQueryKey(rpc, params),
     queryFn: ({ signal }: { signal: AbortSignal }) => opsRpc<T>(rpc, params, signal),
     enabled: opts?.enabled ?? true,
-    ...(opts?.keepPrevious ? { placeholderData: ((prev: unknown) => prev) as never } : {}),
     ...baseOptions,
   }) as UseQueryResult<T>;
 }
