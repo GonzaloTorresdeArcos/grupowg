@@ -75,13 +75,15 @@ export function useOpsRpc<T>(
   params?: OpsRpcParams,
   opts?: { enabled?: boolean; keepPrevious?: boolean },
 ): UseQueryResult<T> {
-  return useQuery<T>({
+  // `placeholderData` está tipado con NonFunctionGuard, incompatible con un
+  // genérico abierto T; el cast acota el ruido a esta única línea.
+  return useQuery({
     queryKey: opsQueryKey(rpc, params),
-    queryFn: ({ signal }) => opsRpc<T>(rpc, params, signal),
+    queryFn: ({ signal }: { signal: AbortSignal }) => opsRpc<T>(rpc, params, signal),
     enabled: opts?.enabled ?? true,
-    ...(opts?.keepPrevious ? { placeholderData: (prev: T | undefined) => prev } : {}),
+    ...(opts?.keepPrevious ? { placeholderData: ((prev: unknown) => prev) as never } : {}),
     ...baseOptions,
-  });
+  }) as UseQueryResult<T>;
 }
 
 export type OpsRpcSpec = { rpc: string; params?: OpsRpcParams; enabled?: boolean };
