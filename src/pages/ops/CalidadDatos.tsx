@@ -82,7 +82,7 @@ const CalidadDatos = () => {
         if (error) {
           setErroresTabla((prev) => [
             ...prev,
-            { rpc: "ops_sla_registry", contexto: "SLA & Contractual Registry", mensaje: mensajeError(error) },
+            { rpc: "tabla ops_sla_registry", contexto: "SLA & Contractual Registry", mensaje: mensajeError(error) },
           ]);
           return;
         }
@@ -96,7 +96,7 @@ const CalidadDatos = () => {
         if (error) {
           setErroresTabla((prev) => [
             ...prev,
-            { rpc: "ops_cliente_contrato_alias", contexto: "Alias de cliente contractual", mensaje: mensajeError(error) },
+            { rpc: "tabla ops_cliente_contrato_alias", contexto: "Alias de cliente contractual", mensaje: mensajeError(error) },
           ]);
           return;
         }
