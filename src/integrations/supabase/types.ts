@@ -1965,6 +1965,30 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_dispersion_detalle: {
+        Args: {
+          p_clave: string
+          p_delegacion?: string
+          p_entidad: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_limit?: number
+          p_offset?: number
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_dispersion_resumen: {
+        Args: {
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_equipos: {
         Args: {
           p_cliente?: string
