@@ -29,6 +29,7 @@ import {
 } from "@/lib/ops-performance";
 import { Loader2, X, Search, Info, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { etiquetaVentana } from "@/lib/ops-modelo";
+import { BreadcrumbConceptual } from "@/components/ops/OpsAmbito";
 
 // -----------------------------------------------------------------------------
 // Tipos
@@ -706,6 +707,17 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
               {tecnico.delegacion || "—"} · {tecnico.peer}
               {tecnico.gama_principal && <span> · Gama {gamaLabel(tecnico.gama_principal)}</span>}
             </p>
+            <div className="mt-2">
+              <BreadcrumbConceptual
+                pasos={[
+                  { nivel: "WG", valor: "Warranty Global" },
+                  { nivel: "Unidad", valor: "Hiperservice" },
+                  { nivel: "Base", valor: tecnico.delegacion || null },
+                  { nivel: "Equipo", valor: tecnico.gama_principal ? gamaLabel(tecnico.gama_principal) : null },
+                  { nivel: "Persona", valor: tecnico.tecnico },
+                ]}
+              />
+            </div>
           </div>
           <button onClick={onClose} className="text-ink/50 hover:text-ink"><X className="h-5 w-5" /></button>
         </div>

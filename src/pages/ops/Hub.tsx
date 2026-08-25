@@ -9,6 +9,7 @@ import { EquiposComparativa } from "@/components/ops/EquiposComparativa";
 import { Loader2, CheckCircle2, CircleDashed, Circle, Info } from "lucide-react";
 import Tecnicos from "@/pages/ops/Tecnicos";
 import { etiquetaVentana } from "@/lib/ops-modelo";
+import { BreadcrumbConceptual } from "@/components/ops/OpsAmbito";
 
 export const HUB_DELEGACION = "Central San Agustin";
 
@@ -202,13 +203,13 @@ const REQUISITOS: Array<{ estado: Estado; texto: string }> = [
   { estado: "disponible", texto: "Ubicación aproximada por código postal — 65% geocodificable con ops_cp_geo." },
   { estado: "disponible", texto: "Bases operativas con coordenadas (ops_bases)." },
   { estado: "disponible", texto: "Prioridad y antigüedad del aviso, y compromiso de SLA." },
-  { estado: "parcial", texto: "Km por técnico y mes: estructura creada en ops_coste_mensual, dato aún sin cargar." },
+  { estado: "pendiente", texto: "Km por técnico y mes: la columna existe en ops_coste_mensual pero todos los registros llegan a 0 — pendiente de fuente." },
   { estado: "pendiente", texto: "Horas por visita y secuencia real del día." },
   { estado: "pendiente", texto: "Duración de intervención por tipo de trabajo." },
   { estado: "pendiente", texto: "Jornada y ubicación operativa de inicio/fin de ruta." },
   { estado: "pendiente", texto: "Ventanas horarias comprometidas con el cliente." },
   { estado: "pendiente", texto: "Motivo de desviación respecto a la ruta prevista." },
-  { estado: "pendiente", texto: "Km reales por tramo." },
+  { estado: "pendiente", texto: "Km por ruta o por intervención." },
 ];
 
 const EST_META: Record<Estado, { label: string; cls: string; Icon: typeof CheckCircle2 }> = {
@@ -319,6 +320,15 @@ const Hub = () => {
           Unidad operativa de taller y equipos de gama. Las delegaciones territoriales se analizan
           en su propia sección.
         </p>
+        <div className="mt-2">
+          <BreadcrumbConceptual
+            pasos={[
+              { nivel: "WG", valor: "Warranty Global" },
+              { nivel: "Unidad", valor: "Hiperservice" },
+              { nivel: "Base", valor: "Central San Agustín" },
+            ]}
+          />
+        </div>
       </header>
       <DataAsOf />
 

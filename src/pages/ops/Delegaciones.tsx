@@ -12,6 +12,7 @@ import {
 import { DelegacionesResumen } from "@/components/ops/DelegacionesResumen";
 import type { EquipoRow } from "@/lib/ops-performance";
 import { Loader2, Info, X, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
+import { BreadcrumbConceptual } from "@/components/ops/OpsAmbito";
 
 type KpiRow = {
   delegacion: string; cerradas: number; pct_sla20: number; dias_medio: number;
@@ -404,6 +405,15 @@ const Delegaciones = () => {
                 <p className="text-[10px] uppercase tracking-[0.14em] text-ink/40 font-semibold">Ficha de delegación</p>
                 <p className="font-display text-2xl tracking-tight text-ink">{seleccion.d.delegacion}</p>
                 <p className="text-xs text-ink/50 mt-0.5">{labelPeriodo(filters.from, filters.to)} · {seleccion.d.tecnicos} técnicos</p>
+                <div className="mt-1.5">
+                  <BreadcrumbConceptual
+                    pasos={[
+                      { nivel: "WG", valor: "Warranty Global" },
+                      { nivel: "Unidad", valor: "Hiperservice" },
+                      { nivel: "Base", valor: seleccion.d.delegacion },
+                    ]}
+                  />
+                </div>
               </div>
               <button onClick={() => setSelected(null)} className="p-1 rounded-md hover:bg-black/[0.04] text-ink/60"><X className="h-4 w-4" /></button>
             </div>
