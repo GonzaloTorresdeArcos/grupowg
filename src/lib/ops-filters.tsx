@@ -187,13 +187,38 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const reloadOptions = () => { void optionsQ.refetch(); void coberturaQ.refetch(); };
   const setModo = useCallback((m: ModoComparacion) => setModoState(m), []);
 
-  const rpcParams = useMemo(() => ({
-    p_from: filters.from, p_to: filters.to,
-    p_delegacion: filters.delegacion, p_cliente: filters.cliente,
-    p_gama: filters.gama, p_familia: filters.familia, p_marca: filters.marca,
-    p_provincia: filters.provincia, p_sat: filters.sat,
-    p_tecnico: filters.tecnico, p_canal: filters.canal,
-  }), [filters]);
+  /**
+   * A3 · UNA sola publicación de `rpcParams` por acción del usuario.
+   *
+   * Cambiar un filtro puede invalidar otro (p. ej. elegir delegación deja fuera
+   * al técnico seleccionado). Si publicáramos en cuanto cambia el filtro, todas
+   * las páginas lanzarían su tanda de RPC con la combinación intermedia y otra
+   * vez tras la auto-limpieza. Por eso, mientras `ops_filter_options` está en
+   * vuelo, se mantiene la última combinación publicada: se publica una sola vez,
+   * ya saneada, cuando la cascada ha resuelto.
+   */
+  const rpcParamsRef = useRef<Record<string, string | null> | null>(null);
+  const rpcParams = useMemo(() => {
+    const candidato = {
+      p_from: filters.from, p_to: filters.to,
+      p_delegacion: filters.delegacion, p_cliente: filters.cliente,
+      p_gama: filters.gama, p_familia: filters.familia, p_marca: filters.marca,
+      p_provincia: filters.provincia, p_sat: filters.sat,
+      p_tecnico: filters.tecnico, p_canal: filters.canal,
+    };
+    const previo = rpcParamsRef.current;
+    if (!previo) { rpcParamsRef.current = candidato; return candidato; }
+    // Cascada en vuelo: congelamos la combinación anterior (la UI no se bloquea,
+    // solo evita disparar RPC con un estado que va a cambiar en milisegundos).
+    if (optionsQ.isFetching) return previo;
+    const igual = Object.keys(candidato).every(
+      (k) => (candidato as Record<string, string | null>)[k] === previo[k],
+    );
+    if (igual) return previo;
+    rpcParamsRef.current = candidato;
+    return candidato;
+  }, [filters, optionsQ.isFetching]);
+
 
   const preset = useMemo(
     () => detectarPreset({ from: filters.from, to: filters.to }, cobertura),
