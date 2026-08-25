@@ -664,13 +664,20 @@ const Dashboard = () => {
 
       {/* C — CAPACIDAD & PRODUCTIVIDAD */}
       <section>
-        <Eyebrow>C · Capacidad y productividad</Eyebrow>
+        <div className="flex items-center gap-3">
+          <Eyebrow>C · Capacidad y productividad</Eyebrow>
+          <BloqueEstado estado={stCapacidad} nombre="capacidad" />
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
-          <div className="grid sm:grid-cols-3 gap-3">
-            <Stat label="Técnicos activos con producción" value={fmtNum(activosConProduccion)} />
-            <Stat label="Cierres por técnico activo" value={fmtDec(cierresPorTecnico, 1)} />
-            <Stat label="Carga entrante por técnico activo" value={fmtDec(entrantesPorTecnico, 1)} />
-          </div>
+          {stCapacidad.cargando && score.length === 0 ? (
+            <BloqueSkeleton nombre="capacidad" alto="h-24" />
+          ) : (
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Stat label="Técnicos activos con producción" value={fmtNum(activosConProduccion)} />
+              <Stat label="Cierres por técnico activo" value={fmtDec(cierresPorTecnico, 1)} />
+              <Stat label="Carga entrante por técnico activo" value={fmtDec(entrantesPorTecnico, 1)} />
+            </div>
+          )}
           <p className="text-[12px] text-amber-800 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-4 flex items-start gap-2">
             <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             No normalizado por tiempo de trabajo efectivo: no hay días trabajados ni ausencias completos. No es una medida
@@ -686,7 +693,10 @@ const Dashboard = () => {
 
       {/* D — FLUJO & CUELLOS DE BOTELLA */}
       <section>
-        <Eyebrow>D · Flujo y cuellos de botella</Eyebrow>
+        <div className="flex items-center gap-3">
+          <Eyebrow>D · Flujo y cuellos de botella</Eyebrow>
+          <BloqueEstado estado={stFlujo} nombre="flujo" />
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
           <p className="text-[12px] text-ink/50 mb-4">
             Reparto de las OTs que están <strong className="text-ink/70">actualmente en cada etapa</strong>. Sin historial
@@ -695,6 +705,7 @@ const Dashboard = () => {
           {totalAbiertas === 0 ? (
             <p className="text-sm text-ink/40">Sin OTs abiertas con los filtros activos.</p>
           ) : (
+
             <>
               <div className="flex h-8 w-full rounded-lg overflow-hidden border border-black/[0.06]">
                 {etapas.map((e, idx) => (
