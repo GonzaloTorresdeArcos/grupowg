@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, mensajeError, type OpsFallo } from "@/components/ops/OpsErrorBlock";
 import { supabase } from "@/integrations/supabase/client";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
@@ -61,31 +62,61 @@ const Seccion = ({ id, titulo, sub, children }: { id: string; titulo: string; su
 );
 
 const CalidadDatos = () => {
-  const { loading, medidas, dominios } = useDataQuality();
+  const { loading, medidas, dominios, isError: dqError, error: dqErrorObj, refetch: refetchDq } = useDataQuality();
   const { todos: frescuras } = useDataFreshness();
   const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
+  // UAT-3 · antes `error ? []` convertía un fallo del Registry o de los alias
+  // en «no hay reglas», indistinguible de un dato realmente vacío.
+  const [erroresTabla, setErroresTabla] = useState<OpsFallo[]>([]);
+  const [intento, setIntento] = useState(0);
 
   useEffect(() => {
     let vivo = true;
+    setErroresTabla([]);
     supabase
       .from("ops_sla_registry" as never)
       .select("*")
       .then(({ data, error }) => {
         if (!vivo) return;
-        setReglas(error || !data ? [] : (data as unknown as ReglaSla[]));
+        if (error) {
+          setErroresTabla((prev) => [
+            ...prev,
+            { rpc: "ops_sla_registry", contexto: "SLA & Contractual Registry", mensaje: mensajeError(error) },
+          ]);
+          return;
+        }
+        setReglas((data ?? []) as unknown as ReglaSla[]);
       });
     supabase
       .from("ops_cliente_contrato_alias" as never)
       .select("*")
       .then(({ data, error }) => {
         if (!vivo) return;
-        setAliases(error || !data ? [] : (data as unknown as ClienteAlias[]));
+        if (error) {
+          setErroresTabla((prev) => [
+            ...prev,
+            { rpc: "ops_cliente_contrato_alias", contexto: "Alias de cliente contractual", mensaje: mensajeError(error) },
+          ]);
+          return;
+        }
+        setAliases((data ?? []) as unknown as ClienteAlias[]);
       });
     return () => {
       vivo = false;
     };
-  }, []);
+  }, [intento]);
+
+  const fallos: OpsFallo[] = [
+    ...(dqError ? [{ rpc: "ops_data_quality", contexto: "Medidas de calidad", mensaje: mensajeError(dqErrorObj) }] : []),
+    ...erroresTabla,
+  ];
+  const reintentar = () => {
+    refetchDq();
+    setIntento((n) => n + 1);
+  };
+
+
 
   const reglasEfectivas = reglas ?? [];
   const fresc = medidas ? frescura(medidas) : null;
@@ -133,6 +164,10 @@ const CalidadDatos = () => {
 
   const gaps = dominiosOrdenados.filter((d) => d.estado !== "disponible");
 
+  if (fallos.length > 0 && !medidas) {
+    return <OpsErrorBlock fallos={fallos} onReintentar={reintentar} titulo="No se ha podido cargar Calidad de datos" />;
+  }
+
   if (loading) {
     return (
       <div className="flex items-center gap-2 text-ink/40 py-20 justify-center">
@@ -143,6 +178,7 @@ const CalidadDatos = () => {
 
   return (
     <div className="space-y-6">
+      {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={reintentar} conservaDatos />}
       {/* Cabecera */}
       <header className="border border-black/[0.06] rounded-2xl p-6">
         <h1 className="heading-display text-2xl">Calidad de datos</h1>

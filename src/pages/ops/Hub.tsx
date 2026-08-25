@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
@@ -57,9 +58,20 @@ const VistaGeneral = () => {
     p_delegacion: HUB_DELEGACION, p_from: rpcParams.p_from, p_to: rpcParams.p_to,
   });
   const ficha = (q.data ?? null) as Ficha | null;
-  const loading = q.isPending;
+  // UAT-3 · error de RPC ≠ loading ≠ sin datos.
+  const fallos = falloDeQuery("ops_delegacion_ficha", q, "Ficha del HUB");
+  const cargando = q.fetchStatus === "fetching" && !q.data;
 
-  if (loading) {
+  if (fallos.length > 0 && !ficha) {
+    return (
+      <OpsErrorBlock
+        fallos={fallos}
+        onReintentar={() => { void q.refetch(); }}
+        titulo="No se ha podido cargar el HUB"
+      />
+    );
+  }
+  if (cargando) {
     return <div className="flex items-center justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
   }
   if (!ficha) {
@@ -78,6 +90,9 @@ const VistaGeneral = () => {
 
   return (
     <div className="space-y-6">
+      {fallos.length > 0 && (
+        <OpsErrorBlock fallos={fallos} onReintentar={() => { void q.refetch(); }} conservaDatos />
+      )}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Metric label="Cerradas" value={fmtNum(cerradas)} sub={labelPeriodo(filters.from, filters.to)} />
         <Metric label="Bajas / Cerradas" value={fmtPct(cerradas > 0 ? bajas / cerradas : 0)} sub={`${fmtNum(bajas)} bajas`} />
