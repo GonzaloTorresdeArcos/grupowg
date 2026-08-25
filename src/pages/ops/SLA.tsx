@@ -447,9 +447,20 @@ const SLA = () => {
                   <td className="px-4 py-2.5 font-medium text-ink">{LABEL_CATEGORIA[c.categoria]}</td>
                   <td className="px-3 py-2.5">
                     <div className="flex flex-wrap gap-1">
-                      {c.estados.map((e) => (
-                        <span key={e.literal} className="inline-flex rounded-full bg-black/[0.04] px-2 py-0.5 text-[11px] text-ink/60">{e.literal} · {fmtNum(e.n)}</span>
-                      ))}
+                      {c.estados.map((e) => {
+                        const activo = drill?.tipo === "etapa" && drill.clave === e.literal;
+                        return (
+                          <button
+                            key={e.literal}
+                            type="button"
+                            onClick={() => abrirDrill("etapa", e.literal)}
+                            aria-expanded={activo}
+                            title="Ver las OTs de esta etapa"
+                            className={`inline-flex rounded-full px-2 py-0.5 text-[11px] transition-colors ${activo ? "bg-ink text-white" : "bg-black/[0.04] text-ink/60 hover:bg-black/[0.08]"}`}
+                          >{e.literal} · {fmtNum(e.n)}</button>
+                        );
+                      })}
+
                     </div>
                   </td>
                   <td className="text-right px-3 py-2.5 tabular-nums text-ink">{fmtNum(c.n)}</td>
