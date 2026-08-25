@@ -1,23 +1,33 @@
-# UAT Round 2 — cierre del spinner de Delegaciones
+# Cierre del gate pre-producción: 2 verificaciones bloqueadas + 7 defectos de UI
 
-## Objetivo
-Encontrar y corregir exclusivamente la causa real del bloqueo de `/operaciones/delegaciones`, conservando los 11 filtros y sin alterar definiciones de KPI.
+El informe completo está en el mensaje de chat. Este plan cubre **solo lo que el modo plan no me deja ejecutar** y los defectos detectados. No incluye cambios de KPI, ni F5, ni publicación.
 
-## Investigación y evidencia
-- Reproducir exactamente los parámetros que construye `Delegaciones.tsx`, distinguiendo `null`, `undefined` y claves ausentes.
-- Ejecutar la llamada REST autenticada y consultar el OpenAPI para comprobar la firma expuesta por la caché de esquema.
-- Medir en base de datos los cuatro escenarios solicitados bajo identidad management.
-- Reconstruir temporalmente la versión anterior de cinco parámetros dentro de una transacción y comparar `EXPLAIN (ANALYZE, BUFFERS)` con la versión actual.
-- Confirmar el comportamiento de React Query cuando una de las consultas falla y documentar por qué la UI queda en spinner.
+## A. Verificaciones que faltan por ejecutar (requieren modo build)
 
-## Corrección acotada
-- Si la firma REST está desactualizada, aplicar `NOTIFY pgrst, 'reload schema'` mediante migración y documentar la regla para cambios de firma.
-- Si el plan SQL está degradado, estrechar la CTE a las columnas necesarias manteniendo exactamente los filtros y KPIs.
-- En `Delegaciones.tsx`, mostrar un estado de error con RPC, mensaje y botón **Reintentar**; cargar solo mientras se está obteniendo y aún no hay datos.
-- En `ops-query.ts`, añadir un registro en memoria `opsRpcErrors` para diagnóstico y logging, sin cambiar la presentación de otros módulos.
+En modo plan no puedo ejecutar SQL con `SET ROLE authenticated` (la herramienta SQL administrada está bloqueada por ser potencialmente de escritura, aunque el script sea de solo lectura y termine en ROLLBACK). Quedan pendientes:
 
-## Verificación
-- Ampliar `scripts/runtime-rpc-gate.sql` con los cuatro casos, contrato `kpis/evo/tecnicos` y umbral de 3.000 ms.
-- Añadir tests Vitest para las 11 claves con `null` y para rechazo de RPC sin spinner permanente.
-- Validar REST/OpenAPI después de la corrección y comprobar la página real con Jun–Ago y Mar–May si existe sesión management.
-- Ejecutar suite completa, `bunx tsgo --noEmit` y `vite build`; reportar causa A/B/C, evidencia literal, tiempos y payloads antes/después, tests y commit SHA.
+1. **Gate runtime de las 18 llamadas restringidas** (`ops_delegaciones` ×5, `ops_sla_evolucion` ×2, `ops_dispersion_resumen/detalle` ×3, `ops_supply_resumen/detalle` ×4, `ops_panorama_resumen/series` ×3, `ops_cobertura_datos`) bajo rol `authenticated` + claims de un usuario management, con umbral 3.000 ms. Salida: tabla RPC | caso | PASS/FAIL | ms | KB.
+2. **`supabase/tests/security_definer_guard.sql`** (autorizado / no autorizado) para reportar N/N.
+3. Opcional: sesión real de management en el navegador (`lovable auth-session`) para medir la experiencia de carga de Panorama, Delegaciones y SLA con `?perf=1`.
+
+Ninguna de las tres modifica datos.
+
+## B. Defectos de UI detectados (spinner infinito ante error de RPC)
+
+Solo `Delegaciones`, `Dispersión`, `Repuestos`, `Logística`, `Dashboard` y la barra de filtros muestran error visible. Las siguientes se quedan en spinner o en «sin datos» cuando la RPC falla:
+
+| Página / componente | Guardia actual | Corrección |
+|---|---|---|
+| `SLA.tsx` | `if (loading \|\| !data)` → spinner | rama `isError` con RPC, mensaje y Reintentar |
+| `Tecnicos.tsx` | `loading` → spinner | igual |
+| `Sats.tsx` | `q.isPending` → spinner, luego «sin datos» | igual |
+| `Costes.tsx` | `isPending` ×2 → spinner | igual |
+| `Hub.tsx` | `q.isPending` → spinner | igual |
+| `EquiposComparativa.tsx` | `isPending` → spinner, luego «sin datos» | igual |
+| `CalidadDatos.tsx` | `.then(({data,error}) => error ? [] : …)` traga el error del registry y de los alias | propagar a un aviso visible |
+
+Patrón a reutilizar: el bloque de error ya implementado en `Delegaciones.tsx` (lista de RPC fallidas + botón Reintentar), extraído a un componente compartido `OpsErrorBlock`.
+
+## C. Nada más
+
+Sin cambios de definición de KPI, sin migraciones, sin publicar.
