@@ -143,8 +143,10 @@ describe("A3 · cascada de filtros: una sola publicación de rpcParams", () => {
     const base = publicaciones.length;
 
     // Acción del usuario: cambiar la delegación (invalida el técnico activo).
-    const selDeleg = (screen.getByRole("option", { name: "Barcelona" }) as HTMLOptionElement)
-      .closest("select") as HTMLSelectElement;
+    const selDeleg = [...document.querySelectorAll("select")].find((sel) =>
+      [...sel.options].some((o) => o.value === "Barcelona"),
+    ) as HTMLSelectElement;
+    expect(selDeleg).toBeTruthy();
     fireEvent.change(selDeleg, { target: { value: "Barcelona" } });
 
     await waitFor(() => {
