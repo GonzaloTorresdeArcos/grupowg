@@ -208,6 +208,7 @@ BEGIN
     EXCEPTION WHEN OTHERS THEN
       BEGIN RESET ROLE; EXCEPTION WHEN OTHERS THEN NULL; END;
       fallos := fallos + 1;
+      RAISE WARNING 'GATE FAIL · % [%]: %', casos[i][1], casos[i][2], SQLERRM;
       INSERT INTO rpc_gate_result(rpc, caso, estado, ms, payload_kb, consumidor, error)
       VALUES (casos[i][1], casos[i][2], 'FAIL', NULL, NULL, casos[i][4], SQLERRM);
     END;
