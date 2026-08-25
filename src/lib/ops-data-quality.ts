@@ -16,6 +16,7 @@ import type { EstadoCobertura, EventoOT, ReglaSla } from "@/lib/ops-contractual"
 import { FUENTE_EVENTO, clasificarCoberturaEvento, dimensionesRequeridas, eventosRequeridos } from "@/lib/ops-contractual";
 import {
   asOf,
+  fmtFechaEs,
   frescuraDominio,
   frescuraTodos,
   normalizarCargas,
