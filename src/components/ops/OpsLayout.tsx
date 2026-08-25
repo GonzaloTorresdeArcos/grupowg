@@ -87,6 +87,9 @@ export const OpsLayout = () => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  // A1 · Si el snapshot de datos cambió desde la última visita, la caché de
+  // análisis de esta sesión se invalida al montar la sección.
+  useAsOfCacheGuard();
 
   const handleSignOut = async () => {
     await signOut();

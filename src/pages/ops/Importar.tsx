@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useInvalidarOps } from "@/lib/ops-query";
+import { guardarAsOfSesion } from "@/lib/ops-cache";
 import { Upload, CheckCircle2, AlertTriangle, FileText, Loader2 } from "lucide-react";
 import {
   parseCSV, detectTable, normalizeRow, conflictKey, TABLE_LABEL,
@@ -35,6 +36,7 @@ type Result = {
 const CHUNK = 500;
 
 const Importar = () => {
+  const invalidarOps = useInvalidarOps();
   const [file, setFile] = useState<File | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [busy, setBusy] = useState(false);
