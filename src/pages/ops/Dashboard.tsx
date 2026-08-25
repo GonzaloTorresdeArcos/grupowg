@@ -1,8 +1,8 @@
 import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import {
   variacion,
