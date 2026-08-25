@@ -125,13 +125,13 @@ DECLARE
      '— (sustituida por ops_dispersion_resumen)','n'],
     ['ops_dispersion_resumen','jun-2026 sin filtros',
      $q$SELECT public.ops_dispersion_resumen('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Dispersion.tsx','n'],
+     'src/pages/ops/Dispersion.tsx','y'],
     ['ops_dispersion_resumen','12M jul25-jun26',
      $q$SELECT public.ops_dispersion_resumen('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/Dispersion.tsx','n'],
+     'src/pages/ops/Dispersion.tsx','y'],
     ['ops_dispersion_detalle','provincia Madrid pág.1',
      $q$SELECT public.ops_dispersion_detalle('provincia','MADRID','2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Dispersion.tsx (drill-down)','n'],
+     'src/pages/ops/Dispersion.tsx (drill-down)','y'],
 
 
     ['ops_supply','jun-2026 con previo',
