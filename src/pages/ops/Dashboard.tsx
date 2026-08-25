@@ -41,6 +41,7 @@ import {
 } from "@/lib/ops-data-quality";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
+import { etiquetaVentana } from "@/lib/ops-modelo";
   Loader2, ChevronDown, ChevronUp, Info, ArrowRight, Lock, AlertTriangle,
 } from "lucide-react";
 
@@ -401,7 +402,7 @@ const Dashboard = () => {
                   <p className="text-[11px] text-ink/50 mb-1">Backlog a fin de mes · últimos 12 meses</p>
                   <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
                   <p className="text-[10px] text-ink/40 italic mt-1">
-                    Ventana propia: últimos 12 meses (independiente del período global). Responde al resto de filtros activos.
+                    {etiquetaVentana("panorama_backlog")}
                   </p>
                 </div>
                 <div className="text-[12px] text-ink/60">
@@ -428,7 +429,7 @@ const Dashboard = () => {
           {showEvo && (
             <div className="mt-4">
               <p className="text-[11px] text-ink/40 italic mb-3">
-                Ventana propia: últimos 18 meses (independiente del período global). Responde al resto de filtros activos.
+                {etiquetaVentana("panorama_evolucion")}
               </p>
               <div className="flex items-end gap-1.5 h-40">
                 {evo.map((e) => (
@@ -478,7 +479,7 @@ const Dashboard = () => {
             <div>
               <p className="text-[11px] text-ink/50 mb-1">Serie mensual de resolución ≤20d</p>
               <Sparkline values={serieSla} title="Evolución de la resolución ≤20 días" />
-              <p className="text-[10px] text-ink/40 italic mt-1">Ventana propia: últimos 12 meses (independiente del período global).</p>
+              <p className="text-[10px] text-ink/40 italic mt-1">{etiquetaVentana("panorama_resolucion")}</p>
             </div>
           </div>
 

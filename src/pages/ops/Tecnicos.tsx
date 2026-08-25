@@ -28,6 +28,7 @@ import {
   type AvisoCalidad,
 } from "@/lib/ops-performance";
 import { Loader2, X, Search, Info, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { etiquetaVentana } from "@/lib/ops-modelo";
 
 // -----------------------------------------------------------------------------
 // Tipos
@@ -733,7 +734,7 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
 
         {data && (
           <>
-            <Section title="Evolución 12 meses — ventana propia, independiente del período global">
+            <Section title={`Evolución 12 meses — ${etiquetaVentana("tecnicos_evolucion")}`}>
               <div className="flex items-end gap-1 h-24">
                 {data.evolucion.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">
