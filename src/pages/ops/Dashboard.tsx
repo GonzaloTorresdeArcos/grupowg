@@ -302,11 +302,12 @@ const Dashboard = () => {
       vacio: rs.every((r) => !r.data),
     };
   };
-  const stSeries = estadoDe(0, 1);
-  const stCapacidad = estadoDe(5, 6);
-  const stFlujo = estadoDe(7);
-  const stAtencion = estadoDe(2, 3, 4, 5, 6, 7);
-  const stComparativa = estadoDe(3, 4);
+  const stSeries = estadoDe(2, 3);       // serie de backlog + evolución 18m
+  const stCapacidad = estadoDe(8, 9);    // C · capacidad (scorecard)
+  const stFlujo = estadoDe(5);           // D · flujo con supply
+  const stAtencion = estadoDe(4, 5, 6, 7, 8, 9); // E · Management Attention
+  const stComparativa = estadoDe(0, 1, 6, 7);    // Δ vs previo + equipos
+
 
   // Hitos UAT: primeros KPI (tanda crítica resuelta), Panorama usable (crítico
   // pintado) y carga completa (secundario resuelto).
