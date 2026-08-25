@@ -81,11 +81,11 @@ BEGIN
     SET cantidad = EXCLUDED.cantidad, descripcion = EXCLUDED.descripcion;
 
   SELECT count(*) INTO v_sol FROM public.ops_pieza_solicitud WHERE referencia LIKE 'E2E-%';
-  SELECT count(*) INTO v_exp FROM public.ops_expedicion       WHERE referencia LIKE 'E2E-%';
+  SELECT count(*) INTO v_exp FROM public.ops_expedicion       WHERE referencia_expedicion LIKE 'E2E-%';
   SELECT count(*) INTO v_lin FROM public.ops_expedicion_linea WHERE referencia LIKE 'E2E-%';
   SELECT count(*) INTO v_stk FROM public.ops_stock_snapshot   WHERE referencia LIKE 'E2E-%';
   SELECT count(DISTINCT num_ot) INTO v_ot1 FROM public.ops_expedicion_linea WHERE referencia LIKE 'E2E-%';
-  SELECT count(*) INTO v_reexp FROM public.ops_expedicion WHERE referencia LIKE 'E2E-%' AND reexpedicion;
+  SELECT count(*) INTO v_reexp FROM public.ops_expedicion WHERE referencia_expedicion LIKE 'E2E-%' AND reexpedicion;
   SELECT count(*) INTO v_nulos FROM public.ops_pieza_solicitud
     WHERE referencia LIKE 'E2E-%' AND fecha_disponibilidad IS NULL AND coste_unitario IS NULL;
   SELECT count(*) INTO v_lin2 FROM public.ops_expedicion_linea
