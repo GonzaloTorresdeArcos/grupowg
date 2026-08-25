@@ -155,24 +155,13 @@ const DominioChip = ({ id }: { id: string }) => {
 const Dashboard = () => {
   const { rpcParams, filters, prevRange, modo, sinComparable } = useOpsFilters();
   const { dominios, dominio: dominioDq } = useDataQuality();
-  const [loading, setLoading] = useState(true);
-  const [kpis, setKpis] = useState<Kpis | null>(null);
-  const [kpisPrev, setKpisPrev] = useState<Kpis | null>(null);
-  const [pano, setPano] = useState<PanoramaPayload | null>(null);
-  const [panoPrev, setPanoPrev] = useState<PanoramaPayload | null>(null);
-  const [evo, setEvo] = useState<EvoRow[]>([]);
-  const [alertas, setAlertas] = useState<Alertas | null>(null);
-  const [equiposNow, setEquiposNow] = useState<EquipoRow[]>([]);
-  const [equiposPrev, setEquiposPrev] = useState<EquipoRow[]>([]);
-  const [score, setScore] = useState<ScoreRow[]>([]);
-  const [scorePrev, setScorePrev] = useState<ScoreRow[]>([]);
   const [showEvo, setShowEvo] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
-  // F4B · Supply manda sobre la etapa derivada para la cifra de espera de pieza.
-  const [supply, setSupply] = useState<SupplyPayload | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
+  // Todas las RPC del Panorama van en paralelo (incluida ops_supply, que antes
+  // se encadenaba después del Promise.all) y comparten caché por (rpc, params)
+  // con el resto de módulos. Sin cambio de parámetros ni de semántica.
+  const specs = useMemo(() => {
     const prev = prevRange;
     const secundarios = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
@@ -186,39 +175,42 @@ const Dashboard = () => {
       p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
     };
     const equipPrev = { ...equipParams, p_from: prev.from, p_to: prev.to };
-    const scoreParams = { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...secundarios, p_tecnico: undefined };
-    delete (scoreParams as Record<string, unknown>).p_tecnico;
+    const scoreParams: Record<string, unknown> = { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...secundarios };
+    delete scoreParams.p_tecnico;
     const scorePrevParams = { ...scoreParams, p_from: prev.from, p_to: prev.to };
+    return [
+      { rpc: "ops_kpis", params: rpcParams },
+      { rpc: "ops_kpis", params: prevRpc },
+      { rpc: "ops_panorama", params: { ...rpcParams, p_meses: 12 } },
+      { rpc: "ops_panorama", params: { ...prevRpc, p_meses: 1 } },
+      { rpc: "ops_evolucion", params: secundarios },
+      { rpc: "ops_alertas", params: rpcParams },
+      { rpc: "ops_equipos", params: equipParams },
+      { rpc: "ops_equipos", params: equipPrev },
+      { rpc: "ops_tecnicos_scorecard", params: scoreParams },
+      { rpc: "ops_tecnicos_scorecard", params: scorePrevParams },
+      { rpc: "ops_supply", params: { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } },
+    ];
+  }, [rpcParams, prevRange]);
 
-    (async () => {
-      const [k, kp, pn, pnp, e, a, eq, eqp, s, sp] = await Promise.all([
-        supabase.rpc("ops_kpis" as never, rpcParams as never),
-        supabase.rpc("ops_kpis" as never, prevRpc as never),
-        supabase.rpc("ops_panorama" as never, { ...rpcParams, p_meses: 12 } as never),
-        supabase.rpc("ops_panorama" as never, { ...prevRpc, p_meses: 1 } as never),
-        supabase.rpc("ops_evolucion" as never, secundarios as never),
-        supabase.rpc("ops_alertas" as never, rpcParams as never),
-        supabase.rpc("ops_equipos" as never, equipParams as never),
-        supabase.rpc("ops_equipos" as never, equipPrev as never),
-        supabase.rpc("ops_tecnicos_scorecard" as never, scoreParams as never),
-        supabase.rpc("ops_tecnicos_scorecard" as never, scorePrevParams as never),
-      ]);
-      const sup = await supabase.rpc("ops_supply" as never, { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } as never);
-      setKpis((k.data ?? null) as Kpis | null);
-      setKpisPrev((kp.data ?? null) as Kpis | null);
-      setPano((pn.data ?? null) as PanoramaPayload | null);
-      setPanoPrev((pnp.data ?? null) as PanoramaPayload | null);
-      setEvo((e.data ?? []) as EvoRow[]);
-      setAlertas((a.data ?? null) as Alertas | null);
-      setEquiposNow((eq.data ?? []) as EquipoRow[]);
-      setEquiposPrev((eqp.data ?? []) as EquipoRow[]);
-      setScore((s.data ?? []) as ScoreRow[]);
-      setScorePrev((sp.data ?? []) as ScoreRow[]);
-      const supRes = sup as { data: unknown; error: unknown };
-      setSupply(supRes.error || !supRes.data ? null : normalizarSupply(supRes.data));
-      setLoading(false);
-    })();
-  }, [rpcParams, filters.from, filters.to, prevRange]);
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const kpis = (q[0].data ?? null) as Kpis | null;
+  const kpisPrev = (q[1].data ?? null) as Kpis | null;
+  const pano = (q[2].data ?? null) as PanoramaPayload | null;
+  const panoPrev = (q[3].data ?? null) as PanoramaPayload | null;
+  const evo = useMemo(() => (q[4].data ?? []) as EvoRow[], [q[4].data]);
+  const alertas = (q[5].data ?? null) as Alertas | null;
+  const equiposNow = useMemo(() => (q[6].data ?? []) as EquipoRow[], [q[6].data]);
+  const equiposPrev = useMemo(() => (q[7].data ?? []) as EquipoRow[], [q[7].data]);
+  const score = useMemo(() => (q[8].data ?? []) as ScoreRow[], [q[8].data]);
+  const scorePrev = useMemo(() => (q[9].data ?? []) as ScoreRow[], [q[9].data]);
+  // F4B · Supply manda sobre la etapa derivada para la cifra de espera de pieza.
+  const supply = useMemo<SupplyPayload | null>(
+    () => (q[10].error || !q[10].data ? null : normalizarSupply(q[10].data)),
+    [q[10].data, q[10].error],
+  );
+
 
   const hayComparable = !sinComparable && !!kpisPrev;
 
