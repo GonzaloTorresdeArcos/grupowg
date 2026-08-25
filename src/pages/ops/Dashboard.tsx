@@ -377,7 +377,13 @@ const Dashboard = () => {
         <p className="text-sm text-ink/60 mt-2 max-w-2xl">
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
-      </header>
+        {cargandoSecundario && (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
+            <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+            Completando análisis (series, equipos y supply)…
+          </p>
+        )}
+
       <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}
