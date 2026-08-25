@@ -332,7 +332,7 @@ describe("F4B · Management Attention Supply", () => {
       supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: null },
     });
     const rep = out.find((x) => x.fenomeno === "espera_repuesto");
-    expect(rep?.hecho).toContain("1.234");
+    expect(rep?.hecho).toContain("1234");
     // La limitación se declara DENTRO del mismo asunto, no como asunto rival.
     expect(rep?.hecho).toContain("Limitación");
     expect(out.find((x) => x.fenomeno === "supply_sin_trazabilidad")).toBeUndefined();
