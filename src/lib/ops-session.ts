@@ -79,11 +79,13 @@ const suscribir = (cb: () => void) => {
  * `useSyncExternalStore` garantiza que las queries se rehabiliten en cuanto el
  * AuthProvider publica una sesión válida.
  */
-export const useOpsSession = (): { hasSession: boolean; perdida: boolean } => {
+export const useOpsSession = (): { hasSession: boolean; perdida: boolean; hubo: boolean } => {
   const has = useSyncExternalStore(suscribir, hayTokenOps, () => false);
   const perdida = useSyncExternalStore(suscribir, sesionOpsPerdida, () => false);
-  return { hasSession: has, perdida };
+  const hubo = useSyncExternalStore(suscribir, huboSesionOps, () => false);
+  return { hasSession: has, perdida, hubo };
 };
+
 
 /** Error tipado: no ha habido petición de red. */
 export class SessionPerdida extends Error {
