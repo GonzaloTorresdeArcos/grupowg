@@ -41,7 +41,7 @@ import {
 } from "@/lib/ops-data-quality";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
-import { etiquetaVentana } from "@/lib/ops-modelo";
+import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
   Loader2, ChevronDown, ChevronUp, Info, ArrowRight, Lock, AlertTriangle,
 } from "lucide-react";
 
@@ -399,7 +399,7 @@ const Dashboard = () => {
 
               <div className="mt-6 flex flex-wrap items-end gap-6">
                 <div>
-                  <p className="text-[11px] text-ink/50 mb-1">Backlog a fin de mes · últimos 12 meses</p>
+                  <p className="text-[11px] text-ink/50 mb-1">Backlog a fin de mes · últimos {ventanaPropia("panorama_backlog").meses} meses</p>
                   <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
                   <p className="text-[10px] text-ink/40 italic mt-1">
                     {etiquetaVentana("panorama_backlog")}
@@ -424,7 +424,7 @@ const Dashboard = () => {
             className="mt-6 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 hover:text-ink transition-colors"
           >
             {showEvo ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-            Evolución últimos 18 meses
+            Evolución últimos {ventanaPropia("panorama_evolucion").meses} meses
           </button>
           {showEvo && (
             <div className="mt-4">

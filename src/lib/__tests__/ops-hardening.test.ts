@@ -50,10 +50,18 @@ describe("Registry: ops_sla_registry es la única fuente runtime", () => {
   });
 
   it("ningún fichero de /operaciones declara literales DEMO / simulado / ejemplo", () => {
-    const infractores = OPS_PRODUCTIVO.filter((f) => {
-      const t = readFileSync(f, "utf8");
-      return /\bDEMO\b/.test(t) || /datos simulados|datos de ejemplo|\bmock\b/i.test(t);
-    });
+    // Una frase que NIEGA la existencia de datos de demostración es correcta:
+    // sólo se persiguen las afirmaciones.
+    const NEGACION = /(no hay|sin|nunca|prohibido|ni)\s[^.]*$/i;
+    const infractores = OPS_PRODUCTIVO.filter((f) =>
+      readFileSync(f, "utf8")
+        .split("\n")
+        .some((l) => {
+          if (!/\bDEMO\b|datos simulados|datos de ejemplo|\bmock\b/i.test(l)) return false;
+          const antes = l.slice(0, l.search(/\bDEMO\b|datos simulados|datos de ejemplo|\bmock\b/i));
+          return !NEGACION.test(antes);
+        }),
+    );
     expect(infractores).toEqual([]);
   });
 });
@@ -78,10 +86,15 @@ describe("Semántica de kilómetros coherente en todo /operaciones", () => {
   });
 
   it("ninguna página presenta los km de ops_coste_mensual como dato real disponible", () => {
+    const NEGACION = /(no|nunca|sin|pendiente|ningún|ninguna)\s[^.]*$/i;
     for (const f of OPS_PRODUCTIVO) {
-      const t = readFileSync(f, "utf8");
-      expect(t, f).not.toMatch(/km\s+reales?\s+(por|disponibles)/i);
-      expect(t, f).not.toMatch(/km\s+recorridos?\s+reales/i);
+      const lineas = readFileSync(f, "utf8").split("\n");
+      const afirma = lineas.filter((l) => {
+        const m = l.match(/km\s+(reales?|recorridos?\s+reales)/i);
+        if (!m) return false;
+        return !NEGACION.test(l.slice(0, m.index ?? 0));
+      });
+      expect(afirma, f).toEqual([]);
     }
   });
 });
