@@ -60,3 +60,57 @@ Pendiente de cerrar con sesión *management* real en el navegador: el entorno de
 verificación automática no puede acuñar sesión para este proyecto, así que la
 comprobación en vivo (cold / warm / cambio de filtro) debe hacerse abriendo la
 vista previa autenticada con `?perf=1`.
+
+## Cierre de la tercera pasada
+
+### UX por bloque (Panorama)
+
+Cada bloque secundario tiene ahora su propio estado, independiente del
+indicador global de cabecera ("Completando análisis…", que se mantiene sólo
+como señal de cabecera):
+
+| Bloque | Queries que lo alimentan | Estado propio |
+|--------|--------------------------|---------------|
+| A · serie de backlog | `ops_panorama_series` | esqueleto + "Actualizando…" |
+| A · evolución 18m | `ops_panorama_series`, `ops_evolucion` | esqueleto + "Actualizando…" |
+| B1 · serie ≤20d | `ops_panorama_series` | esqueleto + "Actualizando…" |
+| C · capacidad | `ops_tecnicos_scorecard` (actual y previo) | esqueleto + "Actualizando…" |
+| D · flujo (supply) | `ops_supply_resumen` | "Actualizando…" |
+| E · atención | equipos, scorecard, alertas, supply | esqueleto + "Actualizando…" |
+| Comparativa | `ops_equipos` (actual y previo) | estado propio |
+
+Ninguno bloquea el render de Situation Line, bloque A o B1: éstos dependen sólo
+de la tanda crítica (`ops_kpis` ×2 + `ops_panorama_resumen` ×2), verificado por
+test.
+
+### Gate runtime
+
+`scripts/runtime-rpc-gate.sql` cubre las RPC optimizadas nuevas
+(`ops_panorama_resumen` jun-26 y 12M, `ops_panorama_series` 12 meses,
+`ops_supply_resumen` con previo en mes y 12M, `ops_supply_detalle` en
+`pte_piezas` y `demanda` con límite 50, `ops_sla_evolucion` sin filtros y con
+delegación). Un test comprueba automáticamente que toda RPC `ops_*` invocada
+desde `src` tiene caso en el gate.
+
+Tiempos medidos con rol `authenticated` y claims de management (caché templada):
+
+| RPC | Caso | ms | Payload |
+|-----|------|----|---------|
+| `ops_panorama_resumen` | jun-26 | ~139 | pequeño |
+| `ops_panorama_resumen` | 12M | ~140 | pequeño |
+| `ops_panorama_series` | 12 meses | ~1442 | medio (diferido a secundario) |
+| `ops_supply_resumen` | mes con previo | ~91 | pequeño |
+| `ops_supply_detalle` | pte_piezas / demanda, 50 filas | <10 | pequeño |
+| `ops_sla_evolucion` | sin filtros | ~750 | medio (diferido) |
+| `ops_sla_evolucion` | con delegación | ~314 | pequeño |
+
+### Medición en navegador — estado
+
+**Pendiente de la prueba de Dirección.** No es posible automatizarla en este
+entorno: no hay sesión inyectada (`signed_out`), el proyecto tiene varias
+cuentas de auth (por lo que la generación de sesión exige aprobación
+interactiva) y no hay acceso a `service_role` para crear un usuario temporal
+de management. Como alternativa operativa, el overlay `?perf=1` incorpora los
+hitos de escenario (Shell visible, Primeros KPI, Panorama usable, Carga
+completa) y un botón **Copiar informe** que exporta hitos + tabla de RPC en
+texto. El paso a paso está en `docs/perf/protocolo-uat.md`.
