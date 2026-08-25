@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInvalidarOps } from "@/lib/ops-query";
+import { hayTokenOps } from "@/lib/ops-session";
+
 
 /**
  * A1 · INVALIDACIÓN EXPLÍCITA DE LA CACHÉ DE ANÁLISIS.
