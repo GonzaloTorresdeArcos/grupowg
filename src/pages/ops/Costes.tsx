@@ -1,3 +1,4 @@
+import { etiquetaVentana } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,6 @@ import { Loader2, ChevronDown, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { variacion, labelPeriodo, diasEntre } from "@/lib/ops-performance";
 import {
-import { etiquetaVentana } from "@/lib/ops-modelo";
   componentesCoste,
   contribucionParcial,
   lecturaCoste,

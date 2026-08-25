@@ -1,3 +1,4 @@
+import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
@@ -41,7 +42,6 @@ import {
 } from "@/lib/ops-data-quality";
 import { useDataQuality } from "@/hooks/useDataQuality";
 import {
-import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
   Loader2, ChevronDown, ChevronUp, Info, ArrowRight, Lock, AlertTriangle,
 } from "lucide-react";
 
