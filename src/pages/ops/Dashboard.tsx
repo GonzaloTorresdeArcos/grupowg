@@ -760,11 +760,19 @@ const Dashboard = () => {
 
       {/* E — MANAGEMENT ATTENTION */}
       <section>
-        <Eyebrow>E · Asuntos que requieren atención</Eyebrow>
+        <div className="flex flex-wrap items-center gap-3">
+          <Eyebrow>E · Asuntos que requieren atención</Eyebrow>
+          <BloqueEstado estado={stAtencion} nombre="atencion" />
+          <span className="sr-only" data-testid="estado-comparativa">
+            {stComparativa.error ? "error" : stComparativa.cargando ? "actualizando" : "listo"}
+          </span>
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white divide-y divide-black/[0.05]">
-          {asuntos.length === 0 && (
+          {stAtencion.cargando && asuntos.length === 0 && <BloqueSkeleton nombre="atencion" alto="h-28" />}
+          {!stAtencion.cargando && asuntos.length === 0 && (
             <p className="px-5 py-6 text-sm text-ink/40">Sin desviaciones materiales en el período con los filtros activos.</p>
           )}
+
           {asuntos.map((a) => (
             <article key={a.fenomeno} className="px-5 py-4">
               <div className="flex flex-wrap items-center gap-2">
