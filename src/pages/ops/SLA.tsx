@@ -396,8 +396,17 @@ const SLA = () => {
             const n = row?.total ?? 0;
             const pct = snap.abiertas > 0 ? n / snap.abiertas : 0;
             const cat = row?.estado_pred ? categoriaDeEstado(row.estado_pred) : null;
+            const activo = drill?.tipo === "bucket" && drill.clave === b;
             return (
-              <div key={b}>
+              <button
+                key={b}
+                type="button"
+                onClick={() => abrirDrill("bucket", b)}
+                disabled={n === 0}
+                aria-expanded={activo}
+                className={`w-full text-left rounded-lg px-2 py-1.5 -mx-2 transition-colors ${activo ? "bg-black/[0.04]" : "hover:bg-black/[0.02]"} disabled:opacity-50 disabled:hover:bg-transparent`}
+                title={n > 0 ? "Ver las OTs de este tramo" : "Sin OTs en este tramo"}
+              >
                 <div className="flex justify-between text-xs mb-1 gap-2">
                   <span className="text-ink/70 w-14 shrink-0">{b} días</span>
                   <span className="text-ink/40 truncate flex-1 text-right">
@@ -408,11 +417,12 @@ const SLA = () => {
                 <div className="h-2 bg-black/[0.04] rounded-full overflow-hidden">
                   <div className={`h-full ${BUCKET_COLOR[b]}`} style={{ width: `${pct * 100}%` }} />
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
-        <p className="text-[11px] text-ink/40 mt-2">«Predomina» = estado de flujo más frecuente <b>actualmente</b> dentro del tramo. No implica que la OT haya permanecido ese tiempo en esa etapa.</p>
+        <p className="text-[11px] text-ink/40 mt-2">«Predomina» = estado de flujo más frecuente <b>actualmente</b> dentro del tramo. No implica que la OT haya permanecido ese tiempo en esa etapa. Pulsa un tramo para ver sus OTs.</p>
+
       </section>
 
       {/* FASE D — Análisis de flujo */}
