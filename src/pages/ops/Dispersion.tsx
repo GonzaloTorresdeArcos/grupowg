@@ -321,13 +321,15 @@ export default function OpsDispersion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, sort, provClas],
   );
-  const munRowsAll = useMemo(() => {
-    const rows = (data?.municipios ?? []).filter((m) => (provSel ? m.provincia === provSel : true));
-    return applySort(rows, munGetters, (a, b) => num(b.cerradas)! - num(a.cerradas)!);
+  // Los municipios llegan ya paginados del detalle; el orden de la página se
+  // aplica en cliente sobre las filas recibidas.
+  const munRows = useMemo(
+    () => applySort(detalle?.municipios ?? [], munGetters, (a, b) => num(b.cerradas)! - num(a.cerradas)!),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, provSel, sort]);
-  const MUN_CAP = 200;
-  const munRows = munRowsAll.slice(0, MUN_CAP);
+    [detalle, sort],
+  );
+  const munTotal = detalle?.total ?? 0;
+
   const tecRows = useMemo(
     () => applySort(data?.tecnicos ?? [], tecGetters, atencionTec),
     // eslint-disable-next-line react-hooks/exhaustive-deps
