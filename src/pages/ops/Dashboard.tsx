@@ -1,5 +1,6 @@
 import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { registrarHito } from "@/lib/ops-perf";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { useOpsRpcs } from "@/lib/ops-query";
