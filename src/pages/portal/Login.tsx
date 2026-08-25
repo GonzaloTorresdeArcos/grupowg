@@ -159,8 +159,15 @@ const PortalLogin = () => {
                     </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signin")}
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : sesionCaducada ? (
+                      "Iniciar sesión"
+                    ) : (
+                      t("login.submit.signin")
+                    )}
                   </Button>
+
                 </form>
               </TabsContent>
 
