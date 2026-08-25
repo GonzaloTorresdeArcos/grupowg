@@ -26,6 +26,7 @@ import {
   type DispMunicipio,
   type DispTecnico,
   type DispSat,
+  type DispDetalle,
 } from "@/lib/ops-dispersion";
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
 import { AVISO_KM, semanticaKm } from "@/lib/ops-modelo";
