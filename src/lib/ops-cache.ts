@@ -49,7 +49,7 @@ export async function leerAsOfRemoto(): Promise<string | null> {
   try {
     const { data, error } = await supabase.rpc("ops_as_of" as never, { p_dominio: "ot" } as never);
     if (error) return null;
-    const v = Array.isArray(data) ? data[0] : data;
+    const v = Array.isArray(data) ? (data as unknown[])[0] : (data as unknown);
     return v ? String(v).slice(0, 10) : null;
   } catch {
     return null;
