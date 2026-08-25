@@ -69,6 +69,10 @@ vi.mock("@/lib/ops-filters", async () => {
   return { ...real, useOpsFilters: () => FILTROS };
 });
 
+// La cabecera de frescura no es objeto de esta prueba.
+vi.mock("@/components/ops/DataAsOf", () => ({ DataAsOf: () => null }));
+
+
 const leer = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 
 beforeEach(() => { estado.tandas = []; estado.fallar = false; estado.refetches = 0; });
