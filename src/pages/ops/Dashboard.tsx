@@ -2,6 +2,7 @@ import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { registrarHito } from "@/lib/ops-perf";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, fallosDeQueries } from "@/components/ops/OpsErrorBlock";
 import { Link } from "react-router-dom";
 import { useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
@@ -420,6 +421,10 @@ const Dashboard = () => {
 
     });
   }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
+
+  if (fallosCriticos.length > 0 && !kpis) {
+    return <OpsErrorBlock fallos={fallosCriticos} onReintentar={reintentar} titulo="No se ha podido cargar el Panorama" />;
+  }
 
   if (loading || !kpis) {
     // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
