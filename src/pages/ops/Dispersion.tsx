@@ -711,7 +711,7 @@ export default function OpsDispersion() {
                       <Th k="provincias" label="Prov." />
                       <Th k="fuera" label="% fuera cap." />
                       <Th k="km" label="Km aprox." />
-                      <Th k="kmreal" label="Km reales" />
+                      <Th k="kmreal" label="Km téc./mes" />
                       <th className="px-3 py-2 text-left">Estado</th>
                     </tr>
                   </thead>
