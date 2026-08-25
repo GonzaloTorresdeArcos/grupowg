@@ -61,9 +61,6 @@ const fmtPp = (d: number | null) => (d == null ? "—" : `${d >= 0 ? "+" : ""}${
 export default function OpsRepuestos() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
-  const [data, setData] = useState<SupplyPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [vistaA, setVistaA] = useState<Vista>("cliente");
   const [vistaB, setVistaB] = useState<Vista>("cliente");

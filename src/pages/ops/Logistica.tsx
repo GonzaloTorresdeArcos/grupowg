@@ -84,13 +84,9 @@ const KPIS_PREVISTOS: { kpi: string; def: string }[] = [
 export default function OpsLogistica() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
-  const [log, setLog] = useState<LogisticaPayload | null>(null);
-  const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
   const [rrhhDias, setRrhhDias] = useState<DiaRrhhLogistica[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const reqIdRef = useRef(0);
 
