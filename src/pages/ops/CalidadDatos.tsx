@@ -66,8 +66,8 @@ const CalidadDatos = () => {
   const { todos: frescuras } = useDataFreshness();
   const [reglas, setReglas] = useState<ReglaSla[] | null>(null);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
-  // UAT-3 · antes `error ? []` convertía un fallo del Registry o de los alias
-  // en «no hay reglas», indistinguible de un dato realmente vacío.
+  // UAT-3 · antes un fallo del Registry o de los alias se convertía en lista
+  // vacía, indistinguible de un dato realmente vacío.
   const [erroresTabla, setErroresTabla] = useState<OpsFallo[]>([]);
   const [intento, setIntento] = useState(0);
 

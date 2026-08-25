@@ -62,6 +62,7 @@ describe("guardia (b) · ningún error convertido en vacío", () => {
 describe("guardia (c) · toda pantalla con estado vacío tiene rama de error", () => {
   for (const { ruta, src } of ficheros) {
     if (!/[Ss]in datos/.test(src)) continue;
+    if (!/useOpsRpc|supabase\./.test(src)) continue; // copy estático, sin RPC
     it(`${ruta} importa OpsErrorBlock o expone rama de error`, () => {
       const ok = src.includes("OpsErrorBlock") || /isError|fallos/.test(src);
       expect(ok, ruta).toBe(true);
