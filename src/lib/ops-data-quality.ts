@@ -954,12 +954,21 @@ export type ResumenReadiness = {
 };
 
 
-export const resumenReadiness = (
+/**
+ * A5 · Evaluación de todas las reglas en un único paso. La UI la memoiza y la
+ * reutiliza en la tabla y en el resumen: una sola evaluación por cambio de
+ * entrada, en vez de una por fila más otra por el agregado.
+ */
+export const evaluarReadiness = (
   reglas: readonly ReglaSla[],
   m: MedidasDataQuality,
   ctx: ContextoReadiness = {},
+): ReadinessRegla[] => reglas.map((r) => readinessRegla(r, m, ctx));
+
+export const resumenDesdeEvaluadas = (
+  reglas: readonly ReglaSla[],
+  evaluadas: readonly ReadinessRegla[],
 ): ResumenReadiness => {
-  const evaluadas = reglas.map((r) => readinessRegla(r, m, ctx));
 
   const mapa = new Map<string, { clave: string; motivo: string; n: number }>();
   for (const e of evaluadas) {
@@ -997,6 +1006,12 @@ export const resumenReadiness = (
   };
 
 };
+
+export const resumenReadiness = (
+  reglas: readonly ReglaSla[],
+  m: MedidasDataQuality,
+  ctx: ContextoReadiness = {},
+): ResumenReadiness => resumenDesdeEvaluadas(reglas, evaluarReadiness(reglas, m, ctx));
 
 export const AVISO_NO_CUMPLIMIENTO =
   "WG no calcula hoy % de cumplimiento contractual. Lo que se muestra es performance operativa medida con referencias internas, no cumplimiento de contrato.";
