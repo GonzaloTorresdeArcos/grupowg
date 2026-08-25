@@ -24,13 +24,16 @@ const Esqueleto = () => (
 
 export const OpsProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, session, loading: authLoading } = useAuth();
-  const { hasSession, perdida } = useOpsSession();
+  const { hasSession, perdida, hubo } = useOpsSession();
   const { isManagement, loading: roleLoading } = useIsManagement();
   const location = useLocation();
 
-  const destinoLogin = `/portal/login?next=${encodeURIComponent(
-    location.pathname + location.search,
-  )}`;
+  // Sesión caducada/perdida (B) frente a acceso directo sin autenticar (A).
+  const caducada = perdida || (!!hubo && (!hasSession || !session));
+  const next = encodeURIComponent(location.pathname + location.search);
+  const destinoLogin = caducada
+    ? `/portal/login?reason=session_expired&next=${next}`
+    : `/portal/login?next=${next}`;
 
   if (authLoading) return <Esqueleto />;
 
@@ -38,6 +41,7 @@ export const OpsProtectedRoute = ({ children }: { children: React.ReactNode }) =
   if (!user || !session || !hasSession || perdida) {
     return <Navigate to={destinoLogin} state={{ from: location.pathname }} replace />;
   }
+
 
   if (roleLoading) return <Esqueleto />;
 
