@@ -21,10 +21,18 @@ const PortalLogin = () => {
 
   // Ruta de vuelta: `state.from` (navegación interna) o `?next=` (redirección
   // del guardia de /operaciones al perderse la sesión).
+  const params = new URLSearchParams(location.search);
+  const nextParam = params.get("next");
+  // Protección open-redirect: solo rutas internas («/algo», nunca «//host» ni absolutas).
+  const nextValido =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : null;
   const from =
-    (location.state as { from?: string } | null)?.from ||
-    new URLSearchParams(location.search).get("next") ||
-    "/portal";
+    nextValido || (location.state as { from?: string } | null)?.from || "/portal";
+
+
+  const sesionCaducada = params.get("reason") === "session_expired";
+  const destinoOperaciones = (nextValido ?? "").startsWith("/operaciones");
+
 
 
   useEffect(() => {
@@ -112,6 +120,21 @@ const PortalLogin = () => {
             </p>
           </div>
 
+          {sesionCaducada ? (
+            <div
+              role="status"
+              className="mb-6 rounded-2xl border border-border bg-card px-4 py-3 text-center text-sm text-ink"
+            >
+              Tu sesión ha caducado. Vuelve a iniciar sesión para continuar.
+            </div>
+          ) : destinoOperaciones ? (
+            <p className="mb-6 text-center text-sm text-muted-foreground">
+              Inicia sesión para acceder a Operaciones.
+            </p>
+          ) : null}
+
+
+
           <div className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
             <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -136,8 +159,15 @@ const PortalLogin = () => {
                     </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("login.submit.signin")}
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : sesionCaducada ? (
+                      "Iniciar sesión"
+                    ) : (
+                      t("login.submit.signin")
+                    )}
                   </Button>
+
                 </form>
               </TabsContent>
 

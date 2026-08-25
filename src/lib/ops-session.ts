@@ -18,6 +18,8 @@ import { useSyncExternalStore } from "react";
 
 let tokenActual: string | null = null;
 let sesionPerdidaEn: number | null = null;
+/** Memoria de pestaña: ¿ha habido alguna vez un token válido en esta sesión de navegador? */
+let huboSesion = false;
 const oyentes = new Set<() => void>();
 
 const notificar = () => {
@@ -28,14 +30,23 @@ const notificar = () => {
 export const publicarSesionOps = (accessToken: string | null | undefined) => {
   const siguiente = accessToken ?? null;
   if (siguiente === tokenActual) return;
+  const teniaToken = tokenActual !== null;
   tokenActual = siguiente;
-  if (siguiente) sesionPerdidaEn = null;
+  if (siguiente) {
+    // Nueva sesión válida: el gate rehabilita las queries.
+    huboSesion = true;
+    sesionPerdidaEn = null;
+  } else if (teniaToken) {
+    // Transición token → sin token: caducidad / SIGNED_OUT / refresh fallido.
+    sesionPerdidaEn = Date.now();
+  }
   notificar();
 };
 
 /** Marca la sesión como perdida (401 / identidad anónima detectada). */
 export const marcarSesionPerdida = () => {
   if (tokenActual === null && sesionPerdidaEn !== null) return;
+  if (tokenActual !== null) huboSesion = true;
   tokenActual = null;
   sesionPerdidaEn = Date.now();
   notificar();
@@ -44,13 +55,17 @@ export const marcarSesionPerdida = () => {
 export const hayTokenOps = (): boolean => tokenActual !== null;
 export const tokenOps = (): string | null => tokenActual;
 export const sesionOpsPerdida = (): boolean => tokenActual === null && sesionPerdidaEn !== null;
+/** true si en esta pestaña llegó a existir una sesión autenticada. */
+export const huboSesionOps = (): boolean => huboSesion;
 
 /** Solo para tests: restablece el estado del gate. */
 export const _resetSesionOps = () => {
   tokenActual = null;
   sesionPerdidaEn = null;
+  huboSesion = false;
   notificar();
 };
+
 
 const suscribir = (cb: () => void) => {
   oyentes.add(cb);
@@ -64,11 +79,13 @@ const suscribir = (cb: () => void) => {
  * `useSyncExternalStore` garantiza que las queries se rehabiliten en cuanto el
  * AuthProvider publica una sesión válida.
  */
-export const useOpsSession = (): { hasSession: boolean; perdida: boolean } => {
+export const useOpsSession = (): { hasSession: boolean; perdida: boolean; hubo: boolean } => {
   const has = useSyncExternalStore(suscribir, hayTokenOps, () => false);
   const perdida = useSyncExternalStore(suscribir, sesionOpsPerdida, () => false);
-  return { hasSession: has, perdida };
+  const hubo = useSyncExternalStore(suscribir, huboSesionOps, () => false);
+  return { hasSession: has, perdida, hubo };
 };
+
 
 /** Error tipado: no ha habido petición de red. */
 export class SessionPerdida extends Error {
