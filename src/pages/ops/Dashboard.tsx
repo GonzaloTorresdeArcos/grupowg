@@ -265,7 +265,10 @@ const Dashboard = () => {
   );
   const qs = useOpsRpcs<unknown>(specsSec);
 
-  const loading = qc.some((r) => r.isPending);
+  // UAT-3 · error de RPC ≠ loading: el esqueleto solo con fetch en curso.
+  const fallosCriticos = fallosDeQueries(criticos, qc);
+  const reintentar = () => { void Promise.all([...qc, ...qs].map((r) => r.refetch())); };
+  const loading = qc.some((r) => r.isPending) && fallosCriticos.length === 0;
   const cargandoSecundario = qs.some((r) => r.isPending || r.fetchStatus === "fetching");
   const kpis = (qc[0].data ?? null) as Kpis | null;
   const panoBase = (qc[1].data ?? null) as PanoramaPayload | null;
