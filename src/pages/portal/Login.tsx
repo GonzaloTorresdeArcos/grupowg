@@ -21,10 +21,17 @@ const PortalLogin = () => {
 
   // Ruta de vuelta: `state.from` (navegación interna) o `?next=` (redirección
   // del guardia de /operaciones al perderse la sesión).
+  const params = new URLSearchParams(location.search);
+  const nextParam = params.get("next");
+  // Protección open-redirect: solo rutas internas («/algo», nunca «//host» ni absolutas).
+  const nextValido =
+    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : null;
   const from =
-    (location.state as { from?: string } | null)?.from ||
-    new URLSearchParams(location.search).get("next") ||
-    "/portal";
+    (location.state as { from?: string } | null)?.from || nextValido || "/portal";
+
+  const sesionCaducada = params.get("reason") === "session_expired";
+  const destinoOperaciones = (nextValido ?? "").startsWith("/operaciones");
+
 
 
   useEffect(() => {
