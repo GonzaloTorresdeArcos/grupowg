@@ -193,10 +193,29 @@ const Dashboard = () => {
   const [showEvo, setShowEvo] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
 
-  // ARQUITECTURA DE CARGA EN DOS ETAPAS.
-  // CRÍTICO: lo que sostiene la Situation Line y el balance (KPIs + panorama
-  // resumen, sin series). SECUNDARIO: series, alertas, equipos, scorecard y
-  // supply, que se habilitan cuando el crítico ya está en pantalla.
+  // CLASIFICACIÓN DE CARGA DEL PANORAMA (contrato de rendimiento, no de datos).
+  //
+  // CRITICAL (first paint, ruta crítica = 2 RPC exactamente):
+  //   · ops_kpis (período actual)            → Situation Line + KPIs CEO
+  //   · ops_panorama_resumen (período actual) → ecuación del bloque A y etapas D
+  //   Ambas renderizan en cuanto llegan, sin esperar a nada más.
+  //
+  // SECONDARY (en paralelo, con esqueleto propio por bloque, no bloquean):
+  //   · ops_kpis previo y ops_panorama_resumen previo → Δ vs previo. Mientras
+  //     no llegan, los deltas muestran «—» (nunca 0): ver <Delta v={null} />.
+  //   · ops_panorama_series (m=12), ops_evolucion → series y evolución 18m
+  //   · ops_alertas → asuntos de E
+  //   · ops_supply_resumen → etapa de espera de pieza (D) y asunto de E
+  // SECONDARY TARDÍO: ops_equipos ×2 y ops_tecnicos_scorecard ×2 alimentan solo
+  //   el bloque C y los asuntos de E; no participan en la primera pantalla.
+  //
+  // DRILL-DOWN (bajo demanda, fuera de esta página): ops_supply_detalle,
+  //   ops_sla_detalle, ops_dispersion_detalle, ops_tecnico_ficha,
+  //   ops_delegacion_ficha, ops_sla_evolucion.
+  //
+  // Las cifras finales son idénticas a las de la versión anterior: solo cambia
+  // el momento en que cada bloque aparece.
+
   const { criticos, secundarios: especSecundarios } = useMemo(() => {
     const prev = prevRange;
     const dims = {
@@ -217,19 +236,21 @@ const Dashboard = () => {
     return {
       criticos: [
         { rpc: "ops_kpis", params: rpcParams },
-        { rpc: "ops_kpis", params: prevRpc },
         { rpc: "ops_panorama_resumen", params: rpcParams },
-        { rpc: "ops_panorama_resumen", params: prevRpc },
       ],
       secundarios: [
+        // Comparativa (Δ vs previo): hasta que llega, los deltas muestran «—».
+        { rpc: "ops_kpis", params: prevRpc },
+        { rpc: "ops_panorama_resumen", params: prevRpc },
         { rpc: "ops_panorama_series", params: { ...rpcParams, p_meses: 12 } },
         { rpc: "ops_evolucion", params: dims },
         { rpc: "ops_alertas", params: rpcParams },
+        { rpc: "ops_supply_resumen", params: { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } },
+        // Secundario tardío: solo alimentan el bloque C y los asuntos de E.
         { rpc: "ops_equipos", params: equipParams },
         { rpc: "ops_equipos", params: equipPrev },
         { rpc: "ops_tecnicos_scorecard", params: scoreParams },
         { rpc: "ops_tecnicos_scorecard", params: scorePrevParams },
-        { rpc: "ops_supply_resumen", params: { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } },
       ],
     };
   }, [rpcParams, prevRange]);
@@ -247,26 +268,27 @@ const Dashboard = () => {
   const loading = qc.some((r) => r.isPending);
   const cargandoSecundario = qs.some((r) => r.isPending || r.fetchStatus === "fetching");
   const kpis = (qc[0].data ?? null) as Kpis | null;
-  const kpisPrev = (qc[1].data ?? null) as Kpis | null;
-  const panoBase = (qc[2].data ?? null) as PanoramaPayload | null;
-  const panoPrev = (qc[3].data ?? null) as PanoramaPayload | null;
-  const serie = (qs[0].data ?? null) as { serie?: unknown[] } | null;
+  const panoBase = (qc[1].data ?? null) as PanoramaPayload | null;
+  const kpisPrev = (qs[0].data ?? null) as Kpis | null;
+  const panoPrev = (qs[1].data ?? null) as PanoramaPayload | null;
+  const serie = (qs[2].data ?? null) as { serie?: unknown[] } | null;
   // El resumen no trae series: se completan cuando llega la etapa secundaria.
   const pano = useMemo<PanoramaPayload | null>(
     () => (panoBase ? ({ ...panoBase, serie: (serie?.serie ?? []) } as PanoramaPayload) : null),
     [panoBase, serie],
   );
-  const evo = useMemo(() => (qs[1].data ?? []) as EvoRow[], [qs[1].data]);
-  const alertas = (qs[2].data ?? null) as Alertas | null;
-  const equiposNow = useMemo(() => (qs[3].data ?? []) as EquipoRow[], [qs[3].data]);
-  const equiposPrev = useMemo(() => (qs[4].data ?? []) as EquipoRow[], [qs[4].data]);
-  const score = useMemo(() => (qs[5].data ?? []) as ScoreRow[], [qs[5].data]);
-  const scorePrev = useMemo(() => (qs[6].data ?? []) as ScoreRow[], [qs[6].data]);
+  const evo = useMemo(() => (qs[3].data ?? []) as EvoRow[], [qs[3].data]);
+  const alertas = (qs[4].data ?? null) as Alertas | null;
   // F4B · Supply manda sobre la etapa derivada para la cifra de espera de pieza.
   const supply = useMemo<SupplyPayload | null>(
-    () => (qs[7].error || !qs[7].data ? null : normalizarSupply(qs[7].data)),
-    [qs[7].data, qs[7].error],
+    () => (qs[5].error || !qs[5].data ? null : normalizarSupply(qs[5].data)),
+    [qs[5].data, qs[5].error],
   );
+  const equiposNow = useMemo(() => (qs[6].data ?? []) as EquipoRow[], [qs[6].data]);
+  const equiposPrev = useMemo(() => (qs[7].data ?? []) as EquipoRow[], [qs[7].data]);
+  const score = useMemo(() => (qs[8].data ?? []) as ScoreRow[], [qs[8].data]);
+  const scorePrev = useMemo(() => (qs[9].data ?? []) as ScoreRow[], [qs[9].data]);
+
 
   // UX POR BLOQUE. Cada bloque secundario expone su propio estado: mientras su
   // query esté pendiente o refrescando muestra su esqueleto / etiqueta
@@ -280,11 +302,12 @@ const Dashboard = () => {
       vacio: rs.every((r) => !r.data),
     };
   };
-  const stSeries = estadoDe(0, 1);
-  const stCapacidad = estadoDe(5, 6);
-  const stFlujo = estadoDe(7);
-  const stAtencion = estadoDe(2, 3, 4, 5, 6, 7);
-  const stComparativa = estadoDe(3, 4);
+  const stSeries = estadoDe(2, 3);       // serie de backlog + evolución 18m
+  const stCapacidad = estadoDe(8, 9);    // C · capacidad (scorecard)
+  const stFlujo = estadoDe(5);           // D · flujo con supply
+  const stAtencion = estadoDe(4, 5, 6, 7, 8, 9); // E · Management Attention
+  const stComparativa = estadoDe(0, 1, 6, 7);    // Δ vs previo + equipos
+
 
   // Hitos UAT: primeros KPI (tanda crítica resuelta), Panorama usable (crítico
   // pintado) y carga completa (secundario resuelto).

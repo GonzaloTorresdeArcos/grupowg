@@ -1,116 +1,106 @@
 # Waterfall DESPUÉS — /operaciones
 
 Misma metodología que `waterfall-antes.md` (mediana de 2 pasadas en caliente,
-mismo snapshot).
+mismo snapshot de 125.752 OTs, rol `authenticated` con claim `sub` de un
+usuario management y RLS activa).
 
-## RPC medidas
+## RPC medidas (rol authenticated, caliente)
 
-| RPC | Parámetros | ANTES | DESPUÉS | Factor |
-|---|---|---|---|---|
-| `ops_supply` → `ops_supply_resumen` | mes en curso | 5.167 ms | **115 ms** | 45× |
-| `ops_supply` → `ops_supply_resumen` | 12 meses | 2.957 ms | **630 ms** | 4,7× |
-| `ops_panorama` → `ops_panorama_resumen` | mes en curso | 1.954 ms | **129 ms** | 15× |
-| `ops_panorama_series` (diferida) | 12 meses | — | 1.443 ms | — |
-| `ops_sla_resumen` | mes en curso | 996 ms | **366 ms** | 2,7× |
-| `ops_sla_evolucion` (diferida) | ventana 12 meses | — | 750 ms | — |
-| `ops_kpis` | mes en curso | 170 ms | 170 ms | = |
-| `ops_dispersion_resumen` | mes en curso | 232 ms | 232 ms | = |
+| RPC | Parámetros | ANTES | DESPUÉS | Payload | Factor |
+|---|---|---|---|---|---|
+| `ops_supply` → `ops_supply_resumen` | junio 2026 + previo | 5.167 ms | **86 ms** | 58,0 KB | 60× |
+| `ops_supply` → `ops_supply_resumen` | 12M + previo | 2.957 ms | **699 ms** | 76,0 KB | 4,2× |
+| `ops_panorama` → `ops_panorama_resumen` | junio 2026 | 1.954 ms | **128 ms** | 1,1 KB | 15× |
+| `ops_panorama_resumen` | 12M | — | **129 ms** | 1,1 KB | — |
+| `ops_panorama_series` (secundaria) | 12 meses | incluida arriba | 1.438 ms | 0,9 KB | fuera del crítico |
+| `ops_sla_resumen` | junio 2026 | 996 ms | **364 ms** | 39,8 KB | 2,7× |
+| `ops_sla_resumen` | 12M | 1.147 ms | **514 ms** | 40,2 KB | 2,2× |
+| `ops_sla_evolucion` (drill-down) | ventana 12M | incluida arriba | 750 ms | — | diferida |
+| `ops_kpis` | junio 2026 | 170 ms | **162 ms** | 0,4 KB | = |
+| `ops_evolucion` (secundaria) | sin filtros | 3.900 ms | **291 ms** | 2,3 KB | 13× |
+| `ops_alertas` (secundaria) | junio 2026 | 211 ms | 211 ms | 2,5 KB | = |
+| `ops_dispersion_resumen` | junio 2026 | 6.800 ms | **232 ms** | — | 29× |
 
-**Ruta crítica del Panorama** = `ops_kpis` (×2) + `ops_panorama_resumen` (×2),
-todas en paralelo → **~300 ms de servidor**, por debajo del objetivo de 400 ms.
+## Ruta crítica del Panorama
+
+| | ANTES | DESPUÉS |
+|---|---|---|
+| RPC en la ruta crítica | 11 (una sola tanda bloqueante) | **2** |
+| Tiempo de servidor del crítico | ≈ 5.900 ms (la más lenta manda) | **162 ms** (paralelo: `ops_kpis` 162 + `ops_panorama_resumen` 128) |
+| Payload del crítico | > 300 KB | **1,5 KB** |
+| Bloqueo de la primera pintura | spinner global | ninguno: esqueleto inmediato + datos al llegar |
+
+### Clasificación implementada (documentada en `src/pages/ops/Dashboard.tsx`)
+
+- **CRITICAL** (2 RPC): `ops_kpis` (actual), `ops_panorama_resumen` (actual) →
+  Situation Line, KPIs CEO, ecuación del bloque A, etapas de D.
+- **SECONDARY** (8 RPC, en paralelo, con esqueleto propio por bloque):
+  `ops_kpis` previo, `ops_panorama_resumen` previo, `ops_panorama_series`,
+  `ops_evolucion`, `ops_alertas`, `ops_supply_resumen`, y en el tramo tardío
+  `ops_equipos` ×2 y `ops_tecnicos_scorecard` ×2 (solo bloque C y asuntos de E).
+- **DRILL-DOWN** (bajo demanda): `ops_supply_detalle`, `ops_sla_detalle`,
+  `ops_dispersion_detalle`, `ops_sla_evolucion`, `ops_tecnico_ficha`,
+  `ops_delegacion_ficha`.
+
+Mientras no llega el previo, los deltas muestran `—` (nunca 0). Las cifras
+finales son idénticas: solo cambia el momento en que aparece cada bloque.
 
 ## Cambios que producen la mejora
 
 1. **`ops_supply_resumen` / `ops_supply_detalle`**: predicados en línea sobre
    `ops_fact_ot` en vez de `SETOF ops_supply_filtrada` (que impedía el
-   *predicate pushdown*), y el listado de OTs pasa a paginarse bajo demanda.
-2. **`ops_panorama_resumen` / `ops_panorama_series`**: la versión de resumen no
-   ejecuta `generate_series` de 12 meses; la serie se pide como secundaria.
-3. **`ops_sla_resumen`**: la CTE `filtrada` pasa a `MATERIALIZED` con solo las
-   17 columnas usadas, y las series de backlog salen a `ops_sla_evolucion`.
-4. Todas las funciones nuevas son `STABLE PARALLEL SAFE`, con envoltorio
-   `SECURITY DEFINER` protegido por `is_management(auth.uid())`.
+   *predicate pushdown*); el listado de OTs se pagina bajo demanda.
+2. **`ops_panorama_resumen` / `ops_panorama_series`**: el resumen no ejecuta
+   `generate_series` de 12 meses; la serie se pide como secundaria.
+3. **`ops_sla_resumen`**: CTE `filtrada` materializada con solo las 17 columnas
+   usadas; `back_rows` se calcula una vez y de ella derivan evo/evo_deleg/
+   evo_tec y `top_tecs`; las series de backlog salen a `ops_sla_evolucion`.
+4. **Wrappers SECURITY DEFINER con guardia `is_management`** + funciones
+   `PARALLEL SAFE`: evitan reevaluar la política RLS fila a fila
+   (ver `security-definer-pattern.md`).
+5. **Caché react-query** por `(rpc, params)` con `staleTime` de sesión e
+   invalidación explícita: la navegación entre módulos ya cargados no repite
+   ninguna RPC.
+6. **`placeholderData` (keepPreviousData) global**: al cambiar filtro o
+   período el DOM conserva los valores previos; cada bloque marca su propio
+   `isFetching` con «Actualizando…», sin spinner global.
+7. **Rol management cacheado en `sessionStorage`**: elimina el round-trip en
+   serie `getSession → user_roles → primera RPC` en recargas dentro de la
+   misma sesión. La autorización real la siguen imponiendo RLS y la guardia
+   `is_management` en servidor; la caché solo decide qué se pinta.
 
-Cada migración incluyó una comprobación de igualdad de resultados dentro de la
-propia transacción: si el JSON hubiera cambiado, la migración se aborta.
+## Otras fuentes de latencia revisadas (punto 5)
 
-## Arquitectura de carga en el cliente
+| Comprobación | Resultado |
+|---|---|
+| Chunks pesados en el shell de /operaciones | `recharts` no se usa en `/operaciones` (sparklines son SVG inline); `xlsx`/`papaparse` no están en el árbol; `jspdf`/`html2canvas` ya salen en chunks propios cargados con `import()` dinámico y no entran en el shell. |
+| Cascada de autenticación | Existía (`getSession` → `user_roles` → RPC). Corregida con caché de rol en `sessionStorage` + revalidación en segundo plano. |
+| `ops_cobertura_datos` / `ops_filter_options` | Se lanzan en el proveedor de filtros en paralelo con la tanda crítica; los filtros iniciales vienen de `localStorage`, así que no preceden en serie a ninguna RPC crítica. |
+| Doble disparo por StrictMode | react-query deduplica por clave `(rpc, params)`; el doble render de desarrollo no genera segunda petición. En build de producción StrictMode no duplica efectos. |
 
-- **Panorama** (`src/pages/ops/Dashboard.tsx`): dos etapas.
-  - *Crítica* (bloquea la primera pintura): `ops_kpis` actual y previo,
-    `ops_panorama_resumen` actual y previo → Situation Line, bloque A y B1.
-  - *Secundaria* (`enabled` en cuanto la crítica deja de estar pendiente):
-    series, `ops_evolucion`, `ops_alertas`, `ops_equipos` ×2,
-    `ops_tecnicos_scorecard` ×2 y `ops_supply_resumen`.
-  - El spinner global desaparece: se pinta un esqueleto inmediato y, mientras
-    llega lo secundario, un indicador discreto en la cabecera.
-- **SLA**: `ops_sla_evolucion` se habilita cuando el resumen ya está en
-  pantalla; las series alimentan alertas y sparklines al llegar.
-- **`placeholderData`** activado por defecto en `useOpsRpc` / `useOpsRpcs`: al
-  cambiar período o filtro se conserva la vista anterior en lugar de vaciarse.
+## Medición en navegador — ESTADO: NO REALIZADA (bloqueada)
 
-## Medición en navegador
+**No se declara PASS de navegador.** No ha sido posible ejecutar el protocolo
+del punto 0/7 con sesión management real desde este entorno:
 
-Instrumentación permanente en `src/lib/ops-perf.ts` + overlay
-`src/components/ops/PerfOverlay.tsx`, activable con `?perf=1` en cualquier ruta
-de `/operaciones`. Registra por RPC: duración real de la llamada, tamaño de
-payload y errores, con totales de la sesión.
+- `LOVABLE_BROWSER_AUTH_STATUS = signed_out`: no hay sesión inyectada.
+- `lovable auth-session` (sin `--user`) falla: el proyecto tiene 4 usuarios de
+  autenticación y exige indicar cuál.
+- `lovable auth-session --user <uuid>` requiere una aprobación interactiva que
+  no está disponible en este contexto de ejecución.
+- No hay `service_role` accesible en Lovable Cloud, por lo que tampoco se puede
+  crear un usuario management temporal ni firmar un JWT.
 
-Pendiente de cerrar con sesión *management* real en el navegador: el entorno de
-verificación automática no puede acuñar sesión para este proyecto, así que la
-comprobación en vivo (cold / warm / cambio de filtro) debe hacerse abriendo la
-vista previa autenticada con `?perf=1`.
+Lo único medible sin sesión (servidor de desarrollo, sin autenticar): el shell
+se monta y redirige a `/portal/login`; el chunk de la aplicación y las
+dependencias de la barra de filtros resuelven entre 792 ms y 1.010 ms en modo
+desarrollo (módulos sin empaquetar, no representativo del build de producción).
 
-## Cierre de la tercera pasada
+### Cómo cerrar el gate
 
-### UX por bloque (Panorama)
-
-Cada bloque secundario tiene ahora su propio estado, independiente del
-indicador global de cabecera ("Completando análisis…", que se mantiene sólo
-como señal de cabecera):
-
-| Bloque | Queries que lo alimentan | Estado propio |
-|--------|--------------------------|---------------|
-| A · serie de backlog | `ops_panorama_series` | esqueleto + "Actualizando…" |
-| A · evolución 18m | `ops_panorama_series`, `ops_evolucion` | esqueleto + "Actualizando…" |
-| B1 · serie ≤20d | `ops_panorama_series` | esqueleto + "Actualizando…" |
-| C · capacidad | `ops_tecnicos_scorecard` (actual y previo) | esqueleto + "Actualizando…" |
-| D · flujo (supply) | `ops_supply_resumen` | "Actualizando…" |
-| E · atención | equipos, scorecard, alertas, supply | esqueleto + "Actualizando…" |
-| Comparativa | `ops_equipos` (actual y previo) | estado propio |
-
-Ninguno bloquea el render de Situation Line, bloque A o B1: éstos dependen sólo
-de la tanda crítica (`ops_kpis` ×2 + `ops_panorama_resumen` ×2), verificado por
-test.
-
-### Gate runtime
-
-`scripts/runtime-rpc-gate.sql` cubre las RPC optimizadas nuevas
-(`ops_panorama_resumen` jun-26 y 12M, `ops_panorama_series` 12 meses,
-`ops_supply_resumen` con previo en mes y 12M, `ops_supply_detalle` en
-`pte_piezas` y `demanda` con límite 50, `ops_sla_evolucion` sin filtros y con
-delegación). Un test comprueba automáticamente que toda RPC `ops_*` invocada
-desde `src` tiene caso en el gate.
-
-Tiempos medidos con rol `authenticated` y claims de management (caché templada):
-
-| RPC | Caso | ms | Payload |
-|-----|------|----|---------|
-| `ops_panorama_resumen` | jun-26 | ~139 | pequeño |
-| `ops_panorama_resumen` | 12M | ~140 | pequeño |
-| `ops_panorama_series` | 12 meses | ~1442 | medio (diferido a secundario) |
-| `ops_supply_resumen` | mes con previo | ~91 | pequeño |
-| `ops_supply_detalle` | pte_piezas / demanda, 50 filas | <10 | pequeño |
-| `ops_sla_evolucion` | sin filtros | ~750 | medio (diferido) |
-| `ops_sla_evolucion` | con delegación | ~314 | pequeño |
-
-### Medición en navegador — estado
-
-**Pendiente de la prueba de Dirección.** No es posible automatizarla en este
-entorno: no hay sesión inyectada (`signed_out`), el proyecto tiene varias
-cuentas de auth (por lo que la generación de sesión exige aprobación
-interactiva) y no hay acceso a `service_role` para crear un usuario temporal
-de management. Como alternativa operativa, el overlay `?perf=1` incorpora los
-hitos de escenario (Shell visible, Primeros KPI, Panorama usable, Carga
-completa) y un botón **Copiar informe** que exporta hitos + tabla de RPC en
-texto. El paso a paso está en `docs/perf/protocolo-uat.md`.
+`docs/perf/protocolo-uat.md`: abrir `/operaciones?perf=1` con la sesión
+management real, recorrer los 6 escenarios y pulsar «Copiar informe» en el
+overlay. El informe exporta los cuatro hitos (shell visible, primeros KPI,
+Panorama usable, carga completa) más cada RPC con ms, KB y si vino de caché.
+Con ese texto se completa esta sección y se declara PASS o FAIL con evidencia
+de navegador.

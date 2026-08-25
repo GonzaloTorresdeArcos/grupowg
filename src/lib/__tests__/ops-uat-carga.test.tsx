@@ -89,15 +89,28 @@ const cargarCritico = () => {
 describe("Panorama · tanda crítica y secundaria", () => {
   beforeEach(reset);
 
-  it("la tanda crítica contiene exactamente 4 RPC: ops_kpis ×2 y ops_panorama_resumen ×2", async () => {
+  it("la ruta crítica contiene exactamente 2 RPC: ops_kpis y ops_panorama_resumen del período actual", async () => {
     cargarCritico();
     const { default: Dashboard } = await import("@/pages/ops/Dashboard");
     render(<MemoryRouter><Dashboard /></MemoryRouter>);
     const critica = estado.tandas[0];
-    expect(critica).toHaveLength(4);
-    const nombres = critica.map((s) => s.rpc).sort();
-    expect(nombres).toEqual(["ops_kpis", "ops_kpis", "ops_panorama_resumen", "ops_panorama_resumen"]);
+    expect(critica).toHaveLength(2);
+    expect(critica.map((s) => s.rpc).sort()).toEqual(["ops_kpis", "ops_panorama_resumen"]);
+    // Los períodos previos (Δ vs previo) viven en la tanda secundaria.
+    const secundaria = estado.tandas[1].map((s) => s.rpc);
+    expect(secundaria.filter((r) => r === "ops_kpis")).toHaveLength(1);
+    expect(secundaria).toContain("ops_supply_resumen");
+    expect(secundaria).toContain("ops_tecnicos_scorecard");
   });
+
+  it("la Situation Line se renderiza con solo ops_kpis + ops_panorama_resumen presentes", async () => {
+    cargarCritico(); // no hay datos de ninguna RPC secundaria
+    const { default: Dashboard } = await import("@/pages/ops/Dashboard");
+    render(<MemoryRouter><Dashboard /></MemoryRouter>);
+    expect(screen.getByTestId("situation-line")).toBeInTheDocument();
+    expect(screen.getByTestId("bloque-a")).toBeInTheDocument();
+  });
+
 
   it("la secundaria no se habilita hasta que la crítica deja de estar pendiente", async () => {
     const { default: Dashboard } = await import("@/pages/ops/Dashboard");
