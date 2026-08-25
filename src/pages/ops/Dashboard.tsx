@@ -193,10 +193,29 @@ const Dashboard = () => {
   const [showEvo, setShowEvo] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
 
-  // ARQUITECTURA DE CARGA EN DOS ETAPAS.
-  // CRÍTICO: lo que sostiene la Situation Line y el balance (KPIs + panorama
-  // resumen, sin series). SECUNDARIO: series, alertas, equipos, scorecard y
-  // supply, que se habilitan cuando el crítico ya está en pantalla.
+  // CLASIFICACIÓN DE CARGA DEL PANORAMA (contrato de rendimiento, no de datos).
+  //
+  // CRITICAL (first paint, ruta crítica = 2 RPC exactamente):
+  //   · ops_kpis (período actual)            → Situation Line + KPIs CEO
+  //   · ops_panorama_resumen (período actual) → ecuación del bloque A y etapas D
+  //   Ambas renderizan en cuanto llegan, sin esperar a nada más.
+  //
+  // SECONDARY (en paralelo, con esqueleto propio por bloque, no bloquean):
+  //   · ops_kpis previo y ops_panorama_resumen previo → Δ vs previo. Mientras
+  //     no llegan, los deltas muestran «—» (nunca 0): ver <Delta v={null} />.
+  //   · ops_panorama_series (m=12), ops_evolucion → series y evolución 18m
+  //   · ops_alertas → asuntos de E
+  //   · ops_supply_resumen → etapa de espera de pieza (D) y asunto de E
+  // SECONDARY TARDÍO: ops_equipos ×2 y ops_tecnicos_scorecard ×2 alimentan solo
+  //   el bloque C y los asuntos de E; no participan en la primera pantalla.
+  //
+  // DRILL-DOWN (bajo demanda, fuera de esta página): ops_supply_detalle,
+  //   ops_sla_detalle, ops_dispersion_detalle, ops_tecnico_ficha,
+  //   ops_delegacion_ficha, ops_sla_evolucion.
+  //
+  // Las cifras finales son idénticas a las de la versión anterior: solo cambia
+  // el momento en que cada bloque aparece.
+
   const { criticos, secundarios: especSecundarios } = useMemo(() => {
     const prev = prevRange;
     const dims = {
