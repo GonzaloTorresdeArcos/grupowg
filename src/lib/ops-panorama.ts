@@ -399,7 +399,7 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
         rep.edad_media != null
           ? ` y la antigüedad media as-of es de ${rep.edad_media.toFixed(1).replace(".", ",")} días (proxy: antigüedad de OT, no tiempo esperando pieza)`
           : ""
-      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}`,
+      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}${limitacionTz}`,
       hipotesis:
         "Concentración observada en la etapa de espera de repuesto. Sin trazabilidad de la solicitud no se puede afirmar que el suministro sea la causa del retraso: es un potencial efecto por confirmar.",
       accion: "Revisar en Repuestos el desglose por cliente contractual y antigüedad antes de decidir sobre capacidad o proveedor.",
@@ -410,13 +410,15 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
       destino: "/operaciones/repuestos#esperando-pieza",
       destinoLabel: "Ver repuestos y stock",
     });
+    repPublicado = true;
   }
 
-
-
   // 3.b Management Attention Supply: hueco de trazabilidad de la cadena.
+  //     Solo se publica como asunto propio si NO hay cifra real de espera de
+  //     repuesto que publicar: nunca debe desplazar ni ocultar el hecho real.
   const tz = i.supplyTrazabilidad;
-  if (tz && tz.otsConPieza > 0) {
+  if (!repPublicado && tz && tz.otsConPieza > 0) {
+
     const cob = tz.conSolicitud == null ? null : tz.conSolicitud / tz.otsConPieza;
     if (cob == null || cob < UMBRAL_TRAZABILIDAD_SUPPLY) {
       cand.push({
