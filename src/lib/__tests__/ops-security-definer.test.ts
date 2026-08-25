@@ -28,10 +28,17 @@ const extraerFunciones = (sql: string, fichero: string): Fn[] => {
   return out;
 };
 
-const funciones = readdirSync(DIR)
-  .filter((f) => f.endsWith(".sql"))
+// Solo cuenta la ÚLTIMA definición de cada función (las migraciones se aplican
+// en orden y una posterior reemplaza a la anterior).
+const porNombre = new Map<string, Fn>();
+for (const f of readdirSync(DIR)
+  .filter((x) => x.endsWith(".sql"))
   .sort()
-  .flatMap((f) => extraerFunciones(readFileSync(join(DIR, f), "utf8"), f));
+  .flatMap((x) => extraerFunciones(readFileSync(join(DIR, x), "utf8"), x))) {
+  porNombre.set(f.nombre, f);
+}
+const funciones = [...porNombre.values()];
+
 
 describe("SECURITY DEFINER · guardia is_management", () => {
   it("las migraciones definen funciones ops_*", () => {
