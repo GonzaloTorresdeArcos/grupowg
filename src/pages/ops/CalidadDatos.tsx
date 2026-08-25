@@ -16,7 +16,7 @@ import {
   type DominioDato,
   type EstadoDominio,
 } from "@/lib/ops-data-quality";
-import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
+import { AVISO_REGISTRY_BORRADOR, LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/ops-contractual";
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
 import { LABEL_FRESCURA_DOMINIO, fmtFechaEs } from "@/lib/ops-as-of";
 import { useDataFreshness } from "@/hooks/useDataFreshness";
