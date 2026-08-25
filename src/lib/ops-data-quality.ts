@@ -278,10 +278,21 @@ export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
     id: "coste_mensual",
     dominio: "Coste mensual por técnico",
     fuente: "ops_coste_mensual",
-    detalle: "Coste total, variable y kilómetros por técnico y mes.",
+    detalle:
+      "Coste total y variable por técnico y mes. La columna de kilómetros existe pero llega a 0 en todos los registros: no es dato utilizable.",
     kpisBloqueados: ["Coste real por OT", "Contribución por técnico"],
     regla: { tipo: "meses", fuente: "coste_mensual", minimo: 12 },
   },
+  {
+    id: "km_desplazamiento",
+    dominio: "Kilómetros de desplazamiento",
+    fuente: "ops_coste_mensual.km (a 0) — sin fuente de rutas",
+    detalle:
+      "No hay km reales. Lo único publicable es la aproximación en línea recta base→CP (Dispersión), siempre etiquetada «aprox.». Km por ruta o por intervención: pendientes de fuente.",
+    kpisBloqueados: ["Km reales por técnico", "Km por intervención", "Coste real de desplazamiento por km"],
+    regla: { tipo: "tabla", tabla: "ops_km_desplazamiento" },
+  },
+
   {
     id: "produccion_fte_dia",
     dominio: "Producción / FTE / día",
