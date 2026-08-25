@@ -178,7 +178,10 @@ describe("SLA · diferimiento de ops_sla_evolucion", () => {
     unmount();
 
     reset();
-    estado.datos.ops_sla_resumen = { buckets: [], etapas: [], clientes: [], productos: [] };
+    estado.datos.ops_sla_resumen = {
+      snapshot: { n30: 0, n20: 0, total: 0 },
+      buckets: [], etapas: [], categorias: [], clientes: [], productos: [],
+    };
     estado.datos.ops_kpis = KPIS;
     estado.criticoPendiente = false;
     render(<MemoryRouter><SLA /></MemoryRouter>);
