@@ -27,7 +27,8 @@ const PortalLogin = () => {
   const nextValido =
     nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : null;
   const from =
-    (location.state as { from?: string } | null)?.from || nextValido || "/portal";
+    nextValido || (location.state as { from?: string } | null)?.from || "/portal";
+
 
   const sesionCaducada = params.get("reason") === "session_expired";
   const destinoOperaciones = (nextValido ?? "").startsWith("/operaciones");
