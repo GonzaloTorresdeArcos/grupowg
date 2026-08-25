@@ -152,7 +152,7 @@ const Inscripcion = () => {
   const [agreementReadAt, setAgreementReadAt] = useState<Date | null>(null);
   const [agreementOpen, setAgreementOpen] = useState(false);
 
-  const downloadDraftAgreement = () => {
+  const downloadDraftAgreement = async () => {
     const blob = await generateDraftAgreementPdf({
       signerName: signerName || s1.razon_social,
       signerDni,
