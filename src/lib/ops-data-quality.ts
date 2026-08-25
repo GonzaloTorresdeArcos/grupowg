@@ -289,7 +289,7 @@ export const DEFINICIONES_DOMINIO: readonly DefinicionDominio[] = [
     fuente: "ops_coste_mensual.km (a 0) — sin fuente de rutas",
     detalle:
       "No hay km reales. Lo único publicable es la aproximación en línea recta base→CP (Dispersión), siempre etiquetada «aprox.». Km por ruta o por intervención: pendientes de fuente.",
-    kpisBloqueados: ["Km reales por técnico", "Km por intervención", "Coste real de desplazamiento por km"],
+    kpisBloqueados: ["Km por técnico (sin fuente)", "Km por intervención", "Coste real de desplazamiento por km"],
     regla: { tipo: "tabla", tabla: "ops_km_desplazamiento" },
   },
 
