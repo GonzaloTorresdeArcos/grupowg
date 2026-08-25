@@ -528,6 +528,109 @@ const CalidadDatos = () => {
         </div>
       </Seccion>
 
+      {/* F0 · Trazabilidad de los campos críticos */}
+      <Seccion
+        id="trazabilidad"
+        titulo="Trazabilidad de los campos críticos (F0)"
+        sub="Inventario único: campo fuente → tabla/modelo → RPC → frontend → KPI. Cualquier cifra de /operaciones se explica desde aquí."
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                <th className="py-2 pr-4 font-medium">Campo fuente</th>
+                <th className="py-2 pr-4 font-medium">Tabla / modelo</th>
+                <th className="py-2 pr-4 font-medium">Regla</th>
+                <th className="py-2 pr-4 font-medium">RPC</th>
+                <th className="py-2 pr-4 font-medium">Frontend</th>
+                <th className="py-2 font-medium">KPI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {TRAZABILIDAD_F0.map((t) => (
+                <tr key={t.id} className="border-b border-black/[0.04] align-top">
+                  <td className="py-2.5 pr-4 text-ink">{t.campoFuente}</td>
+                  <td className="py-2.5 pr-4 font-mono text-[11px] text-ink/60">{t.tabla}</td>
+                  <td className="py-2.5 pr-4 text-ink/55 max-w-md">{t.regla}</td>
+                  <td className="py-2.5 pr-4 font-mono text-[11px] text-ink/50">{t.rpcs.join(" · ")}</td>
+                  <td className="py-2.5 pr-4 text-ink/55">{t.frontend.join(" · ")}</td>
+                  <td className="py-2.5 text-ink/55">{t.kpis.join(" · ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Seccion>
+
+      {/* F2 · Catálogo único de ventanas propias */}
+      <Seccion
+        id="ventanas"
+        titulo="Ventanas temporales propias"
+        sub="Excepciones al período global. Son las únicas: cualquier otro bloque de /operaciones sigue el selector global."
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-ink/40 border-b border-black/[0.06]">
+                <th className="py-2 pr-4 font-medium">Página</th>
+                <th className="py-2 pr-4 font-medium">Bloque</th>
+                <th className="py-2 pr-4 font-medium">Ventana</th>
+                <th className="py-2 pr-4 font-medium">Filtros</th>
+                <th className="py-2 font-medium">Motivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {VENTANAS_PROPIAS.map((v) => (
+                <tr key={v.id} className="border-b border-black/[0.04] align-top">
+                  <td className="py-2.5 pr-4 text-ink">
+                    <Link to={v.ruta} className="underline underline-offset-2">{v.pagina}</Link>
+                  </td>
+                  <td className="py-2.5 pr-4 text-ink/70">{v.bloque}</td>
+                  <td className="py-2.5 pr-4 text-ink/70 tabular-nums">{v.meses} meses</td>
+                  <td className="py-2.5 pr-4 text-ink/50">{v.respetaFiltros ? "Responde a los filtros activos" : "Ficha individual"}</td>
+                  <td className="py-2.5 text-ink/55 max-w-md">{v.motivo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Seccion>
+
+      {/* Semántica única de kilómetros */}
+      <Seccion
+        id="km"
+        titulo="Semántica de kilómetros"
+        sub={AVISO_KM}
+      >
+        <ul className="space-y-3 text-[13px]">
+          {SEMANTICA_KM.map((k) => (
+            <li key={k.id} className="border-b border-black/[0.04] pb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-ink font-medium">{k.concepto}</span>
+                <span className="rounded-full border border-black/[0.08] px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-ink/45">
+                  {LABEL_NIVEL_KM[k.nivel]}
+                </span>
+                <span className="font-mono text-[11px] text-ink/45">{k.fuente}</span>
+              </div>
+              <p className="mt-1 text-ink/55">{k.detalle}</p>
+            </li>
+          ))}
+        </ul>
+      </Seccion>
+
+      {/* Decisión sobre rutas antiguas */}
+      <Seccion
+        id="rutas-legado"
+        titulo={`Rutas antiguas · decisión ${DECISION_RUTAS_LEGADO.id} (${DECISION_RUTAS_LEGADO.estado})`}
+        sub={DECISION_RUTAS_LEGADO.decision}
+      >
+        <ul className="list-disc pl-5 space-y-1 text-[13px] text-ink/60">
+          {DECISION_RUTAS_LEGADO.condiciones.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </Seccion>
+
       {/* Plantillas de carga */}
       <Seccion
         id="plantillas"
