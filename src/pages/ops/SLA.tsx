@@ -729,53 +729,81 @@ const SLA = () => {
         </div>
       </section>
 
-      {/* Listado de abiertas + concentraciones */}
+      {/* Detalle bajo demanda + concentraciones */}
       <section>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Abiertas ({fmtNum(data.abiertas.length)}{data.abiertas.length === 500 ? "+" : ""})</p>
-          <button onClick={exportCsv} className="flex items-center gap-1.5 text-xs text-ink/60 hover:text-ink">
-            <Download className="h-3.5 w-3.5" /> Exportar CSV
-          </button>
-        </div>
-        <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
-          <table className="w-full text-sm min-w-[860px]">
-            <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06]">
-              <tr>
-                <th className="text-left px-4 py-2.5 font-semibold">OT</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Cliente</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Familia</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Provincia</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Recurso</th>
-                <th className="text-left px-3 py-2.5 font-semibold" title="Estado de flujo actual (sin historial: no se conoce el tiempo en esta etapa)">Etapa actual</th>
-                <th className="text-left px-3 py-2.5 font-semibold">Creación</th>
-                <th className="text-right px-4 py-2.5 font-semibold">Días</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.04]">
-              {data.abiertas.map((a) => (
-                <tr key={a.num_ot}>
-                  <td className="px-4 py-2 font-medium text-ink">{a.num_ot}</td>
-                  <td className="px-3 py-2 text-ink/70">{a.cliente_wg || "—"}</td>
-                  <td className="px-3 py-2 text-ink/70">{a.familia || "—"}</td>
-                  <td className="px-3 py-2 text-ink/70">{a.provincia || "—"}</td>
-                  <td className="px-3 py-2 text-ink/70">{a.tecnico || a.sat || "—"}</td>
-                  <td className="px-3 py-2 text-ink/70 text-xs" title={a.estado}>{LABEL_CATEGORIA[categoriaDeEstado(a.estado)]}</td>
-                  <td className="px-3 py-2 text-ink/60 text-xs tabular-nums">{a.fecha_creacion || "—"}</td>
-                  <td className={`text-right px-4 py-2 tabular-nums ${a.dias_abierta > 30 ? "text-red-600 font-medium" : a.dias_abierta > 20 ? "text-amber-600" : "text-ink/60"}`}>{a.dias_abierta}</td>
-                </tr>
-              ))}
-              {data.abiertas.length === 0 && (
-                <tr><td colSpan={8} className="text-center px-4 py-8 text-ink/40 text-sm">Sin OTs abiertas con los filtros actuales.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {drill ? (
+          <>
+            <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">
+                Abiertas · {drill.tipo === "bucket" ? `tramo ${drill.clave} días` : `etapa ${drill.clave}`}
+                {detalle ? ` (${fmtNum(detalle.total)})` : ""}
+                {detalleQ.isFetching ? " · actualizando…" : ""}
+              </p>
+              <div className="flex items-center gap-4">
+                <button onClick={() => setDrill(null)} className="text-xs text-ink/50 hover:text-ink">Cerrar</button>
+                <button onClick={exportCsv} disabled={!detalle?.rows.length} className="flex items-center gap-1.5 text-xs text-ink/60 hover:text-ink disabled:opacity-40">
+                  <Download className="h-3.5 w-3.5" /> Exportar página CSV
+                </button>
+              </div>
+            </div>
+            <div className="border border-black/[0.06] rounded-2xl bg-white overflow-x-auto">
+              <table className="w-full text-sm min-w-[860px]">
+                <thead className="text-[10px] uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.06]">
+                  <tr>
+                    <th className="text-left px-4 py-2.5 font-semibold">OT</th>
+                    <th className="text-left px-3 py-2.5 font-semibold">Cliente</th>
+                    <th className="text-left px-3 py-2.5 font-semibold">Familia</th>
+                    <th className="text-left px-3 py-2.5 font-semibold">Provincia</th>
+                    <th className="text-left px-3 py-2.5 font-semibold">Recurso</th>
+                    <th className="text-left px-3 py-2.5 font-semibold" title="Estado de flujo actual (sin historial: no se conoce el tiempo en esta etapa)">Etapa actual</th>
+                    <th className="text-left px-3 py-2.5 font-semibold">Creación</th>
+                    <th className="text-right px-4 py-2.5 font-semibold">Días</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black/[0.04]">
+                  {(detalle?.rows ?? []).map((a) => (
+                    <tr key={a.num_ot}>
+                      <td className="px-4 py-2 font-medium text-ink">{a.num_ot}</td>
+                      <td className="px-3 py-2 text-ink/70">{a.cliente_wg || "—"}</td>
+                      <td className="px-3 py-2 text-ink/70">{a.familia || "—"}</td>
+                      <td className="px-3 py-2 text-ink/70">{a.provincia || "—"}</td>
+                      <td className="px-3 py-2 text-ink/70">{a.tecnico || a.sat || "—"}</td>
+                      <td className="px-3 py-2 text-ink/70 text-xs" title={a.estado}>{LABEL_CATEGORIA[categoriaDeEstado(a.estado)]}</td>
+                      <td className="px-3 py-2 text-ink/60 text-xs tabular-nums">{a.fecha_creacion || "—"}</td>
+                      <td className={`text-right px-4 py-2 tabular-nums ${a.dias_abierta > 30 ? "text-red-600 font-medium" : a.dias_abierta > 20 ? "text-amber-600" : "text-ink/60"}`}>{a.dias_abierta}</td>
+                    </tr>
+                  ))}
+                  {!detalleQ.isPending && !(detalle?.rows ?? []).length && (
+                    <tr><td colSpan={8} className="text-center px-4 py-8 text-ink/40 text-sm">Sin OTs abiertas con los filtros actuales.</td></tr>
+                  )}
+                  {detalleQ.isPending && (
+                    <tr><td colSpan={8} className="text-center px-4 py-8 text-ink/40 text-sm">Cargando…</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {!!detalle && detalle.total > DETALLE_PAGINA && (
+              <div className="flex items-center justify-between mt-3 text-xs text-ink/60">
+                <span className="tabular-nums">{fmtNum(detalle.offset + 1)}–{fmtNum(Math.min(detalle.offset + DETALLE_PAGINA, detalle.total))} de {fmtNum(detalle.total)}</span>
+                <div className="flex gap-2">
+                  <button onClick={() => setPagina((p) => Math.max(0, p - 1))} disabled={pagina === 0} className="rounded-full border border-black/[0.08] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Anterior</button>
+                  <button onClick={() => setPagina((p) => p + 1)} disabled={detalle.offset + DETALLE_PAGINA >= detalle.total} className="rounded-full border border-black/[0.08] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Siguiente</button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-[13px] text-ink/50 border border-dashed border-black/[0.12] rounded-2xl px-5 py-4">
+            El listado de OTs abiertas se carga bajo demanda: pulsa un tramo de antigüedad o una etapa operativa para verlo paginado.
+          </p>
+        )}
 
         <div className="grid md:grid-cols-2 gap-4 mt-6">
           <MiniList title="+30d por provincia" rows={data.prov_30.map((r) => ({ k: r.provincia, n: r.n }))} />
           <MiniList title="+30d por SAT" rows={data.sat_30.map((r) => ({ k: r.sat, n: r.n }))} />
         </div>
       </section>
+
 
       {/* Panel de definiciones */}
       <section className="border border-black/[0.06] rounded-2xl bg-white">
