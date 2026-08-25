@@ -233,6 +233,25 @@ const Dashboard = () => {
     [qs[7].data, qs[7].error],
   );
 
+  // UX POR BLOQUE. Cada bloque secundario expone su propio estado: mientras su
+  // query esté pendiente o refrescando muestra su esqueleto / etiqueta
+  // «Actualizando…», y si falla muestra su propio error. Ninguno bloquea el
+  // render de Situation Line / A / B1, que dependen solo de la tanda crítica.
+  const estadoDe = (...idx: number[]): EstadoBloque => {
+    const rs = idx.map((i) => qs[i]).filter(Boolean);
+    return {
+      cargando: rs.some((r) => (r.isPending && !r.data) || r.fetchStatus === "fetching"),
+      error: rs.some((r) => !!r.error),
+      vacio: rs.every((r) => !r.data),
+    };
+  };
+  const stSeries = estadoDe(0, 1);
+  const stCapacidad = estadoDe(5, 6);
+  const stFlujo = estadoDe(7);
+  const stAtencion = estadoDe(2, 3, 4, 5, 6, 7);
+  const stComparativa = estadoDe(3, 4);
+
+
 
 
   const hayComparable = !sinComparable && !!kpisPrev;
