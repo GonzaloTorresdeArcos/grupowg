@@ -362,7 +362,23 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
   //    llega, el asunto no se publica: no se calcula en paralelo desde etapas.
   const rep = i.supplyPte;
   const fuenteRep: FuenteEsperaRepuesto = "ops_supply";
+  const tzPrev = i.supplyTrazabilidad;
+  const cobPrev =
+    tzPrev && tzPrev.otsConPieza > 0 && tzPrev.conSolicitud != null
+      ? tzPrev.conSolicitud / tzPrev.otsConPieza
+      : null;
+  /** Limitación declarada DENTRO del asunto: nunca sustituye a la cifra real. */
+  const limitacionTz =
+    tzPrev && tzPrev.otsConPieza > 0 && (cobPrev == null || cobPrev < UMBRAL_TRAZABILIDAD_SUPPLY)
+      ? ` Limitación: la cadena de suministro no es trazable extremo a extremo (${
+          cobPrev == null
+            ? "sin solicitudes registradas en ops_pieza_solicitud"
+            : `solo ${pct1(cobPrev)} de las OTs con pieza tienen solicitud registrada`
+        }), por lo que no puede separarse espera de proveedor, de almacén y de taller.`
+      : "";
+  let repPublicado = false;
   if (rep && i.abiertas > 0 && rep.n / i.abiertas >= UMBRAL_SHARE_REPUESTO) {
+
     const fecha = rep.asOf ? ` a ${fmtFechaEs(rep.asOf)}` : "";
     const tendencia =
       i.hayComparable && rep.n_prev != null
@@ -383,7 +399,7 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
         rep.edad_media != null
           ? ` y la antigüedad media as-of es de ${rep.edad_media.toFixed(1).replace(".", ",")} días (proxy: antigüedad de OT, no tiempo esperando pieza)`
           : ""
-      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}`,
+      }. Fuente: ops_supply.pte_piezas_actual.${tendencia}${topTxt}${expoTxt}${limitacionTz}`,
       hipotesis:
         "Concentración observada en la etapa de espera de repuesto. Sin trazabilidad de la solicitud no se puede afirmar que el suministro sea la causa del retraso: es un potencial efecto por confirmar.",
       accion: "Revisar en Repuestos el desglose por cliente contractual y antigüedad antes de decidir sobre capacidad o proveedor.",
@@ -394,13 +410,15 @@ export function construirAsuntos(i: AsuntosInput): Asunto[] {
       destino: "/operaciones/repuestos#esperando-pieza",
       destinoLabel: "Ver repuestos y stock",
     });
+    repPublicado = true;
   }
 
-
-
   // 3.b Management Attention Supply: hueco de trazabilidad de la cadena.
+  //     Solo se publica como asunto propio si NO hay cifra real de espera de
+  //     repuesto que publicar: nunca debe desplazar ni ocultar el hecho real.
   const tz = i.supplyTrazabilidad;
-  if (tz && tz.otsConPieza > 0) {
+  if (!repPublicado && tz && tz.otsConPieza > 0) {
+
     const cob = tz.conSolicitud == null ? null : tz.conSolicitud / tz.otsConPieza;
     if (cob == null || cob < UMBRAL_TRAZABILIDAD_SUPPLY) {
       cand.push({

@@ -315,14 +315,27 @@ describe("F4B · Management Attention Supply", () => {
     supplyPte: { n: 1234, n30: 456, edad_media: 61.4, n_prev: 1100, asOf: "2026-07-25" },
   };
 
-  it("sin solicitudes cargadas declara que la cadena no es trazable", () => {
+  it("sin solicitudes cargadas y sin cifra de Supply declara que la cadena no es trazable", () => {
     const a = construirAsuntos({
-      ...conSupply,
+      ...baseAsuntos,
+      supplyPte: null,
       supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: null },
     }).find((x) => x.fenomeno === "supply_sin_trazabilidad");
     expect(a?.hecho).toContain("ops_pieza_solicitud");
     expect(a?.confianza).toBe("alta");
     expect(a?.destino).toBe("/operaciones/calidad-datos#frescura");
+  });
+
+  it("la falta de trazabilidad NUNCA desplaza la cifra real de espera de repuesto", () => {
+    const out = construirAsuntos({
+      ...conSupply,
+      supplyTrazabilidad: { otsConPieza: 3000, conSolicitud: null },
+    });
+    const rep = out.find((x) => x.fenomeno === "espera_repuesto");
+    expect(rep?.hecho).toContain("1234");
+    // La limitación se declara DENTRO del mismo asunto, no como asunto rival.
+    expect(rep?.hecho).toContain("Limitación");
+    expect(out.find((x) => x.fenomeno === "supply_sin_trazabilidad")).toBeUndefined();
   });
 
   it("con trazabilidad suficiente el asunto desaparece", () => {
@@ -332,6 +345,7 @@ describe("F4B · Management Attention Supply", () => {
     });
     expect(out.find((x) => x.fenomeno === "supply_sin_trazabilidad")).toBeUndefined();
   });
+
 
   it("la tendencia del asunto de repuesto usa la cifra previa de Supply", () => {
     const a = construirAsuntos(conSupply).find((x) => x.fenomeno === "espera_repuesto");
