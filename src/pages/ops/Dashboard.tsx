@@ -490,11 +490,17 @@ const Dashboard = () => {
               <div className="mt-6 flex flex-wrap items-end gap-6">
                 <div>
                   <p className="text-[11px] text-ink/50 mb-1">Backlog a fin de mes · últimos {ventanaPropia("panorama_backlog").meses} meses</p>
-                  <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
+                  {stSeries.cargando && serieBacklog.length === 0 ? (
+                    <BloqueSkeleton nombre="serie-backlog" alto="h-8 w-[120px]" />
+                  ) : (
+                    <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
+                  )}
                   <p className="text-[10px] text-ink/40 italic mt-1">
                     {etiquetaVentana("panorama_backlog")}
                   </p>
+                  <BloqueEstado estado={stSeries} nombre="serie-backlog" />
                 </div>
+
                 <div className="text-[12px] text-ink/60">
                   <p>
                     Peso de las bajas sobre la salida: <span className="tabular-nums text-ink">{fmtPct(pctBajasSalida(balance))}</span>
