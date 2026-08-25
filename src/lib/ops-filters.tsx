@@ -136,7 +136,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     p_sat: filters.sat,
     p_tecnico: filters.tecnico,
     p_canal: filters.canal,
-  });
+  }, { keepPrevious: true });
   const optionsError = !!optionsQ.error;
   const loadingOptions = optionsQ.isPending;
   const options = useMemo<OpsFilterOptions>(() => {

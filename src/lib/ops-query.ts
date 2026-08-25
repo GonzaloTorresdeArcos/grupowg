@@ -64,12 +64,22 @@ const baseOptions = {
   refetchOnReconnect: false as const,
 };
 
-/** Una RPC. `enabled:false` para drill-downs bajo demanda. */
-export function useOpsRpc<T>(rpc: string, params?: OpsRpcParams, opts?: { enabled?: boolean }): UseQueryResult<T> {
+/**
+ * Una RPC. `enabled:false` para drill-downs bajo demanda.
+ * `keepPrevious` conserva el último payload válido mientras se resuelve la
+ * nueva clave (imprescindible en la cascada de filtros: los desplegables no
+ * pueden vaciarse mientras se recalculan las opciones).
+ */
+export function useOpsRpc<T>(
+  rpc: string,
+  params?: OpsRpcParams,
+  opts?: { enabled?: boolean; keepPrevious?: boolean },
+): UseQueryResult<T> {
   return useQuery<T>({
     queryKey: opsQueryKey(rpc, params),
     queryFn: ({ signal }) => opsRpc<T>(rpc, params, signal),
     enabled: opts?.enabled ?? true,
+    ...(opts?.keepPrevious ? { placeholderData: (prev: T | undefined) => prev } : {}),
     ...baseOptions,
   });
 }
