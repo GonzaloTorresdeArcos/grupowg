@@ -59,6 +59,7 @@ const baseOptions = {
   staleTime: OPS_STALE_TIME,
   gcTime: OPS_GC_TIME,
   retry: 1,
+  retryDelay: 300,
   refetchOnWindowFocus: false as const,
   refetchOnReconnect: false as const,
 };
