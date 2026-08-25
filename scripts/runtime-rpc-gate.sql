@@ -267,11 +267,36 @@ BEGIN
 
       IF casos[i][5] = 'y' THEN RESET ROLE; END IF;
 
+      -- UAT-2 · umbral de tiempo: por encima de 3.000 ms la página se percibe
+      -- colgada (y con dos llamadas simultáneas se roza el statement_timeout
+      -- de 8 s del rol authenticated). Se considera fallo del gate.
+      IF ms > 3000 THEN
+        fallos := fallos + 1;
+        RAISE WARNING 'GATE LENTA · % [%]: % ms (umbral 3000 ms)', casos[i][1], casos[i][2], round(ms);
+        INSERT INTO rpc_gate_result(rpc, caso, estado, ms, payload_kb, consumidor, error)
+        VALUES (casos[i][1], casos[i][2], 'FAIL', round(ms, 1),
+                round(coalesce(length(res), 0) / 1024.0, 1), casos[i][4],
+                format('supera el umbral de 3000 ms (%s ms)', round(ms)));
+        CONTINUE;
+      END IF;
+
+      -- Contrato de payload de ops_delegaciones: kpis / evo / tecnicos.
+      IF casos[i][1] = 'ops_delegaciones' AND NOT (
+           res LIKE '%"kpis"%' AND res LIKE '%"evo"%' AND res LIKE '%"tecnicos"%') THEN
+        fallos := fallos + 1;
+        INSERT INTO rpc_gate_result(rpc, caso, estado, ms, payload_kb, consumidor, error)
+        VALUES (casos[i][1], casos[i][2], 'FAIL', round(ms, 1),
+                round(coalesce(length(res), 0) / 1024.0, 1), casos[i][4],
+                'payload sin las claves kpis/evo/tecnicos');
+        CONTINUE;
+      END IF;
+
       ok := ok + 1;
       ms_acum := ms_acum + ms;
       INSERT INTO rpc_gate_result(rpc, caso, estado, ms, payload_kb, consumidor, error)
       VALUES (casos[i][1], casos[i][2], 'PASS', round(ms, 1),
               round(coalesce(length(res), 0) / 1024.0, 1), casos[i][4], NULL);
+
 
     EXCEPTION WHEN OTHERS THEN
       BEGIN RESET ROLE; EXCEPTION WHEN OTHERS THEN NULL; END;
