@@ -7,14 +7,17 @@ vi.mock("@/integrations/supabase/client", () => ({
   supabase: { rpc: rpcMock },
 }));
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { OpsFiltersProvider } from "../ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 
 const renderBar = () =>
   render(
-    <OpsFiltersProvider>
-      <OpsFiltersBar />
-    </OpsFiltersProvider>
+    <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })}>
+      <OpsFiltersProvider>
+        <OpsFiltersBar />
+      </OpsFiltersProvider>
+    </QueryClientProvider>
   );
 
 const OK_PAYLOAD = {
