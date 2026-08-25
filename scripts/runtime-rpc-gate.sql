@@ -113,6 +113,16 @@ DECLARE
      $q$SELECT public.ops_sla_detalle('etapa','PTE. PIEZAS')$q$,
      'src/pages/ops/SLA.tsx (drill-down)','n'],
 
+    -- Series de backlog diferidas fuera del resumen (tercera pasada).
+    ['ops_sla_evolucion','sin filtros',
+     $q$SELECT public.ops_sla_evolucion()$q$,
+     'src/pages/ops/SLA.tsx','y'],
+    ['ops_sla_evolucion','con delegación',
+     $q$SELECT public.ops_sla_evolucion('Central San Agustin')$q$,
+     'src/pages/ops/SLA.tsx','y'],
+
+
+
     ['ops_costes','jun-2026',
      $q$SELECT public.ops_costes('2026-06-01','2026-06-30')$q$,
      'src/pages/ops/Costes.tsx','n'],
