@@ -188,12 +188,24 @@ DECLARE
      $q$SELECT public.ops_filter_options('Central San Agustin',NULL,'Blanca')$q$,
      'src/lib/ops-filters.tsx','n'],
 
-    ['ops_panorama','jun-2026 p_meses=12',
+    ['ops_panorama','jun-2026 p_meses=12 (deprecada)',
      $q$SELECT public.ops_panorama('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,12)$q$,
-     'src/pages/ops/Dashboard.tsx','y'],
-    ['ops_panorama','jun-2026 p_meses=1',
+     '— (sustituida por ops_panorama_resumen + ops_panorama_series)','y'],
+    ['ops_panorama','jun-2026 p_meses=1 (deprecada)',
      $q$SELECT public.ops_panorama('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1)$q$,
-     'src/pages/ops/Dashboard.tsx','y'],
+     '— (sustituida por ops_panorama_resumen + ops_panorama_series)','y'],
+
+    -- Tanda crítica del Panorama (sin series): objetivo <400 ms.
+    ['ops_panorama_resumen','jun-2026',
+     $q$SELECT public.ops_panorama_resumen('2026-06-01','2026-06-30')$q$,
+     'src/pages/ops/Dashboard.tsx (tanda crítica)','y'],
+    ['ops_panorama_resumen','12M jul25-jun26',
+     $q$SELECT public.ops_panorama_resumen('2025-07-01','2026-06-30')$q$,
+     'src/pages/ops/Dashboard.tsx (tanda crítica)','y'],
+    ['ops_panorama_series','jun-2026 p_meses=12',
+     $q$SELECT public.ops_panorama_series('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,12)$q$,
+     'src/pages/ops/Dashboard.tsx (tanda secundaria)','y'],
+
     ['ops_cobertura_datos','base',
      $q$SELECT public.ops_cobertura_datos()$q$,
      'src/lib/ops-filters.tsx','y']
