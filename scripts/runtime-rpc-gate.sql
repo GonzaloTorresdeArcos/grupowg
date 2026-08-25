@@ -107,10 +107,10 @@ DECLARE
      $q$SELECT public.ops_sla_resumen('2025-07-01','2026-06-30')$q$,
      'src/pages/ops/SLA.tsx','n'],
     ['ops_sla_detalle','bucket 31-60 pág.1',
-     $q$SELECT public.ops_sla_detalle('bucket','31-60','2026-06-01','2026-06-30')$q$,
+     $q$SELECT public.ops_sla_detalle('bucket','31-60')$q$,
      'src/pages/ops/SLA.tsx (drill-down)','n'],
     ['ops_sla_detalle','etapa pág.1',
-     $q$SELECT public.ops_sla_detalle('etapa','Sin primer contacto','2026-06-01','2026-06-30')$q$,
+     $q$SELECT public.ops_sla_detalle('etapa','Sin primer contacto')$q$,
      'src/pages/ops/SLA.tsx (drill-down)','n'],
 
     ['ops_costes','jun-2026',
