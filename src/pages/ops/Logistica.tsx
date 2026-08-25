@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtDec, fmtPct, fmtEur } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
 import { useDataQuality } from "@/hooks/useDataQuality";
@@ -84,42 +85,27 @@ const KPIS_PREVISTOS: { kpi: string; def: string }[] = [
 export default function OpsLogistica() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
-  const [log, setLog] = useState<LogisticaPayload | null>(null);
-  const [supply, setSupply] = useState<SupplyPayload | null>(null);
   const [exped, setExped] = useState<FilaExpedicion[]>([]);
   const [refs, setRefs] = useState<RefDisponibilidad[]>([]);
   const [rrhhDias, setRrhhDias] = useState<DiaRrhhLogistica[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const reqIdRef = useRef(0);
 
-  useEffect(() => {
-    const id = ++reqIdRef.current;
-    setLoading(true);
-    setErrorMsg(null);
-    void (async () => {
-      const [rLog, rSup] = await Promise.all([
-        supabase.rpc("ops_logistica" as never, {
-          p_from: filters.from, p_to: filters.to,
-          p_prev_from: prevRange.from, p_prev_to: prevRange.to,
-        } as never),
-        supabase.rpc("ops_supply" as never, {
-          ...rpcParams, p_prev_from: prevRange.from, p_prev_to: prevRange.to,
-        } as never),
-      ]);
-      if (id !== reqIdRef.current) return;
-      if (rLog.error || rSup.error) {
-        console.error("[ops_logistica]", rLog.error ?? rSup.error);
-        setErrorMsg((rLog.error ?? rSup.error)?.message ?? "Error desconocido");
-        setLoading(false);
-        return;
-      }
-      setLog(rLog.data as unknown as LogisticaPayload);
-      setSupply(normalizarSupply(rSup.data));
-      setLoading(false);
-    })();
-  }, [rpcParams, filters.from, filters.to, prevRange.from, prevRange.to, reloadKey]);
+  const specs = useMemo(() => [
+    { rpc: "ops_logistica", params: {
+        p_from: filters.from, p_to: filters.to,
+        p_prev_from: prevRange.from, p_prev_to: prevRange.to,
+      } },
+    { rpc: "ops_supply", params: {
+        ...rpcParams, p_prev_from: prevRange.from, p_prev_to: prevRange.to,
+      } },
+  ], [rpcParams, filters.from, filters.to, prevRange.from, prevRange.to]);
+
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const log = (q[0].data ?? null) as LogisticaPayload | null;
+  const supply = useMemo(() => (q[1].data ? normalizarSupply(q[1].data) : null), [q[1].data]);
+  const errorMsg = (q[0].error ?? q[1].error) ? ((q[0].error ?? q[1].error) as Error).message : null;
 
   // (C) Productividad de almacén — detalle de expediciones del período.
   useEffect(() => {

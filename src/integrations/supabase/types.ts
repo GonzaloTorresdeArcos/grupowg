@@ -527,6 +527,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_gate_log: {
+        Row: {
+          created_at: string
+          ejecutado_en: string
+          id: string
+          ms_total: number | null
+          notas: string | null
+          rpcs_ok: number
+          rpcs_total: number
+        }
+        Insert: {
+          created_at?: string
+          ejecutado_en?: string
+          id?: string
+          ms_total?: number | null
+          notas?: string | null
+          rpcs_ok?: number
+          rpcs_total?: number
+        }
+        Update: {
+          created_at?: string
+          ejecutado_en?: string
+          id?: string
+          ms_total?: number | null
+          notas?: string | null
+          rpcs_ok?: number
+          rpcs_total?: number
+        }
+        Relationships: []
+      }
       ops_pieza_solicitud: {
         Row: {
           cantidad: number

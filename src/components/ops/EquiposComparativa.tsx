@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from "react";
+import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
 import { esDelegacionReal } from "@/lib/ops-performance";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -53,23 +53,15 @@ const Pair = ({ v, esp, tone }: { v: number; esp: number; tone: string }) => (
 export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: boolean }) => {
   const { rpcParams } = useOpsFilters();
 
-  const [rows, setRows] = useState<EquipoRow[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      const { data, error } = await supabase.rpc("ops_equipos" as never, {
-        p_from: rpcParams.p_from,
-        p_to: rpcParams.p_to,
-        p_cliente: rpcParams.p_cliente,
-        p_familia: rpcParams.p_familia,
-      } as never);
-      if (error) console.error("[ops_equipos]", error);
-      setRows(((data as EquipoRow[]) ?? null));
-      setLoading(false);
-    })();
-  }, [rpcParams]);
+  const params = useMemo(() => ({
+    p_from: rpcParams.p_from,
+    p_to: rpcParams.p_to,
+    p_cliente: rpcParams.p_cliente,
+    p_familia: rpcParams.p_familia,
+  }), [rpcParams]);
+  const q = useOpsRpc<EquipoRow[]>("ops_equipos", params);
+  const rows = (q.data ?? null) as EquipoRow[] | null;
+  const loading = q.isPending;
 
   if (loading) {
     return (

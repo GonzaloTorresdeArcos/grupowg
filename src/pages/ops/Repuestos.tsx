@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { labelPeriodo } from "@/lib/ops-performance";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
@@ -61,37 +62,19 @@ const fmtPp = (d: number | null) => (d == null ? "—" : `${d >= 0 ? "+" : ""}${
 export default function OpsRepuestos() {
   const { filters, rpcParams, prevRange, sinComparable } = useOpsFilters();
   const { dominio } = useDataQuality();
-  const [data, setData] = useState<SupplyPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [vistaA, setVistaA] = useState<Vista>("cliente");
   const [vistaB, setVistaB] = useState<Vista>("cliente");
   const [reglas, setReglas] = useState<ReglaSla[]>([]);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
-  const reqIdRef = useRef(0);
-
-  useEffect(() => {
-    const id = ++reqIdRef.current;
-    setLoading(true);
-    setErrorMsg(null);
-    void (async () => {
-      const { data: d, error } = await supabase.rpc("ops_supply" as never, {
-        ...rpcParams,
-        p_prev_from: prevRange.from,
-        p_prev_to: prevRange.to,
-      } as never);
-      if (id !== reqIdRef.current) return;
-      if (error) {
-        console.error("[ops_supply]", error);
-        setErrorMsg(error.message);
-        setData(null);
-      } else {
-        setData(normalizarSupply(d));
-      }
-      setLoading(false);
-    })();
-  }, [rpcParams, prevRange.from, prevRange.to, reloadKey]);
+  const supplyParams = useMemo(
+    () => ({ ...rpcParams, p_prev_from: prevRange.from, p_prev_to: prevRange.to }),
+    [rpcParams, prevRange.from, prevRange.to],
+  );
+  const q = useOpsRpc<unknown>("ops_supply", supplyParams);
+  const data = useMemo(() => (q.data ? normalizarSupply(q.data) : null), [q.data]);
+  const loading = q.isPending;
+  const errorMsg = q.error ? (q.error as Error).message : null;
 
   useEffect(() => {
     let vivo = true;

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc } from "@/lib/ops-query";
 import { prevPeriod, type ModoComparacion } from "@/lib/ops-performance";
 import {
   detectarPreset, resolverPreset, sinPeriodoComparable,
@@ -98,18 +98,12 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     } catch { /* ignore */ }
     return defaultFilters();
   });
-  const [options, setOptions] = useState<OpsFilterOptions>(EMPTY_OPTIONS);
-  const [loadingOptions, setLoadingOptions] = useState(true);
-  const [optionsError, setOptionsError] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
-  const reqIdRef = useRef(0);
   const [modoSeleccionado, setModoState] = useState<ModoComparacion>(() => {
     try {
       const raw = localStorage.getItem(MODO_KEY);
       return raw === "interanual" ? "interanual" : "anterior";
     } catch { return "anterior"; }
   });
-  const [cobertura, setCobertura] = useState<Cobertura>({ min: null, max: null });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
@@ -119,111 +113,78 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     try { localStorage.setItem(MODO_KEY, modoSeleccionado); } catch { /* ignore */ }
   }, [modoSeleccionado]);
 
-  // Cobertura real de datos — consulta ligera, una sola vez por sesión de módulo.
+  // Cobertura real de datos — cacheada (no depende de filtros ni de período).
+  const coberturaQ = useOpsRpc<unknown>("ops_cobertura_datos");
+  const cobertura = useMemo<Cobertura>(() => {
+    const d = coberturaQ.data;
+    const src = (Array.isArray(d) ? d[0] : d) as Record<string, unknown> | null;
+    const val = (k: string) => {
+      const v = src?.[k];
+      return typeof v === "string" && v.length >= 10 ? v.slice(0, 10) : null;
+    };
+    return { min: val("min_fecha"), max: val("max_fecha") };
+  }, [coberturaQ.data]);
+
+  // Recarga en cascada: UNA sola consulta cacheada por combinación de filtros.
+  const optionsQ = useOpsRpc<unknown>("ops_filter_options", {
+    p_delegacion: filters.delegacion,
+    p_cliente: filters.cliente,
+    p_gama: filters.gama,
+    p_familia: filters.familia,
+    p_marca: filters.marca,
+    p_provincia: filters.provincia,
+    p_sat: filters.sat,
+    p_tecnico: filters.tecnico,
+    p_canal: filters.canal,
+  });
+  const optionsError = !!optionsQ.error;
+  const loadingOptions = optionsQ.isPending;
+  const options = useMemo<OpsFilterOptions>(() => {
+    const raw: unknown = Array.isArray(optionsQ.data) ? (optionsQ.data as unknown[])[0] : optionsQ.data;
+    if (!raw || typeof raw !== "object") return EMPTY_OPTIONS;
+    const src = raw as Record<string, unknown>;
+    const toArr = (v: unknown): string[] =>
+      Array.isArray(v) ? (v.filter((x) => x != null && x !== "").map((x) => String(x)) as string[]) : [];
+    return {
+      delegaciones: toArr(src.delegaciones),
+      clientes: toArr(src.clientes),
+      gamas: toArr(src.gamas),
+      familias: toArr(src.familias),
+      marcas: toArr(src.marcas),
+      provincias: toArr(src.provincias),
+      sats: toArr(src.sats),
+      tecnicos: toArr(src.tecnicos),
+      canales: toArr(src.canales),
+    };
+  }, [optionsQ.data]);
+
+  // Auto-limpieza: si un valor seleccionado ya no está entre las opciones válidas, lo quitamos.
   useEffect(() => {
-    let cancel = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase.rpc("ops_cobertura_datos" as never);
-        if (cancel || error || !data) return;
-        const src = (Array.isArray(data) ? data[0] : data) as Record<string, unknown>;
-        const val = (k: string) => {
-          const v = src?.[k];
-          return typeof v === "string" && v.length >= 10 ? v.slice(0, 10) : null;
-        };
-        setCobertura({ min: val("min_fecha"), max: val("max_fecha") });
-      } catch (e) {
-        console.error("[ops_cobertura_datos]", e);
+    if (optionsQ.isPending || optionsQ.error) return;
+    const patch: Partial<OpsFilters> = {};
+    const check = (key: keyof OpsFilters, list: string[]) => {
+      const v = filters[key];
+      if (typeof v === "string" && v && list.length > 0 && !list.includes(v)) {
+        (patch as Record<string, null>)[key as string] = null;
       }
-    })();
-    return () => { cancel = true; };
-  }, []);
-
-
-  // Recarga en cascada: cada cambio de filtro pide nuevas opciones compatibles.
-  useEffect(() => {
-    const myReq = ++reqIdRef.current;
-    const handle = setTimeout(async () => {
-      let data: unknown = null;
-      let error: unknown = null;
-      try {
-        const res = await supabase.rpc("ops_filter_options" as never, {
-          p_delegacion: filters.delegacion,
-          p_cliente: filters.cliente,
-          p_gama: filters.gama,
-          p_familia: filters.familia,
-          p_marca: filters.marca,
-          p_provincia: filters.provincia,
-          p_sat: filters.sat,
-          p_tecnico: filters.tecnico,
-          p_canal: filters.canal,
-        } as never);
-        data = res.data;
-        error = res.error;
-      } catch (e) {
-        // Fallo a nivel de red (la promesa rechaza): degradamos a aviso, nunca excepción sin capturar.
-        error = e;
-      }
-      if (myReq !== reqIdRef.current) return;
-      if (error) {
-        console.error("[ops_filter_options] error", error);
-        setOptionsError(true);
-        setLoadingOptions(false);
-        return;
-      }
-      setOptionsError(false);
-      const raw: unknown = Array.isArray(data) ? (data as unknown[])[0] : data;
-      const src = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-      const toArr = (v: unknown): string[] =>
-        Array.isArray(v)
-          ? (v.filter((x) => x != null && x !== "").map((x) => String(x)) as string[])
-          : [];
-      const next: OpsFilterOptions = {
-        delegaciones: toArr(src.delegaciones),
-        clientes: toArr(src.clientes),
-        gamas: toArr(src.gamas),
-        familias: toArr(src.familias),
-        marcas: toArr(src.marcas),
-        provincias: toArr(src.provincias),
-        sats: toArr(src.sats),
-        tecnicos: toArr(src.tecnicos),
-        canales: toArr(src.canales),
-      };
-      setOptions(next);
-      setLoadingOptions(false);
-
-      // Auto-limpieza: si un valor seleccionado ya no está entre las opciones válidas, lo quitamos.
-      const patch: Partial<OpsFilters> = {};
-      const check = (key: keyof OpsFilters, list: string[]) => {
-        const v = filters[key];
-        if (typeof v === "string" && v && !list.includes(v)) {
-          (patch as Record<string, null>)[key as string] = null;
-        }
-      };
-      check("delegacion", next.delegaciones);
-      check("cliente", next.clientes);
-      check("gama", next.gamas);
-      check("familia", next.familias);
-      check("marca", next.marcas);
-      check("provincia", next.provincias);
-      check("sat", next.sats);
-      check("tecnico", next.tecnicos);
-      check("canal", next.canales);
-      if (Object.keys(patch).length > 0) {
-        setFiltersState((f) => ({ ...f, ...patch }));
-      }
-    }, 120);
-    return () => clearTimeout(handle);
+    };
+    check("delegacion", options.delegaciones);
+    check("cliente", options.clientes);
+    check("gama", options.gamas);
+    check("familia", options.familias);
+    check("marca", options.marcas);
+    check("provincia", options.provincias);
+    check("sat", options.sats);
+    check("tecnico", options.tecnicos);
+    check("canal", options.canales);
+    if (Object.keys(patch).length > 0) setFiltersState((f) => ({ ...f, ...patch }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    filters.delegacion, filters.cliente, filters.gama, filters.familia, filters.marca,
-    filters.provincia, filters.sat, filters.tecnico, filters.canal, reloadKey,
-  ]);
+  }, [options, optionsQ.isPending, optionsQ.error  ]);
 
   const setFilters = (partial: Partial<OpsFilters>) =>
     setFiltersState((f) => ({ ...f, ...partial }));
   const reset = () => setFiltersState(defaultFilters());
-  const reloadOptions = () => setReloadKey((k) => k + 1);
+  const reloadOptions = () => { void optionsQ.refetch(); void coberturaQ.refetch(); };
   const setModo = useCallback((m: ModoComparacion) => setModoState(m), []);
 
   const rpcParams = useMemo(() => ({

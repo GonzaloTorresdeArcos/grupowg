@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
 import { Loader2 } from "lucide-react";
 
@@ -26,21 +26,14 @@ const semaforo = (v: number, mediana: number, inverse = false) => {
 
 const Sats = () => {
   const { rpcParams } = useOpsFilters();
-  const [rows, setRows] = useState<Row[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      const { data } = await supabase.rpc("ops_sats_ranking" as never, {
-        p_from: rpcParams.p_from, p_to: rpcParams.p_to,
-        p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama,
-        p_familia: rpcParams.p_familia, p_provincia: rpcParams.p_provincia,
-      } as never);
-      setRows((data ?? []) as Row[]);
-      setLoading(false);
-    })();
-  }, [rpcParams]);
+  const params = useMemo(() => ({
+    p_from: rpcParams.p_from, p_to: rpcParams.p_to,
+    p_cliente: rpcParams.p_cliente, p_gama: rpcParams.p_gama,
+    p_familia: rpcParams.p_familia, p_provincia: rpcParams.p_provincia,
+  }), [rpcParams]);
+  const q = useOpsRpc<Row[]>("ops_sats_ranking", params);
+  const rows = useMemo(() => (q.data ?? []) as Row[], [q.data]);
+  const loading = q.isPending;
 
   const medians = useMemo(() => ({
     sla20: median(rows.map((r) => r.pct_sla20)),

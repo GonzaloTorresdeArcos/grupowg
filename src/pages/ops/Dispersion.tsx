@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { fmtNum, fmtDec, fmtPct } from "@/lib/ops-filters";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
 
@@ -79,81 +79,46 @@ export default function OpsDispersion() {
   const [delegacion, setDelegacion] = useState<string | null>(null);
   const [gama, setGama] = useState<string | null>(null);
   const [familia, setFamilia] = useState<string | null>(null);
-  const [data, setData] = useState<DispPayload | null>(null);
-  const [dataPrev, setDataPrev] = useState<DispPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
-  const reqIdRef = useRef(0);
-  const [delOpts, setDelOpts] = useState<string[]>([]);
-  const [gamaOpts, setGamaOpts] = useState<string[]>([]);
-  const [famOpts, setFamOpts] = useState<string[]>([]);
-  const [optsErr, setOptsErr] = useState(false);
-  const [optsReloadKey, setOptsReloadKey] = useState(0);
   const [vista, setVista] = useState<Vista>("provincias");
   const [provSel, setProvSel] = useState<string | null>(null);
   const [sort, setSort] = useState<SortState>(null);
 
-  useEffect(() => {
-    let alive = true;
-    void (async () => {
-      try {
-        const { data: d, error } = await supabase.rpc("ops_filter_options" as never, {
-          p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
-          p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
-        } as never);
-        if (!alive) return;
-        if (error) {
-          console.error("[ops_filter_options] dispersion", error);
-          setOptsErr(true);
-          return;
-        }
-        setOptsErr(false);
-        const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
-        const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
-        setDelOpts(toArr(src?.delegaciones));
-        setGamaOpts(toArr(src?.gamas));
-        setFamOpts(toArr(src?.familias));
-      } catch (e) {
-        if (!alive) return;
-        console.error("[ops_filter_options] dispersion", e);
-        setOptsErr(true);
-      }
-    })();
-    return () => { alive = false; };
-  }, [optsReloadKey]);
+  // Opciones de filtro local (cacheadas: no dependen del período)
+  const optsQ = useOpsRpc<unknown>("ops_filter_options", {
+    p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
+    p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
+  });
+  const optsErr = !!optsQ.error;
+  const setOptsReloadKey = (_f: (k: number) => number) => { void optsQ.refetch(); };
+  const { delOpts, gamaOpts, famOpts } = useMemo(() => {
+    const d = optsQ.data;
+    const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
+    const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
+    return {
+      delOpts: toArr(src?.delegaciones),
+      gamaOpts: toArr(src?.gamas),
+      famOpts: toArr(src?.familias),
+    };
+  }, [optsQ.data]);
 
-  useEffect(() => {
-    const myReq = ++reqIdRef.current;
-    setLoading(true);
-    setErrorMsg(null);
-    const prev = prevRange;
+  const specs = useMemo(() => {
     const mk = (from: string, to: string) => ({
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
     });
-    Promise.all([
-      supabase.rpc("ops_dispersion" as never, mk(range.from, range.to) as never),
-      supabase.rpc("ops_dispersion" as never, mk(prev.from, prev.to) as never),
-    ]).then((pair) => {
-      const [a, b] = pair as [{ data: unknown; error: unknown }, { data: unknown; error: unknown }];
-      if (myReq !== reqIdRef.current) return; // llegó una petición más reciente
-      if (a.error || !a.data) {
-        console.error("[ops_dispersion]", a.error);
-        setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
-        setLoading(false);
-        return; // conserva los datos previos en pantalla
-      }
-      setData(a.data as unknown as DispPayload);
-      if (!b.error && b.data) setDataPrev(b.data as unknown as DispPayload);
-      setLoading(false);
-    }).catch((e) => {
-      if (myReq !== reqIdRef.current) return;
-      console.error("[ops_dispersion]", e);
-      setErrorMsg("No se han podido cargar los datos de dispersión. Reintenta o acota el período.");
-      setLoading(false);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia, reloadKey]);
+    return [
+      { rpc: "ops_dispersion", params: mk(range.from, range.to) },
+      { rpc: "ops_dispersion", params: mk(prevRange.from, prevRange.to) },
+    ];
+  }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia]);
+
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const data = (q[0].data ?? null) as DispPayload | null;
+  const dataPrev = (q[1].data ?? null) as DispPayload | null;
+  const errorMsg = q[0].error
+    ? "No se han podido cargar los datos de dispersión. Reintenta o acota el período."
+    : null;
+  const setReloadKey = (_f: (k: number) => number) => { void q[0].refetch(); void q[1].refetch(); };
 
   // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
   useEffect(() => {
