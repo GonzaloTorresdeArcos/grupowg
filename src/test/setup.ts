@@ -42,3 +42,16 @@ Object.defineProperty(globalThis, "IntersectionObserver", {
   configurable: true,
   value: MockIntersectionObserver,
 });
+
+/**
+ * SESSION GATE de /operaciones: las RPC solo se emiten con un access_token en
+ * memoria. Los tests de UI que simulan una sesión management válida publican
+ * aquí un token ficticio; `ops-session-loss.test.tsx` lo restablece por sí
+ * mismo para cubrir el escenario de sesión ausente.
+ */
+import { beforeEach } from "vitest";
+import { publicarSesionOps } from "@/lib/ops-session";
+
+beforeEach(() => {
+  publicarSesionOps("test-access-token");
+});

@@ -2,6 +2,14 @@ import { useQueries, useQuery, useQueryClient, type UseQueryResult } from "@tans
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { perfActivo, registrarMarca, tamanoAprox } from "@/lib/ops-perf";
+import {
+  SessionPerdida,
+  esSessionPerdida,
+  hayTokenOps,
+  marcarSesionPerdida,
+  useOpsSession,
+} from "@/lib/ops-session";
+
 
 /**
  * Capa única de acceso a las RPC de /operaciones.
@@ -83,6 +91,14 @@ export function registrarErrorRpc(rpc: string, params: Record<string, unknown>, 
 export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: AbortSignal): Promise<T> {
   const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
   const norm = normalizarParams(params);
+  // SESSION GATE: sin access_token en memoria NO se envía la petición. Enviarla
+  // solo con la clave publishable equivaldría a consultar como `anon`, que
+  // devuelve «permission denied» o conjuntos vacíos por RLS (falsos ceros).
+  if (!hayTokenOps()) {
+    const err = new SessionPerdida(rpc);
+    registrarErrorRpc(rpc, norm, err);
+    throw err;
+  }
   const q = supabase.rpc(rpc as never, (norm as never));
   const anyQ = q as unknown as { abortSignal?: (s: AbortSignal) => unknown };
   const exec = signal && typeof anyQ.abortSignal === "function" ? anyQ.abortSignal(signal) : q;
@@ -92,6 +108,8 @@ export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: Abo
     registrarMarca({ rpc, ms: t1 - t0, bytes: tamanoAprox(data), error: !!error });
   }
   if (error) {
+    // 401 / «permission denied for function» = identidad perdida en vuelo.
+    if (esSessionPerdida(error)) marcarSesionPerdida();
     registrarErrorRpc(rpc, norm, error);
     throw error;
   }
@@ -102,7 +120,9 @@ export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: Abo
 const baseOptions = {
   staleTime: OPS_STALE_TIME,
   gcTime: OPS_GC_TIME,
-  retry: 1,
+  // La pérdida de sesión no se reintenta: reintentar solo repetiría la llamada
+  // sin identidad. El resto de fallos conserva el reintento único.
+  retry: (intentos: number, error: unknown) => (esSessionPerdida(error) ? false : intentos < 1),
   retryDelay: 300,
   refetchOnWindowFocus: false as const,
   refetchOnReconnect: false as const,
@@ -123,12 +143,13 @@ export function useOpsRpc<T>(
   params?: OpsRpcParams,
   opts?: { enabled?: boolean; keepPrevious?: boolean },
 ): UseQueryResult<T> {
+  const { hasSession } = useOpsSession();
   // `placeholderData` está tipado con NonFunctionGuard, incompatible con un
   // genérico abierto T; el cast acota el ruido a esta única línea.
   return useQuery({
     queryKey: opsQueryKey(rpc, params),
     queryFn: ({ signal }: { signal: AbortSignal }) => opsRpc<T>(rpc, params, signal),
-    enabled: opts?.enabled ?? true,
+    enabled: (opts?.enabled ?? true) && hasSession,
     ...baseOptions,
   }) as UseQueryResult<T>;
 }
@@ -137,15 +158,17 @@ export type OpsRpcSpec = { rpc: string; params?: OpsRpcParams; enabled?: boolean
 
 /** Varias RPC en paralelo, deduplicadas entre sí y con el resto de páginas. */
 export function useOpsRpcs<T = unknown>(specs: readonly OpsRpcSpec[]): UseQueryResult<T>[] {
+  const { hasSession } = useOpsSession();
   return useQueries({
     queries: specs.map((s) => ({
       queryKey: opsQueryKey(s.rpc, s.params),
       queryFn: ({ signal }: { signal: AbortSignal }) => opsRpc<T>(s.rpc, s.params, signal),
-      enabled: s.enabled ?? true,
+      enabled: (s.enabled ?? true) && hasSession,
       ...baseOptions,
     })),
   }) as UseQueryResult<T>[];
 }
+
 
 /**
  * Invalidación explícita de TODA la caché de análisis. La llama el importador

@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { OPS_QUERY_ROOT } from "@/lib/ops-query";
+import { limpiarCacheRolOps, publicarSesionOps } from "@/lib/ops-session";
+
 
 type Profile = {
   id: string;
@@ -39,9 +43,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setProfile((data as Profile) ?? null);
   };
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
+    /**
+     * Punto único donde la sesión se publica al gate de /operaciones. Si la
+     * sesión desaparece (SIGNED_OUT, refresh fallido o TOKEN_REFRESHED sin
+     * sesión), además de cortar las RPC hay que ELIMINAR los datos cacheados:
+     * invalidar no basta, porque la pantalla seguiría mostrando cifras de una
+     * identidad que ya no está autenticada.
+     */
+    const aplicarSesion = (sess: Session | null) => {
+      publicarSesionOps(sess?.access_token ?? null);
+      if (!sess) {
+        limpiarCacheRolOps();
+        void queryClient.cancelQueries({ queryKey: [OPS_QUERY_ROOT] });
+        queryClient.removeQueries({ queryKey: [OPS_QUERY_ROOT] });
+      }
+    };
+
     // 1. Listener primero (sync)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
+      aplicarSesion(sess);
       setSession(sess);
       setUser(sess?.user ?? null);
       if (sess?.user) {
@@ -54,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // 2. Sesión existente
     supabase.auth.getSession().then(({ data: { session: sess } }) => {
+      aplicarSesion(sess);
       setSession(sess);
       setUser(sess?.user ?? null);
       if (sess?.user) loadProfile(sess.user.id);
@@ -67,7 +91,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.warn("[auth] unsubscribe failed", e);
       }
     };
-  }, []);
+  }, [queryClient]);
+
 
   const signOut = async () => {
     await supabase.auth.signOut();

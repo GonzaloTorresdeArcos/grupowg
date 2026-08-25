@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInvalidarOps } from "@/lib/ops-query";
+import { hayTokenOps } from "@/lib/ops-session";
+
 
 /**
  * A1 · INVALIDACIÓN EXPLÍCITA DE LA CACHÉ DE ANÁLISIS.
@@ -46,6 +48,8 @@ export const guardarAsOfSesion = (v: string | null | undefined): void => {
 
 /** Lee la fecha efectiva del dominio operativo sin pasar por la caché de ops. */
 export async function leerAsOfRemoto(): Promise<string | null> {
+  // Session gate: sin identidad de usuario no se envía la petición.
+  if (!hayTokenOps()) return null;
   try {
     const { data, error } = await supabase.rpc("ops_as_of" as never, { p_dominio: "ot" } as never);
     if (error) return null;
@@ -55,6 +59,7 @@ export async function leerAsOfRemoto(): Promise<string | null> {
     return null;
   }
 }
+
 
 /**
  * Comprobación al montar el layout: si el snapshot cambió respecto al de esta
