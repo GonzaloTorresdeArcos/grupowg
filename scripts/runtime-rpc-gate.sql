@@ -9,10 +9,13 @@
 -- Uso:   psql -v ON_ERROR_STOP=1 -f scripts/runtime-rpc-gate.sql
 -- Ejecutarlo DOS VECES: la segunda medición es la válida (caché caliente).
 --
--- Nota de permisos: ops_panorama y ops_cobertura_datos solo tienen
--- EXECUTE para `authenticated`. El gate intenta asumir ese rol dentro de
--- una transacción; si el rol de ejecución no puede hacerlo, esas dos
--- quedan como SKIPPED_PERM (no como FAIL) y se indica en la salida.
+-- Nota de permisos: tras el ACL hardening (SESSION LOSS HARDENING) NINGUNA
+-- función ops_* tiene EXECUTE para PUBLIC/anon; todas exigen el rol
+-- `authenticated` con claims de un usuario management. Por eso todos los
+-- casos se ejecutan asumiendo ese rol. Si el rol de ejecución no puede
+-- asumirlo (p. ej. el rol restringido de psql del sandbox), los casos
+-- quedan como SKIPPED_PERM (no como FAIL) y el gate debe lanzarse con la
+-- herramienta SQL administrada del proyecto.
 --
 -- El único efecto persistente es una fila en public.ops_gate_log (traza
 -- de ejecución, sin dato operativo). Las mediciones viven en una tabla
@@ -40,49 +43,49 @@ DECLARE
   casos text[][] := ARRAY[
     ['ops_as_of','base',
      $q$SELECT public.ops_as_of('ot')$q$,
-     'src/lib/ops-as-of.ts (vía ops_data_quality)','n'],
+     'src/lib/ops-as-of.ts (vía ops_data_quality)','y'],
 
     ['ops_kpis','jun-2026 sin filtros',
      $q$SELECT public.ops_kpis('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Dashboard.tsx, src/pages/ops/SLA.tsx','n'],
+     'src/pages/ops/Dashboard.tsx, src/pages/ops/SLA.tsx','y'],
     ['ops_kpis','12M jul25-jun26',
      $q$SELECT public.ops_kpis('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
     ['ops_kpis','filtro delegacion+gama',
      $q$SELECT public.ops_kpis('2026-06-01','2026-06-30','Central San Agustin',NULL,'Blanca')$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
 
     ['ops_evolucion','sin filtros',
      $q$SELECT count(*) FROM public.ops_evolucion()$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
     ['ops_evolucion','filtro delegacion+gama',
      $q$SELECT count(*) FROM public.ops_evolucion('Central San Agustin',NULL,'Blanca')$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
 
     ['ops_alertas','jun-2026 sin filtros',
      $q$SELECT public.ops_alertas('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
     ['ops_alertas','12M jul25-jun26',
      $q$SELECT public.ops_alertas('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Dashboard.tsx','y'],
 
     ['ops_equipos','jun-2026 sin filtros',
      $q$SELECT count(*) FROM public.ops_equipos('2026-06-01','2026-06-30')$q$,
-     'src/components/ops/EquiposComparativa.tsx','n'],
+     'src/components/ops/EquiposComparativa.tsx','y'],
     ['ops_equipos','12M jul25-jun26',
      $q$SELECT count(*) FROM public.ops_equipos('2025-07-01','2026-06-30')$q$,
-     'src/components/ops/EquiposComparativa.tsx','n'],
+     'src/components/ops/EquiposComparativa.tsx','y'],
 
     ['ops_tecnicos_scorecard','jun-2026 sin filtros',
      $q$SELECT count(*) FROM public.ops_tecnicos_scorecard('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Tecnicos.tsx, src/pages/ops/Dashboard.tsx','n'],
+     'src/pages/ops/Tecnicos.tsx, src/pages/ops/Dashboard.tsx','y'],
     ['ops_tecnicos_scorecard','12M jul25-jun26',
      $q$SELECT count(*) FROM public.ops_tecnicos_scorecard('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/Tecnicos.tsx','n'],
+     'src/pages/ops/Tecnicos.tsx','y'],
 
     ['ops_tecnico_ficha','tecnico real',
      $q$SELECT public.ops_tecnico_ficha('MANUEL')$q$,
-     'src/pages/ops/Tecnicos.tsx','n'],
+     'src/pages/ops/Tecnicos.tsx','y'],
 
     -- UAT-2 · se invoca con los 11 parámetros (misma forma que Delegaciones.tsx)
     -- y bajo rol authenticated: la versión anterior, con 2 argumentos y sin RLS
@@ -106,25 +109,25 @@ DECLARE
 
     ['ops_delegacion_ficha','Central San Agustin jun-2026',
      $q$SELECT public.ops_delegacion_ficha('Central San Agustin','2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Hub.tsx, src/pages/ops/Delegaciones.tsx','n'],
+     'src/pages/ops/Hub.tsx, src/pages/ops/Delegaciones.tsx','y'],
 
     -- @deprecated (sustituida por resumen+detalle); se mantiene en el gate
     -- mientras exista en la base como referencia de paridad.
     ['ops_sla','jun-2026 sin filtros (deprecada)',
      $q$SELECT public.ops_sla('2026-06-01','2026-06-30')$q$,
-     '— (sustituida por ops_sla_resumen)','n'],
+     '— (sustituida por ops_sla_resumen)','y'],
     ['ops_sla_resumen','jun-2026 sin filtros',
      $q$SELECT public.ops_sla_resumen('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/SLA.tsx','n'],
+     'src/pages/ops/SLA.tsx','y'],
     ['ops_sla_resumen','12M jul25-jun26',
      $q$SELECT public.ops_sla_resumen('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/SLA.tsx','n'],
+     'src/pages/ops/SLA.tsx','y'],
     ['ops_sla_detalle','bucket 31-60 pág.1',
      $q$SELECT public.ops_sla_detalle('bucket','31-60')$q$,
-     'src/pages/ops/SLA.tsx (drill-down)','n'],
+     'src/pages/ops/SLA.tsx (drill-down)','y'],
     ['ops_sla_detalle','etapa pág.1',
      $q$SELECT public.ops_sla_detalle('etapa','PTE. PIEZAS')$q$,
-     'src/pages/ops/SLA.tsx (drill-down)','n'],
+     'src/pages/ops/SLA.tsx (drill-down)','y'],
 
     -- Series de backlog diferidas fuera del resumen (tercera pasada).
     ['ops_sla_evolucion','sin filtros',
@@ -138,14 +141,14 @@ DECLARE
 
     ['ops_costes','jun-2026',
      $q$SELECT public.ops_costes('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Costes.tsx','n'],
+     'src/pages/ops/Costes.tsx','y'],
     ['ops_costes_entidades','jun-2026 delegacion',
      $q$SELECT count(*) FROM public.ops_costes_entidades('2026-06-01','2026-06-30','delegacion')$q$,
-     'src/pages/ops/Costes.tsx','n'],
+     'src/pages/ops/Costes.tsx','y'],
 
     ['ops_dispersion','jun-2026 sin filtros (deprecada)',
      $q$SELECT public.ops_dispersion('2026-06-01','2026-06-30')$q$,
-     '— (sustituida por ops_dispersion_resumen)','n'],
+     '— (sustituida por ops_dispersion_resumen)','y'],
     ['ops_dispersion_resumen','jun-2026 sin filtros',
      $q$SELECT public.ops_dispersion_resumen('2026-06-01','2026-06-30')$q$,
      'src/pages/ops/Dispersion.tsx','y'],
@@ -159,10 +162,10 @@ DECLARE
 
     ['ops_supply','jun-2026 con previo',
      $q$SELECT public.ops_supply('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-05-01','2026-05-31')$q$,
-     '— (sustituida por ops_supply_resumen/detalle)','n'],
+     '— (sustituida por ops_supply_resumen/detalle)','y'],
     ['ops_supply','12M con previo',
      $q$SELECT public.ops_supply('2025-07-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2024-07-01','2025-06-30')$q$,
-     '— (sustituida por ops_supply_resumen/detalle)','n'],
+     '— (sustituida por ops_supply_resumen/detalle)','y'],
 
     -- Tercera pasada: resumen + detalle de supply (predicate pushdown).
     ['ops_supply_resumen','jun-2026 con previo',
@@ -181,25 +184,25 @@ DECLARE
 
     ['ops_logistica','jun-2026 con previo',
      $q$SELECT public.ops_logistica('2026-06-01','2026-06-30','2026-05-01','2026-05-31')$q$,
-     'src/pages/ops/Logistica.tsx','n'],
+     'src/pages/ops/Logistica.tsx','y'],
 
     ['ops_sats_ranking','jun-2026',
      $q$SELECT count(*) FROM public.ops_sats_ranking('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Sats.tsx','n'],
+     'src/pages/ops/Sats.tsx','y'],
 
     ['ops_data_quality','base',
      $q$SELECT public.ops_data_quality()$q$,
-     'src/hooks/useDataQuality.ts','n'],
+     'src/hooks/useDataQuality.ts','y'],
     ['ops_sla_registry_resumen','base',
      $q$SELECT count(*) FROM public.ops_sla_registry_resumen()$q$,
-     'src/pages/ops/CalidadDatos.tsx','n'],
+     'src/pages/ops/CalidadDatos.tsx','y'],
 
     ['ops_filter_options','sin filtros',
      $q$SELECT public.ops_filter_options()$q$,
-     'src/lib/ops-filters.tsx','n'],
+     'src/lib/ops-filters.tsx','y'],
     ['ops_filter_options','filtro delegacion+gama',
      $q$SELECT public.ops_filter_options('Central San Agustin',NULL,'Blanca')$q$,
-     'src/lib/ops-filters.tsx','n'],
+     'src/lib/ops-filters.tsx','y'],
 
     ['ops_panorama','jun-2026 p_meses=12 (deprecada)',
      $q$SELECT public.ops_panorama('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,12)$q$,

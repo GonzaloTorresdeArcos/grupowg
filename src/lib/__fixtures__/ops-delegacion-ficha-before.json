@@ -1,0 +1,2862 @@
+[
+ {
+  "delegacion": "Central San Agustin",
+  "periodo": "mensual",
+  "from": "2026-06-01",
+  "to": "2026-06-30",
+  "md5": "4f7675f88a04794ccc35ac05efbcc4f1",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Marron",
+     "bajas": 175,
+     "cerradas": 956,
+     "pct_bajas": 0.18305439330543932,
+     "pct_sla20": 0.8849372384937239
+    },
+    {
+     "gama": "Blanca",
+     "bajas": 113,
+     "cerradas": 770,
+     "pct_bajas": 0.14675324675324675,
+     "pct_sla20": 0.8545454545454545
+    },
+    {
+     "gama": "PAE",
+     "bajas": 27,
+     "cerradas": 320,
+     "pct_bajas": 0.084375,
+     "pct_sla20": 0.890625
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 0,
+     "cerradas": 166,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.8795180722891566
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 6,
+     "cerradas": 99,
+     "pct_bajas": 0.06060606060606061,
+     "pct_sla20": 0.6565656565656566
+    },
+    {
+     "gama": "Clima",
+     "bajas": 17,
+     "cerradas": 50,
+     "pct_bajas": 0.34,
+     "pct_sla20": 0.94
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 0,
+     "cerradas": 42,
+     "pct_bajas": 0.0,
+     "pct_sla20": 1.0
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 50,
+     "tecnico": "MANUEL",
+     "cerradas": 391,
+     "pct_bajas": 0.1278772378516624,
+     "pct_sla20": 0.9616368286445013
+    },
+    {
+     "bajas": 36,
+     "tecnico": "CARLOS",
+     "cerradas": 325,
+     "pct_bajas": 0.11076923076923077,
+     "pct_sla20": 0.9507692307692308
+    },
+    {
+     "bajas": 73,
+     "tecnico": "JAVIER",
+     "cerradas": 302,
+     "pct_bajas": 0.24172185430463577,
+     "pct_sla20": 0.9304635761589404
+    },
+    {
+     "bajas": 65,
+     "tecnico": "PABLO",
+     "cerradas": 211,
+     "pct_bajas": 0.3080568720379147,
+     "pct_sla20": 0.8767772511848341
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JORGE AM",
+     "cerradas": 188,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.851063829787234
+    },
+    {
+     "bajas": 28,
+     "tecnico": "JUAN LUIS",
+     "cerradas": 119,
+     "pct_bajas": 0.23529411764705882,
+     "pct_sla20": 0.8403361344537815
+    },
+    {
+     "bajas": 3,
+     "tecnico": "ADRIAN",
+     "cerradas": 119,
+     "pct_bajas": 0.025210084033613446,
+     "pct_sla20": 0.8991596638655462
+    },
+    {
+     "bajas": 10,
+     "tecnico": "JUANMA",
+     "cerradas": 105,
+     "pct_bajas": 0.09523809523809523,
+     "pct_sla20": 0.9047619047619048
+    },
+    {
+     "bajas": 1,
+     "tecnico": "JORGE DG",
+     "cerradas": 104,
+     "pct_bajas": 0.009615384615384616,
+     "pct_sla20": 0.7788461538461539
+    },
+    {
+     "bajas": 16,
+     "tecnico": "FERNANDO ALFREDO",
+     "cerradas": 96,
+     "pct_bajas": 0.16666666666666666,
+     "pct_sla20": 0.8020833333333334
+    },
+    {
+     "bajas": 13,
+     "tecnico": "JOSE PEDRO",
+     "cerradas": 95,
+     "pct_bajas": 0.1368421052631579,
+     "pct_sla20": 0.7052631578947368
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JUAN CARLOS",
+     "cerradas": 92,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.8043478260869565
+    },
+    {
+     "bajas": 14,
+     "tecnico": "IVAN",
+     "cerradas": 84,
+     "pct_bajas": 0.16666666666666666,
+     "pct_sla20": 0.7023809523809523
+    },
+    {
+     "bajas": 14,
+     "tecnico": "DAVID",
+     "cerradas": 65,
+     "pct_bajas": 0.2153846153846154,
+     "pct_sla20": 0.8461538461538461
+    },
+    {
+     "bajas": 4,
+     "tecnico": "RAUL",
+     "cerradas": 53,
+     "pct_bajas": 0.07547169811320754,
+     "pct_sla20": 0.8490566037735849
+    },
+    {
+     "bajas": 9,
+     "tecnico": "SEBASTIAN MARIN CARDONA",
+     "cerradas": 30,
+     "pct_bajas": 0.3,
+     "pct_sla20": 0.4666666666666667
+    },
+    {
+     "bajas": 2,
+     "tecnico": "MARIANO",
+     "cerradas": 24,
+     "pct_bajas": 0.08333333333333333,
+     "pct_sla20": 0.16666666666666666
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 488,
+     "pct_bajas": 0.2725409836065574,
+     "pct_sla20": 0.7889344262295082
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 2230,
+     "pct_bajas": 0.2219730941704036,
+     "pct_sla20": 0.7345291479820628
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 2541,
+     "pct_bajas": 0.21408894136166864,
+     "pct_sla20": 0.5694608421881149
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 2863,
+     "pct_bajas": 0.18057981138665735,
+     "pct_sla20": 0.8194201886133426
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 1992,
+     "pct_bajas": 0.12951807228915663,
+     "pct_sla20": 0.7409638554216867
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 2183,
+     "pct_bajas": 0.157581310123683,
+     "pct_sla20": 0.717819514429684
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 2731,
+     "pct_bajas": 0.1761259611863786,
+     "pct_sla20": 0.5521786891248627
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 3044,
+     "pct_bajas": 0.16228646517739817,
+     "pct_sla20": 0.7417871222076216
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 2980,
+     "pct_bajas": 0.14697986577181207,
+     "pct_sla20": 0.7469798657718121
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 2552,
+     "pct_bajas": 0.1281347962382445,
+     "pct_sla20": 0.783307210031348
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 2433,
+     "pct_bajas": 0.12001644060830251,
+     "pct_sla20": 0.8405260994656802
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 2403,
+     "pct_bajas": 0.1406575114440283,
+     "pct_sla20": 0.8693300041614649
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 1645,
+     "pct_bajas": 0.1580547112462006,
+     "pct_sla20": 0.8346504559270517
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 63,
+     "marca": "DAEWOO",
+     "cerradas": 227,
+     "pct_bajas": 0.2775330396475771
+    },
+    {
+     "bajas": 29,
+     "marca": "CARREFOUR HOME",
+     "cerradas": 202,
+     "pct_bajas": 0.14356435643564355
+    },
+    {
+     "bajas": 8,
+     "marca": "SIMPL",
+     "cerradas": 148,
+     "pct_bajas": 0.05405405405405406
+    },
+    {
+     "bajas": 52,
+     "marca": "TOSHIBA",
+     "cerradas": 141,
+     "pct_bajas": 0.36879432624113473
+    },
+    {
+     "bajas": 28,
+     "marca": "JVC",
+     "cerradas": 122,
+     "pct_bajas": 0.22950819672131148
+    },
+    {
+     "bajas": 17,
+     "marca": "CECOTEC",
+     "cerradas": 120,
+     "pct_bajas": 0.14166666666666666
+    },
+    {
+     "bajas": 8,
+     "marca": "MANDINE",
+     "cerradas": 107,
+     "pct_bajas": 0.07476635514018691
+    },
+    {
+     "bajas": 12,
+     "marca": "VALBERG",
+     "cerradas": 104,
+     "pct_bajas": 0.11538461538461539
+    },
+    {
+     "bajas": 9,
+     "marca": "ELECTRONIA",
+     "cerradas": 88,
+     "pct_bajas": 0.10227272727272728
+    },
+    {
+     "bajas": 0,
+     "marca": "NAVEE",
+     "cerradas": 85,
+     "pct_bajas": 0.0
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 146,
+     "cliente": "CARREFOUR",
+     "cerradas": 954,
+     "pct_bajas": 0.1530398322851153
+    },
+    {
+     "bajas": 117,
+     "cliente": "VESTEL",
+     "cerradas": 487,
+     "pct_bajas": 0.2402464065708419
+    },
+    {
+     "bajas": 0,
+     "cliente": "ASSURANT GENERAL INSURANCE LIMITED",
+     "cerradas": 197,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 16,
+     "cliente": "ELECTRO DEPOT ESPAÑA S.L.U",
+     "cerradas": 132,
+     "pct_bajas": 0.12121212121212122
+    },
+    {
+     "bajas": 17,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 121,
+     "pct_bajas": 0.14049586776859505
+    },
+    {
+     "bajas": 0,
+     "cliente": "ASSURANT EUROPE INSURANCE NV",
+     "cerradas": 93,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "BRIGHTWAY INNOVATION INTELLIGENT TECHNOLOGY (SUZHOU) CO. LTD.",
+     "cerradas": 83,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 3,
+     "cliente": "MAKRO",
+     "cerradas": 77,
+     "pct_bajas": 0.03896103896103896
+    },
+    {
+     "bajas": 0,
+     "cliente": "ESPRINET IBERICA, SLU",
+     "cerradas": 68,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 13,
+     "cliente": "ALCAMPO",
+     "cerradas": 56,
+     "pct_bajas": 0.23214285714285715
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 191,
+     "provincia": "MADRID",
+     "abiertas_30": 72
+    },
+    {
+     "abiertas": 46,
+     "provincia": "—",
+     "abiertas_30": 16
+    },
+    {
+     "abiertas": 12,
+     "provincia": "TOLEDO",
+     "abiertas_30": 9
+    },
+    {
+     "abiertas": 44,
+     "provincia": "GUADALAJARA",
+     "abiertas_30": 9
+    },
+    {
+     "abiertas": 5,
+     "provincia": "VALENCIA",
+     "abiertas_30": 4
+    },
+    {
+     "abiertas": 9,
+     "provincia": "MURCIA",
+     "abiertas_30": 4
+    },
+    {
+     "abiertas": 3,
+     "provincia": "ALBACETE",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 4,
+     "provincia": "CASTELLÓN",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 8,
+     "provincia": "BARCELONA",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 5,
+     "provincia": "CUENCA",
+     "abiertas_30": 3
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 1326,
+     "provincia": "MADRID"
+    },
+    {
+     "cerradas": 350,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 66,
+     "provincia": "MURCIA"
+    },
+    {
+     "cerradas": 57,
+     "provincia": "GUADALAJARA"
+    },
+    {
+     "cerradas": 42,
+     "provincia": "BARCELONA"
+    },
+    {
+     "cerradas": 41,
+     "provincia": "ALICANTE"
+    },
+    {
+     "cerradas": 40,
+     "provincia": "SEVILLA"
+    },
+    {
+     "cerradas": 33,
+     "provincia": "VALENCIA"
+    },
+    {
+     "cerradas": 33,
+     "provincia": "LA CORUÑA"
+    },
+    {
+     "cerradas": 29,
+     "provincia": "TOLEDO"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Central San Agustin",
+  "periodo": "12M",
+  "from": "2025-07-01",
+  "to": "2026-06-30",
+  "md5": "36c178fd3fe7d903d5f324d0f3561ecc",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Marron",
+     "bajas": 3076,
+     "cerradas": 13095,
+     "pct_bajas": 0.23489881634211532,
+     "pct_sla20": 0.7784650630011455
+    },
+    {
+     "gama": "Blanca",
+     "bajas": 1101,
+     "cerradas": 8795,
+     "pct_bajas": 0.1251847640704946,
+     "pct_sla20": 0.758726549175668
+    },
+    {
+     "gama": "PAE",
+     "bajas": 430,
+     "cerradas": 4428,
+     "pct_bajas": 0.0971093044263776,
+     "pct_sla20": 0.7116079494128275
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 1,
+     "cerradas": 1961,
+     "pct_bajas": 0.0005099439061703213,
+     "pct_sla20": 0.7434982151963284
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 54,
+     "cerradas": 1085,
+     "pct_bajas": 0.04976958525345622,
+     "pct_sla20": 0.4930875576036866
+    },
+    {
+     "gama": "Clima",
+     "bajas": 418,
+     "cerradas": 886,
+     "pct_bajas": 0.4717832957110609,
+     "pct_sla20": 0.5259593679458239
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 0,
+     "cerradas": 181,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.44751381215469616
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 632,
+     "tecnico": "MANUEL",
+     "cerradas": 5063,
+     "pct_bajas": 0.12482717756270986,
+     "pct_sla20": 0.7274343274738297
+    },
+    {
+     "bajas": 1171,
+     "tecnico": "JAVIER",
+     "cerradas": 4052,
+     "pct_bajas": 0.28899308983218164,
+     "pct_sla20": 0.792694965449161
+    },
+    {
+     "bajas": 386,
+     "tecnico": "CARLOS",
+     "cerradas": 3881,
+     "pct_bajas": 0.0994589023447565,
+     "pct_sla20": 0.7121875805204844
+    },
+    {
+     "bajas": 650,
+     "tecnico": "PABLO",
+     "cerradas": 2217,
+     "pct_bajas": 0.2931889941362201,
+     "pct_sla20": 0.8349120433017592
+    },
+    {
+     "bajas": 408,
+     "tecnico": "ADRIAN",
+     "cerradas": 1908,
+     "pct_bajas": 0.2138364779874214,
+     "pct_sla20": 0.8370020964360587
+    },
+    {
+     "bajas": 21,
+     "tecnico": "JORGE DG",
+     "cerradas": 1571,
+     "pct_bajas": 0.01336728198599618,
+     "pct_sla20": 0.6530872056015277
+    },
+    {
+     "bajas": 4,
+     "tecnico": "JORGE AM",
+     "cerradas": 1296,
+     "pct_bajas": 0.0030864197530864196,
+     "pct_sla20": 0.7121913580246914
+    },
+    {
+     "bajas": 168,
+     "tecnico": "SEBASTIAN MARIN CARDONA",
+     "cerradas": 1155,
+     "pct_bajas": 0.14545454545454545,
+     "pct_sla20": 0.7627705627705628
+    },
+    {
+     "bajas": 175,
+     "tecnico": "JOSE PEDRO",
+     "cerradas": 1113,
+     "pct_bajas": 0.15723270440251572,
+     "pct_sla20": 0.7726864330637916
+    },
+    {
+     "bajas": 297,
+     "tecnico": "JUAN LUIS",
+     "cerradas": 985,
+     "pct_bajas": 0.3015228426395939,
+     "pct_sla20": 0.7279187817258883
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JUAN CARLOS",
+     "cerradas": 946,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.6723044397463002
+    },
+    {
+     "bajas": 51,
+     "tecnico": "RAUL",
+     "cerradas": 840,
+     "pct_bajas": 0.060714285714285714,
+     "pct_sla20": 0.8
+    },
+    {
+     "bajas": 133,
+     "tecnico": "DAVID",
+     "cerradas": 825,
+     "pct_bajas": 0.16121212121212122,
+     "pct_sla20": 0.8012121212121213
+    },
+    {
+     "bajas": 46,
+     "tecnico": "JUANMA",
+     "cerradas": 719,
+     "pct_bajas": 0.06397774687065369,
+     "pct_sla20": 0.6801112656467315
+    },
+    {
+     "bajas": 133,
+     "tecnico": "MARIANO",
+     "cerradas": 687,
+     "pct_bajas": 0.19359534206695778,
+     "pct_sla20": 0.3915574963609898
+    },
+    {
+     "bajas": 274,
+     "tecnico": "JORGE",
+     "cerradas": 681,
+     "pct_bajas": 0.4023494860499266,
+     "pct_sla20": 0.8619676945668135
+    },
+    {
+     "bajas": 236,
+     "tecnico": "CHRISTIAN",
+     "cerradas": 649,
+     "pct_bajas": 0.36363636363636365,
+     "pct_sla20": 0.6594761171032357
+    },
+    {
+     "bajas": 72,
+     "tecnico": "FERNANDO ALFREDO",
+     "cerradas": 567,
+     "pct_bajas": 0.12698412698412698,
+     "pct_sla20": 0.781305114638448
+    },
+    {
+     "bajas": 95,
+     "tecnico": "MARIUS",
+     "cerradas": 551,
+     "pct_bajas": 0.1724137931034483,
+     "pct_sla20": 0.8058076225045372
+    },
+    {
+     "bajas": 75,
+     "tecnico": "SAMUEL",
+     "cerradas": 307,
+     "pct_bajas": 0.24429967426710097,
+     "pct_sla20": 0.6938110749185668
+    },
+    {
+     "bajas": 34,
+     "tecnico": "IVAN",
+     "cerradas": 286,
+     "pct_bajas": 0.11888111888111888,
+     "pct_sla20": 0.5454545454545454
+    },
+    {
+     "bajas": 18,
+     "tecnico": "CARLOS E. TORRES",
+     "cerradas": 119,
+     "pct_bajas": 0.15126050420168066,
+     "pct_sla20": 0.29411764705882354
+    },
+    {
+     "bajas": 0,
+     "tecnico": "LIU TECNICO MOVILES",
+     "cerradas": 7,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.8571428571428571
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JUAN MANUEL",
+     "cerradas": 2,
+     "pct_bajas": 0.0,
+     "pct_sla20": 1.0
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JULIO",
+     "cerradas": 2,
+     "pct_bajas": 0.0,
+     "pct_sla20": 1.0
+    },
+    {
+     "bajas": 1,
+     "tecnico": "JUANJO",
+     "cerradas": 1,
+     "pct_bajas": 1.0,
+     "pct_sla20": 1.0
+    },
+    {
+     "bajas": 0,
+     "tecnico": "JOSE LUIS",
+     "cerradas": 1,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.0
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 488,
+     "pct_bajas": 0.2725409836065574,
+     "pct_sla20": 0.7889344262295082
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 2230,
+     "pct_bajas": 0.2219730941704036,
+     "pct_sla20": 0.7345291479820628
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 2541,
+     "pct_bajas": 0.21408894136166864,
+     "pct_sla20": 0.5694608421881149
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 2863,
+     "pct_bajas": 0.18057981138665735,
+     "pct_sla20": 0.8194201886133426
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 1992,
+     "pct_bajas": 0.12951807228915663,
+     "pct_sla20": 0.7409638554216867
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 2183,
+     "pct_bajas": 0.157581310123683,
+     "pct_sla20": 0.717819514429684
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 2731,
+     "pct_bajas": 0.1761259611863786,
+     "pct_sla20": 0.5521786891248627
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 3044,
+     "pct_bajas": 0.16228646517739817,
+     "pct_sla20": 0.7417871222076216
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 2980,
+     "pct_bajas": 0.14697986577181207,
+     "pct_sla20": 0.7469798657718121
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 2552,
+     "pct_bajas": 0.1281347962382445,
+     "pct_sla20": 0.783307210031348
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 2433,
+     "pct_bajas": 0.12001644060830251,
+     "pct_sla20": 0.8405260994656802
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 2403,
+     "pct_bajas": 0.1406575114440283,
+     "pct_sla20": 0.8693300041614649
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 1645,
+     "pct_bajas": 0.1580547112462006,
+     "pct_sla20": 0.8346504559270517
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 870,
+     "marca": "DAEWOO",
+     "cerradas": 2980,
+     "pct_bajas": 0.29194630872483224
+    },
+    {
+     "bajas": 439,
+     "marca": "CARREFOUR HOME",
+     "cerradas": 2495,
+     "pct_bajas": 0.17595190380761522
+    },
+    {
+     "bajas": 781,
+     "marca": "TOSHIBA",
+     "cerradas": 2361,
+     "pct_bajas": 0.33079203727234224
+    },
+    {
+     "bajas": 232,
+     "marca": "MANDINE",
+     "cerradas": 1974,
+     "pct_bajas": 0.11752786220871327
+    },
+    {
+     "bajas": 509,
+     "marca": "JVC",
+     "cerradas": 1629,
+     "pct_bajas": 0.31246163290362183
+    },
+    {
+     "bajas": 54,
+     "marca": "SIMPL",
+     "cerradas": 1369,
+     "pct_bajas": 0.039444850255661065
+    },
+    {
+     "bajas": 387,
+     "marca": "CECOTEC",
+     "cerradas": 1175,
+     "pct_bajas": 0.3293617021276596
+    },
+    {
+     "bajas": 213,
+     "marca": "ELECTRONIA",
+     "cerradas": 1124,
+     "pct_bajas": 0.1895017793594306
+    },
+    {
+     "bajas": 161,
+     "marca": "KLINDO",
+     "cerradas": 1090,
+     "pct_bajas": 0.14770642201834863
+    },
+    {
+     "bajas": 76,
+     "marca": "VALBERG",
+     "cerradas": 966,
+     "pct_bajas": 0.07867494824016563
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 1953,
+     "cliente": "CARREFOUR",
+     "cerradas": 12602,
+     "pct_bajas": 0.15497540073004284
+    },
+    {
+     "bajas": 2128,
+     "cliente": "VESTEL",
+     "cerradas": 7345,
+     "pct_bajas": 0.2897208985704561
+    },
+    {
+     "bajas": 1,
+     "cliente": "ASSURANT GENERAL INSURANCE LIMITED",
+     "cerradas": 2188,
+     "pct_bajas": 0.0004570383912248629
+    },
+    {
+     "bajas": 1,
+     "cliente": "ASSURANT EUROPE INSURANCE NV",
+     "cerradas": 1246,
+     "pct_bajas": 0.0008025682182985554
+    },
+    {
+     "bajas": 101,
+     "cliente": "ELECTRO DEPOT ESPAÑA S.L.U",
+     "cerradas": 1189,
+     "pct_bajas": 0.08494533221194281
+    },
+    {
+     "bajas": 387,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 1176,
+     "pct_bajas": 0.32908163265306123
+    },
+    {
+     "bajas": 0,
+     "cliente": "ESPRINET IBERICA, SLU",
+     "cerradas": 1096,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 46,
+     "cliente": "MAKRO",
+     "cerradas": 866,
+     "pct_bajas": 0.053117782909930716
+    },
+    {
+     "bajas": 123,
+     "cliente": "ALCAMPO",
+     "cerradas": 708,
+     "pct_bajas": 0.17372881355932204
+    },
+    {
+     "bajas": 83,
+     "cliente": "STREAMVIEW GMBH",
+     "cerradas": 441,
+     "pct_bajas": 0.18820861678004536
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 191,
+     "provincia": "MADRID",
+     "abiertas_30": 72
+    },
+    {
+     "abiertas": 46,
+     "provincia": "—",
+     "abiertas_30": 16
+    },
+    {
+     "abiertas": 12,
+     "provincia": "TOLEDO",
+     "abiertas_30": 9
+    },
+    {
+     "abiertas": 44,
+     "provincia": "GUADALAJARA",
+     "abiertas_30": 9
+    },
+    {
+     "abiertas": 5,
+     "provincia": "VALENCIA",
+     "abiertas_30": 4
+    },
+    {
+     "abiertas": 9,
+     "provincia": "MURCIA",
+     "abiertas_30": 4
+    },
+    {
+     "abiertas": 3,
+     "provincia": "ALBACETE",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 4,
+     "provincia": "CASTELLÓN",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 8,
+     "provincia": "BARCELONA",
+     "abiertas_30": 3
+    },
+    {
+     "abiertas": 5,
+     "provincia": "CUENCA",
+     "abiertas_30": 3
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 16498,
+     "provincia": "MADRID"
+    },
+    {
+     "cerradas": 3673,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 942,
+     "provincia": "MURCIA"
+    },
+    {
+     "cerradas": 740,
+     "provincia": "BARCELONA"
+    },
+    {
+     "cerradas": 588,
+     "provincia": "ALICANTE"
+    },
+    {
+     "cerradas": 498,
+     "provincia": "SEVILLA"
+    },
+    {
+     "cerradas": 465,
+     "provincia": "VALENCIA"
+    },
+    {
+     "cerradas": 460,
+     "provincia": "GUADALAJARA"
+    },
+    {
+     "cerradas": 451,
+     "provincia": "LA CORUÑA"
+    },
+    {
+     "cerradas": 339,
+     "provincia": "MÁLAGA"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Valencia",
+  "periodo": "mensual",
+  "from": "2026-06-01",
+  "to": "2026-06-30",
+  "md5": "e972d9920469550c515be9b5616e6a99",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 25,
+     "cerradas": 132,
+     "pct_bajas": 0.1893939393939394,
+     "pct_sla20": 0.696969696969697
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 6,
+     "cerradas": 34,
+     "pct_bajas": 0.17647058823529413,
+     "pct_sla20": 0.7647058823529411
+    },
+    {
+     "gama": "Marron",
+     "bajas": 7,
+     "cerradas": 19,
+     "pct_bajas": 0.3684210526315789,
+     "pct_sla20": 0.7368421052631579
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 10,
+     "tecnico": "RAFAEL",
+     "cerradas": 61,
+     "pct_bajas": 0.16393442622950818,
+     "pct_sla20": 0.7868852459016393
+    },
+    {
+     "bajas": 15,
+     "tecnico": "CARLOS R",
+     "cerradas": 56,
+     "pct_bajas": 0.26785714285714285,
+     "pct_sla20": 0.7678571428571429
+    },
+    {
+     "bajas": 5,
+     "tecnico": "JAVIER M",
+     "cerradas": 43,
+     "pct_bajas": 0.11627906976744186,
+     "pct_sla20": 0.6046511627906976
+    },
+    {
+     "bajas": 8,
+     "tecnico": "MAXIMILIANO",
+     "cerradas": 25,
+     "pct_bajas": 0.32,
+     "pct_sla20": 0.6
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 47,
+     "pct_bajas": 0.3829787234042553,
+     "pct_sla20": 0.7872340425531915
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 196,
+     "pct_bajas": 0.25,
+     "pct_sla20": 0.6683673469387755
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 202,
+     "pct_bajas": 0.27722772277227725,
+     "pct_sla20": 0.5742574257425742
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 179,
+     "pct_bajas": 0.2346368715083799,
+     "pct_sla20": 0.4972067039106145
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 169,
+     "pct_bajas": 0.17751479289940827,
+     "pct_sla20": 0.5325443786982249
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 158,
+     "pct_bajas": 0.17721518987341772,
+     "pct_sla20": 0.6582278481012658
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 157,
+     "pct_bajas": 0.21019108280254778,
+     "pct_sla20": 0.5923566878980892
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 224,
+     "pct_bajas": 0.14732142857142858,
+     "pct_sla20": 0.5267857142857143
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 249,
+     "pct_bajas": 0.18875502008032127,
+     "pct_sla20": 0.5060240963855421
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 148,
+     "pct_bajas": 0.22972972972972974,
+     "pct_sla20": 0.4594594594594595
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 161,
+     "pct_bajas": 0.19875776397515527,
+     "pct_sla20": 0.577639751552795
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 185,
+     "pct_bajas": 0.20540540540540542,
+     "pct_sla20": 0.7135135135135136
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 158,
+     "pct_bajas": 0.20253164556962025,
+     "pct_sla20": 0.6582278481012658
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 7,
+     "marca": "VALBERG",
+     "cerradas": 61,
+     "pct_bajas": 0.11475409836065574
+    },
+    {
+     "bajas": 8,
+     "marca": "CECOTEC",
+     "cerradas": 21,
+     "pct_bajas": 0.38095238095238093
+    },
+    {
+     "bajas": 3,
+     "marca": "METRO PROFESIONAL",
+     "cerradas": 14,
+     "pct_bajas": 0.21428571428571427
+    },
+    {
+     "bajas": 4,
+     "marca": "QILIVE",
+     "cerradas": 12,
+     "pct_bajas": 0.3333333333333333
+    },
+    {
+     "bajas": 1,
+     "marca": "HIGH ONE",
+     "cerradas": 8,
+     "pct_bajas": 0.125
+    },
+    {
+     "bajas": 1,
+     "marca": "METRO (DE: MAKRO)",
+     "cerradas": 7,
+     "pct_bajas": 0.14285714285714285
+    },
+    {
+     "bajas": 0,
+     "marca": "SHARP",
+     "cerradas": 6,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 1,
+     "marca": "HORECA SELECT",
+     "cerradas": 6,
+     "pct_bajas": 0.16666666666666666
+    },
+    {
+     "bajas": 0,
+     "marca": "KROMSLINE",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 1,
+     "marca": "JVC",
+     "cerradas": 4,
+     "pct_bajas": 0.25
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 9,
+     "cliente": "ELECTRO DEPOT ESPAÑA S.L.U",
+     "cerradas": 70,
+     "pct_bajas": 0.12857142857142856
+    },
+    {
+     "bajas": 7,
+     "cliente": "VESTEL",
+     "cerradas": 27,
+     "pct_bajas": 0.25925925925925924
+    },
+    {
+     "bajas": 8,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 21,
+     "pct_bajas": 0.38095238095238093
+    },
+    {
+     "bajas": 3,
+     "cliente": "MAKRO",
+     "cerradas": 19,
+     "pct_bajas": 0.15789473684210525
+    },
+    {
+     "bajas": 3,
+     "cliente": "METRO MARKETS GMBH",
+     "cerradas": 15,
+     "pct_bajas": 0.2
+    },
+    {
+     "bajas": 4,
+     "cliente": "ALCAMPO",
+     "cerradas": 12,
+     "pct_bajas": 0.3333333333333333
+    },
+    {
+     "bajas": 0,
+     "cliente": "NEUMESSE, S.L.",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "EVVO HOME EUROPE, S.L.U.",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 1,
+     "cliente": "TELEFAC",
+     "cerradas": 3,
+     "pct_bajas": 0.3333333333333333
+    },
+    {
+     "bajas": 1,
+     "cliente": "PC COMPONENTES, S.L.",
+     "cerradas": 3,
+     "pct_bajas": 0.3333333333333333
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 115,
+     "provincia": "VALENCIA",
+     "abiertas_30": 31
+    },
+    {
+     "abiertas": 21,
+     "provincia": "ALICANTE",
+     "abiertas_30": 9
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 166,
+     "provincia": "VALENCIA"
+    },
+    {
+     "cerradas": 18,
+     "provincia": "ALICANTE"
+    },
+    {
+     "cerradas": 1,
+     "provincia": "—"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Valencia",
+  "periodo": "12M",
+  "from": "2025-07-01",
+  "to": "2026-06-30",
+  "md5": "a65d57d4494f365bd1f6e306c901a134",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 308,
+     "cerradas": 1623,
+     "pct_bajas": 0.1897720271102896,
+     "pct_sla20": 0.5939617991373999
+    },
+    {
+     "gama": "Marron",
+     "bajas": 140,
+     "cerradas": 385,
+     "pct_bajas": 0.36363636363636365,
+     "pct_sla20": 0.5194805194805194
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 46,
+     "cerradas": 224,
+     "pct_bajas": 0.20535714285714285,
+     "pct_sla20": 0.6875
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 0,
+     "cerradas": 19,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.7894736842105263
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 2,
+     "cerradas": 7,
+     "pct_bajas": 0.2857142857142857,
+     "pct_sla20": 0.2857142857142857
+    },
+    {
+     "gama": "PAE",
+     "bajas": 0,
+     "cerradas": 1,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.0
+    },
+    {
+     "gama": "Clima",
+     "bajas": 0,
+     "cerradas": 1,
+     "pct_bajas": 0.0,
+     "pct_sla20": 1.0
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 154,
+     "tecnico": "RAFAEL",
+     "cerradas": 715,
+     "pct_bajas": 0.2153846153846154,
+     "pct_sla20": 0.6139860139860139
+    },
+    {
+     "bajas": 142,
+     "tecnico": "CARLOS R",
+     "cerradas": 670,
+     "pct_bajas": 0.21194029850746268,
+     "pct_sla20": 0.6283582089552239
+    },
+    {
+     "bajas": 101,
+     "tecnico": "JAVIER M",
+     "cerradas": 577,
+     "pct_bajas": 0.17504332755632582,
+     "pct_sla20": 0.5459272097053726
+    },
+    {
+     "bajas": 99,
+     "tecnico": "MAXIMILIANO",
+     "cerradas": 298,
+     "pct_bajas": 0.33221476510067116,
+     "pct_sla20": 0.540268456375839
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 47,
+     "pct_bajas": 0.3829787234042553,
+     "pct_sla20": 0.7872340425531915
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 196,
+     "pct_bajas": 0.25,
+     "pct_sla20": 0.6683673469387755
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 202,
+     "pct_bajas": 0.27722772277227725,
+     "pct_sla20": 0.5742574257425742
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 179,
+     "pct_bajas": 0.2346368715083799,
+     "pct_sla20": 0.4972067039106145
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 169,
+     "pct_bajas": 0.17751479289940827,
+     "pct_sla20": 0.5325443786982249
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 158,
+     "pct_bajas": 0.17721518987341772,
+     "pct_sla20": 0.6582278481012658
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 157,
+     "pct_bajas": 0.21019108280254778,
+     "pct_sla20": 0.5923566878980892
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 224,
+     "pct_bajas": 0.14732142857142858,
+     "pct_sla20": 0.5267857142857143
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 249,
+     "pct_bajas": 0.18875502008032127,
+     "pct_sla20": 0.5060240963855421
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 148,
+     "pct_bajas": 0.22972972972972974,
+     "pct_sla20": 0.4594594594594595
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 161,
+     "pct_bajas": 0.19875776397515527,
+     "pct_sla20": 0.577639751552795
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 185,
+     "pct_bajas": 0.20540540540540542,
+     "pct_sla20": 0.7135135135135136
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 158,
+     "pct_bajas": 0.20253164556962025,
+     "pct_sla20": 0.6582278481012658
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 85,
+     "marca": "VALBERG",
+     "cerradas": 678,
+     "pct_bajas": 0.12536873156342182
+    },
+    {
+     "bajas": 99,
+     "marca": "CECOTEC",
+     "cerradas": 261,
+     "pct_bajas": 0.3793103448275862
+    },
+    {
+     "bajas": 28,
+     "marca": "QILIVE",
+     "cerradas": 125,
+     "pct_bajas": 0.224
+    },
+    {
+     "bajas": 18,
+     "marca": "HIGH ONE",
+     "cerradas": 124,
+     "pct_bajas": 0.14516129032258066
+    },
+    {
+     "bajas": 39,
+     "marca": "TELEFUNKEN",
+     "cerradas": 109,
+     "pct_bajas": 0.3577981651376147
+    },
+    {
+     "bajas": 29,
+     "marca": "DAEWOO",
+     "cerradas": 85,
+     "pct_bajas": 0.3411764705882353
+    },
+    {
+     "bajas": 19,
+     "marca": "SHARP",
+     "cerradas": 82,
+     "pct_bajas": 0.23170731707317074
+    },
+    {
+     "bajas": 29,
+     "marca": "TOSHIBA",
+     "cerradas": 78,
+     "pct_bajas": 0.3717948717948718
+    },
+    {
+     "bajas": 16,
+     "marca": "JVC",
+     "cerradas": 70,
+     "pct_bajas": 0.22857142857142856
+    },
+    {
+     "bajas": 4,
+     "marca": "METRO (DE: MAKRO)",
+     "cerradas": 69,
+     "pct_bajas": 0.057971014492753624
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 113,
+     "cliente": "ELECTRO DEPOT ESPAÑA S.L.U",
+     "cerradas": 814,
+     "pct_bajas": 0.13882063882063883
+    },
+    {
+     "bajas": 172,
+     "cliente": "VESTEL",
+     "cerradas": 559,
+     "pct_bajas": 0.3076923076923077
+    },
+    {
+     "bajas": 99,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 261,
+     "pct_bajas": 0.3793103448275862
+    },
+    {
+     "bajas": 28,
+     "cliente": "MAKRO",
+     "cerradas": 160,
+     "pct_bajas": 0.175
+    },
+    {
+     "bajas": 28,
+     "cliente": "ALCAMPO",
+     "cerradas": 126,
+     "pct_bajas": 0.2222222222222222
+    },
+    {
+     "bajas": 10,
+     "cliente": "NEUMESSE, S.L.",
+     "cerradas": 63,
+     "pct_bajas": 0.15873015873015872
+    },
+    {
+     "bajas": 6,
+     "cliente": "EVVO HOME EUROPE, S.L.U.",
+     "cerradas": 62,
+     "pct_bajas": 0.0967741935483871
+    },
+    {
+     "bajas": 18,
+     "cliente": "METRO MARKETS GMBH",
+     "cerradas": 60,
+     "pct_bajas": 0.3
+    },
+    {
+     "bajas": 4,
+     "cliente": "JOCEL LDA",
+     "cerradas": 43,
+     "pct_bajas": 0.09302325581395349
+    },
+    {
+     "bajas": 1,
+     "cliente": "BERMELLO S.A",
+     "cerradas": 22,
+     "pct_bajas": 0.045454545454545456
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 115,
+     "provincia": "VALENCIA",
+     "abiertas_30": 31
+    },
+    {
+     "abiertas": 21,
+     "provincia": "ALICANTE",
+     "abiertas_30": 9
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 1914,
+     "provincia": "VALENCIA"
+    },
+    {
+     "cerradas": 332,
+     "provincia": "ALICANTE"
+    },
+    {
+     "cerradas": 12,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 2,
+     "provincia": "CASTELLÓN"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Barcelona",
+  "periodo": "mensual",
+  "from": "2026-06-01",
+  "to": "2026-06-30",
+  "md5": "01ff7fd8d606e6daecdbaf23cb682237",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 38,
+     "cerradas": 149,
+     "pct_bajas": 0.2550335570469799,
+     "pct_sla20": 0.47651006711409394
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 1,
+     "cerradas": 42,
+     "pct_bajas": 0.023809523809523808,
+     "pct_sla20": 0.5952380952380952
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 0,
+     "cerradas": 6,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.6666666666666666
+    },
+    {
+     "gama": "Marron",
+     "bajas": 2,
+     "cerradas": 2,
+     "pct_bajas": 1.0,
+     "pct_sla20": 0.5
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 18,
+     "tecnico": "JOSE ANTONIO",
+     "cerradas": 82,
+     "pct_bajas": 0.21951219512195122,
+     "pct_sla20": 0.524390243902439
+    },
+    {
+     "bajas": 10,
+     "tecnico": "ANTONIO",
+     "cerradas": 65,
+     "pct_bajas": 0.15384615384615385,
+     "pct_sla20": 0.5076923076923077
+    },
+    {
+     "bajas": 13,
+     "tecnico": "JOSEP",
+     "cerradas": 52,
+     "pct_bajas": 0.25,
+     "pct_sla20": 0.4807692307692308
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 43,
+     "pct_bajas": 0.23255813953488372,
+     "pct_sla20": 0.7906976744186046
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 150,
+     "pct_bajas": 0.23333333333333334,
+     "pct_sla20": 0.6866666666666666
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 210,
+     "pct_bajas": 0.21428571428571427,
+     "pct_sla20": 0.6190476190476191
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 209,
+     "pct_bajas": 0.22488038277511962,
+     "pct_sla20": 0.7655502392344498
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 173,
+     "pct_bajas": 0.15606936416184972,
+     "pct_sla20": 0.6127167630057804
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 141,
+     "pct_bajas": 0.1347517730496454,
+     "pct_sla20": 0.45390070921985815
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 189,
+     "pct_bajas": 0.2698412698412698,
+     "pct_sla20": 0.5396825396825397
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 144,
+     "pct_bajas": 0.2013888888888889,
+     "pct_sla20": 0.5277777777777778
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 181,
+     "pct_bajas": 0.13812154696132597,
+     "pct_sla20": 0.6740331491712708
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 155,
+     "pct_bajas": 0.24516129032258063,
+     "pct_sla20": 0.7032258064516129
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 200,
+     "pct_bajas": 0.17,
+     "pct_sla20": 0.5
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 199,
+     "pct_bajas": 0.20603015075376885,
+     "pct_sla20": 0.507537688442211
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 116,
+     "pct_bajas": 0.3017241379310345,
+     "pct_sla20": 0.45689655172413796
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 28,
+     "marca": "CECOTEC",
+     "cerradas": 70,
+     "pct_bajas": 0.4
+    },
+    {
+     "bajas": 2,
+     "marca": "QILIVE",
+     "cerradas": 31,
+     "pct_bajas": 0.06451612903225806
+    },
+    {
+     "bajas": 1,
+     "marca": "METRO (DE: MAKRO)",
+     "cerradas": 18,
+     "pct_bajas": 0.05555555555555555
+    },
+    {
+     "bajas": 0,
+     "marca": "METRO PROFESIONAL",
+     "cerradas": 14,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 3,
+     "marca": "SHARP",
+     "cerradas": 11,
+     "pct_bajas": 0.2727272727272727
+    },
+    {
+     "bajas": 1,
+     "marca": "EVVO",
+     "cerradas": 9,
+     "pct_bajas": 0.1111111111111111
+    },
+    {
+     "bajas": 1,
+     "marca": "JOCEL",
+     "cerradas": 6,
+     "pct_bajas": 0.16666666666666666
+    },
+    {
+     "bajas": 0,
+     "marca": "KROMSLINE",
+     "cerradas": 5,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 2,
+     "marca": "ORIGIAL",
+     "cerradas": 4,
+     "pct_bajas": 0.5
+    },
+    {
+     "bajas": 0,
+     "marca": "ICECOOL",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 28,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 70,
+     "pct_bajas": 0.4
+    },
+    {
+     "bajas": 2,
+     "cliente": "ALCAMPO",
+     "cerradas": 32,
+     "pct_bajas": 0.0625
+    },
+    {
+     "bajas": 1,
+     "cliente": "MAKRO",
+     "cerradas": 27,
+     "pct_bajas": 0.037037037037037035
+    },
+    {
+     "bajas": 5,
+     "cliente": "VESTEL",
+     "cerradas": 18,
+     "pct_bajas": 0.2777777777777778
+    },
+    {
+     "bajas": 0,
+     "cliente": "METRO MARKETS GMBH",
+     "cerradas": 15,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 1,
+     "cliente": "EVVO HOME EUROPE, S.L.U.",
+     "cerradas": 9,
+     "pct_bajas": 0.1111111111111111
+    },
+    {
+     "bajas": 1,
+     "cliente": "JOCEL LDA",
+     "cerradas": 6,
+     "pct_bajas": 0.16666666666666666
+    },
+    {
+     "bajas": 0,
+     "cliente": "NEUMESSE, S.L.",
+     "cerradas": 5,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "CARREFOUR",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 2,
+     "cliente": "PC COMPONENTES, S.L.",
+     "cerradas": 4,
+     "pct_bajas": 0.5
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 195,
+     "provincia": "BARCELONA",
+     "abiertas_30": 85
+    },
+    {
+     "abiertas": 3,
+     "provincia": "—",
+     "abiertas_30": 1
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 196,
+     "provincia": "BARCELONA"
+    },
+    {
+     "cerradas": 2,
+     "provincia": "GERONA"
+    },
+    {
+     "cerradas": 1,
+     "provincia": "—"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Barcelona",
+  "periodo": "12M",
+  "from": "2025-07-01",
+  "to": "2026-06-30",
+  "md5": "832e3b64ed2345e1a2c1590a0cb0d18f",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 394,
+     "cerradas": 1793,
+     "pct_bajas": 0.21974344673731178,
+     "pct_sla20": 0.6330172894590073
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 25,
+     "cerradas": 299,
+     "pct_bajas": 0.08361204013377926,
+     "pct_sla20": 0.5250836120401338
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 4,
+     "cerradas": 34,
+     "pct_bajas": 0.11764705882352941,
+     "pct_sla20": 0.8235294117647058
+    },
+    {
+     "gama": "Marron",
+     "bajas": 10,
+     "cerradas": 21,
+     "pct_bajas": 0.47619047619047616,
+     "pct_sla20": 0.42857142857142855
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 1,
+     "cerradas": 5,
+     "pct_bajas": 0.2,
+     "pct_sla20": 0.4
+    },
+    {
+     "gama": "PAE",
+     "bajas": 0,
+     "cerradas": 4,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.25
+    },
+    {
+     "gama": "Clima",
+     "bajas": 2,
+     "cerradas": 3,
+     "pct_bajas": 0.6666666666666666,
+     "pct_sla20": 0.0
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 157,
+     "tecnico": "JOSE ANTONIO",
+     "cerradas": 762,
+     "pct_bajas": 0.20603674540682415,
+     "pct_sla20": 0.6548556430446194
+    },
+    {
+     "bajas": 140,
+     "tecnico": "ANTONIO",
+     "cerradas": 713,
+     "pct_bajas": 0.19635343618513323,
+     "pct_sla20": 0.5932678821879382
+    },
+    {
+     "bajas": 139,
+     "tecnico": "JOSEP",
+     "cerradas": 684,
+     "pct_bajas": 0.20321637426900585,
+     "pct_sla20": 0.5994152046783626
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 43,
+     "pct_bajas": 0.23255813953488372,
+     "pct_sla20": 0.7906976744186046
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 150,
+     "pct_bajas": 0.23333333333333334,
+     "pct_sla20": 0.6866666666666666
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 210,
+     "pct_bajas": 0.21428571428571427,
+     "pct_sla20": 0.6190476190476191
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 209,
+     "pct_bajas": 0.22488038277511962,
+     "pct_sla20": 0.7655502392344498
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 173,
+     "pct_bajas": 0.15606936416184972,
+     "pct_sla20": 0.6127167630057804
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 141,
+     "pct_bajas": 0.1347517730496454,
+     "pct_sla20": 0.45390070921985815
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 189,
+     "pct_bajas": 0.2698412698412698,
+     "pct_sla20": 0.5396825396825397
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 144,
+     "pct_bajas": 0.2013888888888889,
+     "pct_sla20": 0.5277777777777778
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 181,
+     "pct_bajas": 0.13812154696132597,
+     "pct_sla20": 0.6740331491712708
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 155,
+     "pct_bajas": 0.24516129032258063,
+     "pct_sla20": 0.7032258064516129
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 200,
+     "pct_bajas": 0.17,
+     "pct_sla20": 0.5
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 199,
+     "pct_bajas": 0.20603015075376885,
+     "pct_sla20": 0.507537688442211
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 116,
+     "pct_bajas": 0.3017241379310345,
+     "pct_sla20": 0.45689655172413796
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 106,
+     "marca": "QILIVE",
+     "cerradas": 534,
+     "pct_bajas": 0.19850187265917604
+    },
+    {
+     "bajas": 133,
+     "marca": "CECOTEC",
+     "cerradas": 451,
+     "pct_bajas": 0.29490022172949004
+    },
+    {
+     "bajas": 15,
+     "marca": "EVVO",
+     "cerradas": 144,
+     "pct_bajas": 0.10416666666666667
+    },
+    {
+     "bajas": 27,
+     "marca": "SHARP",
+     "cerradas": 108,
+     "pct_bajas": 0.25
+    },
+    {
+     "bajas": 11,
+     "marca": "KROMSLINE",
+     "cerradas": 101,
+     "pct_bajas": 0.10891089108910891
+    },
+    {
+     "bajas": 23,
+     "marca": "NEW POL",
+     "cerradas": 89,
+     "pct_bajas": 0.25842696629213485
+    },
+    {
+     "bajas": 10,
+     "marca": "JOCEL",
+     "cerradas": 65,
+     "pct_bajas": 0.15384615384615385
+    },
+    {
+     "bajas": 6,
+     "marca": "METRO PROFESIONAL",
+     "cerradas": 64,
+     "pct_bajas": 0.09375
+    },
+    {
+     "bajas": 6,
+     "marca": "HORECA SELECT",
+     "cerradas": 62,
+     "pct_bajas": 0.0967741935483871
+    },
+    {
+     "bajas": 6,
+     "marca": "METRO (DE: MAKRO)",
+     "cerradas": 58,
+     "pct_bajas": 0.10344827586206896
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 107,
+     "cliente": "ALCAMPO",
+     "cerradas": 545,
+     "pct_bajas": 0.1963302752293578
+    },
+    {
+     "bajas": 133,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 451,
+     "pct_bajas": 0.29490022172949004
+    },
+    {
+     "bajas": 94,
+     "cliente": "VESTEL",
+     "cerradas": 352,
+     "pct_bajas": 0.26704545454545453
+    },
+    {
+     "bajas": 17,
+     "cliente": "MAKRO",
+     "cerradas": 198,
+     "pct_bajas": 0.08585858585858586
+    },
+    {
+     "bajas": 8,
+     "cliente": "EVVO HOME EUROPE, S.L.U.",
+     "cerradas": 115,
+     "pct_bajas": 0.06956521739130435
+    },
+    {
+     "bajas": 12,
+     "cliente": "NEUMESSE, S.L.",
+     "cerradas": 106,
+     "pct_bajas": 0.11320754716981132
+    },
+    {
+     "bajas": 8,
+     "cliente": "METRO MARKETS GMBH",
+     "cerradas": 96,
+     "pct_bajas": 0.08333333333333333
+    },
+    {
+     "bajas": 10,
+     "cliente": "JOCEL LDA",
+     "cerradas": 65,
+     "pct_bajas": 0.15384615384615385
+    },
+    {
+     "bajas": 14,
+     "cliente": "CARREFOUR",
+     "cerradas": 57,
+     "pct_bajas": 0.24561403508771928
+    },
+    {
+     "bajas": 13,
+     "cliente": "PC COMPONENTES, S.L.",
+     "cerradas": 56,
+     "pct_bajas": 0.23214285714285715
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 195,
+     "provincia": "BARCELONA",
+     "abiertas_30": 85
+    },
+    {
+     "abiertas": 3,
+     "provincia": "—",
+     "abiertas_30": 1
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 2108,
+     "provincia": "BARCELONA"
+    },
+    {
+     "cerradas": 45,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 4,
+     "provincia": "GERONA"
+    },
+    {
+     "cerradas": 2,
+     "provincia": "TARRAGONA"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Las Palmas",
+  "periodo": "mensual",
+  "from": "2026-06-01",
+  "to": "2026-06-30",
+  "md5": "8b6762c318a57eb038b038aa50ff9afd",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 52,
+     "cerradas": 135,
+     "pct_bajas": 0.3851851851851852,
+     "pct_sla20": 0.762962962962963
+    },
+    {
+     "gama": "Marron",
+     "bajas": 9,
+     "cerradas": 23,
+     "pct_bajas": 0.391304347826087,
+     "pct_sla20": 0.6086956521739131
+    },
+    {
+     "gama": "PAE",
+     "bajas": 15,
+     "cerradas": 18,
+     "pct_bajas": 0.8333333333333334,
+     "pct_sla20": 0.8888888888888888
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 0,
+     "cerradas": 8,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.75
+    },
+    {
+     "gama": "Clima",
+     "bajas": 3,
+     "cerradas": 3,
+     "pct_bajas": 1.0,
+     "pct_sla20": 1.0
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 0,
+     "cerradas": 1,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.0
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 30,
+     "tecnico": "JUAN CARMELO",
+     "cerradas": 83,
+     "pct_bajas": 0.3614457831325301,
+     "pct_sla20": 0.6746987951807228
+    },
+    {
+     "bajas": 33,
+     "tecnico": "DIEGO",
+     "cerradas": 63,
+     "pct_bajas": 0.5238095238095238,
+     "pct_sla20": 0.8888888888888888
+    },
+    {
+     "bajas": 16,
+     "tecnico": "JOHNNIER CARVAJAL",
+     "cerradas": 42,
+     "pct_bajas": 0.38095238095238093,
+     "pct_sla20": 0.7142857142857143
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 38,
+     "pct_bajas": 0.42105263157894735,
+     "pct_sla20": 0.9473684210526315
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 233,
+     "pct_bajas": 0.4721030042918455,
+     "pct_sla20": 0.8884120171673819
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 310,
+     "pct_bajas": 0.4290322580645161,
+     "pct_sla20": 0.7322580645161291
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 283,
+     "pct_bajas": 0.4169611307420495,
+     "pct_sla20": 0.7950530035335689
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 253,
+     "pct_bajas": 0.36363636363636365,
+     "pct_sla20": 0.83399209486166
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 195,
+     "pct_bajas": 0.39487179487179486,
+     "pct_sla20": 0.9025641025641026
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 289,
+     "pct_bajas": 0.39792387543252594,
+     "pct_sla20": 0.7577854671280276
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 267,
+     "pct_bajas": 0.3707865168539326,
+     "pct_sla20": 0.7602996254681648
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 274,
+     "pct_bajas": 0.3613138686131387,
+     "pct_sla20": 0.7664233576642335
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 278,
+     "pct_bajas": 0.36330935251798563,
+     "pct_sla20": 0.802158273381295
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 218,
+     "pct_bajas": 0.3165137614678899,
+     "pct_sla20": 0.7981651376146789
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 188,
+     "pct_bajas": 0.42021276595744683,
+     "pct_sla20": 0.7553191489361702
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 162,
+     "pct_bajas": 0.345679012345679,
+     "pct_sla20": 0.7839506172839507
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 10,
+     "marca": "TEGRAN",
+     "cerradas": 31,
+     "pct_bajas": 0.3225806451612903
+    },
+    {
+     "bajas": 8,
+     "marca": "SUNFEEL",
+     "cerradas": 20,
+     "pct_bajas": 0.4
+    },
+    {
+     "bajas": 3,
+     "marca": "ICECOOL",
+     "cerradas": 17,
+     "pct_bajas": 0.17647058823529413
+    },
+    {
+     "bajas": 4,
+     "marca": "DAEWOO",
+     "cerradas": 13,
+     "pct_bajas": 0.3076923076923077
+    },
+    {
+     "bajas": 7,
+     "marca": "KYMPO",
+     "cerradas": 13,
+     "pct_bajas": 0.5384615384615384
+    },
+    {
+     "bajas": 11,
+     "marca": "CARREFOUR HOME",
+     "cerradas": 13,
+     "pct_bajas": 0.8461538461538461
+    },
+    {
+     "bajas": 8,
+     "marca": "NEW POL",
+     "cerradas": 11,
+     "pct_bajas": 0.7272727272727273
+    },
+    {
+     "bajas": 4,
+     "marca": "CECOTEC",
+     "cerradas": 8,
+     "pct_bajas": 0.5
+    },
+    {
+     "bajas": 0,
+     "marca": "QILIVE",
+     "cerradas": 8,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 4,
+     "marca": "SIMPL",
+     "cerradas": 8,
+     "pct_bajas": 0.5
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 38,
+     "cliente": "VESTEL",
+     "cerradas": 86,
+     "pct_bajas": 0.4418604651162791
+    },
+    {
+     "bajas": 37,
+     "cliente": "CARREFOUR",
+     "cerradas": 67,
+     "pct_bajas": 0.5522388059701493
+    },
+    {
+     "bajas": 0,
+     "cliente": "MAKRO",
+     "cerradas": 8,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 4,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 8,
+     "pct_bajas": 0.5
+    },
+    {
+     "bajas": 0,
+     "cliente": "ALCAMPO",
+     "cerradas": 8,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "ASOCIACION CANARIA DE ELECTRODOMESTICOS ACADESA, S.A.",
+     "cerradas": 5,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "ASSURANT EUROPE INSURANCE NV",
+     "cerradas": 4,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "ESPRINET IBERICA, SLU",
+     "cerradas": 1,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "STREAMVIEW IBERIA, S.L.",
+     "cerradas": 1,
+     "pct_bajas": 0.0
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 75,
+     "provincia": "LAS PALMAS",
+     "abiertas_30": 23
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 183,
+     "provincia": "LAS PALMAS"
+    },
+    {
+     "cerradas": 4,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 1,
+     "provincia": "MADRID"
+    }
+   ]
+  }
+ },
+ {
+  "delegacion": "Las Palmas",
+  "periodo": "12M",
+  "from": "2025-07-01",
+  "to": "2026-06-30",
+  "md5": "36f0fb99bb18f0a271ca80fb81458212",
+  "payload": {
+   "por_gama": [
+    {
+     "gama": "Blanca",
+     "bajas": 728,
+     "cerradas": 1967,
+     "pct_bajas": 0.3701067615658363,
+     "pct_sla20": 0.8144382308083375
+    },
+    {
+     "gama": "Marron",
+     "bajas": 211,
+     "cerradas": 436,
+     "pct_bajas": 0.48394495412844035,
+     "pct_sla20": 0.7362385321100917
+    },
+    {
+     "gama": "PAE",
+     "bajas": 188,
+     "cerradas": 317,
+     "pct_bajas": 0.5930599369085173,
+     "pct_sla20": 0.9779179810725552
+    },
+    {
+     "gama": "Profesional",
+     "bajas": 17,
+     "cerradas": 137,
+     "pct_bajas": 0.12408759124087591,
+     "pct_sla20": 0.7007299270072993
+    },
+    {
+     "gama": "Movilidad",
+     "bajas": 0,
+     "cerradas": 92,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.41304347826086957
+    },
+    {
+     "gama": "Clima",
+     "bajas": 59,
+     "cerradas": 84,
+     "pct_bajas": 0.7023809523809523,
+     "pct_sla20": 0.8571428571428571
+    },
+    {
+     "gama": "Sin clasificar",
+     "bajas": 0,
+     "cerradas": 11,
+     "pct_bajas": 0.0,
+     "pct_sla20": 0.45454545454545453
+    }
+   ],
+   "tecnicos": [
+    {
+     "bajas": 508,
+     "tecnico": "DIEGO",
+     "cerradas": 1157,
+     "pct_bajas": 0.439066551426102,
+     "pct_sla20": 0.8426966292134831
+    },
+    {
+     "bajas": 372,
+     "tecnico": "JUAN CARMELO",
+     "cerradas": 986,
+     "pct_bajas": 0.3772819472616633,
+     "pct_sla20": 0.7677484787018256
+    },
+    {
+     "bajas": 323,
+     "tecnico": "JOHNNIER CARVAJAL",
+     "cerradas": 901,
+     "pct_bajas": 0.3584905660377358,
+     "pct_sla20": 0.7902330743618202
+    }
+   ],
+   "evolucion": [
+    {
+     "mes": "2025-07-01",
+     "cerradas": 38,
+     "pct_bajas": 0.42105263157894735,
+     "pct_sla20": 0.9473684210526315
+    },
+    {
+     "mes": "2025-08-01",
+     "cerradas": 233,
+     "pct_bajas": 0.4721030042918455,
+     "pct_sla20": 0.8884120171673819
+    },
+    {
+     "mes": "2025-09-01",
+     "cerradas": 310,
+     "pct_bajas": 0.4290322580645161,
+     "pct_sla20": 0.7322580645161291
+    },
+    {
+     "mes": "2025-10-01",
+     "cerradas": 283,
+     "pct_bajas": 0.4169611307420495,
+     "pct_sla20": 0.7950530035335689
+    },
+    {
+     "mes": "2025-11-01",
+     "cerradas": 253,
+     "pct_bajas": 0.36363636363636365,
+     "pct_sla20": 0.83399209486166
+    },
+    {
+     "mes": "2025-12-01",
+     "cerradas": 195,
+     "pct_bajas": 0.39487179487179486,
+     "pct_sla20": 0.9025641025641026
+    },
+    {
+     "mes": "2026-01-01",
+     "cerradas": 289,
+     "pct_bajas": 0.39792387543252594,
+     "pct_sla20": 0.7577854671280276
+    },
+    {
+     "mes": "2026-02-01",
+     "cerradas": 267,
+     "pct_bajas": 0.3707865168539326,
+     "pct_sla20": 0.7602996254681648
+    },
+    {
+     "mes": "2026-03-01",
+     "cerradas": 274,
+     "pct_bajas": 0.3613138686131387,
+     "pct_sla20": 0.7664233576642335
+    },
+    {
+     "mes": "2026-04-01",
+     "cerradas": 278,
+     "pct_bajas": 0.36330935251798563,
+     "pct_sla20": 0.802158273381295
+    },
+    {
+     "mes": "2026-05-01",
+     "cerradas": 218,
+     "pct_bajas": 0.3165137614678899,
+     "pct_sla20": 0.7981651376146789
+    },
+    {
+     "mes": "2026-06-01",
+     "cerradas": 188,
+     "pct_bajas": 0.42021276595744683,
+     "pct_sla20": 0.7553191489361702
+    },
+    {
+     "mes": "2026-07-01",
+     "cerradas": 162,
+     "pct_bajas": 0.345679012345679,
+     "pct_sla20": 0.7839506172839507
+    }
+   ],
+   "por_marca": [
+    {
+     "bajas": 125,
+     "marca": "TEGRAN",
+     "cerradas": 364,
+     "pct_bajas": 0.3434065934065934
+    },
+    {
+     "bajas": 105,
+     "marca": "NEW POL",
+     "cerradas": 262,
+     "pct_bajas": 0.40076335877862596
+    },
+    {
+     "bajas": 95,
+     "marca": "SUNFEEL",
+     "cerradas": 260,
+     "pct_bajas": 0.36538461538461536
+    },
+    {
+     "bajas": 73,
+     "marca": "ICECOOL",
+     "cerradas": 221,
+     "pct_bajas": 0.33031674208144796
+    },
+    {
+     "bajas": 76,
+     "marca": "KYMPO",
+     "cerradas": 178,
+     "pct_bajas": 0.42696629213483145
+    },
+    {
+     "bajas": 88,
+     "marca": "CARREFOUR HOME",
+     "cerradas": 164,
+     "pct_bajas": 0.5365853658536586
+    },
+    {
+     "bajas": 68,
+     "marca": "DAEWOO",
+     "cerradas": 151,
+     "pct_bajas": 0.4503311258278146
+    },
+    {
+     "bajas": 86,
+     "marca": "MANDINE",
+     "cerradas": 146,
+     "pct_bajas": 0.589041095890411
+    },
+    {
+     "bajas": 101,
+     "marca": "KLINDO",
+     "cerradas": 141,
+     "pct_bajas": 0.7163120567375887
+    },
+    {
+     "bajas": 69,
+     "marca": "TOSHIBA",
+     "cerradas": 120,
+     "pct_bajas": 0.575
+    }
+   ],
+   "por_cliente": [
+    {
+     "bajas": 551,
+     "cliente": "VESTEL",
+     "cerradas": 1377,
+     "pct_bajas": 0.4001452432824982
+    },
+    {
+     "bajas": 556,
+     "cliente": "CARREFOUR",
+     "cerradas": 1107,
+     "pct_bajas": 0.5022583559168925
+    },
+    {
+     "bajas": 17,
+     "cliente": "MAKRO",
+     "cerradas": 129,
+     "pct_bajas": 0.13178294573643412
+    },
+    {
+     "bajas": 14,
+     "cliente": "ALCAMPO",
+     "cerradas": 101,
+     "pct_bajas": 0.13861386138613863
+    },
+    {
+     "bajas": 31,
+     "cliente": "CECOTEC INNOVACIONES, S.L.U.",
+     "cerradas": 91,
+     "pct_bajas": 0.34065934065934067
+    },
+    {
+     "bajas": 0,
+     "cliente": "ASSURANT EUROPE INSURANCE NV",
+     "cerradas": 81,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 0,
+     "cliente": "ESPRINET IBERICA, SLU",
+     "cerradas": 59,
+     "pct_bajas": 0.0
+    },
+    {
+     "bajas": 11,
+     "cliente": "TELEFAC",
+     "cerradas": 17,
+     "pct_bajas": 0.6470588235294118
+    },
+    {
+     "bajas": 3,
+     "cliente": "STREAMVIEW GMBH",
+     "cerradas": 14,
+     "pct_bajas": 0.21428571428571427
+    },
+    {
+     "bajas": 0,
+     "cliente": "BRIGHTWAY INNOVATION INTELLIGENT TECHNOLOGY (SUZHOU) CO. LTD.",
+     "cerradas": 13,
+     "pct_bajas": 0.0
+    }
+   ],
+   "abiertas_prov": [
+    {
+     "abiertas": 75,
+     "provincia": "LAS PALMAS",
+     "abiertas_30": 23
+    }
+   ],
+   "por_provincia": [
+    {
+     "cerradas": 3023,
+     "provincia": "LAS PALMAS"
+    },
+    {
+     "cerradas": 18,
+     "provincia": "—"
+    },
+    {
+     "cerradas": 2,
+     "provincia": "SANTA CRUZ DE TENERIFE"
+    },
+    {
+     "cerradas": 1,
+     "provincia": "MADRID"
+    }
+   ]
+  }
+ }
+]
