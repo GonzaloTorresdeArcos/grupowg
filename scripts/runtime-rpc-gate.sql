@@ -84,12 +84,25 @@ DECLARE
      $q$SELECT public.ops_tecnico_ficha('MANUEL')$q$,
      'src/pages/ops/Tecnicos.tsx','n'],
 
-    ['ops_delegaciones','jun-2026 sin filtros',
-     $q$SELECT public.ops_delegaciones('2026-06-01','2026-06-30')$q$,
-     'src/pages/ops/Delegaciones.tsx','n'],
+    -- UAT-2 · se invoca con los 11 parámetros (misma forma que Delegaciones.tsx)
+    -- y bajo rol authenticated: la versión anterior, con 2 argumentos y sin RLS
+    -- real, ocultaba los 6.862 ms que dejaban la página cargando.
+    ['ops_delegaciones','jun-2026 sin filtros (11 params)',
+     $q$SELECT public.ops_delegaciones('2026-06-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)$q$,
+     'src/pages/ops/Delegaciones.tsx','y'],
+    ['ops_delegaciones','jun-ago 2026 (actual UAT-2)',
+     $q$SELECT public.ops_delegaciones('2026-06-01','2026-08-31',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)$q$,
+     'src/pages/ops/Delegaciones.tsx','y'],
+    ['ops_delegaciones','mar-may 2026 (previo UAT-2)',
+     $q$SELECT public.ops_delegaciones('2026-03-01','2026-05-31',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)$q$,
+     'src/pages/ops/Delegaciones.tsx','y'],
+    ['ops_delegaciones','filtros UAT-1 (may, CSA, Blanca, FRIGORIFICO, KROMSLINE)',
+     $q$SELECT public.ops_delegaciones('2026-05-01','2026-05-31','Blanca',NULL,'FRIGORIFICO','KROMSLINE',NULL,NULL,NULL,NULL,'Central San Agustin')$q$,
+     'src/pages/ops/Delegaciones.tsx','y'],
     ['ops_delegaciones','12M jul25-jun26',
-     $q$SELECT public.ops_delegaciones('2025-07-01','2026-06-30')$q$,
-     'src/pages/ops/Delegaciones.tsx','n'],
+     $q$SELECT public.ops_delegaciones('2025-07-01','2026-06-30',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)$q$,
+     'src/pages/ops/Delegaciones.tsx','y'],
+
 
     ['ops_delegacion_ficha','Central San Agustin jun-2026',
      $q$SELECT public.ops_delegacion_ficha('Central San Agustin','2026-06-01','2026-06-30')$q$,
