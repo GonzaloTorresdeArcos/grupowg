@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight,
   ChevronDown, Wrench, Euro, MapPin, Truck, Package, Database, Factory,
