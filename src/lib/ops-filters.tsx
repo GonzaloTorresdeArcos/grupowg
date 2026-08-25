@@ -167,10 +167,12 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const filtrosSaneados = useMemo(() => {
     if (optionsQ.isPending || optionsQ.error) return filters;
     const out = { ...filters };
+    let tocado = false;
     const check = (key: keyof OpsFilters, list: string[]) => {
       const v = filters[key];
       if (typeof v === "string" && v && list.length > 0 && !list.includes(v)) {
         (out as Record<string, unknown>)[key as string] = null;
+        tocado = true;
       }
     };
     check("delegacion", options.delegaciones);
@@ -182,7 +184,8 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     check("sat", options.sats);
     check("tecnico", options.tecnicos);
     check("canal", options.canales);
-    return out;
+    // Identidad estable cuando no hay nada que sanear: evita re-publicaciones.
+    return tocado ? out : filters;
   }, [filters, options, optionsQ.isPending, optionsQ.error]);
 
   // Auto-limpieza: persiste el saneado en el estado (y en localStorage).
