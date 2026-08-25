@@ -82,3 +82,43 @@ Todo cambio de firma o de exposición de una RPC termina con
 
 Última ejecución del script SQL: **7/7 funciones PASS** (autorizado devuelve
 datos, no autorizado bloqueado).
+
+## Caso que NO usa el patrón: `ops_delegacion_ficha`
+
+Medida bajo `authenticated` + claims management, tardaba ~4,1 s. El
+`EXPLAIN (ANALYZE, BUFFERS)` descartó la RLS como causa: el 98 % del tiempo
+estaba en la CTE `evo`, que llamaba a `public.ops_as_of('ot')` dentro de un
+`FILTER` evaluado fila a fila sobre 46.221 filas materializadas.
+
+La corrección eleva `ops_as_of` a variable escalar y estrecha las columnas de
+la CTE `base`. La función sigue siendo **SECURITY INVOKER** (no hay motivo de
+rendimiento para elevar privilegios) y se endurece igualmente su exposición:
+
+```sql
+REVOKE ALL ON FUNCTION public.ops_delegacion_ficha(text, date, date) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.ops_delegacion_ficha(text, date, date) TO authenticated;
+```
+
+Resultado: 4.300 ms → ~96 ms en caliente (8 casos medidos, todos <500 ms) con
+igualdad de payload verificada contra
+`src/lib/__fixtures__/ops-delegacion-ficha-before.json`.
+
+Regla derivada: antes de aplicar el patrón SECURITY DEFINER hay que
+**demostrar con plan** que la causa es la reevaluación de RLS. Si la causa es
+una función volátil o STABLE llamada por fila, la solución correcta es
+elevarla a escalar, no elevar privilegios.
+
+## Estado del gate de RPC
+
+`scripts/runtime-rpc-gate.sql` ejecuta ya **todos** los casos asumiendo el rol
+`authenticated` con claims de un usuario management: tras el ACL hardening
+ninguna función `ops_*` es ejecutable por `PUBLIC`/`anon`, por lo que el rol
+restringido de `psql` del sandbox obtiene `permission denied` en todos ellos y
+el gate debe lanzarse con la herramienta SQL administrada del proyecto.
+
+Última ejecución (50 casos, umbral 3.000 ms): **48 PASS / 2 FAIL**.
+- `ops_kpis` jun-26: 5.317 ms en frío, **162–265 ms** en caliente → sin deuda.
+- `ops_dispersion` jun-26 (**@deprecated**, sustituida por
+  `ops_dispersion_resumen` + `ops_dispersion_detalle`, sin consumidor en el
+  frontend): 8.163 / 8.278 ms. Deuda conocida y aislada; no afecta a ninguna
+  pantalla.
