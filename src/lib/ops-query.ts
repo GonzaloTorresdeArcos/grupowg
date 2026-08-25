@@ -2,6 +2,14 @@ import { useQueries, useQuery, useQueryClient, type UseQueryResult } from "@tans
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { perfActivo, registrarMarca, tamanoAprox } from "@/lib/ops-perf";
+import {
+  SessionPerdida,
+  esSessionPerdida,
+  hayTokenOps,
+  marcarSesionPerdida,
+  useOpsSession,
+} from "@/lib/ops-session";
+
 
 /**
  * Capa única de acceso a las RPC de /operaciones.
