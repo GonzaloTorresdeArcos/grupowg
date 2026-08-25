@@ -83,23 +83,12 @@ export default function OpsDispersion() {
   const [provSel, setProvSel] = useState<string | null>(null);
   const [sort, setSort] = useState<SortState>(null);
 
-  // Opciones de filtro local (cacheadas: no dependen del período)
-  const optsQ = useOpsRpc<unknown>("ops_filter_options", {
-    p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
-    p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
-  });
-  const optsErr = !!optsQ.error;
-  const setOptsReloadKey = (_f: (k: number) => number) => { void optsQ.refetch(); };
-  const { delOpts, gamaOpts, famOpts } = useMemo(() => {
-    const d = optsQ.data;
-    const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
-    const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
-    return {
-      delOpts: toArr(src?.delegaciones),
-      gamaOpts: toArr(src?.gamas),
-      famOpts: toArr(src?.familias),
-    };
-  }, [optsQ.data]);
+  // A4 · Las opciones vienen del contexto global de filtros: una sola llamada a
+  // `ops_filter_options` por sesión y combinación, compartida con la barra
+  // global. Aquí ya no se lanza una consulta propia.
+  const delOpts = globalOptions.delegaciones;
+  const gamaOpts = globalOptions.gamas;
+  const famOpts = globalOptions.familias;
 
   const specs = useMemo(() => {
     const mk = (from: string, to: string) => ({
