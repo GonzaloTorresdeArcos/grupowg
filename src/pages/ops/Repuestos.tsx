@@ -67,7 +67,7 @@ export default function OpsRepuestos() {
   const [reloadKey, setReloadKey] = useState(0);
   const [vistaA, setVistaA] = useState<Vista>("cliente");
   const [vistaB, setVistaB] = useState<Vista>("cliente");
-  const [reglas, setReglas] = useState<ReglaSla[]>([...FIXTURES_REGISTRY]);
+  const [reglas, setReglas] = useState<ReglaSla[]>([]);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
   const reqIdRef = useRef(0);
 

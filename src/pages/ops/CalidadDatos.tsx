@@ -20,7 +20,6 @@ import { LABEL_CONSECUENCIA, consecuenciaDeclarada, type ReglaSla } from "@/lib/
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
 import { LABEL_FRESCURA_DOMINIO, fmtFechaEs } from "@/lib/ops-as-of";
 import { useDataFreshness } from "@/hooks/useDataFreshness";
-import { FIXTURES_REGISTRY, AVISO_FIXTURES } from "@/lib/ops-contractual-fixtures";
 
 import { Loader2, AlertTriangle, Lock, Info } from "lucide-react";
 import { PLANTILLAS, TABLE_LABEL, type OpsTable } from "@/lib/ops-csv";
@@ -64,7 +63,7 @@ const CalidadDatos = () => {
       .select("*")
       .then(({ data, error }) => {
         if (!vivo) return;
-        setReglas(error || !data ? [...FIXTURES_REGISTRY] : (data as unknown as ReglaSla[]));
+        setReglas(error || !data ? [] : (data as unknown as ReglaSla[]));
       });
     supabase
       .from("ops_cliente_contrato_alias" as never)
@@ -483,7 +482,7 @@ const CalidadDatos = () => {
       >
         <p className="mb-4 flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-3 text-[12px] text-ink/70">
           <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-          {AVISO_FIXTURES}
+          {AVISO_REGISTRY_BORRADOR}
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-[13px]">
