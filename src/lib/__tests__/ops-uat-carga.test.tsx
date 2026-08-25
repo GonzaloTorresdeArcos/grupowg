@@ -179,8 +179,14 @@ describe("SLA · diferimiento de ops_sla_evolucion", () => {
 
     reset();
     estado.datos.ops_sla_resumen = {
-      snapshot: { n30: 0, n20: 0, total: 0 },
-      buckets: [], etapas: [], categorias: [], clientes: [], productos: [],
+      tramos: { pct_sla20: 0.7, pct_sla30: 0.8, cerradas: 90 },
+      sla_prev: null,
+      flujo: { creadas: 100, cerradas: 90 },
+      snapshot: { n30: 0, n20: 0, total: 0, abiertas: 0 },
+      snapshot_prev: null,
+      buckets: [], etapas: [], delegaciones: [], tecnicos: [], tec_etapas: [],
+      clientes: [], producto: [],
+      calidad: {}, prov_30: [], sat_30: [],
     };
     estado.datos.ops_kpis = KPIS;
     estado.criticoPendiente = false;
