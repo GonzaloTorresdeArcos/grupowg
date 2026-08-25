@@ -32,13 +32,14 @@ const resultado = (rpc: string) =>
         refetch: () => { estado.refetches += 1; return Promise.resolve({}); },
       }
     : {
-        data: { kpis: [], evo: [], tecnicos: [] },
+        data: rpc === "ops_equipos" ? [] : { kpis: [], evo: [], tecnicos: [] },
         isPending: false,
         isError: false,
         fetchStatus: "idle",
         error: null,
         refetch: () => Promise.resolve({}),
       };
+
 
 vi.mock("@/lib/ops-query", () => ({
   useOpsRpcs: (specs: Spec[]) => {
