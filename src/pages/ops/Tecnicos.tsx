@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
 
@@ -118,26 +118,24 @@ const Tecnicos = () => {
   const [showDefs, setShowDefs] = useState(false);
   const [showPend, setShowPend] = useState(false);
 
-  // ---- Fetch ---------------------------------------------------------------
-  useEffect(() => {
-    setLoading(true);
-    const prev = prevRange;
+  // ---- Fetch (caché react-query) -------------------------------------------
+  const specs = useMemo(() => {
     const base = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia,
       p_marca: rpcParams.p_marca, p_provincia: rpcParams.p_provincia,
       p_sat: rpcParams.p_sat, p_canal: rpcParams.p_canal,
     };
-    (async () => {
-      const [cur, pre] = await Promise.all([
-        supabase.rpc("ops_tecnicos_scorecard" as never, { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...base } as never),
-        supabase.rpc("ops_tecnicos_scorecard" as never, { p_from: prev.from, p_to: prev.to, ...base } as never),
-      ]);
-      setRowsRaw((cur.data ?? []) as Row[]);
-      setRowsPrev((pre.data ?? []) as Row[]);
-      setLoading(false);
-    })();
+    return [
+      { rpc: "ops_tecnicos_scorecard", params: { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...base } },
+      { rpc: "ops_tecnicos_scorecard", params: { p_from: prevRange.from, p_to: prevRange.to, ...base } },
+    ];
   }, [rpcParams, prevRange]);
+
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const rowsRaw = useMemo(() => (q[0].data ?? []) as Row[], [q[0].data]);
+  const rowsPrev = useMemo(() => (q[1].data ?? []) as Row[], [q[1].data]);
 
   // ---- Enriquecimiento -----------------------------------------------------
   const enriched: EnrichedRow[] = useMemo(() => {
@@ -685,13 +683,7 @@ type Ficha = {
 };
 
 const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () => void }) => {
-  const [data, setData] = useState<Ficha | null>(null);
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.rpc("ops_tecnico_ficha" as never, { p_tecnico: tecnico.tecnico } as never);
-      setData((data ?? null) as Ficha | null);
-    })();
-  }, [tecnico.tecnico]);
+  const data = useOpsRpc<Ficha | null>("ops_tecnico_ficha", { p_tecnico: tecnico.tecnico }).data ?? null;
 
   const maxEvo = Math.max(1, ...(data?.evolucion.map((e) => e.cerradas) ?? [1]));
   const style = GLOBAL_STYLE[tecnico.estado.nivel];

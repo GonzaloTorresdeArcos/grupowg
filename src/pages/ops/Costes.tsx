@@ -1,7 +1,7 @@
 import { etiquetaVentana } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { supabase } from "@/integrations/supabase/client";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { fmtEur, fmtNum, fmtPct, useOpsFilters } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
 
@@ -66,74 +66,34 @@ const firstOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m, 1)).toISO
 const lastOfMonth = (y: number, m: number) => new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
 const monthKey = (iso: string) => iso.slice(0, 7);
 
-const fetchCostes = async (from: string, to: string) => {
-  const { data, error } = await supabase.rpc("ops_costes" as never, { p_from: from, p_to: to } as never);
-  if (error) throw error;
-  return data as unknown as Payload;
-};
-
-const fetchEntidades = async (from: string, to: string, vista: Vista) => {
-  const { data, error } = await supabase.rpc("ops_costes_entidades" as never, { p_from: from, p_to: to, p_vista: vista } as never);
-  if (error) throw error;
-  return (data ?? []) as unknown as EntidadRow[];
-};
-
 // ─── Componente ─────────────────────────────────────────────────────────────
 const Costes = () => {
   // Contexto temporal ÚNICO: el período y el modo de comparación vienen del
   // selector global (useOpsFilters). Esta página no mantiene período propio.
   const { filters, prevRange, modo } = useOpsFilters();
   const range = useMemo(() => ({ from: filters.from, to: filters.to }), [filters.from, filters.to]);
-  const [data, setData] = useState<Payload | null>(null);
-  const [prev, setPrev] = useState<Kpis | null>(null);
-  const [loading, setLoading] = useState(true);
   const [openTec, setOpenTec] = useState(false);
   const [openDef, setOpenDef] = useState(false);
   const [openInv, setOpenInv] = useState(false);
   const [vista, setVista] = useState<Vista>("delegaciones");
-  const [entidades, setEntidades] = useState<EntidadRow[]>([]);
-  const [loadingEnt, setLoadingEnt] = useState(false);
   const [umbral, setUmbral] = useState(20);
 
   const prevInfo = prevRange;
 
-  useEffect(() => {
-    let cancel = false;
-    setLoading(true);
-    (async () => {
-      try {
-        const [cur, prv] = await Promise.all([
-          fetchCostes(range.from, range.to),
-          fetchCostes(prevInfo.from, prevInfo.to),
-        ]);
-        if (cancel) return;
-        setData(cur); setPrev(prv?.kpis ?? null);
-      } catch (e) {
-        console.error("[ops_costes]", e);
-        if (!cancel) { setData(null); setPrev(null); }
-      } finally {
-        if (!cancel) setLoading(false);
-      }
-    })();
-    return () => { cancel = true; };
-  }, [range, prevInfo]);
+  const specs = useMemo(() => [
+    { rpc: "ops_costes", params: { p_from: range.from, p_to: range.to } },
+    { rpc: "ops_costes", params: { p_from: prevInfo.from, p_to: prevInfo.to } },
+  ], [range, prevInfo]);
+  const q = useOpsRpcs<unknown>(specs);
+  const loading = q.some((r) => r.isPending);
+  const data = (q[0].data ?? null) as Payload | null;
+  const prev = ((q[1].data as Payload | null)?.kpis ?? null) as Kpis | null;
 
-  useEffect(() => {
-    let cancel = false;
-    setLoadingEnt(true);
-    (async () => {
-      try {
-        const rows = await fetchEntidades(range.from, range.to, vista);
-        if (!cancel) setEntidades(rows);
-      } catch (e) {
-        console.error("[ops_costes_entidades]", e);
-        if (!cancel) setEntidades([]);
-      } finally {
-        if (!cancel) setLoadingEnt(false);
-      }
-    })();
-    return () => { cancel = true; };
-  }, [range, vista]);
+  const entQ = useOpsRpc<EntidadRow[]>("ops_costes_entidades", {
+    p_from: range.from, p_to: range.to, p_vista: vista,
+  });
+  const entidades = useMemo(() => (entQ.data ?? []) as EntidadRow[], [entQ.data]);
+  const loadingEnt = entQ.isPending;
 
   const evo18 = useMemo(() => {
     if (!data) return [] as EvoRow[];
