@@ -1965,6 +1965,54 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_dispersion_detalle: {
+        Args: {
+          p_clave: string
+          p_delegacion?: string
+          p_entidad: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_limit?: number
+          p_offset?: number
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_dispersion_detalle_impl: {
+        Args: {
+          p_clave: string
+          p_delegacion?: string
+          p_entidad: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_limit?: number
+          p_offset?: number
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_dispersion_resumen: {
+        Args: {
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_dispersion_resumen_impl: {
+        Args: {
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_equipos: {
         Args: {
           p_cliente?: string
@@ -2104,6 +2152,24 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_sla_detalle: {
+        Args: {
+          p_canal?: string
+          p_clave: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_gama?: string
+          p_limit?: number
+          p_marca?: string
+          p_offset?: number
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_tipo: string
+        }
+        Returns: Json
+      }
       ops_sla_registry_resumen: {
         Args: never
         Returns: {
@@ -2113,6 +2179,22 @@ export type Database = {
           programa: string
           reglas: number
         }[]
+      }
+      ops_sla_resumen: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
       }
       ops_supply: {
         Args: {

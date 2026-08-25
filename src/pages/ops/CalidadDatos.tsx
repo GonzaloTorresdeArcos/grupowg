@@ -10,7 +10,8 @@ import {
   LABEL_ESTADO_DOMINIO,
   frescura,
   readinessRegla,
-  resumenReadiness,
+  evaluarReadiness,
+  resumenDesdeEvaluadas,
   universosPorCliente,
 
   type DominioDato,
@@ -105,9 +106,16 @@ const CalidadDatos = () => {
 
   const ctxReadiness = useMemo(() => ({ universos }), [universos]);
 
-  const readiness = useMemo(
-    () => (medidas && reglasEfectivas.length ? resumenReadiness(reglasEfectivas, medidas, ctxReadiness) : null),
+  // A5 · UNA sola evaluación de las reglas por cambio de entrada; la tabla y el
+  // resumen leen del mismo array memoizado.
+  const evaluadas = useMemo(
+    () => (medidas && reglasEfectivas.length ? evaluarReadiness(reglasEfectivas, medidas, ctxReadiness) : null),
     [medidas, reglasEfectivas, ctxReadiness],
+  );
+
+  const readiness = useMemo(
+    () => (evaluadas ? resumenDesdeEvaluadas(reglasEfectivas, evaluadas) : null),
+    [reglasEfectivas, evaluadas],
   );
 
 
@@ -399,7 +407,7 @@ const CalidadDatos = () => {
             <tbody>
               {medidas &&
                 reglasEfectivas.map((r, i) => {
-                  const rd = readinessRegla(r, medidas, ctxReadiness);
+                  const rd = evaluadas?.[i] ?? readinessRegla(r, medidas, ctxReadiness);
                   return (
                     <tr key={r.id ?? `${r.cliente}-${i}`} className="border-b border-black/[0.04] align-top">
                       <td className="py-2.5 pr-4 text-ink">

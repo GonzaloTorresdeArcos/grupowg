@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { OpsFiltersProvider } from "@/lib/ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
+import { useAsOfCacheGuard } from "@/lib/ops-cache";
 
 type NavItem = { to: string; label: string; icon: typeof Users; end?: boolean };
 type NavGroup = { key: string; label: string; items: NavItem[] };
@@ -86,6 +87,9 @@ export const OpsLayout = () => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  // A1 · Si el snapshot de datos cambió desde la última visita, la caché de
+  // análisis de esta sesión se invalida al montar la sección.
+  useAsOfCacheGuard();
 
   const handleSignOut = async () => {
     await signOut();

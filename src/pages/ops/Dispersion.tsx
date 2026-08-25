@@ -26,6 +26,7 @@ import {
   type DispMunicipio,
   type DispTecnico,
   type DispSat,
+  type DispDetalle,
 } from "@/lib/ops-dispersion";
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
 import { AVISO_KM, semanticaKm } from "@/lib/ops-modelo";
@@ -74,7 +75,7 @@ const num = (v: unknown): number | null => (v == null ? null : Number(v));
 
 export default function OpsDispersion() {
   // Contexto temporal ÚNICO: período y modo de comparación globales.
-  const { filters, prevRange } = useOpsFilters();
+  const { filters, prevRange, options: globalOptions, optionsError: optsErr, reloadOptions } = useOpsFilters();
   const range = { from: filters.from, to: filters.to };
   const [delegacion, setDelegacion] = useState<string | null>(null);
   const [gama, setGama] = useState<string | null>(null);
@@ -83,31 +84,20 @@ export default function OpsDispersion() {
   const [provSel, setProvSel] = useState<string | null>(null);
   const [sort, setSort] = useState<SortState>(null);
 
-  // Opciones de filtro local (cacheadas: no dependen del período)
-  const optsQ = useOpsRpc<unknown>("ops_filter_options", {
-    p_delegacion: null, p_cliente: null, p_gama: null, p_familia: null,
-    p_marca: null, p_provincia: null, p_sat: null, p_tecnico: null, p_canal: null,
-  });
-  const optsErr = !!optsQ.error;
-  const setOptsReloadKey = (_f: (k: number) => number) => { void optsQ.refetch(); };
-  const { delOpts, gamaOpts, famOpts } = useMemo(() => {
-    const d = optsQ.data;
-    const src = (Array.isArray(d) ? (d as unknown[])[0] : d) as Record<string, unknown> | null;
-    const toArr = (v: unknown) => (Array.isArray(v) ? v.filter((x) => x != null && x !== "").map(String) : []);
-    return {
-      delOpts: toArr(src?.delegaciones),
-      gamaOpts: toArr(src?.gamas),
-      famOpts: toArr(src?.familias),
-    };
-  }, [optsQ.data]);
+  // A4 · Las opciones vienen del contexto global de filtros: una sola llamada a
+  // `ops_filter_options` por sesión y combinación, compartida con la barra
+  // global. Aquí ya no se lanza una consulta propia.
+  const delOpts = globalOptions.delegaciones;
+  const gamaOpts = globalOptions.gamas;
+  const famOpts = globalOptions.familias;
 
   const specs = useMemo(() => {
     const mk = (from: string, to: string) => ({
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
     });
     return [
-      { rpc: "ops_dispersion", params: mk(range.from, range.to) },
-      { rpc: "ops_dispersion", params: mk(prevRange.from, prevRange.to) },
+      { rpc: "ops_dispersion_resumen", params: mk(range.from, range.to) },
+      { rpc: "ops_dispersion_resumen", params: mk(prevRange.from, prevRange.to) },
     ];
   }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia]);
 
@@ -119,6 +109,23 @@ export default function OpsDispersion() {
     ? "No se han podido cargar los datos de dispersión. Reintenta o acota el período."
     : null;
   const setReloadKey = (_f: (k: number) => number) => { void q[0].refetch(); void q[1].refetch(); };
+
+  // Detalle territorial bajo demanda: los municipios (2.400+ filas) ya no viajan
+  // en el resumen; se piden paginados para la provincia seleccionada.
+  const MUN_PAGINA = 100;
+  const [munPagina, setMunPagina] = useState(0);
+  useEffect(() => { setMunPagina(0); }, [provSel, range.from, range.to, delegacion, gama, familia]);
+  const detalleParams = useMemo(() => (provSel ? {
+    p_entidad: "provincia", p_clave: provSel,
+    p_from: range.from, p_to: range.to,
+    p_delegacion: delegacion, p_gama: gama, p_familia: familia,
+    p_limit: MUN_PAGINA, p_offset: munPagina * MUN_PAGINA,
+  } : undefined), [provSel, range.from, range.to, delegacion, gama, familia, munPagina]);
+  const detalleQ = useOpsRpc<DispDetalle>("ops_dispersion_detalle", detalleParams, {
+    enabled: vista === "municipios" && !!provSel, keepPrevious: true,
+  });
+  const detalle = detalleQ.data ?? null;
+
 
   // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
   useEffect(() => {
@@ -314,13 +321,15 @@ export default function OpsDispersion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, sort, provClas],
   );
-  const munRowsAll = useMemo(() => {
-    const rows = (data?.municipios ?? []).filter((m) => (provSel ? m.provincia === provSel : true));
-    return applySort(rows, munGetters, (a, b) => num(b.cerradas)! - num(a.cerradas)!);
+  // Los municipios llegan ya paginados del detalle; el orden de la página se
+  // aplica en cliente sobre las filas recibidas.
+  const munRows = useMemo(
+    () => applySort(detalle?.municipios ?? [], munGetters, (a, b) => num(b.cerradas)! - num(a.cerradas)!),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, provSel, sort]);
-  const MUN_CAP = 200;
-  const munRows = munRowsAll.slice(0, MUN_CAP);
+    [detalle, sort],
+  );
+  const munTotal = detalle?.total ?? 0;
+
   const tecRows = useMemo(
     () => applySort(data?.tecnicos ?? [], tecGetters, atencionTec),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -433,7 +442,7 @@ export default function OpsDispersion() {
           <span role="alert" className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full bg-red-50 border border-red-200 text-[11px] text-red-800">
             <AlertTriangle className="h-3.5 w-3.5 text-red-600" />
             No se han podido cargar las opciones de filtro
-            <button type="button" onClick={() => setOptsReloadKey((k) => k + 1)}
+            <button type="button" onClick={reloadOptions}
               className="ml-1 font-semibold underline underline-offset-2 hover:text-red-900">
               Reintentar
             </button>
@@ -560,12 +569,13 @@ export default function OpsDispersion() {
                   onChange={(e) => setProvSel(e.target.value || null)}
                   className="h-7 px-2 rounded-md border border-black/[0.08] bg-white text-[12px] text-ink"
                 >
-                  <option value="">Todas las provincias</option>
+                  <option value="">Selecciona provincia…</option>
                   {(data.provincias ?? []).map((p) => (
                     <option key={p.provincia} value={p.provincia}>{p.provincia}</option>
                   ))}
                 </select>
               )}
+
             </div>
 
             {vista === "provincias" && (
@@ -619,12 +629,18 @@ export default function OpsDispersion() {
               </Section>
             )}
 
-            {vista === "municipios" && (
-              <Section title={`Municipios${provSel ? ` de ${provSel}` : ""} — ${fmtNum(munRowsAll.length)} con actividad${munRowsAll.length > MUN_CAP ? ` (mostrando ${MUN_CAP})` : ""}`}>
+            {vista === "municipios" && !provSel && (
+              <div className="rounded-xl border border-dashed border-black/[0.12] bg-white px-4 py-5 text-[13px] text-ink/60">
+                Selecciona una provincia para cargar sus municipios.
+                {data.municipios_total != null && <> Hay <b>{fmtNum(data.municipios_total)}</b> municipios con actividad en el período; se cargan bajo demanda para no penalizar el tiempo de carga.</>}
+              </div>
+            )}
+
+            {vista === "municipios" && provSel && (
+              <Section title={`Municipios de ${provSel} — ${fmtNum(munTotal)} con actividad${detalleQ.isFetching ? " · actualizando…" : ""}`}>
                 <table className="min-w-full text-[12px]">
                   <thead className="bg-black/[0.02] text-[10px] font-semibold uppercase tracking-[0.12em] text-ink/50">
                     <tr>
-                      {!provSel && <th className="px-3 py-2 text-left">Provincia</th>}
                       <Th k="municipio" label="Municipio" right={false} />
                       <Th k="cerradas" label="Cerradas" />
                       <Th k="abiertas" label="Abiertas" />
@@ -639,7 +655,6 @@ export default function OpsDispersion() {
                   <tbody className="divide-y divide-black/[0.04]">
                     {munRows.map((m) => (
                       <tr key={`${m.provincia}-${m.municipio}`} className="hover:bg-black/[0.02]">
-                        {!provSel && <td className="px-3 py-2 text-ink/60 whitespace-nowrap">{m.provincia}</td>}
                         <td className="px-3 py-2 text-ink font-medium">{m.municipio}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{fmtNum(num(m.cerradas))}</td>
                         <td className="px-3 py-2 text-right tabular-nums">{fmtNum(num(m.abiertas))}</td>
@@ -654,12 +669,22 @@ export default function OpsDispersion() {
                       </tr>
                     ))}
                     {!munRows.length && (
-                      <tr><td colSpan={10} className="px-4 py-6 text-center text-ink/50">Sin municipios con actividad suficiente en el período</td></tr>
+                      <tr><td colSpan={9} className="px-4 py-6 text-center text-ink/50">{detalleQ.isPending ? "Cargando…" : "Sin municipios con actividad suficiente en el período"}</td></tr>
                     )}
                   </tbody>
                 </table>
+                {munTotal > MUN_PAGINA && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t border-black/[0.06] text-[12px] text-ink/60">
+                    <span className="tabular-nums">{fmtNum(munPagina * MUN_PAGINA + 1)}–{fmtNum(Math.min((munPagina + 1) * MUN_PAGINA, munTotal))} de {fmtNum(munTotal)}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => setMunPagina((p) => Math.max(0, p - 1))} disabled={munPagina === 0} className="rounded-full border border-black/[0.1] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Anterior</button>
+                      <button onClick={() => setMunPagina((p) => p + 1)} disabled={(munPagina + 1) * MUN_PAGINA >= munTotal} className="rounded-full border border-black/[0.1] px-3 py-1 disabled:opacity-40 hover:bg-black/[0.03]">Siguiente</button>
+                    </div>
+                  </div>
+                )}
               </Section>
             )}
+
 
             {vista === "tecnicos" && (
               <Section title="Técnicos propios — extensión territorial vs. su delegación">

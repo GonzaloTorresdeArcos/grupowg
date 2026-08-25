@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useInvalidarOps } from "@/lib/ops-query";
+import { guardarAsOfSesion } from "@/lib/ops-cache";
 import { Upload, CheckCircle2, AlertTriangle, FileText, Loader2 } from "lucide-react";
 import {
   parseCSV, detectTable, normalizeRow, conflictKey, TABLE_LABEL,
@@ -34,6 +36,7 @@ type Result = {
 const CHUNK = 500;
 
 const Importar = () => {
+  const invalidarOps = useInvalidarOps();
   const [file, setFile] = useState<File | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [busy, setBusy] = useState(false);
@@ -181,6 +184,13 @@ const Importar = () => {
       }
       setResult(res);
       toast.success(`Importación completa · ${res.inserted} nuevas · ${res.updated} actualizadas`);
+      // A1 · La foto del dato ha cambiado: toda la caché de análisis queda
+      // obsoleta y se invalida explícitamente (no hay refresco por tiempo).
+      if (filasOk > 0) {
+        await invalidarOps();
+        guardarAsOfSesion(res.asOf);
+        toast.message("Datos actualizados: caché de análisis invalidada");
+      }
 
     } catch (e) {
       const err = e instanceof Error ? e.message : "Error al importar";
