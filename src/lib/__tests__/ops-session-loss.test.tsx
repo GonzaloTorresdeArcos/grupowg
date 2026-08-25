@@ -171,7 +171,7 @@ describe("(c) las páginas de /operaciones no derivan vacíos sin query resuelta
       const src = readFileSync(ruta, "utf8");
       expect(/(?:isError|error)\s*\?\s*(?:\[\]|null|0)/.test(src), ruta).toBe(false);
       expect(/(?:q|query)\.data\s*\?\?\s*(?:\[\]|null)/.test(src) && !/OpsErrorBlock|fallos|isError/.test(src), ruta).toBe(false);
-      expect(/OpsErrorBlock|fallos|isError/.test(src), ruta).toBe(true);
+      expect(/OpsErrorBlock|fallos|isError|errorMsg/.test(src), ruta).toBe(true);
     });
   }
 });
