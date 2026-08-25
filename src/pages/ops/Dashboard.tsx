@@ -527,7 +527,10 @@ const Dashboard = () => {
               <p className="text-[11px] text-ink/40 italic mb-3">
                 {etiquetaVentana("panorama_evolucion")}
               </p>
+              <BloqueEstado estado={stSeries} nombre="evolucion" />
+              {stSeries.cargando && evo.length === 0 && <BloqueSkeleton nombre="evolucion" alto="h-40" />}
               <div className="flex items-end gap-1.5 h-40">
+
                 {evo.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">
                     <div className="w-full flex items-end gap-0.5 h-32">
