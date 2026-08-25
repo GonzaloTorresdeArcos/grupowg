@@ -32,10 +32,10 @@ BEGIN
   VALUES
     ('E2E-OT-1','E2E-REF-A','Motor E2E',1,'PROV-E2E',
      '2026-06-01','2026-06-02','2026-06-04','2026-06-05',
-     '2026-06-05','2026-06-06','2026-06-07','montada',12.5,'e2e'),
+     '2026-06-05','2026-06-06','2026-06-07','montada',12.5,'manual'),
     ('E2E-OT-2','E2E-REF-B','Bomba E2E',2,NULL,
      '2026-06-01','2026-06-02',NULL,NULL,
-     NULL,NULL,NULL,'solicitada',NULL,'e2e');
+     NULL,NULL,NULL,'solicitada',NULL,'manual');
 
   -- 2) Expedición original con incidencia + reexpedición que la sustituye.
   INSERT INTO public.ops_expedicion
@@ -48,50 +48,50 @@ BEGIN
     ('E2E-EXP-1','E2E-CENTRAL','E2E-EXP-1','E2E-OT-1','Ana','P-E2E','Turno E2E',
      '2026-06-05 08:00','2026-06-05 08:30','2026-06-05 10:15','SEUR','E2E-CENTRAL','SAT E2E','28001',
      'cliente','2026-06-06',NULL,'incidencia','rotura',
-     false,NULL,7.00,2,3,2,'declarado','e2e'),
+     false,NULL,7.00,2,3,2,'declarado','manual'),
     ('E2E-EXP-2','E2E-CENTRAL','E2E-EXP-2','E2E-OT-1','Ana','P-E2E','Turno E2E',
      '2026-06-08 08:00','2026-06-08 08:20','2026-06-08 09:00','SEUR','E2E-CENTRAL','SAT E2E','28001',
      'cliente','2026-06-09','2026-06-09','entregada',NULL,
-     true,'E2E-EXP-1',5.00,1,1,1,'declarado','e2e');
+     true,'E2E-EXP-1',5.00,1,1,1,'declarado','manual');
 
   -- 3) Tres líneas que abastecen dos OTs distintas.
   INSERT INTO public.ops_expedicion_linea
     (almacen_base, expedicion_id, linea, referencia, descripcion, cantidad, num_ot, origen_dato)
   VALUES
-    ('E2E-CENTRAL','E2E-EXP-1',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','e2e'),
-    ('E2E-CENTRAL','E2E-EXP-1',2,'E2E-REF-B','Bomba E2E',2,'E2E-OT-2','e2e'),
-    ('E2E-CENTRAL','E2E-EXP-2',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','e2e');
+    ('E2E-CENTRAL','E2E-EXP-1',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','manual'),
+    ('E2E-CENTRAL','E2E-EXP-1',2,'E2E-REF-B','Bomba E2E',2,'E2E-OT-2','manual'),
+    ('E2E-CENTRAL','E2E-EXP-2',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','manual');
 
   -- 4) Foto de stock, con un disponible vacío que debe seguir siendo NULL.
   INSERT INTO public.ops_stock_snapshot
     (fecha_snapshot, almacen_base, referencia, descripcion, stock_fisico, reservado,
      stock_disponible, en_transito, coste_medio, origen_dato)
   VALUES
-    ('2026-06-05','E2E-CENTRAL','E2E-REF-A','Motor E2E',4,1,3,0,22.0,'e2e'),
-    ('2026-06-05','E2E-CENTRAL','E2E-REF-B','Bomba E2E',0,0,NULL,NULL,NULL,'e2e');
+    ('2026-06-05','E2E-CENTRAL','E2E-REF-A','Motor E2E',4,1,3,0,22.0,'manual'),
+    ('2026-06-05','E2E-CENTRAL','E2E-REF-B','Bomba E2E',0,0,NULL,NULL,NULL,'manual');
 
   -- 5) SEGUNDA CARGA IDÉNTICA → debe actualizar, nunca duplicar.
   INSERT INTO public.ops_expedicion_linea
     (almacen_base, expedicion_id, linea, referencia, descripcion, cantidad, num_ot, origen_dato)
   VALUES
-    ('E2E-CENTRAL','E2E-EXP-1',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','e2e'),
-    ('E2E-CENTRAL','E2E-EXP-1',2,'E2E-REF-B','Bomba E2E',2,'E2E-OT-2','e2e'),
-    ('E2E-CENTRAL','E2E-EXP-2',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','e2e')
+    ('E2E-CENTRAL','E2E-EXP-1',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','manual'),
+    ('E2E-CENTRAL','E2E-EXP-1',2,'E2E-REF-B','Bomba E2E',2,'E2E-OT-2','manual'),
+    ('E2E-CENTRAL','E2E-EXP-2',1,'E2E-REF-A','Motor E2E',1,'E2E-OT-1','manual')
   ON CONFLICT (almacen_base, expedicion_id, linea) DO UPDATE
     SET cantidad = EXCLUDED.cantidad, descripcion = EXCLUDED.descripcion;
 
-  SELECT count(*) INTO v_sol FROM public.ops_pieza_solicitud WHERE origen_dato = 'e2e';
-  SELECT count(*) INTO v_exp FROM public.ops_expedicion       WHERE origen_dato = 'e2e';
-  SELECT count(*) INTO v_lin FROM public.ops_expedicion_linea WHERE origen_dato = 'e2e';
-  SELECT count(*) INTO v_stk FROM public.ops_stock_snapshot   WHERE origen_dato = 'e2e';
-  SELECT count(DISTINCT num_ot) INTO v_ot1 FROM public.ops_expedicion_linea WHERE origen_dato = 'e2e';
-  SELECT count(*) INTO v_reexp FROM public.ops_expedicion WHERE origen_dato='e2e' AND reexpedicion;
+  SELECT count(*) INTO v_sol FROM public.ops_pieza_solicitud WHERE referencia LIKE 'E2E-%';
+  SELECT count(*) INTO v_exp FROM public.ops_expedicion       WHERE referencia LIKE 'E2E-%';
+  SELECT count(*) INTO v_lin FROM public.ops_expedicion_linea WHERE referencia LIKE 'E2E-%';
+  SELECT count(*) INTO v_stk FROM public.ops_stock_snapshot   WHERE referencia LIKE 'E2E-%';
+  SELECT count(DISTINCT num_ot) INTO v_ot1 FROM public.ops_expedicion_linea WHERE referencia LIKE 'E2E-%';
+  SELECT count(*) INTO v_reexp FROM public.ops_expedicion WHERE referencia LIKE 'E2E-%' AND reexpedicion;
   SELECT count(*) INTO v_nulos FROM public.ops_pieza_solicitud
-    WHERE origen_dato='e2e' AND fecha_disponibilidad IS NULL AND coste_unitario IS NULL;
+    WHERE referencia LIKE 'E2E-%' AND fecha_disponibilidad IS NULL AND coste_unitario IS NULL;
   SELECT count(*) INTO v_lin2 FROM public.ops_expedicion_linea
-    WHERE origen_dato='e2e' AND expedicion_id='E2E-EXP-1';
+    WHERE referencia LIKE 'E2E-%' AND expedicion_id='E2E-EXP-1';
   SELECT count(*) INTO v_exp2 FROM public.ops_stock_snapshot
-    WHERE origen_dato='e2e' AND stock_disponible IS NULL;
+    WHERE referencia LIKE 'E2E-%' AND stock_disponible IS NULL;
 
   IF v_sol <> 2 THEN RAISE EXCEPTION 'E2E SUPPLY FAIL: solicitudes=% (esperado 2)', v_sol; END IF;
   IF v_exp <> 2 THEN RAISE EXCEPTION 'E2E SUPPLY FAIL: expediciones=% (esperado 2)', v_exp; END IF;
