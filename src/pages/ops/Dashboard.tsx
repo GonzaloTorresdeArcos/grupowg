@@ -577,9 +577,15 @@ const Dashboard = () => {
             </div>
             <div>
               <p className="text-[11px] text-ink/50 mb-1">Serie mensual de resolución ≤20d</p>
-              <Sparkline values={serieSla} title="Evolución de la resolución ≤20 días" />
+              {stSeries.cargando && serieSla.length === 0 ? (
+                <BloqueSkeleton nombre="serie-sla" alto="h-8 w-[120px]" />
+              ) : (
+                <Sparkline values={serieSla} title="Evolución de la resolución ≤20 días" />
+              )}
               <p className="text-[10px] text-ink/40 italic mt-1">{etiquetaVentana("panorama_resolucion")}</p>
+              <BloqueEstado estado={stSeries} nombre="serie-sla" />
             </div>
+
           </div>
 
           <div className="grid sm:grid-cols-3 gap-3 mt-6">
