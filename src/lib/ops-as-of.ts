@@ -106,8 +106,9 @@ export function fmtFechaEs(iso: string | null | undefined): string {
 /** Cabecera obligatoria de toda página operativa. */
 export function etiquetaAsOf(fecha: string | null | undefined, dominio: DominioCarga = DOMINIO_OPERATIVO): string {
   if (!fecha) {
-    return `Sin datos cargados de ${LABEL_DOMINIO_CARGA[dominio].toLowerCase()}: no hay fecha efectiva.`;
+    return `${LABEL_DOMINIO_CARGA[dominio]}: pendiente de primera carga.`;
   }
+
   return dominio === DOMINIO_OPERATIVO
     ? `Datos operativos a ${fmtFechaEs(fecha)}`
     : `${LABEL_DOMINIO_CARGA[dominio]} a ${fmtFechaEs(fecha)}`;
@@ -126,8 +127,11 @@ export const LABEL_FRESCURA_DOMINIO: Record<EstadoFrescuraDominio, string> = {
   fresco: "Fresco",
   aceptable: "Aceptable",
   desactualizado: "Desactualizado",
-  sin_dato: "Sin dato",
+  // UAT-4 · Un dominio sin ninguna carga no es un fallo de frescura: todavía no
+  // ha entrado su primera carga. Se declara así, sin avisos de comparabilidad.
+  sin_dato: "Pendiente de primera carga",
 };
+
 
 export type FrescuraDominio = {
   dominio: string;
@@ -173,9 +177,8 @@ export function frescuraDominio(
       filas: c?.filas ?? 0,
       dias: null,
       estado: "sin_dato",
-      texto: c
-        ? `${label}: fuente registrada sin fecha efectiva (${c.filas.toLocaleString("es-ES")} filas).`
-        : `${label}: sin registro de carga.`,
+      texto: `${label}: pendiente de primera carga.`,
+
     };
   }
   const dias = diasEntre(c.data_as_of_date, ahora);
@@ -222,6 +225,11 @@ export function frescuraTodos(cargas: readonly CargaDominio[], ahora: Date = new
 /**
  * Dos dominios que se leen juntos (p. ej. OTs y expediciones) con fechas
  * efectivas distintas producen conclusiones falsas. Se declara el desfase.
+ *
+ * UAT-4 · La comparación temporal SOLO se evalúa cuando ambos as-of existen.
+ * Si a alguno le falta la primera carga no hay desfase que declarar: ese
+ * dominio ya se anuncia como «pendiente de primera carga» y repetir un aviso
+ * de comparabilidad solo genera ruido.
  */
 export function desfaseEntre(
   cargas: readonly CargaDominio[],
@@ -235,10 +243,11 @@ export function desfaseEntre(
       a,
       b,
       dias: null,
-      relevante: true,
-      texto: `Sin fecha efectiva en ${LABEL_DOMINIO_CARGA[!fa ? a : b].toLowerCase()}: los dos dominios no son comparables en el tiempo.`,
+      relevante: false,
+      texto: `${LABEL_DOMINIO_CARGA[!fa ? a : b]}: pendiente de primera carga.`,
     };
   }
+
   const dias = Math.round((Date.parse(fb) - Date.parse(fa)) / 86_400_000);
   return {
     a,

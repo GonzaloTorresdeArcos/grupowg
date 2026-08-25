@@ -9,8 +9,10 @@ import {
   frescuraDominio,
   avisoObsolescencia,
   normalizarCargas,
+  LABEL_FRESCURA_DOMINIO,
   type CargaDominio,
 } from "@/lib/ops-as-of";
+
 import {
   jerarquiaProductividad,
   aplanarJerarquia,
@@ -64,9 +66,23 @@ describe("F4B · fecha efectiva del dato", () => {
     const grande = desfaseEntre(cargas({ expedicion: "2026-06-01" }), "ot", "expedicion");
     expect(grande.relevante).toBe(true);
     expect(grande.texto).toContain("desfase");
-    expect(desfaseEntre(cargas({ expedicion: null }), "ot", "expedicion").relevante).toBe(true);
+  });
+
+  // UAT-4 · dominio sin ninguna carga.
+  it("un dominio sin carga es «pendiente de primera carga» y no genera aviso de comparabilidad", () => {
+    const c = cargas({ expedicion: null });
+    const f = frescuraDominio(c, "expedicion", new Date("2026-08-25T00:00:00Z"));
+    expect(f.estado).toBe("sin_dato");
+    expect(LABEL_FRESCURA_DOMINIO[f.estado]).toBe("Pendiente de primera carga");
+    expect(f.texto).toContain("pendiente de primera carga");
+    expect(etiquetaAsOf(f.asOf, "expedicion")).toContain("pendiente de primera carga");
+
+    const d = desfaseEntre(c, "ot", "expedicion");
+    expect(d.relevante).toBe(false);
+    expect(d.texto.toLowerCase()).not.toContain("no son comparables");
   });
 });
+
 
 describe("F4B · fecha efectiva deducida del lote importado", () => {
   it("toma la máxima fecha observada y descarta fechas futuras del ERP", () => {

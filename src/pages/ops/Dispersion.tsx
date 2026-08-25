@@ -29,7 +29,7 @@ import {
   type DispDetalle,
 } from "@/lib/ops-dispersion";
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
-import { AVISO_KM, semanticaKm } from "@/lib/ops-modelo";
+import { AVISO_KM, AVISO_KM_CORTO, semanticaKm } from "@/lib/ops-modelo";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 type Vista = "provincias" | "municipios" | "tecnicos" | "sats";
@@ -421,13 +421,11 @@ export default function OpsDispersion() {
       </header>
       <DataAsOf cruza={["geo"]} />
 
-      {/* Aviso obligatorio de limitación del dato */}
-      <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12px] text-amber-900 leading-relaxed">
-        <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
-        <p>
-          {AVISO_KM} Zonas L1/L2, tiempos de viaje, rutas y radios de servicio: <b>no disponibles con los campos actuales</b>.
-        </p>
-      </div>
+      {/* UAT-6 · Una sola línea. La explicación completa (haversine, cobertura
+          geocodificable, km de ops_coste_mensual a cero) vive en el panel de
+          Definiciones de esta página y en Calidad de datos. */}
+      <p className="text-[12px] text-ink/50">{AVISO_KM_CORTO}</p>
+
 
       {/* Filtros */}
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-black/[0.06] bg-white p-3">
@@ -855,7 +853,9 @@ export default function OpsDispersion() {
                   (nivel técnico/mes) existe pero llega a 0 en todos los registros cargados: se declara
                   <b> pendiente de fuente</b>, no dato real.
                 </p>
+                <p className="mt-1.5 text-ink/60">{AVISO_KM}</p>
               </div>
+
               <div>
                 <p className="font-semibold text-ink">No disponible con los campos actuales</p>
                 <p>Zonas L1/L2, tiempos de viaje, rutas reales, radios de servicio aprobados y coordenadas por OT más allá del CP.</p>

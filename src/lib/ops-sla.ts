@@ -15,6 +15,8 @@
  * pero NO en cuanto a la etapa (el estado actual pudo ser otro entonces).
  */
 import { esDelegacionReal } from "./ops-performance";
+import { fmtFechaEs } from "./ops-as-of";
+
 
 // ─── Umbrales centralizados (documentados en el panel de definiciones) ───────
 export const UMBRAL_PCT_ABIERTAS_30_CRITICO = 0.25; // 🔴 >25% de abiertas supera 30d
@@ -465,4 +467,27 @@ export function generarHallazgosSla(i: HallazgosSlaInput): HallazgoSla[] {
   }
 
   return out.slice(0, 5);
+}
+
+// ─── UAT-3 · Reconstrucción del backlog anterior ─────────────────────────────
+
+/** Resta N días naturales a una fecha ISO. `null` si no hay fecha. */
+export function restarDias(iso: string | null | undefined, n: number): string | null {
+  if (!iso) return null;
+  const t = Date.parse(`${String(iso).slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(t)) return null;
+  return new Date(t - n * 86_400_000).toISOString().slice(0, 10);
+}
+
+/**
+ * Copy de la reconstrucción del snapshot anterior. El SQL de ops_sla_resumen
+ * calcula `v_snap_prev := (v_asof - v_len)::date`, es decir la FECHA EFECTIVA
+ * DEL DATO menos la duración del período — nunca CURRENT_DATE. El texto debe
+ * decir exactamente eso, con la fecha real.
+ */
+export function copyBacklogAnterior(asOfOt: string | null | undefined, dias: number): string {
+  const f = restarDias(asOfOt, dias);
+  return f
+    ? `Backlog anterior reconstruido a ${fmtFechaEs(f)} (fecha efectiva de datos ${fmtFechaEs(asOfOt)} − ${dias} días); exacto en conteos y antigüedades.`
+    : `Backlog anterior reconstruido a la fecha efectiva de datos − ${dias} días (pendiente de primera carga de órdenes de trabajo).`;
 }
