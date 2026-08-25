@@ -173,16 +173,54 @@ export type DispCalidad = {
   sin_geo_sat: number;
 };
 
+/** Gama agregada (solo en `ops_dispersion_resumen`). */
+export type DispGama = {
+  gama: string;
+  cerradas: number;
+  sla20: number | null;
+  pct_bajas: number | null;
+  provincias: number;
+  municipios: number;
+  pct_fuera_capital: number | null;
+  km_mediana: number | null;
+  salidas_km: number;
+};
+
+/** Tramo de distancia estimada base→CP (solo en `ops_dispersion_resumen`). */
+export type DispKmBucket = { bucket: string; n: number; km_mediana: number | null };
+
+/**
+ * Payload de dispersión.
+ * `municipios` solo viene en la RPC histórica `ops_dispersion` (@deprecated);
+ * el resumen lo sustituye por `municipios_total` y la carga paginada de
+ * `ops_dispersion_detalle`.
+ */
 export type DispPayload = {
   periodo: { from: string | null; to: string | null };
   kpis: DispKpis;
   provincias: DispProvincia[];
-  municipios: DispMunicipio[];
+  municipios?: DispMunicipio[];
+  municipios_total?: number;
+  gamas?: DispGama[];
+  km_buckets?: DispKmBucket[];
   tecnicos: DispTecnico[];
   sats: DispSat[];
+  sats_truncado?: boolean;
   calidad: DispCalidad;
   bases: DispBase[];
 };
+
+/** Página de detalle territorial de una provincia o de un técnico. */
+export type DispDetalle = {
+  entidad: "provincia" | "tecnico";
+  clave: string;
+  total: number;
+  limit: number;
+  offset: number;
+  municipios: DispMunicipio[];
+  cps: Array<{ cp: string; municipio: string | null; cerradas: number; lat: number | null; lng: number | null }>;
+};
+
 
 // -----------------------------------------------------------------------------
 // Umbrales PROVISIONALES — centralizados, configurables, documentados en pantalla
