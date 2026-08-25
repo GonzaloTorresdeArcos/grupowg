@@ -8,6 +8,7 @@ import {
   DOMINIOS_CONTRACTUALES,
   GLIFO_DOMINIO,
   LABEL_ESTADO_DOMINIO,
+  etiquetaRangoOt,
   frescura,
   readinessRegla,
   evaluarReadiness,
@@ -158,9 +159,7 @@ const CalidadDatos = () => {
             </div>
             <div>
               <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Rango de datos</dt>
-              <dd className="text-ink tabular-nums">
-                {medidas.fact_ot.min_fecha_creacion} → {medidas.fact_ot.max_fecha_creacion}
-              </dd>
+              <dd className="text-ink">{etiquetaRangoOt(medidas)}</dd>
             </div>
             <div>
               <dt className="text-[10px] uppercase tracking-[0.12em] text-ink/40">Frescura</dt>
