@@ -35,8 +35,9 @@ vi.mock("@/lib/ops-query", () => ({
   useOpsRpcs: (specs: Spec[]) => {
     estado.tandas.push(specs.map((s) => ({ ...s })));
     return specs.map((s) =>
-      resultado(s.rpc, s.enabled === false ? true : estado.criticoPendiente && s.enabled !== false),
+      resultado(s.rpc, s.enabled === false || estado.criticoPendiente),
     );
+
   },
   useOpsRpc: (rpc: string, _p?: unknown, opts?: { enabled?: boolean }) => {
     estado.unicas.push({ rpc, enabled: opts?.enabled !== false });
