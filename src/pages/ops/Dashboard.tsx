@@ -387,7 +387,7 @@ const Dashboard = () => {
   if (loading || !kpis) {
     // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
     return (
-      <div className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
+      <div data-testid="skeleton-global" className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
         <div className="h-6 w-2/3 rounded bg-black/[0.06]" />
         <div className="h-4 w-1/3 rounded bg-black/[0.04]" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
