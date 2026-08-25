@@ -110,7 +110,7 @@ DECLARE
      $q$SELECT public.ops_sla_detalle('bucket','31-60')$q$,
      'src/pages/ops/SLA.tsx (drill-down)','n'],
     ['ops_sla_detalle','etapa pág.1',
-     $q$SELECT public.ops_sla_detalle('etapa','Sin primer contacto')$q$,
+     $q$SELECT public.ops_sla_detalle('etapa','PTE. PIEZAS')$q$,
      'src/pages/ops/SLA.tsx (drill-down)','n'],
 
     ['ops_costes','jun-2026',
