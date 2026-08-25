@@ -158,12 +158,13 @@ const Dashboard = () => {
   const [showEvo, setShowEvo] = useState(false);
   const [showDefs, setShowDefs] = useState(false);
 
-  // Todas las RPC del Panorama van en paralelo (incluida ops_supply, que antes
-  // se encadenaba después del Promise.all) y comparten caché por (rpc, params)
-  // con el resto de módulos. Sin cambio de parámetros ni de semántica.
-  const specs = useMemo(() => {
+  // ARQUITECTURA DE CARGA EN DOS ETAPAS.
+  // CRÍTICO: lo que sostiene la Situation Line y el balance (KPIs + panorama
+  // resumen, sin series). SECUNDARIO: series, alertas, equipos, scorecard y
+  // supply, que se habilitan cuando el crítico ya está en pantalla.
+  const { criticos, secundarios: especSecundarios } = useMemo(() => {
     const prev = prevRange;
-    const secundarios = {
+    const dims = {
       p_delegacion: rpcParams.p_delegacion, p_cliente: rpcParams.p_cliente,
       p_gama: rpcParams.p_gama, p_familia: rpcParams.p_familia, p_marca: rpcParams.p_marca,
       p_provincia: rpcParams.p_provincia, p_sat: rpcParams.p_sat,
@@ -175,41 +176,63 @@ const Dashboard = () => {
       p_cliente: rpcParams.p_cliente, p_familia: rpcParams.p_familia,
     };
     const equipPrev = { ...equipParams, p_from: prev.from, p_to: prev.to };
-    const scoreParams: Record<string, unknown> = { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...secundarios };
+    const scoreParams: Record<string, unknown> = { p_from: rpcParams.p_from, p_to: rpcParams.p_to, ...dims };
     delete scoreParams.p_tecnico;
     const scorePrevParams = { ...scoreParams, p_from: prev.from, p_to: prev.to };
-    return [
-      { rpc: "ops_kpis", params: rpcParams },
-      { rpc: "ops_kpis", params: prevRpc },
-      { rpc: "ops_panorama", params: { ...rpcParams, p_meses: 12 } },
-      { rpc: "ops_panorama", params: { ...prevRpc, p_meses: 1 } },
-      { rpc: "ops_evolucion", params: secundarios },
-      { rpc: "ops_alertas", params: rpcParams },
-      { rpc: "ops_equipos", params: equipParams },
-      { rpc: "ops_equipos", params: equipPrev },
-      { rpc: "ops_tecnicos_scorecard", params: scoreParams },
-      { rpc: "ops_tecnicos_scorecard", params: scorePrevParams },
-      { rpc: "ops_supply", params: { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } },
-    ];
+    return {
+      criticos: [
+        { rpc: "ops_kpis", params: rpcParams },
+        { rpc: "ops_kpis", params: prevRpc },
+        { rpc: "ops_panorama_resumen", params: rpcParams },
+        { rpc: "ops_panorama_resumen", params: prevRpc },
+      ],
+      secundarios: [
+        { rpc: "ops_panorama_series", params: { ...rpcParams, p_meses: 12 } },
+        { rpc: "ops_evolucion", params: dims },
+        { rpc: "ops_alertas", params: rpcParams },
+        { rpc: "ops_equipos", params: equipParams },
+        { rpc: "ops_equipos", params: equipPrev },
+        { rpc: "ops_tecnicos_scorecard", params: scoreParams },
+        { rpc: "ops_tecnicos_scorecard", params: scorePrevParams },
+        { rpc: "ops_supply_resumen", params: { ...rpcParams, p_prev_from: prev.from, p_prev_to: prev.to } },
+      ],
+    };
   }, [rpcParams, prevRange]);
 
-  const q = useOpsRpcs<unknown>(specs);
-  const loading = q.some((r) => r.isPending);
-  const kpis = (q[0].data ?? null) as Kpis | null;
-  const kpisPrev = (q[1].data ?? null) as Kpis | null;
-  const pano = (q[2].data ?? null) as PanoramaPayload | null;
-  const panoPrev = (q[3].data ?? null) as PanoramaPayload | null;
-  const evo = useMemo(() => (q[4].data ?? []) as EvoRow[], [q[4].data]);
-  const alertas = (q[5].data ?? null) as Alertas | null;
-  const equiposNow = useMemo(() => (q[6].data ?? []) as EquipoRow[], [q[6].data]);
-  const equiposPrev = useMemo(() => (q[7].data ?? []) as EquipoRow[], [q[7].data]);
-  const score = useMemo(() => (q[8].data ?? []) as ScoreRow[], [q[8].data]);
-  const scorePrev = useMemo(() => (q[9].data ?? []) as ScoreRow[], [q[9].data]);
+  const qc = useOpsRpcs<unknown>(criticos);
+  const criticoListo = qc.every((r) => !r.isPending);
+  // El secundario arranca en cuanto el crítico deja de estar pendiente: nunca
+  // compite con la primera pintura.
+  const specsSec = useMemo(
+    () => especSecundarios.map((s) => ({ ...s, enabled: criticoListo })),
+    [especSecundarios, criticoListo],
+  );
+  const qs = useOpsRpcs<unknown>(specsSec);
+
+  const loading = qc.some((r) => r.isPending);
+  const cargandoSecundario = qs.some((r) => r.isPending || r.fetchStatus === "fetching");
+  const kpis = (qc[0].data ?? null) as Kpis | null;
+  const kpisPrev = (qc[1].data ?? null) as Kpis | null;
+  const panoBase = (qc[2].data ?? null) as PanoramaPayload | null;
+  const panoPrev = (qc[3].data ?? null) as PanoramaPayload | null;
+  const serie = (qs[0].data ?? null) as { serie?: unknown[] } | null;
+  // El resumen no trae series: se completan cuando llega la etapa secundaria.
+  const pano = useMemo<PanoramaPayload | null>(
+    () => (panoBase ? ({ ...panoBase, serie: (serie?.serie ?? []) } as PanoramaPayload) : null),
+    [panoBase, serie],
+  );
+  const evo = useMemo(() => (qs[1].data ?? []) as EvoRow[], [qs[1].data]);
+  const alertas = (qs[2].data ?? null) as Alertas | null;
+  const equiposNow = useMemo(() => (qs[3].data ?? []) as EquipoRow[], [qs[3].data]);
+  const equiposPrev = useMemo(() => (qs[4].data ?? []) as EquipoRow[], [qs[4].data]);
+  const score = useMemo(() => (qs[5].data ?? []) as ScoreRow[], [qs[5].data]);
+  const scorePrev = useMemo(() => (qs[6].data ?? []) as ScoreRow[], [qs[6].data]);
   // F4B · Supply manda sobre la etapa derivada para la cifra de espera de pieza.
   const supply = useMemo<SupplyPayload | null>(
-    () => (q[10].error || !q[10].data ? null : normalizarSupply(q[10].data)),
-    [q[10].data, q[10].error],
+    () => (qs[7].error || !qs[7].data ? null : normalizarSupply(qs[7].data)),
+    [qs[7].data, qs[7].error],
   );
+
 
 
   const hayComparable = !sinComparable && !!kpisPrev;
@@ -309,8 +332,21 @@ const Dashboard = () => {
   }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
 
   if (loading || !kpis) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
+    // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
+    return (
+      <div className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
+        <div className="h-6 w-2/3 rounded bg-black/[0.06]" />
+        <div className="h-4 w-1/3 rounded bg-black/[0.04]" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <div key={i} className="h-24 rounded-2xl border border-black/[0.06] bg-black/[0.02]" />
+          ))}
+        </div>
+        <div className="h-40 rounded-2xl border border-black/[0.06] bg-black/[0.02]" />
+      </div>
+    );
   }
+
 
   const periodoLbl = labelPeriodo(filters.from, filters.to);
   const comparadaLbl = hayComparable ? labelComparativa(filters.from, filters.to, modo).split(" vs. ")[1] ?? null : null;
@@ -341,7 +377,16 @@ const Dashboard = () => {
         <p className="text-sm text-ink/60 mt-2 max-w-2xl">
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
+        {cargandoSecundario && (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
+            <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+            Completando análisis (series, equipos y supply)…
+          </p>
+        )}
       </header>
+
+
+
       <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}

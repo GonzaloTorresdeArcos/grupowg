@@ -2116,6 +2116,72 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_panorama_resumen: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_panorama_resumen_impl: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_panorama_series: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_meses?: number
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_panorama_series_impl: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_meses?: number
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_sats_ranking: {
         Args: {
           p_cliente?: string
@@ -2170,6 +2236,20 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_sla_evolucion: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+        }
+        Returns: Json
+      }
       ops_sla_registry_resumen: {
         Args: never
         Returns: {
@@ -2207,6 +2287,46 @@ export type Database = {
           p_marca?: string
           p_prev_from?: string
           p_prev_to?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_supply_detalle: {
+        Args: {
+          p_bloque?: string
+          p_canal?: string
+          p_clave?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_limit?: number
+          p_marca?: string
+          p_offset?: number
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_supply_detalle_impl: {
+        Args: {
+          p_bloque?: string
+          p_canal?: string
+          p_clave?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_limit?: number
+          p_marca?: string
+          p_offset?: number
           p_provincia?: string
           p_sat?: string
           p_tecnico?: string
@@ -2277,6 +2397,42 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      ops_supply_resumen: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_prev_from?: string
+          p_prev_to?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      ops_supply_resumen_impl: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_prev_from?: string
+          p_prev_to?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
       }
       ops_tecnico_ficha: { Args: { p_tecnico: string }; Returns: Json }
       ops_tecnicos_scorecard: {

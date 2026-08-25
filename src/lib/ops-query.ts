@@ -1,6 +1,7 @@
 import { useQueries, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { perfActivo, registrarMarca, tamanoAprox } from "@/lib/ops-perf";
 
 /**
  * Capa única de acceso a las RPC de /operaciones.
@@ -47,10 +48,15 @@ export const opsQueryKey = (rpc: string, params?: OpsRpcParams) =>
 
 /** Ejecución cruda de la RPC. `signal` permite descartar tandas obsoletas. */
 export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: AbortSignal): Promise<T> {
+  const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
   const q = supabase.rpc(rpc as never, (normalizarParams(params) as never));
   const anyQ = q as unknown as { abortSignal?: (s: AbortSignal) => unknown };
   const exec = signal && typeof anyQ.abortSignal === "function" ? anyQ.abortSignal(signal) : q;
   const { data, error } = (await exec) as { data: unknown; error: unknown };
+  const t1 = typeof performance !== "undefined" ? performance.now() : Date.now();
+  if (perfActivo()) {
+    registrarMarca({ rpc, ms: t1 - t0, bytes: tamanoAprox(data), error: !!error });
+  }
   if (error) throw error;
   return (data ?? null) as T;
 }
@@ -62,7 +68,11 @@ const baseOptions = {
   retryDelay: 300,
   refetchOnWindowFocus: false as const,
   refetchOnReconnect: false as const,
+  // El dato es un snapshot: conservar el payload anterior mientras se resuelve
+  // la nueva clave evita vaciados de pantalla al cambiar de período o filtro.
+  placeholderData: ((prev: unknown) => prev) as never,
 };
+
 
 /**
  * Una RPC. `enabled:false` para drill-downs bajo demanda.
@@ -81,7 +91,6 @@ export function useOpsRpc<T>(
     queryKey: opsQueryKey(rpc, params),
     queryFn: ({ signal }: { signal: AbortSignal }) => opsRpc<T>(rpc, params, signal),
     enabled: opts?.enabled ?? true,
-    ...(opts?.keepPrevious ? { placeholderData: ((prev: unknown) => prev) as never } : {}),
     ...baseOptions,
   }) as UseQueryResult<T>;
 }

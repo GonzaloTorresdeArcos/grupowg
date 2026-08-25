@@ -71,7 +71,7 @@ export default function OpsRepuestos() {
     () => ({ ...rpcParams, p_prev_from: prevRange.from, p_prev_to: prevRange.to }),
     [rpcParams, prevRange.from, prevRange.to],
   );
-  const q = useOpsRpc<unknown>("ops_supply", supplyParams);
+  const q = useOpsRpc<unknown>("ops_supply_resumen", supplyParams);
   const data = useMemo(() => (q.data ? normalizarSupply(q.data) : null), [q.data]);
   const loading = q.isPending;
   const errorMsg = q.error ? (q.error as Error).message : null;

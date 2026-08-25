@@ -13,6 +13,7 @@ import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { OpsFiltersProvider } from "@/lib/ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 import { useAsOfCacheGuard } from "@/lib/ops-cache";
+import { PerfOverlay } from "@/components/ops/PerfOverlay";
 
 type NavItem = { to: string; label: string; icon: typeof Users; end?: boolean };
 type NavGroup = { key: string; label: string; items: NavItem[] };
@@ -262,6 +263,7 @@ export const OpsLayout = () => {
             </RouteBoundary>
           </div>
         </OpsFiltersProvider>
+        <PerfOverlay />
       </main>
     </div>
   );

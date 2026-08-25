@@ -96,7 +96,7 @@ export default function OpsLogistica() {
         p_from: filters.from, p_to: filters.to,
         p_prev_from: prevRange.from, p_prev_to: prevRange.to,
       } },
-    { rpc: "ops_supply", params: {
+    { rpc: "ops_supply_resumen", params: {
         ...rpcParams, p_prev_from: prevRange.from, p_prev_to: prevRange.to,
       } },
   ], [rpcParams, filters.from, filters.to, prevRange.from, prevRange.to]);
