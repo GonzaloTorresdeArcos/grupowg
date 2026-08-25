@@ -241,16 +241,15 @@ const SLA = () => {
     return new Map(data.tecnicos.map((t) => [t.tecnico, resumenBacklogTecnico(t.tecnico, data.tec_etapas)]));
   }, [data]);
 
-  // ── CSV ──
+  // ── CSV (página de detalle abierta) ──
   const csv = useMemo(() => {
-    if (!data) return "";
     const header = "num_ot,cliente,familia,provincia,delegacion,sat,tecnico,etapa_actual,fecha_creacion,dias_abierta\n";
-    const rows = data.abiertas.map((a) =>
+    const rows = (detalle?.rows ?? []).map((a) =>
       [a.num_ot, a.cliente_wg, a.familia, a.provincia, a.delegacion, a.sat, a.tecnico, a.estado, a.fecha_creacion, a.dias_abierta]
         .map((v) => `"${(v ?? "").toString().replace(/"/g, '""')}"`).join(","),
     ).join("\n");
     return header + rows;
-  }, [data]);
+  }, [detalle]);
 
   const exportCsv = () => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -259,6 +258,7 @@ const SLA = () => {
     a.href = url; a.download = `sla-abiertas-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
     URL.revokeObjectURL(url);
   };
+
 
   if (loading || !data) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
 
