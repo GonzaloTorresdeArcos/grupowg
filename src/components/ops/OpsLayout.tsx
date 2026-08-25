@@ -14,6 +14,7 @@ import { OpsFiltersProvider } from "@/lib/ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 import { useAsOfCacheGuard } from "@/lib/ops-cache";
 import { PerfOverlay } from "@/components/ops/PerfOverlay";
+import { registrarHito } from "@/lib/ops-perf";
 
 type NavItem = { to: string; label: string; icon: typeof Users; end?: boolean };
 type NavGroup = { key: string; label: string; items: NavItem[] };
