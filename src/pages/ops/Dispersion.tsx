@@ -95,8 +95,8 @@ export default function OpsDispersion() {
       p_from: from, p_to: to, p_delegacion: delegacion, p_gama: gama, p_familia: familia,
     });
     return [
-      { rpc: "ops_dispersion", params: mk(range.from, range.to) },
-      { rpc: "ops_dispersion", params: mk(prevRange.from, prevRange.to) },
+      { rpc: "ops_dispersion_resumen", params: mk(range.from, range.to) },
+      { rpc: "ops_dispersion_resumen", params: mk(prevRange.from, prevRange.to) },
     ];
   }, [range.from, range.to, prevRange.from, prevRange.to, delegacion, gama, familia]);
 
@@ -108,6 +108,23 @@ export default function OpsDispersion() {
     ? "No se han podido cargar los datos de dispersión. Reintenta o acota el período."
     : null;
   const setReloadKey = (_f: (k: number) => number) => { void q[0].refetch(); void q[1].refetch(); };
+
+  // Detalle territorial bajo demanda: los municipios (2.400+ filas) ya no viajan
+  // en el resumen; se piden paginados para la provincia seleccionada.
+  const MUN_PAGINA = 100;
+  const [munPagina, setMunPagina] = useState(0);
+  useEffect(() => { setMunPagina(0); }, [provSel, range.from, range.to, delegacion, gama, familia]);
+  const detalleParams = useMemo(() => (provSel ? {
+    p_entidad: "provincia", p_clave: provSel,
+    p_from: range.from, p_to: range.to,
+    p_delegacion: delegacion, p_gama: gama, p_familia: familia,
+    p_limit: MUN_PAGINA, p_offset: munPagina * MUN_PAGINA,
+  } : undefined), [provSel, range.from, range.to, delegacion, gama, familia, munPagina]);
+  const detalleQ = useOpsRpc<DispDetalle>("ops_dispersion_detalle", detalleParams, {
+    enabled: vista === "municipios" && !!provSel, keepPrevious: true,
+  });
+  const detalle = detalleQ.data ?? null;
+
 
   // Auto-limpieza: si la provincia seleccionada ya no existe en los datos, la soltamos.
   useEffect(() => {
