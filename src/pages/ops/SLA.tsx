@@ -117,15 +117,35 @@ const SLA = () => {
   const [umbralCliente, setUmbralCliente] = useState(UMBRAL_MUESTRA_CLIENTE_DEF);
   const [umbralProducto, setUmbralProducto] = useState(UMBRAL_MUESTRA_PRODUCTO_DEF);
   const [defsOpen, setDefsOpen] = useState(false);
+  // Drill-down bajo demanda: el listado de OTs solo se pide al pulsar un tramo o una etapa.
+  const [drill, setDrill] = useState<{ tipo: "bucket" | "etapa"; clave: string } | null>(null);
+  const [pagina, setPagina] = useState(0);
 
   const specs = useMemo(() => [
-    { rpc: "ops_sla", params: rpcParams },
+    { rpc: "ops_sla_resumen", params: rpcParams },
     { rpc: "ops_kpis", params: rpcParams },
   ], [rpcParams]);
   const q = useOpsRpcs<unknown>(specs);
   const loading = q.some((r) => r.isPending);
   const data = (q[0].data ?? null) as Payload | null;
   const kpisDash = (q[1].data ?? null) as { pct_sla20?: number } | null;
+
+  // El detalle respeta los filtros globales (sin período: el backlog es a fecha de datos).
+  const detalleParams = useMemo(() => {
+    if (!drill) return undefined;
+    const { p_from: _f, p_to: _t, ...dims } = rpcParams;
+    return { p_tipo: drill.tipo, p_clave: drill.clave, ...dims, p_limit: DETALLE_PAGINA, p_offset: pagina * DETALLE_PAGINA };
+  }, [drill, pagina, rpcParams]);
+  const detalleQ = useOpsRpc<Detalle>("ops_sla_detalle", detalleParams, { enabled: !!drill, keepPrevious: true });
+  const detalle = detalleQ.data ?? null;
+
+  const abrirDrill = (tipo: "bucket" | "etapa", clave: string) => {
+    setPagina(0);
+    setDrill((d) => (d && d.tipo === tipo && d.clave === clave ? null : { tipo, clave }));
+  };
+  // Un cambio de filtros invalida la selección abierta.
+  useEffect(() => { setDrill(null); setPagina(0); }, [rpcParams]);
+
 
   const prev = prevRange;
   const L = diasEntre(filters.from, filters.to);
