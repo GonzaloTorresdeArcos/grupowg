@@ -2,6 +2,7 @@ import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { registrarHito } from "@/lib/ops-perf";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, fallosDeQueries } from "@/components/ops/OpsErrorBlock";
 import { Link } from "react-router-dom";
 import { useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
@@ -265,7 +266,11 @@ const Dashboard = () => {
   );
   const qs = useOpsRpcs<unknown>(specsSec);
 
-  const loading = qc.some((r) => r.isPending);
+  // UAT-3 · error de RPC ≠ loading: el esqueleto solo con fetch en curso.
+  const fallosCriticos = fallosDeQueries(criticos, qc);
+  const reintentar = () => { void Promise.all([...qc, ...qs].map((r) => r.refetch())); };
+  const fallosSecundarios = [...fallosCriticos, ...fallosDeQueries(specsSec, qs)];
+  const loading = qc.some((r) => r.isPending) && fallosCriticos.length === 0;
   const cargandoSecundario = qs.some((r) => r.isPending || r.fetchStatus === "fetching");
   const kpis = (qc[0].data ?? null) as Kpis | null;
   const panoBase = (qc[1].data ?? null) as PanoramaPayload | null;
@@ -418,6 +423,10 @@ const Dashboard = () => {
     });
   }, [kpis, kpisPrev, balance, hayComparable, etapas, alertas, conclusiones, ratioAct, ratioPre, supply]);
 
+  if (fallosCriticos.length > 0 && !kpis) {
+    return <OpsErrorBlock fallos={fallosCriticos} onReintentar={reintentar} titulo="No se ha podido cargar el Panorama" />;
+  }
+
   if (loading || !kpis) {
     // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
     return (
@@ -458,6 +467,9 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-12">
+      {fallosSecundarios.length > 0 && (
+        <OpsErrorBlock fallos={fallosSecundarios} onReintentar={reintentar} conservaDatos />
+      )}
       <header>
         <Eyebrow>Cuadro de mando</Eyebrow>
         <h1 className="font-display text-3xl md:text-4xl tracking-tight text-ink mt-2">Panorama operativo</h1>

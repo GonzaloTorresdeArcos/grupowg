@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, fallosDeQueries, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { useDataFreshness } from "@/hooks/useDataFreshness";
@@ -133,7 +134,6 @@ const SLA = () => {
     { rpc: "ops_kpis", params: rpcParams },
   ], [rpcParams]);
   const q = useOpsRpcs<unknown>(specs);
-  const loading = q.some((r) => r.isPending);
   const data = (q[0].data ?? null) as Payload | null;
   // Las series de backlog (12 meses) son la parte cara del cálculo: se piden
   // aparte y solo cuando el resumen ya está en pantalla.
@@ -142,10 +142,19 @@ const SLA = () => {
     return dims;
   }, [rpcParams]);
   const evoQ = useOpsRpc<{ evo_deleg: EvoDelegRow[]; evo_tec: EvoTecRow[] }>(
-    "ops_sla_evolucion", evoParams, { enabled: !loading },
+    "ops_sla_evolucion", evoParams, { enabled: !!data },
   );
   const evoData = evoQ.data ?? null;
   const kpisDash = (q[1].data ?? null) as { pct_sla20?: number } | null;
+
+  // UAT-3 · error de RPC ≠ loading. Incluye la serie de backlog (ops_sla_evolucion).
+  const fallos = [
+    ...fallosDeQueries(specs, q),
+    ...falloDeQuery("ops_sla_evolucion", evoQ, "Series de backlog"),
+  ];
+  const cargando = q.some((r) => r.fetchStatus === "fetching");
+  const reintentar = () => { void Promise.all([...q.map((r) => r.refetch()), evoQ.refetch()]); };
+
 
   // El detalle respeta los filtros globales (sin período: el backlog es a fecha de datos).
   const detalleParams = useMemo(() => {
@@ -277,7 +286,11 @@ const SLA = () => {
   };
 
 
-  if (loading || !data) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
+  if (fallos.length > 0 && !data) {
+    return <OpsErrorBlock fallos={fallos} onReintentar={reintentar} titulo="No se ha podido cargar SLA y envejecimiento" />;
+  }
+  if (!data && cargando) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
+  if (!data) return <div className="py-20 text-center text-sm text-ink/50">Sin datos para el período seleccionado.</div>;
 
   const t = data.tramos;
   const snap = data.snapshot;
@@ -294,6 +307,7 @@ const SLA = () => {
 
   return (
     <div className="space-y-10">
+      {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={reintentar} conservaDatos />}
       <header>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-2">Envejecimiento</p>
         <h1 className="font-display text-3xl md:text-4xl tracking-tight text-ink">SLA y envejecimiento</h1>

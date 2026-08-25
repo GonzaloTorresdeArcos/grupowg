@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useOpsRpc } from "@/lib/ops-query";
@@ -73,8 +74,12 @@ export default function OpsRepuestos() {
   );
   const q = useOpsRpc<unknown>("ops_supply_resumen", supplyParams);
   const data = useMemo(() => (q.data ? normalizarSupply(q.data) : null), [q.data]);
-  const loading = q.isPending;
-  const errorMsg = q.error ? (q.error as Error).message : null;
+  const loading = q.fetchStatus === "fetching" && !q.data;
+  const fallos = falloDeQuery("ops_supply_resumen", q, "Cadena de suministro");
+  const reintentar = () => {
+    void q.refetch();
+    setReloadKey((k) => k + 1);
+  };
 
   useEffect(() => {
     let vivo = true;
@@ -137,22 +142,24 @@ export default function OpsRepuestos() {
     );
   }
 
-  if (errorMsg || !data) {
+  // UAT-3 · error de RPC ≠ «sin datos»: cada estado se muestra por separado.
+  if (fallos.length > 0 && !data) {
     return (
-      <div className="border border-amber-200 bg-amber-50 rounded-2xl p-6 space-y-3">
-        <p className="text-sm text-amber-900 flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4" /> No se ha podido cargar el módulo de repuestos.
-        </p>
-        {errorMsg && <p className="text-xs text-amber-800 font-mono break-all">{errorMsg}</p>}
-        <button
-          onClick={() => setReloadKey((k) => k + 1)}
-          className="inline-flex items-center gap-2 text-xs rounded-full border border-amber-300 px-3 py-1.5 text-amber-900 hover:bg-amber-100"
-        >
-          <RefreshCw className="h-3.5 w-3.5" /> Reintentar
-        </button>
+      <OpsErrorBlock
+        fallos={fallos}
+        onReintentar={reintentar}
+        titulo="No se ha podido cargar el módulo de repuestos"
+      />
+    );
+  }
+  if (!data) {
+    return (
+      <div className="border border-black/[0.06] rounded-2xl bg-white p-6 text-sm text-ink/50">
+        Sin datos de cadena de suministro para el período seleccionado.
       </div>
     );
   }
+
 
   const dem = data.pieza_demanda;
   const pte = data.pte_piezas_actual;

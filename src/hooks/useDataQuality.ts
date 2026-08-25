@@ -25,11 +25,23 @@ export type UseDataQuality = {
   medidas: MedidasDataQuality | null;
   dominios: readonly DominioDato[];
   dominio: (id: string) => DominioDato | undefined;
+  /** UAT-3 · el error de `ops_data_quality` debe ser visible, no un vacío. */
+  isError: boolean;
+  error: unknown;
+  refetch: () => void;
 };
 
 export const useDataQuality = (): UseDataQuality => {
   const q = useOpsRpc<MedidasDataQuality | null>("ops_data_quality");
   const medidas = (q.error ? null : (q.data ?? null)) as MedidasDataQuality | null;
   const dominios = medidas ? derivarDominios(medidas) : DOMINIOS_DATOS;
-  return { loading: q.isPending, medidas, dominios, dominio: (id) => dominios.find((d) => d.id === id) };
+  return {
+    loading: q.fetchStatus === "fetching" && !q.data,
+    medidas,
+    dominios,
+    dominio: (id) => dominios.find((d) => d.id === id),
+    isError: q.isError,
+    error: q.error,
+    refetch: () => { void q.refetch(); },
+  };
 };

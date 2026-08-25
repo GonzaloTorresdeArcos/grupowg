@@ -5,6 +5,7 @@ import { esDelegacionReal } from "@/lib/ops-performance";
 import { gamaLabel } from "@/lib/ops-gamas";
 import { Loader2 } from "lucide-react";
 import { AmbitoChip } from "@/components/ops/OpsAmbito";
+import { OpsErrorBlock, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 
 type EquipoRow = {
   equipo: string;
@@ -61,9 +62,20 @@ export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: bool
   }), [rpcParams]);
   const q = useOpsRpc<EquipoRow[]>("ops_equipos", params);
   const rows = (q.data ?? null) as EquipoRow[] | null;
-  const loading = q.isPending;
+  // UAT-3 · error de RPC ≠ loading ≠ sin datos.
+  const fallos = falloDeQuery("ops_equipos", q, "Comparativa de equipos");
+  const cargando = q.fetchStatus === "fetching" && !q.data;
 
-  if (loading) {
+  if (fallos.length > 0 && !rows) {
+    return (
+      <OpsErrorBlock
+        fallos={fallos}
+        onReintentar={() => { void q.refetch(); }}
+        titulo="No se ha podido cargar la comparativa de equipos"
+      />
+    );
+  }
+  if (cargando) {
     return (
       <div className="border border-black/[0.06] rounded-2xl bg-white p-10 flex items-center justify-center">
         <Loader2 className="h-5 w-5 animate-spin text-ink/40" />
@@ -77,6 +89,7 @@ export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: bool
       </div>
     );
   }
+
 
   // Ocultar Tenerife si está cerrada (residual)
   let visible = rows.filter(
@@ -99,6 +112,14 @@ export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: bool
 
   return (
     <section className="border border-black/[0.06] rounded-2xl bg-white overflow-hidden">
+      {fallos.length > 0 && (
+        <OpsErrorBlock
+          fallos={fallos}
+          onReintentar={() => { void q.refetch(); }}
+          conservaDatos
+          className="m-4"
+        />
+      )}
       <div className="px-6 py-5 border-b border-black/[0.05]">
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">
           Plantilla propia

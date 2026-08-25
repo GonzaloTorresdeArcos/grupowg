@@ -1,6 +1,7 @@
 import { etiquetaVentana } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, fallosDeQueries, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { fmtEur, fmtNum, fmtPct, useOpsFilters } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -85,7 +86,6 @@ const Costes = () => {
     { rpc: "ops_costes", params: { p_from: prevInfo.from, p_to: prevInfo.to } },
   ], [range, prevInfo]);
   const q = useOpsRpcs<unknown>(specs);
-  const loading = q.some((r) => r.isPending);
   const data = (q[0].data ?? null) as Payload | null;
   const prev = ((q[1].data as Payload | null)?.kpis ?? null) as Kpis | null;
 
@@ -93,7 +93,16 @@ const Costes = () => {
     p_from: range.from, p_to: range.to, p_vista: vista,
   });
   const entidades = useMemo(() => (entQ.data ?? []) as EntidadRow[], [entQ.data]);
-  const loadingEnt = entQ.isPending;
+
+  // UAT-3 · error de RPC ≠ loading ≠ sin datos.
+  const fallos = [
+    ...fallosDeQueries(specs, q),
+    ...falloDeQuery("ops_costes_entidades", entQ, "Detalle por entidad"),
+  ];
+  const cargando = q.some((r) => r.fetchStatus === "fetching");
+  const cargandoEnt = entQ.fetchStatus === "fetching" && !entQ.data;
+  const reintentar = () => { void Promise.all([...q.map((r) => r.refetch()), entQ.refetch()]); };
+
 
   const evo18 = useMemo(() => {
     if (!data) return [] as EvoRow[];
@@ -143,8 +152,21 @@ const Costes = () => {
         <span className="text-[11px] text-ink/50">Modo: {modo === "interanual" ? "vs. año anterior" : "vs. período anterior"}</span>
       </div>
 
-      {loading || !data ? (
+      {fallos.length > 0 && (
+        <OpsErrorBlock
+          fallos={fallos}
+          onReintentar={reintentar}
+          conservaDatos={!!data}
+          titulo={data ? undefined : "No se ha podido cargar Coste y productividad"}
+        />
+      )}
+
+      {!data && cargando ? (
         <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>
+      ) : !data ? (
+        fallos.length > 0 ? null : (
+          <div className="py-20 text-center text-sm text-ink/50">Sin datos para el período seleccionado.</div>
+        )
       ) : (
         <>
           {/* Resumen ejecutivo — 6 tarjetas tri-tonales */}
@@ -167,7 +189,7 @@ const Costes = () => {
             vista={vista}
             onVistaChange={setVista}
             rows={entidades}
-            loading={loadingEnt}
+            loading={cargandoEnt}
             umbral={umbral}
             onUmbralChange={setUmbral}
           />

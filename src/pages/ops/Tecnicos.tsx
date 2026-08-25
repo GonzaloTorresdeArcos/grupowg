@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, fallosDeQueries, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { gamaLabel } from "@/lib/ops-gamas";
@@ -130,7 +131,11 @@ const Tecnicos = () => {
   }, [rpcParams, prevRange]);
 
   const q = useOpsRpcs<unknown>(specs);
-  const loading = q.some((r) => r.isPending);
+  // UAT-3 · error de RPC ≠ loading ≠ sin datos.
+  const fallos = fallosDeQueries(specs, q);
+  const cargando = q.some((r) => r.fetchStatus === "fetching");
+  const hayDatos = q[0].data != null;
+  const reintentar = () => { void Promise.all(q.map((r) => r.refetch())); };
   const rowsRaw = useMemo(() => (q[0].data ?? []) as Row[], [q[0].data]);
   const rowsPrev = useMemo(() => (q[1].data ?? []) as Row[], [q[1].data]);
 
@@ -288,7 +293,10 @@ const Tecnicos = () => {
   const diasPrev = diasEntre(prev.from, prev.to);
   const diferenciaDias = diasActual !== diasPrev;
 
-  if (loading) {
+  if (fallos.length > 0 && !hayDatos) {
+    return <OpsErrorBlock fallos={fallos} onReintentar={reintentar} titulo="No se ha podido cargar el scorecard de técnicos" />;
+  }
+  if (!hayDatos && cargando) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-6 w-6 animate-spin text-ink/40" />
@@ -306,6 +314,7 @@ const Tecnicos = () => {
 
   return (
     <div className="space-y-10">
+      {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={reintentar} conservaDatos />}
       {/* HEADER */}
       <header>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-2">Red HIPERSERVICE</p>
@@ -680,7 +689,10 @@ type Ficha = {
 };
 
 const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () => void }) => {
-  const data = useOpsRpc<Ficha | null>("ops_tecnico_ficha", { p_tecnico: tecnico.tecnico }).data ?? null;
+  const fichaQ = useOpsRpc<Ficha | null>("ops_tecnico_ficha", { p_tecnico: tecnico.tecnico });
+  const data = fichaQ.data ?? null;
+  // UAT-3 · la ficha tampoco puede quedarse en blanco ante un error de RPC.
+  const fallosFicha = falloDeQuery("ops_tecnico_ficha", fichaQ, `Ficha de ${tecnico.tecnico}`);
 
   const maxEvo = Math.max(1, ...(data?.evolucion.map((e) => e.cerradas) ?? [1]));
   const style = GLOBAL_STYLE[tecnico.estado.nivel];
@@ -688,6 +700,15 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
   return (
     <div className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm flex justify-end" onClick={onClose}>
       <div className="w-full max-w-2xl bg-white h-full overflow-y-auto p-6 md:p-8" onClick={(e) => e.stopPropagation()}>
+        {fallosFicha.length > 0 && (
+          <OpsErrorBlock
+            fallos={fallosFicha}
+            onReintentar={() => { void fichaQ.refetch(); }}
+            conservaDatos={!!data}
+            titulo="No se ha podido cargar la ficha del técnico"
+            className="mb-4"
+          />
+        )}
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Ficha técnico</p>

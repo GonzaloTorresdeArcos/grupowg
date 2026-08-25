@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
+import { OpsErrorBlock, falloDeQuery } from "@/components/ops/OpsErrorBlock";
 import { useOpsRpc } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters";
 import { Loader2 } from "lucide-react";
@@ -80,7 +81,10 @@ const Sats = () => {
   }), [rpcParams]);
   const q = useOpsRpc<SatRowData[]>("ops_sats_ranking", params);
   const rows = useMemo(() => (q.data ?? []) as SatRowData[], [q.data]);
-  const loading = q.isPending;
+  // UAT-3 · error ≠ loading ≠ sin datos.
+  const fallos = falloDeQuery("ops_sats_ranking", q, "Ranking de SATs externos");
+  const cargando = q.fetchStatus === "fetching" && !q.data;
+  const reintentar = () => { void q.refetch(); };
 
   const medians = useMemo<Medianas>(() => ({
     sla20: medianaEvaluable(rows, (r) => r.pct_sla20),
@@ -98,10 +102,14 @@ const Sats = () => {
   );
   const nEval = ordenadas.filter((r) => satEvaluable(r.cerradas)).length;
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
+  if (fallos.length > 0 && !q.data) {
+    return <OpsErrorBlock fallos={fallos} onReintentar={reintentar} titulo="No se ha podido cargar el ranking de SATs" />;
+  }
+  if (cargando) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
 
   return (
     <div className="space-y-8">
+      {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={reintentar} conservaDatos />}
       <header>
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-2">Red externa</p>
         <h1 className="font-display text-3xl md:text-4xl tracking-tight text-ink">SATs externos</h1>
