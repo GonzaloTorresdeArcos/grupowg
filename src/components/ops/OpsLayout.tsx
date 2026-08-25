@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight,
   ChevronDown, Wrench, Euro, MapPin, Truck, Package, Database, Factory,
@@ -14,6 +14,7 @@ import { OpsFiltersProvider } from "@/lib/ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 import { useAsOfCacheGuard } from "@/lib/ops-cache";
 import { PerfOverlay } from "@/components/ops/PerfOverlay";
+import { registrarHito } from "@/lib/ops-perf";
 
 type NavItem = { to: string; label: string; icon: typeof Users; end?: boolean };
 type NavGroup = { key: string; label: string; items: NavItem[] };
@@ -91,6 +92,9 @@ export const OpsLayout = () => {
   // A1 · Si el snapshot de datos cambió desde la última visita, la caché de
   // análisis de esta sesión se invalida al montar la sección.
   useAsOfCacheGuard();
+  // Hito UAT: el armazón de la sección ya está en pantalla.
+  useEffect(() => { registrarHito("shell"); }, []);
+
 
   const handleSignOut = async () => {
     await signOut();

@@ -1,5 +1,6 @@
 import { etiquetaVentana, ventanaPropia } from "@/lib/ops-modelo";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { registrarHito } from "@/lib/ops-perf";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { Link } from "react-router-dom";
 import { useOpsRpcs } from "@/lib/ops-query";
@@ -121,7 +122,41 @@ const Sparkline = ({ values, title }: { values: Array<number | null>; title: str
   );
 };
 
+/** Estado de carga propio de un bloque secundario. */
+type EstadoBloque = { cargando: boolean; error: boolean; vacio: boolean };
+
+/**
+ * Indicador de bloque: etiqueta «Actualizando…» mientras su propia query esté
+ * pendiente o refrescando, y su propio error si falla. Independiente del
+ * indicador global de cabecera.
+ */
+const BloqueEstado = ({ estado, nombre }: { estado: EstadoBloque; nombre: string }) => {
+  if (estado.error) {
+    return (
+      <p data-testid={`error-${nombre}`} className="text-[11px] text-red-700 inline-flex items-center gap-1.5">
+        <AlertTriangle className="h-3 w-3" aria-hidden /> No se ha podido cargar este bloque.
+      </p>
+    );
+  }
+  if (!estado.cargando) return null;
+  return (
+    <p data-testid={`actualizando-${nombre}`} className="text-[11px] text-ink/40 inline-flex items-center gap-1.5">
+      <Loader2 className="h-3 w-3 animate-spin" aria-hidden /> Actualizando…
+    </p>
+  );
+};
+
+/** Esqueleto propio del bloque mientras no hay ningún dato que mostrar. */
+const BloqueSkeleton = ({ alto = "h-24", nombre }: { alto?: string; nombre: string }) => (
+  <div
+    data-testid={`skeleton-${nombre}`}
+    aria-busy="true"
+    className={`${alto} rounded-xl border border-black/[0.06] bg-black/[0.02] animate-pulse`}
+  />
+);
+
 const TargetChip = ({ tipo }: { tipo: keyof typeof LABEL_TARGET }) => (
+
   <span
     className="inline-flex items-center rounded-full border border-black/[0.08] bg-black/[0.02] px-2 py-0.5 text-[10px] text-ink/60 cursor-help"
     title={DESC_TARGET[tipo]}
@@ -233,6 +268,35 @@ const Dashboard = () => {
     [qs[7].data, qs[7].error],
   );
 
+  // UX POR BLOQUE. Cada bloque secundario expone su propio estado: mientras su
+  // query esté pendiente o refrescando muestra su esqueleto / etiqueta
+  // «Actualizando…», y si falla muestra su propio error. Ninguno bloquea el
+  // render de Situation Line / A / B1, que dependen solo de la tanda crítica.
+  const estadoDe = (...idx: number[]): EstadoBloque => {
+    const rs = idx.map((i) => qs[i]).filter(Boolean);
+    return {
+      cargando: rs.some((r) => (r.isPending && !r.data) || r.fetchStatus === "fetching"),
+      error: rs.some((r) => !!r.error),
+      vacio: rs.every((r) => !r.data),
+    };
+  };
+  const stSeries = estadoDe(0, 1);
+  const stCapacidad = estadoDe(5, 6);
+  const stFlujo = estadoDe(7);
+  const stAtencion = estadoDe(2, 3, 4, 5, 6, 7);
+  const stComparativa = estadoDe(3, 4);
+
+  // Hitos UAT: primeros KPI (tanda crítica resuelta), Panorama usable (crítico
+  // pintado) y carga completa (secundario resuelto).
+  useEffect(() => {
+    if (criticoListo) { registrarHito("primeros_kpi"); registrarHito("panorama_usable"); }
+  }, [criticoListo]);
+  useEffect(() => {
+    if (criticoListo && !cargandoSecundario) registrarHito("carga_completa");
+  }, [criticoListo, cargandoSecundario]);
+
+
+
 
 
   const hayComparable = !sinComparable && !!kpisPrev;
@@ -334,7 +398,7 @@ const Dashboard = () => {
   if (loading || !kpis) {
     // Esqueleto inmediato: el crítico (KPIs + balance) es lo único que bloquea.
     return (
-      <div className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
+      <div data-testid="skeleton-global" className="space-y-6 animate-pulse" aria-busy="true" aria-label="Cargando panorama">
         <div className="h-6 w-2/3 rounded bg-black/[0.06]" />
         <div className="h-4 w-1/3 rounded bg-black/[0.04]" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -378,7 +442,7 @@ const Dashboard = () => {
           Vista global de la red HIPERSERVICE y SATs externos. Se excluye &quot;ANULADO AVISO&quot; y las OTs anuladas.
         </p>
         {cargandoSecundario && (
-          <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
+          <p data-testid="indicador-cabecera" className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-ink/40">
             <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
             Completando análisis (series, equipos y supply)…
           </p>
@@ -390,7 +454,7 @@ const Dashboard = () => {
       <DataAsOf className="mt-3" cruza={["pieza_solicitud", "expedicion"]} />
 
       {/* 0 — EXECUTIVE SITUATION LINE */}
-      <p className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
+      <p data-testid="situation-line" className="text-[13px] text-ink/70 leading-relaxed border-l-2 border-ink/15 pl-4">
         {situationLine({
           periodoLabel: periodoLbl,
           comparadaLabel: comparadaLbl,
@@ -404,8 +468,9 @@ const Dashboard = () => {
       </p>
 
       {/* A — DEMANDA & OUTPUT */}
-      <section>
+      <section data-testid="bloque-a">
         <Eyebrow>A · Demanda y output</Eyebrow>
+
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
           {balance ? (
             <>
@@ -437,11 +502,17 @@ const Dashboard = () => {
               <div className="mt-6 flex flex-wrap items-end gap-6">
                 <div>
                   <p className="text-[11px] text-ink/50 mb-1">Backlog a fin de mes · últimos {ventanaPropia("panorama_backlog").meses} meses</p>
-                  <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
+                  {stSeries.cargando && serieBacklog.length === 0 ? (
+                    <BloqueSkeleton nombre="serie-backlog" alto="h-8 w-[120px]" />
+                  ) : (
+                    <Sparkline values={serieBacklog} title="Evolución del backlog a fin de mes" />
+                  )}
                   <p className="text-[10px] text-ink/40 italic mt-1">
                     {etiquetaVentana("panorama_backlog")}
                   </p>
+                  <BloqueEstado estado={stSeries} nombre="serie-backlog" />
                 </div>
+
                 <div className="text-[12px] text-ink/60">
                   <p>
                     Peso de las bajas sobre la salida: <span className="tabular-nums text-ink">{fmtPct(pctBajasSalida(balance))}</span>
@@ -468,7 +539,10 @@ const Dashboard = () => {
               <p className="text-[11px] text-ink/40 italic mb-3">
                 {etiquetaVentana("panorama_evolucion")}
               </p>
+              <BloqueEstado estado={stSeries} nombre="evolucion" />
+              {stSeries.cargando && evo.length === 0 && <BloqueSkeleton nombre="evolucion" alto="h-40" />}
               <div className="flex items-end gap-1.5 h-40">
+
                 {evo.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">
                     <div className="w-full flex items-end gap-0.5 h-32">
@@ -515,9 +589,15 @@ const Dashboard = () => {
             </div>
             <div>
               <p className="text-[11px] text-ink/50 mb-1">Serie mensual de resolución ≤20d</p>
-              <Sparkline values={serieSla} title="Evolución de la resolución ≤20 días" />
+              {stSeries.cargando && serieSla.length === 0 ? (
+                <BloqueSkeleton nombre="serie-sla" alto="h-8 w-[120px]" />
+              ) : (
+                <Sparkline values={serieSla} title="Evolución de la resolución ≤20 días" />
+              )}
               <p className="text-[10px] text-ink/40 italic mt-1">{etiquetaVentana("panorama_resolucion")}</p>
+              <BloqueEstado estado={stSeries} nombre="serie-sla" />
             </div>
+
           </div>
 
           <div className="grid sm:grid-cols-3 gap-3 mt-6">
@@ -596,13 +676,20 @@ const Dashboard = () => {
 
       {/* C — CAPACIDAD & PRODUCTIVIDAD */}
       <section>
-        <Eyebrow>C · Capacidad y productividad</Eyebrow>
+        <div className="flex items-center gap-3">
+          <Eyebrow>C · Capacidad y productividad</Eyebrow>
+          <BloqueEstado estado={stCapacidad} nombre="capacidad" />
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
-          <div className="grid sm:grid-cols-3 gap-3">
-            <Stat label="Técnicos activos con producción" value={fmtNum(activosConProduccion)} />
-            <Stat label="Cierres por técnico activo" value={fmtDec(cierresPorTecnico, 1)} />
-            <Stat label="Carga entrante por técnico activo" value={fmtDec(entrantesPorTecnico, 1)} />
-          </div>
+          {stCapacidad.cargando && score.length === 0 ? (
+            <BloqueSkeleton nombre="capacidad" alto="h-24" />
+          ) : (
+            <div className="grid sm:grid-cols-3 gap-3">
+              <Stat label="Técnicos activos con producción" value={fmtNum(activosConProduccion)} />
+              <Stat label="Cierres por técnico activo" value={fmtDec(cierresPorTecnico, 1)} />
+              <Stat label="Carga entrante por técnico activo" value={fmtDec(entrantesPorTecnico, 1)} />
+            </div>
+          )}
           <p className="text-[12px] text-amber-800 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-4 flex items-start gap-2">
             <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             No normalizado por tiempo de trabajo efectivo: no hay días trabajados ni ausencias completos. No es una medida
@@ -618,7 +705,10 @@ const Dashboard = () => {
 
       {/* D — FLUJO & CUELLOS DE BOTELLA */}
       <section>
-        <Eyebrow>D · Flujo y cuellos de botella</Eyebrow>
+        <div className="flex items-center gap-3">
+          <Eyebrow>D · Flujo y cuellos de botella</Eyebrow>
+          <BloqueEstado estado={stFlujo} nombre="flujo" />
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white p-6">
           <p className="text-[12px] text-ink/50 mb-4">
             Reparto de las OTs que están <strong className="text-ink/70">actualmente en cada etapa</strong>. Sin historial
@@ -627,6 +717,7 @@ const Dashboard = () => {
           {totalAbiertas === 0 ? (
             <p className="text-sm text-ink/40">Sin OTs abiertas con los filtros activos.</p>
           ) : (
+
             <>
               <div className="flex h-8 w-full rounded-lg overflow-hidden border border-black/[0.06]">
                 {etapas.map((e, idx) => (
@@ -681,11 +772,19 @@ const Dashboard = () => {
 
       {/* E — MANAGEMENT ATTENTION */}
       <section>
-        <Eyebrow>E · Asuntos que requieren atención</Eyebrow>
+        <div className="flex flex-wrap items-center gap-3">
+          <Eyebrow>E · Asuntos que requieren atención</Eyebrow>
+          <BloqueEstado estado={stAtencion} nombre="atencion" />
+          <span className="sr-only" data-testid="estado-comparativa">
+            {stComparativa.error ? "error" : stComparativa.cargando ? "actualizando" : "listo"}
+          </span>
+        </div>
         <div className="mt-3 border border-black/[0.06] rounded-2xl bg-white divide-y divide-black/[0.05]">
-          {asuntos.length === 0 && (
+          {stAtencion.cargando && asuntos.length === 0 && <BloqueSkeleton nombre="atencion" alto="h-28" />}
+          {!stAtencion.cargando && asuntos.length === 0 && (
             <p className="px-5 py-6 text-sm text-ink/40">Sin desviaciones materiales en el período con los filtros activos.</p>
           )}
+
           {asuntos.map((a) => (
             <article key={a.fenomeno} className="px-5 py-4">
               <div className="flex flex-wrap items-center gap-2">
