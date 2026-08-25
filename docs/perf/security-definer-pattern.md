@@ -50,9 +50,20 @@ Reglas no negociables:
 
 ## Funciones cubiertas hoy
 
-`ops_cobertura_datos`, `ops_dispersion_resumen`, `ops_dispersion_detalle`,
-`ops_panorama_resumen`, `ops_panorama_series`, `ops_supply_resumen`,
-`ops_supply_detalle`.
+`ops_cobertura_datos`, `ops_delegaciones`, `ops_dispersion_resumen`,
+`ops_dispersion_detalle`, `ops_panorama_resumen`, `ops_panorama_series`,
+`ops_supply_resumen`, `ops_supply_detalle`.
+
+`ops_delegaciones` se incorporó en UAT-2: bajo rol `authenticated` tardaba
+6.862 ms (RLS reevaluada + CTE `base` con `SELECT *` materializada) y con las
+dos llamadas de la página —actual y previo— se rozaba el `statement_timeout`
+de 8 s. Tras el patrón + CTE estrecha: 119 ms. Misma definición de KPI.
+
+## Regla de migraciones
+
+Todo cambio de firma o de exposición de una RPC termina con
+`NOTIFY pgrst, 'reload schema';` en la misma migración.
+
 
 ## Cómo se prueba
 

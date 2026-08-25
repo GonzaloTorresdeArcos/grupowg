@@ -93,11 +93,17 @@ const Delegaciones = () => {
   }, [rpcParams, prevRange.from, prevRange.to]);
 
   const q = useOpsRpcs<unknown>(specs);
-  const loading = q.some((r) => r.isPending);
   const now = (q[0].data ?? null) as Data | null;
   const prev = (q[1].data ?? null) as Data | null;
   const equiposNow = useMemo(() => (q[2].data ?? []) as EquipoRow[], [q[2].data]);
   const equiposPrev = useMemo(() => (q[3].data ?? []) as EquipoRow[], [q[3].data]);
+
+  // UAT-2 · antes el guardia era `loading || !now`, de modo que una RPC en
+  // error (p. ej. timeout) dejaba la página con el spinner para siempre.
+  const fallos = q
+    .map((r, i) => ({ rpc: specs[i].rpc, error: r.error, isError: r.isError }))
+    .filter((x) => x.isError);
+  const cargando = q.some((r) => r.fetchStatus === "fetching");
 
   const fichaQ = useOpsRpc<Ficha | null>(
     "ops_delegacion_ficha",
@@ -107,9 +113,39 @@ const Delegaciones = () => {
   const ficha = selected ? (fichaQ.data ?? null) : null;
   const loadingFicha = !!selected && fichaQ.isPending;
 
-  if (loading || !now) {
+  if (fallos.length > 0) {
+    return (
+      <div className="max-w-xl mx-auto my-16 border border-red-200 bg-red-50/60 rounded-2xl p-6 space-y-3">
+        <div className="flex items-center gap-2 text-red-800">
+          <AlertTriangle className="h-5 w-5" />
+          <p className="font-semibold text-sm">No se ha podido cargar Delegaciones</p>
+        </div>
+        <ul className="text-sm text-red-900/80 space-y-1">
+          {fallos.map((f, i) => (
+            <li key={`${f.rpc}-${i}`}>
+              <span className="font-mono text-xs">{f.rpc}</span>:{" "}
+              {(f.error as { message?: string } | null)?.message ?? "error desconocido"}
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={() => { void Promise.all(q.map((r) => r.refetch())); }}
+          className="rounded-full bg-ink text-bone text-sm px-4 py-2"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+
+  if (!now && cargando) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-ink/40" /></div>;
   }
+  if (!now) {
+    return <div className="py-20 text-center text-sm text-ink/50">Sin datos para el período seleccionado.</div>;
+  }
+
 
   const kpisReales = now.kpis.filter((d) => esDelegacionReal(d.delegacion));
   const kpisPrev = (prev?.kpis ?? []).filter((d) => esDelegacionReal(d.delegacion));

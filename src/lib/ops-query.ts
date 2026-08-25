@@ -46,10 +46,44 @@ export const normalizarParams = (params: OpsRpcParams): Record<string, unknown> 
 export const opsQueryKey = (rpc: string, params?: OpsRpcParams) =>
   [OPS_QUERY_ROOT, rpc, normalizarParams(params)] as const;
 
+/**
+ * Registro en memoria de errores de RPC (UAT-2). Sirve para depurar desde la
+ * consola (`window.opsRpcErrors`) y para que la UI pueda nombrar la RPC que ha
+ * fallado en lugar de quedarse cargando indefinidamente.
+ */
+export type OpsRpcErrorEntry = {
+  rpc: string;
+  params: Record<string, unknown>;
+  mensaje: string;
+  ts: number;
+};
+
+const registroErrores: OpsRpcErrorEntry[] = [];
+const MAX_ERRORES = 25;
+
+export const opsRpcErrors = (): OpsRpcErrorEntry[] => [...registroErrores];
+export const limpiarOpsRpcErrors = () => { registroErrores.length = 0; };
+
+export function registrarErrorRpc(rpc: string, params: Record<string, unknown>, error: unknown) {
+  const mensaje =
+    typeof error === "object" && error && "message" in error
+      ? String((error as { message?: unknown }).message ?? error)
+      : String(error);
+  // Las cancelaciones (cambio de filtro) no son fallos: no se registran.
+  if (/abort/i.test(mensaje)) return;
+  registroErrores.unshift({ rpc, params, mensaje, ts: Date.now() });
+  if (registroErrores.length > MAX_ERRORES) registroErrores.length = MAX_ERRORES;
+  if (typeof console !== "undefined") console.error(`[ops] RPC ${rpc} ha fallado:`, mensaje, params);
+  if (typeof window !== "undefined") {
+    (window as unknown as { opsRpcErrors?: () => OpsRpcErrorEntry[] }).opsRpcErrors = opsRpcErrors;
+  }
+}
+
 /** Ejecución cruda de la RPC. `signal` permite descartar tandas obsoletas. */
 export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: AbortSignal): Promise<T> {
   const t0 = typeof performance !== "undefined" ? performance.now() : Date.now();
-  const q = supabase.rpc(rpc as never, (normalizarParams(params) as never));
+  const norm = normalizarParams(params);
+  const q = supabase.rpc(rpc as never, (norm as never));
   const anyQ = q as unknown as { abortSignal?: (s: AbortSignal) => unknown };
   const exec = signal && typeof anyQ.abortSignal === "function" ? anyQ.abortSignal(signal) : q;
   const { data, error } = (await exec) as { data: unknown; error: unknown };
@@ -57,9 +91,13 @@ export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: Abo
   if (perfActivo()) {
     registrarMarca({ rpc, ms: t1 - t0, bytes: tamanoAprox(data), error: !!error });
   }
-  if (error) throw error;
+  if (error) {
+    registrarErrorRpc(rpc, norm, error);
+    throw error;
+  }
   return (data ?? null) as T;
 }
+
 
 const baseOptions = {
   staleTime: OPS_STALE_TIME,

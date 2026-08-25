@@ -1961,6 +1961,22 @@ export type Database = {
         }
         Returns: Json
       }
+      ops_delegaciones_impl: {
+        Args: {
+          p_canal?: string
+          p_cliente?: string
+          p_delegacion?: string
+          p_familia?: string
+          p_from?: string
+          p_gama?: string
+          p_marca?: string
+          p_provincia?: string
+          p_sat?: string
+          p_tecnico?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
       ops_dispersion: {
         Args: {
           p_delegacion?: string
