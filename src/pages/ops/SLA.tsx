@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
-import { useOpsRpcs } from "@/lib/ops-query";
+import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { useOpsFilters, fmtNum, fmtPct, fmtDec } from "@/lib/ops-filters";
 import { Loader2, Download, ChevronDown, ChevronRight, Info, AlertTriangle } from "lucide-react";
 import {
