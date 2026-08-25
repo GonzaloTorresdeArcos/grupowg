@@ -48,7 +48,9 @@ export const opsQueryKey = (rpc: string, params?: OpsRpcParams) =>
 /** Ejecución cruda de la RPC. `signal` permite descartar tandas obsoletas. */
 export async function opsRpc<T>(rpc: string, params?: OpsRpcParams, signal?: AbortSignal): Promise<T> {
   const q = supabase.rpc(rpc as never, (normalizarParams(params) as never));
-  const { data, error } = await (signal ? (q as unknown as { abortSignal: (s: AbortSignal) => Promise<{ data: unknown; error: unknown }> }).abortSignal(signal) : q);
+  const anyQ = q as unknown as { abortSignal?: (s: AbortSignal) => unknown };
+  const exec = signal && typeof anyQ.abortSignal === "function" ? anyQ.abortSignal(signal) : q;
+  const { data, error } = (await exec) as { data: unknown; error: unknown };
   if (error) throw error;
   return (data ?? null) as T;
 }
