@@ -596,3 +596,11 @@ export const dimensionesRequeridas = (r: ReglaSla): string[] => {
   if (r.pausas_exclusiones.length > 0) out.push("exclusion_sla");
   return out;
 };
+
+/**
+ * Aviso único del Registry en runtime. Las reglas se leen SIEMPRE de la tabla
+ * `ops_sla_registry`; las fixtures viven exclusivamente en los tests.
+ */
+export const AVISO_REGISTRY_BORRADOR =
+  "Reglas leídas de ops_sla_registry en estado borrador, procedentes de la revisión contractual de Dirección. " +
+  "Pendientes de verificación documental campo a campo. No se usan para calcular cumplimiento contractual.";

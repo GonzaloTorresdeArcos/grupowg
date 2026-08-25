@@ -2,7 +2,7 @@
  * Dispersión y cobertura territorial — lógica pura (Iteración 6, FASE A).
  *
  * Fuentes y confianza del dato:
- *  - REAL: provincia, municipio y flag capital de ops_fact_ot (ERP); km mensuales de
+ *  - REAL: provincia, municipio y flag capital de ops_fact_ot (ERP); km mensuales (pendientes de fuente: llegan a 0) de
  *    ops_coste_mensual (nivel técnico/mes); conteos de cierres/backlog.
  *  - APROXIMADO: distancia haversine en línea recta desde la base de la delegación
  *    (ops_bases) al CP del aviso (ops_cp_geo). Nunca es ruta ni km reales por OT.
@@ -550,7 +550,7 @@ export function generarHallazgos(input: {
     out.push({
       hecho: `${tecDisp.t.tecnico} cubrió ${tecDisp.t.municipios} municipios en el período frente a una mediana de ${tecDisp.med.toFixed(0)} en su delegación (${tecDisp.factor.toFixed(1)}×).`,
       hipotesis: "Una extensión territorial muy superior a la de sus pares puede explicar menor productividad o peor SLA sin implicar peor trabajo.",
-      accion: "Contrastar con sus km reales registrados y la agrupación de citas antes de evaluar rendimiento o incentivos.",
+      accion: "Contrastar con sus km registrados y la agrupación de citas antes de evaluar rendimiento o incentivos.",
       benchmark: `Mediana de municipios por técnico en ${tecDisp.t.delegacion ?? "su delegación"}: ${tecDisp.med.toFixed(0)} (umbral provisional: ${U.MUNICIPIOS_FACTOR_ALTA}× con mínimo ${U.MUNICIPIOS_MIN_ALTA}).`,
       confianza: tecDisp.t.km_reales != null ? "real" : "aproximado",
     });

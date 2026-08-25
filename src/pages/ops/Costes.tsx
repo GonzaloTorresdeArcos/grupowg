@@ -1,3 +1,4 @@
+import { etiquetaVentana } from "@/lib/ops-modelo";
 import { useEffect, useMemo, useState } from "react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { supabase } from "@/integrations/supabase/client";
@@ -195,7 +196,7 @@ const Costes = () => {
           {/* Evolución 18 meses */}
           <section className="border border-black/[0.06] rounded-2xl bg-white p-6">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 mb-1">Evolución 18 meses
-              <span className="ml-2 text-ink/40 normal-case tracking-normal italic">Ventana propia: últimos 18 meses (independiente del período global).</span>
+              <span className="ml-2 text-ink/40 normal-case tracking-normal italic">{etiquetaVentana("costes_evolucion")}</span>
             </p>
             <h2 className="font-display text-lg tracking-tight text-ink mb-5">Cierres y €/cierre por mes</h2>
             <EvoChart rows={evo18} />

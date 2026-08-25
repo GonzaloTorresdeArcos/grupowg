@@ -9,7 +9,6 @@ import { useDataQuality } from "@/hooks/useDataQuality";
 import { ETIQUETA_REFERENCIA_OPERATIVA } from "@/lib/ops-panorama";
 import { PLANTILLAS, cabeceraPlantilla } from "@/lib/ops-csv";
 import { resumenAliases, type ClienteAlias } from "@/lib/ops-cliente-alias";
-import { FIXTURES_REGISTRY } from "@/lib/ops-contractual-fixtures";
 import type { ReglaSla } from "@/lib/ops-contractual";
 import {
   BUCKETS_ANTIGUEDAD,
@@ -68,7 +67,7 @@ export default function OpsRepuestos() {
   const [reloadKey, setReloadKey] = useState(0);
   const [vistaA, setVistaA] = useState<Vista>("cliente");
   const [vistaB, setVistaB] = useState<Vista>("cliente");
-  const [reglas, setReglas] = useState<ReglaSla[]>([...FIXTURES_REGISTRY]);
+  const [reglas, setReglas] = useState<ReglaSla[]>([]);
   const [aliases, setAliases] = useState<ClienteAlias[]>([]);
   const reqIdRef = useRef(0);
 

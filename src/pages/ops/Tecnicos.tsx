@@ -28,6 +28,8 @@ import {
   type AvisoCalidad,
 } from "@/lib/ops-performance";
 import { Loader2, X, Search, Info, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { etiquetaVentana } from "@/lib/ops-modelo";
+import { BreadcrumbConceptual } from "@/components/ops/OpsAmbito";
 
 // -----------------------------------------------------------------------------
 // Tipos
@@ -705,6 +707,17 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
               {tecnico.delegacion || "—"} · {tecnico.peer}
               {tecnico.gama_principal && <span> · Gama {gamaLabel(tecnico.gama_principal)}</span>}
             </p>
+            <div className="mt-2">
+              <BreadcrumbConceptual
+                pasos={[
+                  { nivel: "WG", valor: "Warranty Global" },
+                  { nivel: "Unidad", valor: "Hiperservice" },
+                  { nivel: "Base", valor: tecnico.delegacion || null },
+                  { nivel: "Equipo", valor: tecnico.gama_principal ? gamaLabel(tecnico.gama_principal) : null },
+                  { nivel: "Persona", valor: tecnico.tecnico },
+                ]}
+              />
+            </div>
           </div>
           <button onClick={onClose} className="text-ink/50 hover:text-ink"><X className="h-5 w-5" /></button>
         </div>
@@ -733,7 +746,7 @@ const FichaDrawer = ({ tecnico, onClose }: { tecnico: EnrichedRow; onClose: () =
 
         {data && (
           <>
-            <Section title="Evolución 12 meses — ventana propia, independiente del período global">
+            <Section title={`Evolución 12 meses — ${etiquetaVentana("tecnicos_evolucion")}`}>
               <div className="flex items-end gap-1 h-24">
                 {data.evolucion.map((e) => (
                   <div key={e.mes} className="flex-1 flex flex-col items-center gap-1">

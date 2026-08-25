@@ -4,6 +4,7 @@ import { useOpsFilters, fmtNum, fmtPct, fmtDec, fmtEur } from "@/lib/ops-filters
 import { esDelegacionReal } from "@/lib/ops-performance";
 import { gamaLabel } from "@/lib/ops-gamas";
 import { Loader2 } from "lucide-react";
+import { AmbitoChip } from "@/components/ops/OpsAmbito";
 
 type EquipoRow = {
   equipo: string;
@@ -123,8 +124,12 @@ export const EquiposComparativa = ({ soloCentral = false }: { soloCentral?: bool
         <table className="w-full text-[13px]">
           <thead>
             <tr className="text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40 border-b border-black/[0.05]">
-              <th className="px-4 py-3">Unidad organizativa</th>
-              <th className="px-4 py-3">Gama atendida</th>
+              <th className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5">Unidad organizativa <AmbitoChip ambito="organizacion" /></span>
+              </th>
+              <th className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5">Gama atendida <AmbitoChip ambito="producto" /></span>
+              </th>
               <th className="px-4 py-3">Ámbito</th>
               <th className="px-4 py-3 text-right">Técnicos</th>
               <th className="px-4 py-3 text-right">Cerradas</th>

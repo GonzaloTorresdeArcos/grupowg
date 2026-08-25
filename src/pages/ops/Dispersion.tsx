@@ -28,6 +28,7 @@ import {
   type DispSat,
 } from "@/lib/ops-dispersion";
 import { AlertTriangle, Info, Loader2 } from "lucide-react";
+import { AVISO_KM, semanticaKm } from "@/lib/ops-modelo";
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 type Vista = "provincias" | "municipios" | "tecnicos" | "sats";
@@ -421,7 +422,7 @@ export default function OpsDispersion() {
       ),
     },
     {
-      label: "Técnicos con km reales > 0",
+      label: "Técnicos con km informados > 0",
       pct: data.tecnicos.length > 0
         ? data.tecnicos.filter((t) => (num(t.km_reales) ?? 0) > 0).length / data.tecnicos.length
         : null,
@@ -450,10 +451,7 @@ export default function OpsDispersion() {
       <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[12px] text-amber-900 leading-relaxed">
         <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
         <p>
-          <b>La distancia real de desplazamiento por OT no está disponible.</b> La dispersión se aproxima mediante
-          cobertura territorial, distribución de municipios y distancia en línea recta desde la base de la delegación
-          (etiquetada siempre como «aprox.»). Los km mensuales por técnico sí son <b>dato real registrado</b>.
-          Zonas L1/L2, tiempos de viaje, rutas y radios de servicio: <b>no disponibles con los campos actuales</b>.
+          {AVISO_KM} Zonas L1/L2, tiempos de viaje, rutas y radios de servicio: <b>no disponibles con los campos actuales</b>.
         </p>
       </div>
 
@@ -543,13 +541,13 @@ export default function OpsDispersion() {
                 hint={`aprox. línea recta desde HUB · media ${fmtDec(num(kpis.km_media), 1)} km · ${fmtNum(kpis.salidas_km)} salidas${kpisPrev?.km_mediana != null ? ` · anterior ${fmtDec(num(kpisPrev.km_mediana), 1)} km` : ""}`}
               />
               <Card
-                label="Km reales registrados"
-                def="Suma de km mensuales por técnico en ops_coste_mensual dentro de los meses del período. Dato real registrado (nivel técnico/mes)."
+                label="Km por técnico y mes"
+                def={semanticaKm("km_tecnico_mes").detalle}
                 value={kpis.km_reales_total > 0 ? `${fmtNum(kpis.km_reales_total)} km` : "no disponible"}
                 hint={kpis.km_reales_total > 0
-                  ? `real registrado · ${fmtNum(kpis.km_reales_tecnicos)} técnicos con dato en el período`
+                  ? `dato informado · ${fmtNum(kpis.km_reales_tecnicos)} técnicos con dato en el período`
                   : kpis.km_reales_tecnicos > 0
-                    ? "los registros del período están a 0 km — el campo km no se está cargando en la fuente"
+                    ? "pendiente de fuente: los registros del período están a 0 km"
                     : "sin registros de km en los meses del período"}
               />
             </div>
@@ -713,7 +711,7 @@ export default function OpsDispersion() {
                       <Th k="provincias" label="Prov." />
                       <Th k="fuera" label="% fuera cap." />
                       <Th k="km" label="Km aprox." />
-                      <Th k="kmreal" label="Km reales" />
+                      <Th k="kmreal" label="Km téc./mes" />
                       <th className="px-3 py-2 text-left">Estado</th>
                     </tr>
                   </thead>
@@ -863,8 +861,9 @@ export default function OpsDispersion() {
                   delegación (tabla ops_bases) y el código postal del aviso (ops_cp_geo), calculada solo para plantilla
                   propia en canal Domicilio con CP geocodificado ({fmtPct(pctCompleto(kpis.salidas_km, kpis.cerradas))} de las cerradas).
                   Central mide desde el HUB de San Agustín de Guadalix; las delegaciones usan de momento el centro de su
-                  ciudad como base (proxy). Nunca son rutas ni km reales por OT. Los km reales registrados existen solo a
-                  nivel técnico/mes (ops_coste_mensual).
+                  ciudad como base (proxy). Nunca son rutas ni km recorridos por OT. El campo km de ops_coste_mensual
+                  (nivel técnico/mes) existe pero llega a 0 en todos los registros cargados: se declara
+                  <b> pendiente de fuente</b>, no dato real.
                 </p>
               </div>
               <div>
