@@ -1,0 +1,25 @@
+=== (1b) rpc('ops_dispersion') exacta en src/ ===
+NO EXISTE llamada rpc('ops_dispersion') en src/  -> OK
+
+=== (1c) hash canonico agregado 44 funciones ===
+          hash_conjunto           | n  
+----------------------------------+----
+ 4ade3062cb618cbd5e40e313303ad47c | 44
+(1 row)
+
+=== (1d) hash individual dispersion ===
+                                                                                  f                                                                                   |                h                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------
+ ops_dispersion(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                               | a0fc67e8af1bf52581d7d6c1435cc1a5
+ ops_dispersion_detalle(p_entidad text, p_clave text, p_from date, p_to date, p_delegacion text, p_gama text, p_familia text, p_limit integer, p_offset integer)      | b7782701429f4317de4e78eba2b9a381
+ ops_dispersion_detalle_impl(p_entidad text, p_clave text, p_from date, p_to date, p_delegacion text, p_gama text, p_familia text, p_limit integer, p_offset integer) | 4426064f9bdd710410d870f4d03a8845
+ ops_dispersion_resumen(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                       | c04ccf07983d6f8064c54e48210ae24d
+ ops_dispersion_resumen_impl(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                  | dd8f30f93c1237dcfeebafc35fc36054
+(5 rows)
+
+=== (1e) inventario ops_* ===
+ tablas | vistas | funciones | triggers 
+--------+--------+-----------+----------
+     20 |      1 |        42 |       12
+(1 row)
+
