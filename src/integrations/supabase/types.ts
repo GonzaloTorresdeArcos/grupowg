@@ -1109,6 +1109,107 @@ export type Database = {
           },
         ]
       }
+      ctr_resolucion_ot_programa: {
+        Row: {
+          acto_gobierno_id: string | null
+          carga_id: string | null
+          cliente_wg_origen: string | null
+          creado_en: string
+          fingerprint: string
+          id: string
+          identidad_contractual: string
+          inputs: Json
+          mapping_version: string | null
+          metodo: string | null
+          num_ot: string
+          override_actor_id: string | null
+          override_motivo: string | null
+          programa_id: string | null
+          resolution_context_id: string
+          resolved_at: string
+          resultado: string
+          supersede_de_id: string | null
+          superseded_at: string | null
+          superseded_by_id: string | null
+          vigente: boolean
+        }
+        Insert: {
+          acto_gobierno_id?: string | null
+          carga_id?: string | null
+          cliente_wg_origen?: string | null
+          creado_en?: string
+          fingerprint: string
+          id?: string
+          identidad_contractual?: string
+          inputs: Json
+          mapping_version?: string | null
+          metodo?: string | null
+          num_ot: string
+          override_actor_id?: string | null
+          override_motivo?: string | null
+          programa_id?: string | null
+          resolution_context_id: string
+          resolved_at?: string
+          resultado: string
+          supersede_de_id?: string | null
+          superseded_at?: string | null
+          superseded_by_id?: string | null
+          vigente?: boolean
+        }
+        Update: {
+          acto_gobierno_id?: string | null
+          carga_id?: string | null
+          cliente_wg_origen?: string | null
+          creado_en?: string
+          fingerprint?: string
+          id?: string
+          identidad_contractual?: string
+          inputs?: Json
+          mapping_version?: string | null
+          metodo?: string | null
+          num_ot?: string
+          override_actor_id?: string | null
+          override_motivo?: string | null
+          programa_id?: string | null
+          resolution_context_id?: string
+          resolved_at?: string
+          resultado?: string
+          supersede_de_id?: string | null
+          superseded_at?: string | null
+          superseded_by_id?: string | null
+          vigente?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_resolucion_ot_programa_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_resolucion_ot_programa_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_resolucion_ot_programa_resolution_context_id_fkey"
+            columns: ["resolution_context_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_resolucion_contexto"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_resolucion_ot_programa_supersede_de_id_fkey"
+            columns: ["supersede_de_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_resolucion_ot_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctr_row_audit: {
         Row: {
           actor_id: string | null
@@ -3217,6 +3318,24 @@ export type Database = {
         Returns: string
       }
       ctr_rango_evidencia: { Args: { p_estado: string }; Returns: number }
+      ctr_resolucion_fingerprint: {
+        Args: {
+          p_algoritmo: string
+          p_contexto: string
+          p_inputs: Json
+          p_mapping: string
+          p_num_ot: string
+        }
+        Returns: string
+      }
+      ctr_resolver_programa: {
+        Args: { p_cliente_wg: string; p_contexto: string; p_num_ot: string }
+        Returns: Json
+      }
+      ctr_supersede_resolucion: {
+        Args: { p_num_ot: string; p_payload: Json }
+        Returns: string
+      }
       grant_admin_by_email: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
