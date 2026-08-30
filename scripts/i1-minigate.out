@@ -23,3 +23,14 @@ NO EXISTE llamada rpc('ops_dispersion') en src/  -> OK
      20 |      1 |        42 |       12
 (1 row)
 
+
+=== (2) RECONCILIACION 28 VINCULOS: 19 instrumentos, 1 principal cada uno, 28 vinculos / 28 docs distintos; 15 docs sin instrumento (tenders, ofertas, maestros, guias, cotizacion, pliego, plantilla, Electro Depot) ===
+=== (3a) proconfig / prosecdef / ACL de las 4 funciones gobernadas ===
+        proname         | secdef |           proconfig            | pub | anon | authenticator | authenticated | guardia_is_management | refs_cualificadas 
+------------------------+--------+--------------------------------+-----+------+---------------+---------------+-----------------------+-------------------
+ ctr_acto_bootstrap     | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_aprobar_promocion  | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_promover_evidencia | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_proponer_promocion | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+(4 rows)
+
