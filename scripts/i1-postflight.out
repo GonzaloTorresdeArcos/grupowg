@@ -1,0 +1,301 @@
+Pager usage is off.
+=== A · ESQUEMA ctr_* ===
+  clase  |                             objeto                              
+---------+-----------------------------------------------------------------
+ funcion | ctr_acto_bootstrap(p_objeto_tipo text, p_objeto_id uuid, p_esta
+ funcion | ctr_actor_actual(OUT p_id uuid, OUT p_nombre text, OUT p_rol te
+ funcion | ctr_aprobar_promocion(p_solicitud uuid)
+ funcion | ctr_promover_evidencia(p_objeto_tipo text, p_objeto_id uuid, p_
+ funcion | ctr_proponer_promocion(p_objeto_tipo text, p_objeto_id uuid, p_
+ funcion | ctr_rango_evidencia(p_estado text)
+ funcion | ctr_resolucion_fingerprint(p_num_ot text, p_inputs jsonb, p_con
+ funcion | ctr_resolver_programa(p_num_ot text, p_cliente_wg text, p_conte
+ funcion | ctr_supersede_resolucion(p_num_ot text, p_payload jsonb)
+ funcion | ctr_trg_append_only()
+ funcion | ctr_trg_estado_evidencia_candado()
+ funcion | ctr_trg_no_cv_en_insert()
+ funcion | ctr_trg_relacion_sin_ciclo()
+ funcion | ctr_trg_resolucion_inmutable()
+ indice  | ctr_actividad_codigo_key
+ indice  | ctr_actividad_pkey
+ indice  | ctr_acto_gobierno_pkey
+ indice  | ctr_alias_identidad_pkey
+ indice  | ctr_alias_identidad_uq
+ indice  | ctr_alias_set_item_pkey
+ indice  | ctr_alias_set_item_uq
+ indice  | ctr_alias_set_version_hash_contenido_key
+ indice  | ctr_alias_set_version_pkey
+ indice  | ctr_business_line_codigo_key
+ indice  | ctr_business_line_pkey
+ indice  | ctr_carga_origen_ref_uq
+ indice  | ctr_carga_pkey
+ indice  | ctr_censo_programas_item_pkey
+ indice  | ctr_censo_programas_item_uq
+ indice  | ctr_censo_programas_version_hash_contenido_key
+ indice  | ctr_censo_programas_version_pkey
+ indice  | ctr_cliente_nombre_display_key
+ indice  | ctr_cliente_pkey
+ indice  | ctr_contraparte_legal_pkey
+ indice  | ctr_contraparte_legal_razon_social_key
+ indice  | ctr_contrato_alcance_pkey
+ indice  | ctr_contrato_alcance_uq
+ indice  | ctr_contrato_pkey
+ indice  | ctr_contrato_relacion_pkey
+ indice  | ctr_contrato_relacion_uq
+ indice  | ctr_contrato_uq
+ indice  | ctr_documento_hash_key
+ indice  | ctr_documento_pkey
+ indice  | ctr_instrumento_documento_pkey
+ indice  | ctr_instrumento_documento_uq
+ indice  | ctr_programa_cliente_id_nombre_key
+ indice  | ctr_programa_parte_pkey
+ indice  | ctr_programa_parte_uq
+ indice  | ctr_programa_pkey
+ indice  | ctr_programa_servicio_pkey
+ indice  | ctr_programa_servicio_programa_id_actividad_id_key
+ indice  | ctr_resolucion_contexto_pkey
+ indice  | ctr_resolucion_contexto_uq
+ indice  | ctr_resolucion_ot_programa_fingerprint_key
+ indice  | ctr_resolucion_ot_programa_pkey
+ indice  | ctr_row_audit_pkey
+ indice  | ctr_sociedad_wg_nif_key
+ indice  | ctr_sociedad_wg_pkey
+ indice  | ctr_sociedad_wg_razon_social_key
+ indice  | ctr_solicitud_promocion_pkey
+ indice  | ctr_territorio_codigo_key
+ indice  | ctr_territorio_pkey
+ indice  | ctr_vertical_codigo_key
+ indice  | ctr_vertical_pkey
+ indice  | ux_ctr_resolucion_vigente
+ tabla   | ctr_actividad
+ tabla   | ctr_acto_gobierno
+ tabla   | ctr_alias_identidad
+ tabla   | ctr_alias_set_item
+ tabla   | ctr_alias_set_version
+ tabla   | ctr_business_line
+ tabla   | ctr_carga
+ tabla   | ctr_censo_programas_item
+ tabla   | ctr_censo_programas_version
+ tabla   | ctr_cliente
+ tabla   | ctr_contraparte_legal
+ tabla   | ctr_contrato
+ tabla   | ctr_contrato_alcance
+ tabla   | ctr_contrato_relacion
+ tabla   | ctr_documento
+ tabla   | ctr_instrumento_documento
+ tabla   | ctr_programa
+ tabla   | ctr_programa_parte
+ tabla   | ctr_programa_servicio
+ tabla   | ctr_resolucion_contexto
+ tabla   | ctr_resolucion_ot_programa
+ tabla   | ctr_row_audit
+ tabla   | ctr_sociedad_wg
+ tabla   | ctr_solicitud_promocion
+ tabla   | ctr_territorio
+ tabla   | ctr_vertical
+ trigger | ctr_acto_gobierno_append_only ON ctr_acto_gobierno
+ trigger | ctr_contrato_candado ON ctr_contrato
+ trigger | ctr_contrato_no_cv_insert ON ctr_contrato
+ trigger | ctr_contrato_relacion_dag ON ctr_contrato_relacion
+ trigger | ctr_documento_candado ON ctr_documento
+ trigger | ctr_documento_no_cv_insert ON ctr_documento
+ trigger | ctr_programa_parte_candado ON ctr_programa_parte
+ trigger | ctr_programa_parte_no_cv_insert ON ctr_programa_parte
+ trigger | ctr_resolucion_inmutable ON ctr_resolucion_ot_programa
+ trigger | ctr_row_audit_append_only ON ctr_row_audit
+(101 rows)
+
+=== B · CONTEOS ctr_* ===
+              t              | count  
+-----------------------------+--------
+ ctr_actividad               |     12
+ ctr_acto_gobierno           |      0
+ ctr_alias_identidad         |     15
+ ctr_alias_set_item          |     15
+ ctr_alias_set_version       |      1
+ ctr_business_line           |      5
+ ctr_carga                   |      4
+ ctr_censo_programas_item    |     24
+ ctr_censo_programas_version |      1
+ ctr_cliente                 |     15
+ ctr_contraparte_legal       |     16
+ ctr_contrato                |     19
+ ctr_contrato_alcance        |     19
+ ctr_contrato_relacion       |      2
+ ctr_documento               |     43
+ ctr_instrumento_documento   |     28
+ ctr_programa                |     24
+ ctr_programa_parte          |     25
+ ctr_programa_servicio       |      0
+ ctr_resolucion_contexto     |      1
+ ctr_resolucion_ot_programa  | 125752
+ ctr_row_audit               |      0
+ ctr_sociedad_wg             |      3
+ ctr_solicitud_promocion     |      0
+ ctr_territorio              |     30
+ ctr_vertical                |      5
+(26 rows)
+
+=== C · GOBIERNO (actos reales / CONTRACTUAL_VALIDATED) ===
+ actos | docs_cv | contratos_cv | partes_cv 
+-------+---------+--------------+-----------
+     0 |       0 |            0 |         0
+(1 row)
+
+=== D · FH-3 identidad contractual ===
+ identidad_contractual |        metodo         | count  
+-----------------------+-----------------------+--------
+ no_establecida        | (sin metodo)          | 106296
+ no_establecida        | SINGLE_PROGRAM_CLIENT |  19456
+(2 rows)
+
+ violaciones_regla 
+-------------------
+                 0
+(1 row)
+
+=== E · DISTRIBUCION por cliente ===
+     cliente     | total | deterministas | ambiguas | cliente_sin_programa | identidad_establecida 
+-----------------+-------+---------------+----------+----------------------+-----------------------
+ Vestel          | 38772 |             0 |    38772 |                    0 |                     0
+ Carrefour       | 29004 |             0 |    29004 |                    0 |                     0
+ SIN CLIENTE     | 14738 |             0 |        0 |                    0 |                     0
+ Cecotec         | 10274 |             0 |    10274 |                    0 |                     0
+ Alcampo/Auchan  |  9603 |          9603 |        0 |                    0 |                     0
+ Assurant        |  7834 |             0 |     7834 |                    0 |                     0
+ Electro Depot   |  6153 |          6153 |        0 |                    0 |                     0
+ METRO / MAKRO   |  5674 |             0 |     5674 |                    0 |                     0
+ PC Componentes  |  1646 |          1646 |        0 |                    0 |                     0
+ Sauber          |  1560 |          1560 |        0 |                    0 |                     0
+ Navee/Brightway |   494 |           494 |        0 |                    0 |                     0
+(11 rows)
+
+=== F · LINAJE (carga_id nulo/invalido) + foto reproducible ===
+ alias_sin_carga | resol_sin_carga | items_carga_invalida 
+-----------------+-----------------+----------------------
+               0 |               0 |                    0
+(1 row)
+
+            almacenado            |           recalculado            
+----------------------------------+----------------------------------
+ 90f60057f987ea97359494a4b30536a2 | 90f60057f987ea97359494a4b30536a2
+(1 row)
+
+=== G · SEGURIDAD: escritura de anon/authenticated/authenticator en ctr_* ===
+            tabla            |      rol      | ins | upd | del | sel 
+-----------------------------+---------------+-----+-----+-----+-----
+ ctr_actividad               | anon          | f   | f   | f   | f
+ ctr_actividad               | authenticated | f   | f   | f   | t
+ ctr_actividad               | authenticator | f   | f   | f   | f
+ ctr_acto_gobierno           | anon          | f   | f   | f   | f
+ ctr_acto_gobierno           | authenticated | f   | f   | f   | t
+ ctr_acto_gobierno           | authenticator | f   | f   | f   | f
+ ctr_alias_identidad         | anon          | f   | f   | f   | f
+ ctr_alias_identidad         | authenticated | f   | f   | f   | t
+ ctr_alias_identidad         | authenticator | f   | f   | f   | f
+ ctr_alias_set_item          | anon          | f   | f   | f   | f
+ ctr_alias_set_item          | authenticated | f   | f   | f   | t
+ ctr_alias_set_item          | authenticator | f   | f   | f   | f
+ ctr_alias_set_version       | anon          | f   | f   | f   | f
+ ctr_alias_set_version       | authenticated | f   | f   | f   | t
+ ctr_alias_set_version       | authenticator | f   | f   | f   | f
+ ctr_business_line           | anon          | f   | f   | f   | f
+ ctr_business_line           | authenticated | f   | f   | f   | t
+ ctr_business_line           | authenticator | f   | f   | f   | f
+ ctr_carga                   | anon          | f   | f   | f   | f
+ ctr_carga                   | authenticated | f   | f   | f   | t
+ ctr_carga                   | authenticator | f   | f   | f   | f
+ ctr_censo_programas_item    | anon          | f   | f   | f   | f
+ ctr_censo_programas_item    | authenticated | f   | f   | f   | t
+ ctr_censo_programas_item    | authenticator | f   | f   | f   | f
+ ctr_censo_programas_version | anon          | f   | f   | f   | f
+ ctr_censo_programas_version | authenticated | f   | f   | f   | t
+ ctr_censo_programas_version | authenticator | f   | f   | f   | f
+ ctr_cliente                 | anon          | f   | f   | f   | f
+ ctr_cliente                 | authenticated | f   | f   | f   | t
+ ctr_cliente                 | authenticator | f   | f   | f   | f
+ ctr_contraparte_legal       | anon          | f   | f   | f   | f
+ ctr_contraparte_legal       | authenticated | f   | f   | f   | t
+ ctr_contraparte_legal       | authenticator | f   | f   | f   | f
+ ctr_contrato                | anon          | f   | f   | f   | f
+ ctr_contrato                | authenticated | f   | f   | f   | t
+ ctr_contrato                | authenticator | f   | f   | f   | f
+ ctr_contrato_alcance        | anon          | f   | f   | f   | f
+ ctr_contrato_alcance        | authenticated | f   | f   | f   | t
+ ctr_contrato_alcance        | authenticator | f   | f   | f   | f
+ ctr_contrato_relacion       | anon          | f   | f   | f   | f
+ ctr_contrato_relacion       | authenticated | f   | f   | f   | t
+ ctr_contrato_relacion       | authenticator | f   | f   | f   | f
+ ctr_documento               | anon          | f   | f   | f   | f
+ ctr_documento               | authenticated | f   | f   | f   | t
+ ctr_documento               | authenticator | f   | f   | f   | f
+ ctr_instrumento_documento   | anon          | f   | f   | f   | f
+ ctr_instrumento_documento   | authenticated | f   | f   | f   | t
+ ctr_instrumento_documento   | authenticator | f   | f   | f   | f
+ ctr_programa                | anon          | f   | f   | f   | f
+ ctr_programa                | authenticated | f   | f   | f   | t
+ ctr_programa                | authenticator | f   | f   | f   | f
+ ctr_programa_parte          | anon          | f   | f   | f   | f
+ ctr_programa_parte          | authenticated | f   | f   | f   | t
+ ctr_programa_parte          | authenticator | f   | f   | f   | f
+ ctr_programa_servicio       | anon          | f   | f   | f   | f
+ ctr_programa_servicio       | authenticated | f   | f   | f   | t
+ ctr_programa_servicio       | authenticator | f   | f   | f   | f
+ ctr_resolucion_contexto     | anon          | f   | f   | f   | f
+ ctr_resolucion_contexto     | authenticated | f   | f   | f   | t
+ ctr_resolucion_contexto     | authenticator | f   | f   | f   | f
+ ctr_resolucion_ot_programa  | anon          | f   | f   | f   | f
+ ctr_resolucion_ot_programa  | authenticated | f   | f   | f   | t
+ ctr_resolucion_ot_programa  | authenticator | f   | f   | f   | f
+ ctr_row_audit               | anon          | f   | f   | f   | f
+ ctr_row_audit               | authenticated | f   | f   | f   | t
+ ctr_row_audit               | authenticator | f   | f   | f   | f
+ ctr_sociedad_wg             | anon          | f   | f   | f   | f
+ ctr_sociedad_wg             | authenticated | f   | f   | f   | t
+ ctr_sociedad_wg             | authenticator | f   | f   | f   | f
+ ctr_solicitud_promocion     | anon          | f   | f   | f   | f
+ ctr_solicitud_promocion     | authenticated | f   | f   | f   | t
+ ctr_solicitud_promocion     | authenticator | f   | f   | f   | f
+ ctr_territorio              | anon          | f   | f   | f   | f
+ ctr_territorio              | authenticated | f   | f   | f   | t
+ ctr_territorio              | authenticator | f   | f   | f   | f
+ ctr_vertical                | anon          | f   | f   | f   | f
+ ctr_vertical                | authenticated | f   | f   | f   | t
+ ctr_vertical                | authenticator | f   | f   | f   | f
+(78 rows)
+
+=== H · ops_* ZERO DIFF ===
+          hash_conjunto           | n  
+----------------------------------+----
+ 4ade3062cb618cbd5e40e313303ad47c | 44
+(1 row)
+
+ tablas | vistas | triggers | alias_fuente |  ots   
+--------+--------+----------+--------------+--------
+     20 |      1 |       12 |           15 | 125752
+(1 row)
+
+
+=== C-bis · SUITE GOBIERNO FH-2 (rollback deliberado, vía herramienta SQL administrada) ===
+ERROR: P0001: ROLLBACK_TEST_RESULT: 8 / 8 casos PASS
+(nota: psql del sandbox no puede SET ROLE authenticated -> la suite se ejecuta con la herramienta administrada)
+
+=== I · ROLLBACK REHEARSAL (simulacro, revertido) ===
+ERROR: P0001: ROLLBACK_REHEARSAL: 40 objetos ctr_* eliminados en simulacro; ops tablas 20/20 intactas; OTs 125752
+Verificación posterior: ctr_tablas=26 ; ctr_resolucion_ot_programa=125752 (nada perdido)
+
+=== J · GIT / DEPLOY ===
+git diff --stat -- src/  : (vacío) — CERO cambios en frontend
+git status --porcelain   : (vacío) — árbol limpio salvo artefactos de postflight
+deploys ejecutados       : 0
+
+=== DESVIACIONES DECLARADAS ===
+1. Owner efectivo de objetos ctr_*: postgres (administrative/superuser residual risk, no capacidad de aplicación).
+2. 15 warnings del linter por funciones SECURITY DEFINER ejecutables por authenticated: deliberado, cada función impone su propia guardia (is_management / ctr_actor_actual).
+3. ctr_programa_servicio = 0 filas: deliberado.
+4. ctr_acto_gobierno = 0 y 0 objetos en CONTRACTUAL_VALIDATED: correcto, la promoción exige 4-ojos y aún no se ha ejercido.
+5. M-07 se aplicó con estado='ok' (el literal 'cargada' no existe en el CHECK); intento previo revertido limpiamente.
+6. Runtime gate ops_* NO reejecutado en postflight (prohibido tocar ops_*); zero-diff acreditado por hash 4ade3062cb618cbd5e40e313303ad47c (44 funciones) e inventario 20/1/12, alias=15, OTs=125.752.
+
+=== VEREDICTO ===
+POSTFLIGHT A–J: PASS con las desviaciones declaradas. I2: NO-GO.
