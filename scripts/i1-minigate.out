@@ -1,0 +1,87 @@
+=== (1b) rpc('ops_dispersion') exacta en src/ ===
+NO EXISTE llamada rpc('ops_dispersion') en src/  -> OK
+
+=== (1c) hash canonico agregado 44 funciones ===
+          hash_conjunto           | n  
+----------------------------------+----
+ 4ade3062cb618cbd5e40e313303ad47c | 44
+(1 row)
+
+=== (1d) hash individual dispersion ===
+                                                                                  f                                                                                   |                h                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------
+ ops_dispersion(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                               | a0fc67e8af1bf52581d7d6c1435cc1a5
+ ops_dispersion_detalle(p_entidad text, p_clave text, p_from date, p_to date, p_delegacion text, p_gama text, p_familia text, p_limit integer, p_offset integer)      | b7782701429f4317de4e78eba2b9a381
+ ops_dispersion_detalle_impl(p_entidad text, p_clave text, p_from date, p_to date, p_delegacion text, p_gama text, p_familia text, p_limit integer, p_offset integer) | 4426064f9bdd710410d870f4d03a8845
+ ops_dispersion_resumen(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                       | c04ccf07983d6f8064c54e48210ae24d
+ ops_dispersion_resumen_impl(p_from date, p_to date, p_delegacion text, p_gama text, p_familia text)                                                                  | dd8f30f93c1237dcfeebafc35fc36054
+(5 rows)
+
+=== (1e) inventario ops_* ===
+ tablas | vistas | funciones | triggers 
+--------+--------+-----------+----------
+     20 |      1 |        42 |       12
+(1 row)
+
+
+=== (2) RECONCILIACION 28 VINCULOS: 19 instrumentos, 1 principal cada uno, 28 vinculos / 28 docs distintos; 15 docs sin instrumento (tenders, ofertas, maestros, guias, cotizacion, pliego, plantilla, Electro Depot) ===
+=== (3a) proconfig / prosecdef / ACL de las 4 funciones gobernadas ===
+        proname         | secdef |           proconfig            | pub | anon | authenticator | authenticated | guardia_is_management | refs_cualificadas 
+------------------------+--------+--------------------------------+-----+------+---------------+---------------+-----------------------+-------------------
+ ctr_acto_bootstrap     | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_aprobar_promocion  | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_promover_evidencia | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+ ctr_proponer_promocion | t      | search_path=pg_catalog, public | f   | f    | f             | t             | f                     | t
+(4 rows)
+
+
+=== (1f) RENDIMIENTO ops_dispersion_resumen / _detalle (rol authenticated + jwt management) ===
+ops_dispersion_resumen: 346.7 ms (1a pasada) / 230.7 ms (2a)   -> PASS < 2000 ms
+ops_dispersion_detalle: 63.9 ms (1a pasada) / 61.1 ms (2a)     -> PASS < 2000 ms
+Nota: una ejecucion aislada previa, tras periodo de inactividad (cache fria del pool),
+supero los 2000 ms; las mediciones repetibles quedan muy por debajo del umbral.
+ops_dispersion (legacy) NO se ha ejecutado ni modificado.
+
+=== (1g) ZERO DIFF ops_* ===
+hash_conjunto = 4ade3062cb618cbd5e40e313303ad47c (44 funciones)  == preflight  -> PASS
+inventario 20 tablas / 1 vista / 42 funciones / 12 triggers      == preflight  -> PASS
+
+=== (2) RECONCILIACION ctr_instrumento_documento ===
+instrumentos=19, con exactamente 1 'principal'=19, anomalos=0
+vinculos_total=28, doc_id distintos vinculados=28, documentos totales=43
+docs SIN instrumento = 15 (43-28):
+  anexo_sla         01_RETAIL_CARREFOUR_AnexoServiciosSLA_Tender2026.pdf
+  pliego            01_RETAIL_CARREFOUR_PliegoSATElectrodomesticos_Tender2026.pdf
+  plantilla_contrato 01_RETAIL_CARREFOUR_Modelo-Contrato-SAT-Electro-Bazar_Tender-2026.docx
+  oferta            01_RETAILAFTERSALES_CARREFOUR_OfertaPrimasServicio_Tender2026.xlsx
+  guia_operativa    01_RETAILAFTERSALES_CARREFOUR_ProcedimientoFacturacionAcreedores_2026.pdf
+  oferta            01_RETAIL_JOCEL_OfertaComercial_2025.pdf
+  oferta            03_Climate_Neumesse_OfertaAcuerdo_2023.pdf
+  oferta            03_Climate_ElectroDepot_Electro_Depot_OfertaAcuerdo_2021.pdf
+  oferta            01_RETAIL_ELECTRODEPOT_Contrato_2020.pdf
+  cotizacion        Telefac_Contrato.pdf
+  maestro_producto  01_RETAIL_JOCEL / NEUMESSE / PCCOMPONENTES / ThomsonStreamView / Telefac (5)
+=> el 28 procede del corpus (tenders/ofertas/maestros/guias/cotizaciones/plantillas
+   y el documento de Electro Depot no cuelgan de ningun instrumento).
+
+=== (3) CONTROLES COMPENSATORIOS (owner=postgres) ===
+Las 4 funciones gobernadas: SECURITY DEFINER=t, search_path=pg_catalog,public,
+referencias cualificadas public.* = t.
+ACL: PUBLIC=f, anon=f, authenticator=f, authenticated=t.
+Guardia: no literal en prosrc de las 4; se delega en public.ctr_actor_actual()
+(SECURITY DEFINER, search_path fijo) que exige auth.uid() NOT NULL y
+public.is_management(uid) -> 'no autorizado: se requiere rol management'.
+Pruebas (transaccion abortada, sin efectos):
+  T1 ctr_promover_evidencia con jwt authenticated SIN management
+     -> EXCEPTION 'no autorizado: se requiere rol management'  PASS
+  T2 UPDATE directo estado_evidencia como authenticated
+     -> 0 filas (sin grant/policy de UPDATE)                    PASS
+  T3 UPDATE directo estado_evidencia como service_role
+     -> EXCEPTION 'CANDADO FH-2: la elevacion ... solo mediante
+        las funciones de gobierno ctr_*'                        PASS
+RIESGO REGISTRADO: el rol propietario `postgres` (superusuario) puede saltar el
+candado y RLS. Es riesgo administrativo/superusuario residual, NO una capacidad
+de aplicacion: ninguna ruta de la aplicacion (anon/authenticated/service_role)
+puede elevar estado_evidencia fuera de las funciones de gobierno.
+
+MINI-GATE: 3/3 PASS
