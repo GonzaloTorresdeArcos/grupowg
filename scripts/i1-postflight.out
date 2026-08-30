@@ -275,3 +275,27 @@ Pager usage is off.
      20 |      1 |       12 |           15 | 125752
 (1 row)
 
+
+=== C-bis · SUITE GOBIERNO FH-2 (rollback deliberado, vía herramienta SQL administrada) ===
+ERROR: P0001: ROLLBACK_TEST_RESULT: 8 / 8 casos PASS
+(nota: psql del sandbox no puede SET ROLE authenticated -> la suite se ejecuta con la herramienta administrada)
+
+=== I · ROLLBACK REHEARSAL (simulacro, revertido) ===
+ERROR: P0001: ROLLBACK_REHEARSAL: 40 objetos ctr_* eliminados en simulacro; ops tablas 20/20 intactas; OTs 125752
+Verificación posterior: ctr_tablas=26 ; ctr_resolucion_ot_programa=125752 (nada perdido)
+
+=== J · GIT / DEPLOY ===
+git diff --stat -- src/  : (vacío) — CERO cambios en frontend
+git status --porcelain   : (vacío) — árbol limpio salvo artefactos de postflight
+deploys ejecutados       : 0
+
+=== DESVIACIONES DECLARADAS ===
+1. Owner efectivo de objetos ctr_*: postgres (administrative/superuser residual risk, no capacidad de aplicación).
+2. 15 warnings del linter por funciones SECURITY DEFINER ejecutables por authenticated: deliberado, cada función impone su propia guardia (is_management / ctr_actor_actual).
+3. ctr_programa_servicio = 0 filas: deliberado.
+4. ctr_acto_gobierno = 0 y 0 objetos en CONTRACTUAL_VALIDATED: correcto, la promoción exige 4-ojos y aún no se ha ejercido.
+5. M-07 se aplicó con estado='ok' (el literal 'cargada' no existe en el CHECK); intento previo revertido limpiamente.
+6. Runtime gate ops_* NO reejecutado en postflight (prohibido tocar ops_*); zero-diff acreditado por hash 4ade3062cb618cbd5e40e313303ad47c (44 funciones) e inventario 20/1/12, alias=15, OTs=125.752.
+
+=== VEREDICTO ===
+POSTFLIGHT A–J: PASS con las desviaciones declaradas. I2: NO-GO.
