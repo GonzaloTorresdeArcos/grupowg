@@ -14,6 +14,1018 @@ export type Database = {
   }
   public: {
     Tables: {
+      ctr_actividad: {
+        Row: {
+          carga_id: string | null
+          codigo: string
+          comparable: boolean
+          creado_en: string
+          id: string
+          nombre: string
+          version: number
+        }
+        Insert: {
+          carga_id?: string | null
+          codigo: string
+          comparable?: boolean
+          creado_en?: string
+          id?: string
+          nombre: string
+          version?: number
+        }
+        Update: {
+          carga_id?: string | null
+          codigo?: string
+          comparable?: boolean
+          creado_en?: string
+          id?: string
+          nombre?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_actividad_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_acto_gobierno: {
+        Row: {
+          accion: string
+          actor_id: string
+          actor_nombre: string
+          actor_rol: string
+          carga_id: string | null
+          creado_en: string
+          cuatro_ojos_id: string | null
+          cuatro_ojos_nombre: string | null
+          cuatro_ojos_rol: string | null
+          estado_anterior: string | null
+          estado_nuevo: string | null
+          evidencia_revisada: string
+          fuente_procedencia: string | null
+          id: string
+          motivo: string
+          objeto_id: string | null
+          objeto_tipo: string
+          solicitud_id: string | null
+          ts: string
+        }
+        Insert: {
+          accion: string
+          actor_id: string
+          actor_nombre: string
+          actor_rol: string
+          carga_id?: string | null
+          creado_en?: string
+          cuatro_ojos_id?: string | null
+          cuatro_ojos_nombre?: string | null
+          cuatro_ojos_rol?: string | null
+          estado_anterior?: string | null
+          estado_nuevo?: string | null
+          evidencia_revisada: string
+          fuente_procedencia?: string | null
+          id?: string
+          motivo: string
+          objeto_id?: string | null
+          objeto_tipo: string
+          solicitud_id?: string | null
+          ts?: string
+        }
+        Update: {
+          accion?: string
+          actor_id?: string
+          actor_nombre?: string
+          actor_rol?: string
+          carga_id?: string | null
+          creado_en?: string
+          cuatro_ojos_id?: string | null
+          cuatro_ojos_nombre?: string | null
+          cuatro_ojos_rol?: string | null
+          estado_anterior?: string | null
+          estado_nuevo?: string | null
+          evidencia_revisada?: string
+          fuente_procedencia?: string | null
+          id?: string
+          motivo?: string
+          objeto_id?: string | null
+          objeto_tipo?: string
+          solicitud_id?: string | null
+          ts?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_acto_gobierno_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_business_line: {
+        Row: {
+          carga_id: string | null
+          codigo: string
+          creado_en: string
+          id: string
+          nombre: string
+        }
+        Insert: {
+          carga_id?: string | null
+          codigo: string
+          creado_en?: string
+          id?: string
+          nombre: string
+        }
+        Update: {
+          carga_id?: string | null
+          codigo?: string
+          creado_en?: string
+          id?: string
+          nombre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_business_line_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_carga: {
+        Row: {
+          artefacto_ref: string | null
+          carga_id: string | null
+          creado_en: string
+          estado: string
+          hash: string | null
+          id: string
+          loaded_at: string
+          loaded_by_id: string | null
+          loaded_by_nombre: string
+          notas: string | null
+          origen: string
+          plantilla_version: string | null
+        }
+        Insert: {
+          artefacto_ref?: string | null
+          carga_id?: string | null
+          creado_en?: string
+          estado: string
+          hash?: string | null
+          id?: string
+          loaded_at?: string
+          loaded_by_id?: string | null
+          loaded_by_nombre: string
+          notas?: string | null
+          origen: string
+          plantilla_version?: string | null
+        }
+        Update: {
+          artefacto_ref?: string | null
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          hash?: string | null
+          id?: string
+          loaded_at?: string
+          loaded_by_id?: string | null
+          loaded_by_nombre?: string
+          notas?: string | null
+          origen?: string
+          plantilla_version?: string | null
+        }
+        Relationships: []
+      }
+      ctr_cliente: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          estado: string
+          grupo_cliente: string | null
+          id: string
+          nombre_display: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          estado: string
+          grupo_cliente?: string | null
+          id?: string
+          nombre_display: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          grupo_cliente?: string | null
+          id?: string
+          nombre_display?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_cliente_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_contraparte_legal: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          grupo_legal: string | null
+          id: string
+          nif_vat: string | null
+          notas: string | null
+          pais: string | null
+          razon_social: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          grupo_legal?: string | null
+          id?: string
+          nif_vat?: string | null
+          notas?: string | null
+          pais?: string | null
+          razon_social: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          grupo_legal?: string | null
+          id?: string
+          nif_vat?: string | null
+          notas?: string | null
+          pais?: string | null
+          razon_social?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_contraparte_legal_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_contrato: {
+        Row: {
+          carga_id: string | null
+          contraparte_id: string
+          creado_en: string
+          effective_from: string
+          effective_to: string | null
+          estado_evidencia: string
+          fecha_firma: string | null
+          id: string
+          notas: string | null
+          preaviso: string | null
+          renovacion: string | null
+          sociedad_wg_id: string | null
+          tipo_instrumento: string
+          titulo: string
+        }
+        Insert: {
+          carga_id?: string | null
+          contraparte_id: string
+          creado_en?: string
+          effective_from: string
+          effective_to?: string | null
+          estado_evidencia: string
+          fecha_firma?: string | null
+          id?: string
+          notas?: string | null
+          preaviso?: string | null
+          renovacion?: string | null
+          sociedad_wg_id?: string | null
+          tipo_instrumento: string
+          titulo: string
+        }
+        Update: {
+          carga_id?: string | null
+          contraparte_id?: string
+          creado_en?: string
+          effective_from?: string
+          effective_to?: string | null
+          estado_evidencia?: string
+          fecha_firma?: string | null
+          id?: string
+          notas?: string | null
+          preaviso?: string | null
+          renovacion?: string | null
+          sociedad_wg_id?: string | null
+          tipo_instrumento?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_contrato_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_contraparte_id_fkey"
+            columns: ["contraparte_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contraparte_legal"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_sociedad_wg_id_fkey"
+            columns: ["sociedad_wg_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_sociedad_wg"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_contrato_alcance: {
+        Row: {
+          alcance_nota: string | null
+          carga_id: string | null
+          contrato_id: string
+          creado_en: string
+          doc_id: string
+          effective_from: string | null
+          effective_to: string | null
+          estado_ejecucion: string
+          id: string
+          programa_id: string
+        }
+        Insert: {
+          alcance_nota?: string | null
+          carga_id?: string | null
+          contrato_id: string
+          creado_en?: string
+          doc_id: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_ejecucion?: string
+          id?: string
+          programa_id: string
+        }
+        Update: {
+          alcance_nota?: string | null
+          carga_id?: string | null
+          contrato_id?: string
+          creado_en?: string
+          doc_id?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_ejecucion?: string
+          id?: string
+          programa_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_contrato_alcance_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_alcance_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contrato"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_alcance_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_alcance_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_contrato_relacion: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          destino_id: string
+          doc_id: string
+          evidencia_sustitucion: string | null
+          id: string
+          origen_id: string
+          tipo: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          destino_id: string
+          doc_id: string
+          evidencia_sustitucion?: string | null
+          id?: string
+          origen_id: string
+          tipo: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          destino_id?: string
+          doc_id?: string
+          evidencia_sustitucion?: string | null
+          id?: string
+          origen_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_contrato_relacion_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_relacion_destino_id_fkey"
+            columns: ["destino_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contrato"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_relacion_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_contrato_relacion_origen_id_fkey"
+            columns: ["origen_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contrato"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_documento: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          estado_evidencia: string
+          fecha_documento: string | null
+          fichero: string
+          firma_ref: string | null
+          firmado_verificado: string
+          hash: string
+          id: string
+          idioma: string | null
+          metodo_firma: string | null
+          notas: string | null
+          ocr_estado: string
+          paginas: number | null
+          tipo_documental: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          estado_evidencia: string
+          fecha_documento?: string | null
+          fichero: string
+          firma_ref?: string | null
+          firmado_verificado: string
+          hash: string
+          id?: string
+          idioma?: string | null
+          metodo_firma?: string | null
+          notas?: string | null
+          ocr_estado: string
+          paginas?: number | null
+          tipo_documental: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          estado_evidencia?: string
+          fecha_documento?: string | null
+          fichero?: string
+          firma_ref?: string | null
+          firmado_verificado?: string
+          hash?: string
+          id?: string
+          idioma?: string | null
+          metodo_firma?: string | null
+          notas?: string | null
+          ocr_estado?: string
+          paginas?: number | null
+          tipo_documental?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_documento_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_instrumento_documento: {
+        Row: {
+          carga_id: string | null
+          contrato_id: string
+          creado_en: string
+          doc_id: string
+          id: string
+          nota: string | null
+          tipo_relacion: string
+        }
+        Insert: {
+          carga_id?: string | null
+          contrato_id: string
+          creado_en?: string
+          doc_id: string
+          id?: string
+          nota?: string | null
+          tipo_relacion: string
+        }
+        Update: {
+          carga_id?: string | null
+          contrato_id?: string
+          creado_en?: string
+          doc_id?: string
+          id?: string
+          nota?: string | null
+          tipo_relacion?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_instrumento_documento_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_instrumento_documento_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contrato"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_instrumento_documento_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_programa: {
+        Row: {
+          beneficiario_canal: string | null
+          business_line_id: string | null
+          carga_id: string | null
+          cliente_id: string
+          creado_en: string
+          effective_from: string
+          effective_to: string | null
+          estado: string
+          id: string
+          nombre: string
+          notas: string | null
+          territorio: string[]
+          vertical_id: string | null
+        }
+        Insert: {
+          beneficiario_canal?: string | null
+          business_line_id?: string | null
+          carga_id?: string | null
+          cliente_id: string
+          creado_en?: string
+          effective_from: string
+          effective_to?: string | null
+          estado: string
+          id?: string
+          nombre: string
+          notas?: string | null
+          territorio: string[]
+          vertical_id?: string | null
+        }
+        Update: {
+          beneficiario_canal?: string | null
+          business_line_id?: string | null
+          carga_id?: string | null
+          cliente_id?: string
+          creado_en?: string
+          effective_from?: string
+          effective_to?: string | null
+          estado?: string
+          id?: string
+          nombre?: string
+          notas?: string | null
+          territorio?: string[]
+          vertical_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_programa_business_line_id_fkey"
+            columns: ["business_line_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_business_line"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_vertical_id_fkey"
+            columns: ["vertical_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_vertical"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_programa_parte: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          doc_id: string | null
+          effective_from: string | null
+          effective_to: string | null
+          entidad_id: string | null
+          entidad_nombre: string
+          estado_evidencia: string
+          id: string
+          notas: string | null
+          origen_conocimiento: string
+          programa_id: string
+          rol: string
+          tipo_entidad: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          doc_id?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          entidad_id?: string | null
+          entidad_nombre: string
+          estado_evidencia: string
+          id?: string
+          notas?: string | null
+          origen_conocimiento: string
+          programa_id: string
+          rol: string
+          tipo_entidad: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          doc_id?: string | null
+          effective_from?: string | null
+          effective_to?: string | null
+          entidad_id?: string | null
+          entidad_nombre?: string
+          estado_evidencia?: string
+          id?: string
+          notas?: string | null
+          origen_conocimiento?: string
+          programa_id?: string
+          rol?: string
+          tipo_entidad?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_programa_parte_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_parte_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_parte_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_programa_servicio: {
+        Row: {
+          actividad_id: string
+          carga_id: string | null
+          condiciones: string | null
+          creado_en: string
+          doc_id: string | null
+          id: string
+          programa_id: string
+        }
+        Insert: {
+          actividad_id: string
+          carga_id?: string | null
+          condiciones?: string | null
+          creado_en?: string
+          doc_id?: string | null
+          id?: string
+          programa_id: string
+        }
+        Update: {
+          actividad_id?: string
+          carga_id?: string | null
+          condiciones?: string | null
+          creado_en?: string
+          doc_id?: string | null
+          id?: string
+          programa_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_programa_servicio_actividad_id_fkey"
+            columns: ["actividad_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_actividad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_servicio_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_servicio_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_programa_servicio_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_row_audit: {
+        Row: {
+          actor_id: string | null
+          actor_nombre: string | null
+          campo: string
+          carga_id: string | null
+          creado_en: string
+          fila_id: string | null
+          id: string
+          tabla: string
+          ts: string
+          valor_new: string | null
+          valor_old: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_nombre?: string | null
+          campo: string
+          carga_id?: string | null
+          creado_en?: string
+          fila_id?: string | null
+          id?: string
+          tabla: string
+          ts?: string
+          valor_new?: string | null
+          valor_old?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          actor_nombre?: string | null
+          campo?: string
+          carga_id?: string | null
+          creado_en?: string
+          fila_id?: string | null
+          id?: string
+          tabla?: string
+          ts?: string
+          valor_new?: string | null
+          valor_old?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_row_audit_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_sociedad_wg: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          id: string
+          nif: string | null
+          notas: string | null
+          razon_social: string
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          id?: string
+          nif?: string | null
+          notas?: string | null
+          razon_social: string
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          id?: string
+          nif?: string | null
+          notas?: string | null
+          razon_social?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_sociedad_wg_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_solicitud_promocion: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          estado: string
+          estado_esperado: string
+          estado_objetivo: string
+          evidencia_hash: string | null
+          evidencia_ref: string
+          id: string
+          objeto_id: string
+          objeto_tipo: string
+          propuesto_en: string
+          propuesto_por_id: string
+          propuesto_por_nombre: string | null
+          propuesto_por_rol: string | null
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          estado_esperado: string
+          estado_objetivo: string
+          evidencia_hash?: string | null
+          evidencia_ref: string
+          id?: string
+          objeto_id: string
+          objeto_tipo: string
+          propuesto_en?: string
+          propuesto_por_id: string
+          propuesto_por_nombre?: string | null
+          propuesto_por_rol?: string | null
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          estado_esperado?: string
+          estado_objetivo?: string
+          evidencia_hash?: string | null
+          evidencia_ref?: string
+          id?: string
+          objeto_id?: string
+          objeto_tipo?: string
+          propuesto_en?: string
+          propuesto_por_id?: string
+          propuesto_por_nombre?: string | null
+          propuesto_por_rol?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_solicitud_promocion_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_territorio: {
+        Row: {
+          carga_id: string | null
+          codigo: string
+          creado_en: string
+          id: string
+          nivel: string
+          nombre: string
+          padre_id: string | null
+        }
+        Insert: {
+          carga_id?: string | null
+          codigo: string
+          creado_en?: string
+          id?: string
+          nivel: string
+          nombre: string
+          padre_id?: string | null
+        }
+        Update: {
+          carga_id?: string | null
+          codigo?: string
+          creado_en?: string
+          id?: string
+          nivel?: string
+          nombre?: string
+          padre_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_territorio_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_territorio_padre_id_fkey"
+            columns: ["padre_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_territorio"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_vertical: {
+        Row: {
+          carga_id: string | null
+          codigo: string
+          creado_en: string
+          id: string
+          nombre: string
+        }
+        Insert: {
+          carga_id?: string | null
+          codigo: string
+          creado_en?: string
+          id?: string
+          nombre: string
+        }
+        Update: {
+          carga_id?: string | null
+          codigo?: string
+          creado_en?: string
+          id?: string
+          nombre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_vertical_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ops_bases: {
         Row: {
           delegacion: string
@@ -1864,6 +2876,43 @@ export type Database = {
       }
     }
     Functions: {
+      ctr_acto_bootstrap: {
+        Args: {
+          p_actor_historico_nombre: string
+          p_estado_nuevo: string
+          p_evidencia: string
+          p_fecha_decision: string
+          p_fuente: string
+          p_objeto_id: string
+          p_objeto_tipo: string
+        }
+        Returns: string
+      }
+      ctr_actor_actual: { Args: never; Returns: Record<string, unknown> }
+      ctr_aprobar_promocion: { Args: { p_solicitud: string }; Returns: string }
+      ctr_promover_evidencia: {
+        Args: {
+          p_estado_esperado: string
+          p_estado_nuevo: string
+          p_evidencia: string
+          p_motivo: string
+          p_objeto_id: string
+          p_objeto_tipo: string
+        }
+        Returns: string
+      }
+      ctr_proponer_promocion: {
+        Args: {
+          p_estado_esperado: string
+          p_estado_objetivo: string
+          p_evidencia_hash?: string
+          p_evidencia_ref: string
+          p_objeto_id: string
+          p_objeto_tipo: string
+        }
+        Returns: string
+      }
+      ctr_rango_evidencia: { Args: { p_estado: string }; Returns: number }
       grant_admin_by_email: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
