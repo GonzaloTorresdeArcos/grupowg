@@ -13,7 +13,6 @@ DECLARE
   CARGA   uuid;
   c_norm uuid; c_prop uuid; c_hr uuid; c_hr2 uuid;
   r jsonb; e text; st text; n int;
-  PROCEDURE_dummy int;
 BEGIN
   SELECT id INTO DOC FROM public.ctr_documento LIMIT 1;
 
