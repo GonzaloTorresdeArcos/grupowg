@@ -119,6 +119,20 @@ BEGIN
     L := L||'T-V7 FAIL · motivo vacio aceptado'||E'\n';
   EXCEPTION WHEN OTHERS THEN L := L||'T-V7 PASS · EXCEPTION: '||SQLERRM||E'\n'; END;
 
+
+  ------------------------------------------------------------------ T-V8 (RED TEAM: GUC spoofing en sesion real authenticated)
+  PERFORM set_config('request.jwt.claims', json_build_object('sub',GONZALO,'role','authenticated')::text, true);
+  EXECUTE 'SET LOCAL ROLE authenticated';
+  BEGIN
+    PERFORM set_config('ctr.validar','on',true);
+    UPDATE public.ctr_claim SET estado='VALIDATED' WHERE id=c_prop;
+    L := L||'T-V8 FAIL - GUC spoof + UPDATE directo PASO (BYPASS)'||E'\n';
+  EXCEPTION WHEN OTHERS THEN
+    L := L||format('T-V8 PASS - rol efectivo=%s guc=%s EXCEPTION: %s',
+         current_user, current_setting('ctr.validar',true), SQLERRM)||E'\n';
+  END;
+  EXECUTE 'RESET ROLE';
+
   ------------------------------------------------------------------ claims reales intactos
   SELECT count(*) INTO n FROM public.ctr_claim WHERE estado='VALIDATED' AND enunciado NOT LIKE 'TEST%';
   L := L||format('REALES · VALIDATED(no test)=%s', n)||E'\n';
