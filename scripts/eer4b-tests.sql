@@ -18,7 +18,7 @@ BEGIN
 
   -- carga sintetica cuyo actor es gonzalo (para T-V2)
   INSERT INTO public.ctr_carga (origen, loaded_by_id, loaded_by_nombre, estado, notas)
-  VALUES ('EER-4B TEST', GONZALO, 'test', 'ok', 'sintetico rollback') RETURNING id INTO CARGA;
+  VALUES ('manual', GONZALO, 'test', 'ok', 'EER-4B sintetico rollback') RETURNING id INTO CARGA;
 
   INSERT INTO public.ctr_claim (doc_id, categoria, enunciado, estado, extraido_por)
   VALUES (DOC,'alcance','TEST normal','PENDING','sistema') RETURNING id INTO c_norm;

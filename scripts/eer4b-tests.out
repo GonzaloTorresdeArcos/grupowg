@@ -1,0 +1,17 @@
+EER-4B · ctr_validar_claim · resultados (tx abortada, cero efecto real)
+T-V1 PASS - EXCEPTION: no autorizado: se requiere sesion autenticada
+T-V2 PASS - EXCEPTION: proponente no puede validar
+T-V3 PASS - estado=VALIDATED actos=1 accion=validacion rol=contractual_validator
+T-V4a PASS - high_risk=true estado=PENDING accion=validacion_primer_aprobador
+T-V4b PASS - EXCEPTION: mismo actor no computa como dos ojos
+T-V5c PASS - EXCEPTION: no autorizado: la ratificacion requiere rol management
+T-V5a PASS - estado=VALIDATED actos=2 accion=ratificacion_segundo_aprobador
+       acto: validacion_primer_aprobador | actor=f2840a10-d660-4adc-8854-11f947423fb9 | rol=contractual_validator | ts=2026-08-31 08:02:04.042732+00 | motivo=Primera aprobacion high-risk
+       acto: ratificacion_segundo_aprobador | actor=2b4fd0d1-5496-4c5d-86e8-c352091589a1 | rol=management | ts=2026-08-31 08:02:04.045580+00 | motivo=Ratifico: contrastado con el articulado
+T-V5d1 PASS - estado=PENDING accion=ratificacion_denegada
+T-V5d2 PASS - fase=1 accion=validacion_primer_aprobador estado=PENDING actos=3
+T-V6 PASS - EXCEPTION: ctr_claim: VALIDATED solo por funcion gobernada (ctr_validar_claim); INSERT/UPDATE directo prohibido
+T-V7 PASS - EXCEPTION: motivo obligatorio: no puede estar vacio
+REALES - VALIDATED(no test)=0
+POSTFLIGHT: hash ops_* = 4ade3062cb618cbd5e40e313303ad47c (intacto) · claims 20/20 PENDING · 0 VALIDATED
+            anon EXECUTE=false · authenticated EXECUTE=true · SECURITY DEFINER=true · actos nuevos en BD=0
