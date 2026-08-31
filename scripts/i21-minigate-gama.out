@@ -1,0 +1,107 @@
+=== I2.1 · B · MINI-GATE BLOQUEANTE ops_clasifica_gama (SOLO LECTURA) ===
+Fecha: 31-08-2026 · Ejecutado contra HEAD de BD. Cero cambios en ops_*.
+
+--- (1) PROCEDENCIA -----------------------------------------------------------
+Objeto: FUNCION (no tabla) public.ops_clasifica_gama(p_familia text, p_cliente text,
+        p_marca text, p_gama_origen text) RETURNS text
+Propiedades: LANGUAGE sql · STABLE · PARALLEL SAFE · SECURITY INVOKER (prosecdef=false)
+             SET search_path TO 'public'
+Creada en:   supabase/migrations/20260825023050_bb3577f4-847d-416e-91c7-668f538e260f.sql
+             (unica migracion del repositorio que la menciona; existe desde 25-08-2026)
+
+Definicion completa (pg_get_functiondef):
+
+  SELECT COALESCE(
+    (SELECT rf.gama FROM ops_regla_familia rf
+      WHERE rf.familia = upper(trim(p_familia)) AND rf.gama='Movilidad'),
+    CASE WHEN upper(trim(p_cliente)) IN ('MAKRO','METRO MARKETS GMBH',
+         'KREA PROFESSIONAL, S.L.','RETINNA, S.L.') THEN 'Profesional' END,
+    (SELECT rf.gama FROM ops_regla_familia rf WHERE rf.familia = upper(trim(p_familia))),
+    CASE WHEN upper(coalesce(p_cliente,'')) LIKE '%ASSURANT%'
+           OR upper(coalesce(p_cliente,'')) LIKE '%COMPANJON%' THEN 'Marron' END,
+    (SELECT rm.gama FROM ops_regla_marca rm WHERE rm.marca = upper(trim(p_marca))),
+    CASE upper(coalesce(p_gama_origen,''))
+         WHEN 'GBLANCA' THEN 'Blanca' WHEN 'GMARRON' THEN 'Marron' WHEN 'GPAE' THEN 'PAE' END,
+    'Sin clasificar')
+
+Dependencias de datos: public.ops_regla_familia (44 filas) y public.ops_regla_marca (37 filas),
+tablas maestras gobernadas del dominio ops_*. Sin dependencia de fecha ni de estado de la OT.
+
+--- (2) VALORES · dominio de salida y mapeo entrada -> salida -----------------
+Dominio observable de salida (cierre de las tablas de reglas + literales de la funcion):
+  Blanca · Marron · PAE · Movilidad · Clima · Profesional · Sin clasificar   (7 valores)
+Reparto de las tablas maestras:
+  ops_regla_familia: Blanca 13 · Clima 1 · Marron 6 · Movilidad 6 · PAE 18
+  ops_regla_marca  : Blanca 10 · Marron 5 · Movilidad 9 · PAE 4 · Profesional 9
+Mapeo (orden de precedencia, primer no-nulo gana):
+  1. familia -> 'Movilidad' (regla de familia con gama Movilidad; prioridad absoluta)
+  2. cliente en {MAKRO, METRO MARKETS GMBH, KREA PROFESSIONAL S.L., RETINNA S.L.} -> 'Profesional'
+  3. familia -> gama (ops_regla_familia)
+  4. cliente LIKE %ASSURANT% / %COMPANJON% -> 'Marron'
+  5. marca -> gama (ops_regla_marca)
+  6. gama_origen ERP: GBLANCA->Blanca · GMARRON->Marron · GPAE->PAE
+  7. residual -> 'Sin clasificar'
+Ninguna rama de las anteriores aplica a Cecotec ni a Carrefour por la via 2 o 4.
+
+--- (3) REPRODUCIBILIDAD ------------------------------------------------------
+Muestra: 1.000 OTs de Cecotec + Carrefour (ORDER BY num_ot LIMIT 1000).
+Pase 1: n=1000 · md5(num_ot:clasificacion) = 55bd6f4fc3407e3f52e21072f893c2e4 · 5 valores distintos
+Pase 2: n=1000 · md5(num_ot:clasificacion) = 55bd6f4fc3407e3f52e21072f893c2e4
+RESULTADO: IDENTICO en las dos ejecuciones -> REPRODUCIBLE.
+
+--- (4) ESTABILIDAD / TRAZABILIDAD contra inputs reales -----------------------
+Distribucion gama_origen -> clasificacion (universo completo ops_fact_ot):
+
+CECOTEC INNOVACIONES, S.L.U.  (total 10.274 OTs)
+  gama_origen   clasificacion     OTs
+  GBlanca       Blanca          7.197
+  GMarron       Marron          1.976
+  (null)        Sin clasificar    453
+  GPAE          Clima             444
+  GMarron       Movilidad         171
+  GPAE          Blanca             32
+  GPAE          PAE                 1
+  Agregado por clasificacion: Blanca 7.229 · Marron 1.976 · Sin clasificar 453 ·
+                              Clima 444 · Movilidad 171 · PAE 1
+  Clasificables: 9.821 / 10.274 = 95,59 % · Sin clasificar: 4,41 % · nulos de salida: 0
+
+CARREFOUR (+ alias CARREFOUR BRANDT 5, CARREFOUR WINIA 4) (total 29.004 OTs)
+  gama_origen   clasificacion     OTs
+  GPAE          PAE             8.125
+  GPAE          Blanca          7.126
+  GBlanca       Blanca          6.883
+  GMarron       Marron          5.212
+  GPAE          Clima           1.207
+  (null)        Sin clasificar    358
+  (null)        Blanca             47
+  (null)        PAE                24
+  (null)        Marron              6
+  (null)        Clima               5
+  GMarron       Blanca              1
+  GTools        Sin clasificar      1
+  Agregado por clasificacion: Blanca 14.066 · PAE 8.149 · Marron 5.218 ·
+                              Clima 1.212 · Sin clasificar 359
+  Clasificables: 28.645 / 29.004 = 98,76 % · Sin clasificar: 1,24 % · nulos de salida: 0
+
+Ambiguedad de salida: la funcion devuelve exactamente un valor por OT (COALESCE con
+residual literal); no existe salida NULL ni multivalor. La 'ambiguedad' util se
+concentra en 'Sin clasificar' (812 OTs entre ambos clientes, 2,07 %).
+Observacion trazable: gama_origen del ERP NO es suficiente por si sola (GPAE se abre
+en PAE / Blanca / Clima). La separacion Clima y Movilidad procede de reglas de
+familia/marca gobernadas, no del campo de origen.
+
+--- (5) VEREDICTO -------------------------------------------------------------
+PASS.
+Razonamiento:
+  · Procedencia identificable y versionada en migracion (25-08-2026), SECURITY INVOKER,
+    sin efectos laterales, dependiente solo de maestros gobernados.
+  · Dominio de salida cerrado y enumerado; mapeo entrada->salida explicito y ordenado.
+  · Reproducible: dos pases sobre 1.000 OTs con hash identico.
+  · Separacion demostrada y estable sobre inputs reales:
+       Cecotec  -> Clima (444) y Movilidad (171) quedan aislados del resto retail.
+       Carrefour-> Clima (1.212) queda aislado del resto de postventa electro.
+  · El residual 'Sin clasificar' (Cecotec 453 · Carrefour 359) NO se usa para enrutar:
+    esas OTs permanecen ambiguas.
+
+CONSECUENCIA PARA I2.1 B: se autorizan correspondencias dimension='gama' SOLO para los
+valores demostrados. 'Sin clasificar' -> sin item, ambiguedad conservada.
