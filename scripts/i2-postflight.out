@@ -142,3 +142,26 @@ Pager usage is off.
  ctr_regla_version                 | authenticator | f   | f   | f   | f
 (36 rows)
 
+
+=== GATES T1–T10 (I2) ===
+T1  claim no puede nacer/pasar a VALIDATED por DML directo ......... PASS (trigger ctr_claim_no_validated)
+T2  ctr_regla_version inmutable (UPDATE/DELETE bloqueado) .......... PASS (rollback)
+T3  sin correspondencia APPROVED no hay APPLICABLE ................. PASS (readiness = INSUFFICIENT_EVIDENCE)
+T4  dato ausente NUNCA produce NOT_APPLICABLE ...................... PASS (D4 respetado)
+T5  predicado actividad='INSTALL' sin dato -> INSUFFICIENT_EVIDENCE  PASS (reason dato_ausente_actividad)
+T6  2 regla_version en conflicto sin precedencia -> CONFLICTING ..... PASS (sin ganador por fecha/tipo)
+T7  resolucion i1-v1 inmutable (UPDATE payload / DELETE) ........... PASS (rollback)
+T8  supersede sin actor gobernado -> 'no autorizado: sesion sin usuario' PASS
+T9  una sola resolucion vigente por OT ............................. PASS (0 duplicadas, ux_ctr_resolucion_vigente)
+T10 anon/authenticator sin acceso; authenticated solo SELECT ....... PASS (bloque K)
+
+=== VEREDICTO ===
+PREFLIGHT PASS · N-00..N-07 PASS · POSTFLIGHT A–K PASS
+- ops_* ZERO DIFF: 20/1/12, alias 15, hash 44 fn = 4ade3062cb618cbd5e40e313303ad47c
+- Baseline K i1-v1 INTACTO: 125752 | 94e571b86dcd3cbb1b62480503f5929d
+- Contexto i2-v1: 5.674 resoluciones superseded (METRO/MAKRO), 120.078 sin tocar
+- identidad_contractual='establecida': 0 (19 claims PENDING)
+- ctr_programa_servicio: 0 (deliberado)
+- ctr_alias_propuesta: 0 (ningun alias alterado; el mapa contractual no toca ctr_alias_*)
+- Linter: 15 WARN SECURITY DEFINER heredados de I1; ninguno nuevo (funcion I2 es SECURITY INVOKER)
+I3 y publicacion compliance: NO-GO.
