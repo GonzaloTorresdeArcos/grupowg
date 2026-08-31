@@ -105,40 +105,40 @@ Pager usage is off.
                tabla               |      rol      | sel | ins | upd | del 
 -----------------------------------+---------------+-----+-----+-----+-----
  ctr_alias_propuesta               | anon          | f   | f   | f   | f
- ctr_alias_propuesta               | authenticated | t   | t   | t   | t
+ ctr_alias_propuesta               | authenticated | t   | f   | f   | f
  ctr_alias_propuesta               | authenticator | f   | f   | f   | f
  ctr_aplicabilidad                 | anon          | f   | f   | f   | f
- ctr_aplicabilidad                 | authenticated | t   | t   | t   | t
+ ctr_aplicabilidad                 | authenticated | t   | f   | f   | f
  ctr_aplicabilidad                 | authenticator | f   | f   | f   | f
  ctr_claim                         | anon          | f   | f   | f   | f
- ctr_claim                         | authenticated | t   | t   | t   | t
+ ctr_claim                         | authenticated | t   | f   | f   | f
  ctr_claim                         | authenticator | f   | f   | f   | f
  ctr_correspondencia_operativa     | anon          | f   | f   | f   | f
- ctr_correspondencia_operativa     | authenticated | t   | t   | t   | t
+ ctr_correspondencia_operativa     | authenticated | t   | f   | f   | f
  ctr_correspondencia_operativa     | authenticator | f   | f   | f   | f
  ctr_gobierno_config               | anon          | f   | f   | f   | f
- ctr_gobierno_config               | authenticated | t   | t   | t   | t
+ ctr_gobierno_config               | authenticated | t   | f   | f   | f
  ctr_gobierno_config               | authenticator | f   | f   | f   | f
  ctr_mapa_contractual_item         | anon          | f   | f   | f   | f
- ctr_mapa_contractual_item         | authenticated | t   | t   | t   | t
+ ctr_mapa_contractual_item         | authenticated | t   | f   | f   | f
  ctr_mapa_contractual_item         | authenticator | f   | f   | f   | f
  ctr_mapa_contractual_version      | anon          | f   | f   | f   | f
- ctr_mapa_contractual_version      | authenticated | t   | t   | t   | t
+ ctr_mapa_contractual_version      | authenticated | t   | f   | f   | f
  ctr_mapa_contractual_version      | authenticator | f   | f   | f   | f
  ctr_precedencia                   | anon          | f   | f   | f   | f
- ctr_precedencia                   | authenticated | t   | t   | t   | t
+ ctr_precedencia                   | authenticated | t   | f   | f   | f
  ctr_precedencia                   | authenticator | f   | f   | f   | f
  ctr_regla_aplicabilidad_predicado | anon          | f   | f   | f   | f
- ctr_regla_aplicabilidad_predicado | authenticated | t   | t   | t   | t
+ ctr_regla_aplicabilidad_predicado | authenticated | t   | f   | f   | f
  ctr_regla_aplicabilidad_predicado | authenticator | f   | f   | f   | f
  ctr_regla_aplicabilidad_scope     | anon          | f   | f   | f   | f
- ctr_regla_aplicabilidad_scope     | authenticated | t   | t   | t   | t
+ ctr_regla_aplicabilidad_scope     | authenticated | t   | f   | f   | f
  ctr_regla_aplicabilidad_scope     | authenticator | f   | f   | f   | f
  ctr_regla_definicion              | anon          | f   | f   | f   | f
- ctr_regla_definicion              | authenticated | t   | t   | t   | t
+ ctr_regla_definicion              | authenticated | t   | f   | f   | f
  ctr_regla_definicion              | authenticator | f   | f   | f   | f
  ctr_regla_version                 | anon          | f   | f   | f   | f
- ctr_regla_version                 | authenticated | t   | t   | t   | t
+ ctr_regla_version                 | authenticated | t   | f   | f   | f
  ctr_regla_version                 | authenticator | f   | f   | f   | f
 (36 rows)
 
