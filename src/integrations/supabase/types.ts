@@ -4049,6 +4049,16 @@ export type Database = {
         Args: { p_num_ot: string; p_payload: Json }
         Returns: string
       }
+      ctr_validar_claim: {
+        Args: {
+          p_claim_id: string
+          p_decision: string
+          p_evidencia_ref: string
+          p_motivo: string
+          p_ref_pagina?: string
+        }
+        Returns: Json
+      }
       grant_admin_by_email: { Args: { _email: string }; Returns: string }
       has_role: {
         Args: {
