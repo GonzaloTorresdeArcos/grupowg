@@ -1,0 +1,95 @@
+=== I2.1 REMEDIATION · POSTFLIGHT (31-08-2026) ===
+Scope cerrado ejecutado: A (WS1 aliases) · B (WS2 gama, mini-gate PASS) · C (precedencia Cecotec)
+Contexto nuevo: i2.1-v1  ·  Historia i1-v1 / i2-v1 NO reescrita (solo supersede)
+
+--- A · ZERO DIFF ops_* / src/ ---
+hash 44 funciones ops : 4ade3062cb618cbd5e40e313303ad47c  (= baseline)  PASS
+inventario ops_*      : 20 tablas / 1 vista / 12 triggers (= baseline)  PASS
+ops_cliente_contrato_alias : 15 filas (intacta, no tocada)              PASS
+git status            : limpio · HEAD 3849876 · diff src/ = 0 ficheros  PASS
+deploys               : 0                                               PASS
+
+--- B · BASELINES DE HISTORIA PROTEGIDA ---
+i1-v1 : 125752 | 94e571b86dcd3cbb1b62480503f5929d   (idéntico al cierre)  PASS
+i2-v1 :   5674 | 8584cfd48b48756f66c2dfff71ad3175   (idéntico al cierre)  PASS
+
+--- C · WS1 · ALIASES GOBERNADOS (A) ---
+Candidatos por normalización estricta de sufijos legales sobre 43 literales sin_cliente:
+  NEUMESSE, S.L. -> Neumesse   4.849 OTs  · instrumento doc:59f7c16ed41157b2  APROBADO
+  JOCEL LDA      -> Jocel      1.272 OTs  · instrumento doc:5ca8c0d08361f600  APROBADO
+  TELEFAC                      1.124 OTs  · prospecto sin instrumento        EXCLUIDO
+ctr_alias_propuesta        : 2 APPROVED, revision_reforzada = true (>1.000 OTs)
+ctr_acto_gobierno          : 2 actos · actor f2840a10-d660-4adc-8854-11f947423fb9 (management)
+ctr_alias_identidad        : 2 alias gobernados, effective_from 2025-01-01
+Foto alias v3              : 26733527-5b9c-4e1d-b981-e3820af5eafd · 17 items
+                             hash fa2cfda7fbeb7953f1beafd1d6671672 (v2 = 15 items, 90f60057…)
+
+--- D · WS2 · GAMA (B) ---
+Mini-gate ops_clasifica_gama : PASS (scripts/i21-minigate-gama.out)
+  procedencia migración 20260825023050 · SQL STABLE / PARALLEL SAFE / SECURITY INVOKER
+  dominio 7 valores · reproducible: 1.000 OTs, 2 ejecuciones, hash 55bd6f4fc3407e3f52e21072f893c2e4
+ctr_correspondencia_operativa : +9 filas dimension='gama', APPROVED, deterministas,
+  soporte configuracion_historica_gobernada, evidencia = ops_clasifica_gama + mini-gate
+ctr_claim                     : +1 PENDING (alcance Postventa SAT Electro Carrefour, doc c5fe4eb78a5f48b2)
+Mapa contractual v2           : 31f8d93a-f0e0-49e8-9577-a2904186468f · 11 items
+                                hash a11a8e926d7f29c87eeb97ae42249b7a
+                                (2 items v1 METRO/MAKRO reproducidos + 9 nuevos de gama)
+Routing aprobado:
+  Cecotec  Clima->Clima instalación · Movilidad->Mobility · Blanca/Marron/PAE->Retail postventa
+  Carrefour Clima->Clima instalación · Blanca/Marron/PAE->Postventa SAT Electro
+  'Sin clasificar' NO se enruta: permanece ambiguous (812 OTs vigentes)
+
+--- E · C · PRECEDENCIA CECOTEC ---
+ctr_precedencia : 0 filas — NO SE CREA RELACIÓN
+Motivo registrado en ctr_acto_gobierno (objeto_tipo='precedencia', estado_nuevo='NO_CREADA'):
+  "articulado base no disponible (pendiente R3)"
+Evidencia revisada: doc da30ad489dd17af4 (Adenda Mobility 2025, ocr_parcial, único claim = tarifas
+55/75/95) + doc 30b9558b5d4b3494 (anexo tarifas 2024 incorporado) frente a doc 11f114c8c10c53c5
+(Contrato RETAIL 2022, sólo portada, sin articulado ni referencias de cláusula).
+No hay cláusula/alcance/vigencia identificables de modificación o sustitución; además los alcances
+de programa difieren (Mobility vs Retail postventa). El carácter de "adenda" por sí solo no basta (D5).
+
+--- F · SUPERSEDES i2.1-v1 ---
+WS1 (alias)  : 6.121 · determinista/SINGLE_PROGRAM_CLIENT
+               NEUMESSE, S.L. 4.849 · JOCEL LDA 1.272
+WS2 (gama)   : 38.466 · determinista/CONTRACTUAL_MAPPING · mapping_version = mapa v2
+TOTAL i2.1-v1: 44.587 resoluciones nuevas · todas con carga_id (0 nulos)
+identidad_contractual : 'no_establecida' en el 100% (claims PENDING, FH-3 no satisfecho)
+
+--- G · DISTRIBUCIÓN VIGENTE (125.752 OTs) ---
+                              antes (i2)      después (i2.1)
+determinista CONTRACTUAL_MAPPING    5.674            44.140
+determinista SINGLE_PROGRAM_CLIENT 19.456            25.577
+ambiguous                          85.884            47.418
+sin_cliente                        14.738             8.617
+identidad_contractual='establecida'     0                 0
+
+--- H · INTEGRIDAD / GOBIERNO ---
+vigentes totales / OTs distintas : 125752 / 125752              PASS
+OTs con más de una vigente       : 0                            PASS
+cerradas sin superseded_by_id    : 0                            PASS
+vigentes con superseded_by_id    : 0                            PASS
+fingerprints duplicados          : 0                            PASS
+claims VALIDATED                 : 0                            PASS
+ctr_programa_servicio            : 0 (deliberado)               PASS
+ctr_precedencia                  : 0 (decisión C documentada)   PASS
+
+--- I · SEGURIDAD ---
+Consulta de privilegios sobre TODAS las tablas ctr_*: 0 filas con INSERT/UPDATE/DELETE
+para anon/authenticated/authenticator y 0 tablas sin RLS.                     PASS
+Objetos nuevos de I2.1: sin DDL de tablas nuevas (sólo filas en tablas ya gobernadas),
+por lo que RLS+ACL heredan la política ya verificada en I2/N-07.
+
+--- J · IDEMPOTENCIA ---
+Re-ejecución del selector WS2 tras el cierre: 0 candidatos residuales (excluye las 812
+'Sin clasificar', sin item de mapa).                                          PASS
+WS1 no reproduce candidatos: los literales ya no resuelven 'sin_cliente'.     PASS
+Guarda de carga: el bloque B aborta si existe ctr_carga artefacto_ref='I2.1-WS2-gama'. PASS
+
+=== VEREDICTO ===
+I2.1 REMEDIATION · PASS (A + B + C dentro del scope cerrado)
+- ops_* ZERO DIFF · src/ ZERO DIFF · 0 deploys
+- i1-v1 e i2-v1 intactos; todo cambio vía contexto i2.1-v1 + supersede
+- 44.587 OTs con resolución mejor soportada; ambigüedad 85.884 -> 47.418 sin forzar nada
+- identidad_contractual sigue en 0: correcto, no hay claim VALIDATED (FH-3)
+I3 y Gate B: NO-GO.
