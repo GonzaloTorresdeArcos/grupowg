@@ -1,0 +1,118 @@
+=== I2 N-00 DIAGNOSTICOS · Mon Aug 31 00:47:59 UTC 2026 ===
+
+PREFLIGHT: hash_ops=4ade3062cb618cbd5e40e313303ad47c (44 fn) OK | inventario 20/1/12 OK | ops_cliente_contrato_alias=15 OK | ctr_resolucion i1-v1=125752 OK | BASELINE K md5(fingerprints)=94e571b86dcd3cbb1b62480503f5929d | git limpio OK
+
+--- (a) LITERALES sin_cliente (vigentes) ---
+                                 literal                                 | ots  
+-------------------------------------------------------------------------+------
+ NEUMESSE, S.L.                                                          | 4849
+ ESPRINET IBERICA, SLU                                                   | 2281
+ EVVO HOME EUROPE, S.L.U.                                                | 1952
+ JOCEL LDA                                                               | 1272
+ TELEFAC                                                                 | 1124
+ STREAMVIEW GMBH                                                         |  905
+ PLUS ULTRA SEGUROS                                                      |  490
+ BERMELLO S.A                                                            |  340
+ MX ELECTRO - MTX MOTOR EXPERT                                           |  325
+ DENVER A.S. SPAIN S.A.                                                  |  169
+ PROXY EUROGROUP, S.L (TENSAI)                                           |  143
+ IDIOMUND S.L.                                                           |  103
+ ALPHA DIGITAL ELECTRONICS S.L.U.                                        |   96
+ RETINNA, S.L.                                                           |   94
+ COMPANJON SERVICES DAC                                                  |   68
+ IBERGASTRO HOSTERIA, S.L.                                               |   67
+ POCKETBOOK READERS GMBH                                                 |   63
+ TREVI, S.P.A                                                            |   59
+ CODILAMAR, S.L.                                                         |   44
+ ASOCIACION CANARIA DE ELECTRODOMESTICOS ACADESA, S.A.                   |   38
+ M.T. DISTRIBUTION - PLATUM                                              |   36
+ KREA PROFESSIONAL, S.L.                                                 |   35
+ (null)                                                                  |   24
+ ERSM INSURANCE BROKERS, S.A.                                            |   24
+ EROSKI, S. COOP                                                         |   24
+ TELETRONIC, S.A                                                         |   21
+ SCHNEIDER CONSUMER IBERIA S.L.                                          |   17
+ SURSTOCK, S.L                                                           |   14
+ CMP                                                                     |   13
+ SEGROBE, S.A.                                                           |    9
+ STREAMVIEW IBERIA, S.L.                                                 |    8
+ SIMFER                                                                  |    7
+ WORTEN CANARIAS                                                         |    4
+ METZ DISPLAY POLSKA SP. Z O.O.                                          |    4
+ EICO AS                                                                 |    4
+ ELDISSER, S.A.                                                          |    3
+ SIDEPAR                                                                 |    3
+ SNC (OIA)                                                               |    1
+ PRODUCTOS DE CONSUMO Y ELECTRODOMESTICOS DE MADRID, S.L (ELECTROCASION) |    1
+ SIDEME                                                                  |    1
+ MELCHIONI S.P.A.                                                        |    1
+ IARP                                                                    |    1
+ STELA CLIENTE                                                           |    1
+(43 rows)
+
+--- (b) INPUT DISCRIMINANT REPORT METRO/MAKRO ---
+Columnas REALES de ops_fact_ot consideradas: cliente_wg, gama_real, gama_origen, marca, sat, delegacion, canal, seccion, familia, subfamilia, fecha_creacion. NO existe en ops_fact_ot ningun campo de cuenta/contrato/flujo.
+     cliente_wg     |  n   | marca_pct | marca_dist | sat_pct | sat_dist | del_pct | del_dist | canal_pct | canal_dist | go_pct | go_dist | sec_dist 
+--------------------+------+-----------+------------+---------+----------+---------+----------+-----------+------------+--------+---------+----------
+ MAKRO              | 4432 |     100.0 |         19 |    98.1 |      171 |    46.8 |        5 |      65.6 |          3 |   98.2 |       2 |        3
+ METRO MARKETS GMBH | 1242 |     100.0 |          3 |    99.4 |      140 |    37.6 |        5 |      62.1 |          3 |   71.1 |       2 |        3
+(2 rows)
+
+     cliente_wg     |  gama_real  | count 
+--------------------+-------------+-------
+ MAKRO              | Profesional |  4432
+ METRO MARKETS GMBH | Profesional |  1242
+(2 rows)
+
+     cliente_wg     | anio | count 
+--------------------+------+-------
+ MAKRO              | 2025 |  2884
+ MAKRO              | 2026 |  1548
+ METRO MARKETS GMBH | 2025 |   403
+ METRO MARKETS GMBH | 2026 |   839
+(4 rows)
+
+Lectura campo a campo (OTs vigentes ambiguas METRO/MAKRO = 5674 = 4432 MAKRO + 1242 METRO MARKETS GMBH):
+ - cliente_wg  : completitud 100%, 2 valores distintos, estable 2025 y 2026, SEPARA de forma determinista (particion exacta y disjunta).
+ - gama_real   : 100% 'Profesional' en ambos -> NO separa.
+ - gama_origen : 2 valores compartidos, completitud 98%/71% -> NO separa.
+ - marca       : 19 vs 3 valores, solapamiento -> NO separa de forma determinista.
+ - sat         : 171 vs 140 valores, solapamiento -> NO separa.
+ - delegacion  : 5 vs 5 valores, completitud 47%/38% -> NO separa.
+ - canal       : 3 vs 3 valores, completitud 66%/62% -> NO separa.
+ - seccion     : 3 vs 3 valores -> NO separa.
+ - No existen campos de cuenta/contrato/flujo en ops_fact_ot (verificado sobre information_schema): PROHIBIDO inventarlos.
+
+CONCLUSION N-00(b): A — discriminante determinista y gobernable.
+ El unico discriminante es el literal ERP cliente_wg (dimension campo_ot). Es gobernable porque el master
+ contractual tiene dos cadenas independientes y los literales normalizados corresponden a las razones sociales:
+   'MAKRO'              -> Makro Autoservicio Mayorista (ES, grupo METRO) -> programa 'Makro HORECA' (Contrato-adenda 2022)
+   'METRO MARKETS GMBH' -> Metro Markets GmbH (DE, grupo METRO)           -> programa 'Metro Markets marketplace' (Contrato 2025)
+ Soporte: maestro_gobernado. NO altera identidad_contractual (claims PENDING -> no_establecida).
+--- (c) MASTER METRO/MAKRO ---
+         razon_social         | pais | grupo_legal 
+------------------------------+------+-------------
+ Makro Autoservicio Mayorista | ES   | METRO
+ Metro Markets GmbH           | DE   | METRO
+(2 rows)
+
+          nombre           | estado  | effective_from 
+---------------------------+---------+----------------
+ Makro HORECA              | vigente | 2022-01-01
+ Metro Markets marketplace | vigente | 2025-01-01
+(2 rows)
+
+          nombre           |        titulo        | tipo_instrumento 
+---------------------------+----------------------+------------------
+ Makro HORECA              | Contrato-adenda 2022 | contrato
+ Metro Markets marketplace | Contrato 2025        | contrato
+(2 rows)
+
+          nombre           |      entidad_nombre      |   rol    
+---------------------------+--------------------------+----------
+ Makro HORECA              | Serseguro SL             | contrata
+ Makro HORECA              | Hiperservice de Arcos SL | ejecuta
+ Metro Markets marketplace | Hiperservice de Arcos SL | contrata
+(3 rows)
+
+N-00(c) OK: 2 contrapartes, 2 programas, 2 instrumentos y partes independientes -> cadenas independientes CONFIRMADO.

@@ -1,0 +1,167 @@
+Pager usage is off.
+=== A · INVENTARIO ops_* (debe ser 20/1/12) + HASH 44 FUNCIONES ===
+ tablas | vistas | triggers | alias 
+--------+--------+----------+-------
+     20 |      1 |       12 |    15
+(1 row)
+
+          hash_conjunto           | n  
+----------------------------------+----
+ 4ade3062cb618cbd5e40e313303ad47c | 44
+(1 row)
+
+=== B · NUEVOS OBJETOS I2 ===
+              relname              | rls 
+-----------------------------------+-----
+ ctr_alias_propuesta               | t
+ ctr_aplicabilidad                 | t
+ ctr_claim                         | t
+ ctr_correspondencia_operativa     | t
+ ctr_gobierno_config               | t
+ ctr_mapa_contractual_item         | t
+ ctr_mapa_contractual_version      | t
+ ctr_precedencia                   | t
+ ctr_regla_aplicabilidad_predicado | t
+ ctr_regla_aplicabilidad_scope     | t
+ ctr_regla_definicion              | t
+ ctr_regla_version                 | t
+(12 rows)
+
+=== C · CONTEOS I2 ===
+                 t                 | count 
+-----------------------------------+-------
+ ctr_alias_propuesta               |     0
+ ctr_aplicabilidad                 |     8
+ ctr_claim                         |    19
+ ctr_correspondencia_operativa     |     2
+ ctr_gobierno_config               |     1
+ ctr_mapa_contractual_item         |     2
+ ctr_mapa_contractual_version      |     1
+ ctr_precedencia                   |     0
+ ctr_programa_servicio             |     0
+ ctr_regla_aplicabilidad_predicado |     8
+ ctr_regla_aplicabilidad_scope     |     8
+ ctr_regla_definicion              |     8
+ ctr_regla_version                 |     8
+(13 rows)
+
+=== D · CLAIMS por estado (VALIDATED debe ser 0) ===
+ estado  | count 
+---------+-------
+ PENDING |    19
+(1 row)
+
+=== E · READINESS (ninguna APPLICABLE / NOT_APPLICABLE) ===
+        estado         |             reason_code             | count 
+-----------------------+-------------------------------------+-------
+ INSUFFICIENT_EVIDENCE | claim_pending                       |     5
+ INSUFFICIENT_EVIDENCE | claim_pending+calendario_no_cargado |     3
+(2 rows)
+
+=== F · BASELINE K · i1-v1 INTACTO (125752 | 94e571b86dcd3cbb1b62480503f5929d) ===
+   n    |              md5_fp              
+--------+----------------------------------
+ 125752 | 94e571b86dcd3cbb1b62480503f5929d
+(1 row)
+
+=== G · VIGENTES: distribucion resultado/metodo ===
+  resultado   |        metodo         | count 
+--------------+-----------------------+-------
+ ambiguous    | (null)                | 85884
+ determinista | SINGLE_PROGRAM_CLIENT | 19456
+ sin_cliente  | (null)                | 14738
+ determinista | CONTRACTUAL_MAPPING   |  5674
+(4 rows)
+
+ total_vigentes | ots_distintas | identidad_establecida 
+----------------+---------------+-----------------------
+         125752 |        125752 |                     0
+(1 row)
+
+=== H · SUPERSEDE COHERENTE ===
+ cerradas_sin_enlace | cerradas_sin_fecha | vigentes_enlazadas 
+---------------------+--------------------+--------------------
+                   0 |                  0 |                  0
+(1 row)
+
+ ots_con_mas_de_una_vigente 
+----------------------------
+                          0
+(1 row)
+
+=== I · FH-3: identidad establecida solo con metodo valido ===
+ violaciones 
+-------------
+           0
+(1 row)
+
+=== J · LINAJE: toda fila I2 con carga_id ===
+ claim | regla_version | correspondencia | mapa_item | resoluciones_i2 
+-------+---------------+-----------------+-----------+-----------------
+     0 |             0 |               0 |         0 |               0
+(1 row)
+
+=== K · SEGURIDAD: escritura anon/authenticated en tablas I2 ===
+               tabla               |      rol      | sel | ins | upd | del 
+-----------------------------------+---------------+-----+-----+-----+-----
+ ctr_alias_propuesta               | anon          | f   | f   | f   | f
+ ctr_alias_propuesta               | authenticated | t   | f   | f   | f
+ ctr_alias_propuesta               | authenticator | f   | f   | f   | f
+ ctr_aplicabilidad                 | anon          | f   | f   | f   | f
+ ctr_aplicabilidad                 | authenticated | t   | f   | f   | f
+ ctr_aplicabilidad                 | authenticator | f   | f   | f   | f
+ ctr_claim                         | anon          | f   | f   | f   | f
+ ctr_claim                         | authenticated | t   | f   | f   | f
+ ctr_claim                         | authenticator | f   | f   | f   | f
+ ctr_correspondencia_operativa     | anon          | f   | f   | f   | f
+ ctr_correspondencia_operativa     | authenticated | t   | f   | f   | f
+ ctr_correspondencia_operativa     | authenticator | f   | f   | f   | f
+ ctr_gobierno_config               | anon          | f   | f   | f   | f
+ ctr_gobierno_config               | authenticated | t   | f   | f   | f
+ ctr_gobierno_config               | authenticator | f   | f   | f   | f
+ ctr_mapa_contractual_item         | anon          | f   | f   | f   | f
+ ctr_mapa_contractual_item         | authenticated | t   | f   | f   | f
+ ctr_mapa_contractual_item         | authenticator | f   | f   | f   | f
+ ctr_mapa_contractual_version      | anon          | f   | f   | f   | f
+ ctr_mapa_contractual_version      | authenticated | t   | f   | f   | f
+ ctr_mapa_contractual_version      | authenticator | f   | f   | f   | f
+ ctr_precedencia                   | anon          | f   | f   | f   | f
+ ctr_precedencia                   | authenticated | t   | f   | f   | f
+ ctr_precedencia                   | authenticator | f   | f   | f   | f
+ ctr_regla_aplicabilidad_predicado | anon          | f   | f   | f   | f
+ ctr_regla_aplicabilidad_predicado | authenticated | t   | f   | f   | f
+ ctr_regla_aplicabilidad_predicado | authenticator | f   | f   | f   | f
+ ctr_regla_aplicabilidad_scope     | anon          | f   | f   | f   | f
+ ctr_regla_aplicabilidad_scope     | authenticated | t   | f   | f   | f
+ ctr_regla_aplicabilidad_scope     | authenticator | f   | f   | f   | f
+ ctr_regla_definicion              | anon          | f   | f   | f   | f
+ ctr_regla_definicion              | authenticated | t   | f   | f   | f
+ ctr_regla_definicion              | authenticator | f   | f   | f   | f
+ ctr_regla_version                 | anon          | f   | f   | f   | f
+ ctr_regla_version                 | authenticated | t   | f   | f   | f
+ ctr_regla_version                 | authenticator | f   | f   | f   | f
+(36 rows)
+
+
+=== GATES T1–T10 (I2) ===
+T1  claim no puede nacer/pasar a VALIDATED por DML directo ......... PASS (trigger ctr_claim_no_validated)
+T2  ctr_regla_version inmutable (UPDATE/DELETE bloqueado) .......... PASS (rollback)
+T3  sin correspondencia APPROVED no hay APPLICABLE ................. PASS (readiness = INSUFFICIENT_EVIDENCE)
+T4  dato ausente NUNCA produce NOT_APPLICABLE ...................... PASS (D4 respetado)
+T5  predicado actividad='INSTALL' sin dato -> INSUFFICIENT_EVIDENCE  PASS (reason dato_ausente_actividad)
+T6  2 regla_version en conflicto sin precedencia -> CONFLICTING ..... PASS (sin ganador por fecha/tipo)
+T7  resolucion i1-v1 inmutable (UPDATE payload / DELETE) ........... PASS (rollback)
+T8  supersede sin actor gobernado -> 'no autorizado: sesion sin usuario' PASS
+T9  una sola resolucion vigente por OT ............................. PASS (0 duplicadas, ux_ctr_resolucion_vigente)
+T10 anon/authenticator sin acceso; authenticated solo SELECT ....... PASS (bloque K)
+
+=== VEREDICTO ===
+PREFLIGHT PASS · N-00..N-07 PASS · POSTFLIGHT A–K PASS
+- ops_* ZERO DIFF: 20/1/12, alias 15, hash 44 fn = 4ade3062cb618cbd5e40e313303ad47c
+- Baseline K i1-v1 INTACTO: 125752 | 94e571b86dcd3cbb1b62480503f5929d
+- Contexto i2-v1: 5.674 resoluciones superseded (METRO/MAKRO), 120.078 sin tocar
+- identidad_contractual='establecida': 0 (19 claims PENDING)
+- ctr_programa_servicio: 0 (deliberado)
+- ctr_alias_propuesta: 0 (ningun alias alterado; el mapa contractual no toca ctr_alias_*)
+- Linter: 15 WARN SECURITY DEFINER heredados de I1; ninguno nuevo (funcion I2 es SECURITY INVOKER)
+I3 y publicacion compliance: NO-GO.

@@ -190,6 +190,75 @@ export type Database = {
           },
         ]
       }
+      ctr_alias_propuesta: {
+        Row: {
+          carga_id: string | null
+          cliente_destino_id: string | null
+          creado_en: string
+          estado: string
+          evidencia_fuente: string
+          evidencia_ref: string | null
+          id: string
+          literal_erp: string
+          motivo_decision: string | null
+          n_ots_estimado: number | null
+          propuesto_por_nombre: string | null
+          revisado_por_nombre: string | null
+          revision_reforzada: boolean
+          sistema_origen: string
+          tipo_operacion: string
+        }
+        Insert: {
+          carga_id?: string | null
+          cliente_destino_id?: string | null
+          creado_en?: string
+          estado?: string
+          evidencia_fuente: string
+          evidencia_ref?: string | null
+          id?: string
+          literal_erp: string
+          motivo_decision?: string | null
+          n_ots_estimado?: number | null
+          propuesto_por_nombre?: string | null
+          revisado_por_nombre?: string | null
+          revision_reforzada?: boolean
+          sistema_origen?: string
+          tipo_operacion: string
+        }
+        Update: {
+          carga_id?: string | null
+          cliente_destino_id?: string | null
+          creado_en?: string
+          estado?: string
+          evidencia_fuente?: string
+          evidencia_ref?: string | null
+          id?: string
+          literal_erp?: string
+          motivo_decision?: string | null
+          n_ots_estimado?: number | null
+          propuesto_por_nombre?: string | null
+          revisado_por_nombre?: string | null
+          revision_reforzada?: boolean
+          sistema_origen?: string
+          tipo_operacion?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_alias_propuesta_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_alias_propuesta_cliente_destino_id_fkey"
+            columns: ["cliente_destino_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_cliente"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctr_alias_set_item: {
         Row: {
           carga_id: string | null
@@ -280,6 +349,64 @@ export type Database = {
             columns: ["carga_id"]
             isOneToOne: false
             referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_aplicabilidad: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          estado: string
+          evaluado_en: string
+          id: string
+          programa_id: string
+          reason_code: string
+          regla_version_id: string
+          scope_version: number
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          estado: string
+          evaluado_en?: string
+          id?: string
+          programa_id: string
+          reason_code: string
+          regla_version_id: string
+          scope_version: number
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          evaluado_en?: string
+          id?: string
+          programa_id?: string
+          reason_code?: string
+          regla_version_id?: string
+          scope_version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_aplicabilidad_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_aplicabilidad_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_aplicabilidad_regla_version_id_fkey"
+            columns: ["regla_version_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_version"
             referencedColumns: ["id"]
           },
         ]
@@ -451,6 +578,83 @@ export type Database = {
             columns: ["carga_id"]
             isOneToOne: false
             referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_claim: {
+        Row: {
+          carga_id: string | null
+          categoria: string
+          contrato_id: string | null
+          creado_en: string
+          doc_id: string
+          enunciado: string
+          estado: string
+          extraido_por: string | null
+          id: string
+          notas: string | null
+          programa_id: string | null
+          ref_pagina: string | null
+          valor_estructurado: Json | null
+        }
+        Insert: {
+          carga_id?: string | null
+          categoria: string
+          contrato_id?: string | null
+          creado_en?: string
+          doc_id: string
+          enunciado: string
+          estado?: string
+          extraido_por?: string | null
+          id?: string
+          notas?: string | null
+          programa_id?: string | null
+          ref_pagina?: string | null
+          valor_estructurado?: Json | null
+        }
+        Update: {
+          carga_id?: string | null
+          categoria?: string
+          contrato_id?: string | null
+          creado_en?: string
+          doc_id?: string
+          enunciado?: string
+          estado?: string
+          extraido_por?: string | null
+          id?: string
+          notas?: string | null
+          programa_id?: string | null
+          ref_pagina?: string | null
+          valor_estructurado?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_claim_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_claim_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_contrato"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_claim_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_claim_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
             referencedColumns: ["id"]
           },
         ]
@@ -734,6 +938,75 @@ export type Database = {
           },
         ]
       }
+      ctr_correspondencia_operativa: {
+        Row: {
+          aprobado_por_nombre: string | null
+          campo_erp: string
+          carga_id: string | null
+          concepto_contractual: string
+          creado_en: string
+          determinista: boolean
+          dimension: string
+          effective_from: string | null
+          effective_to: string | null
+          estado: string
+          evidencia_ref: string
+          id: string
+          programa_id: string | null
+          tipo_soporte: string
+          valor_literal: string
+        }
+        Insert: {
+          aprobado_por_nombre?: string | null
+          campo_erp: string
+          carga_id?: string | null
+          concepto_contractual: string
+          creado_en?: string
+          determinista: boolean
+          dimension: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado?: string
+          evidencia_ref: string
+          id?: string
+          programa_id?: string | null
+          tipo_soporte: string
+          valor_literal: string
+        }
+        Update: {
+          aprobado_por_nombre?: string | null
+          campo_erp?: string
+          carga_id?: string | null
+          concepto_contractual?: string
+          creado_en?: string
+          determinista?: boolean
+          dimension?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado?: string
+          evidencia_ref?: string
+          id?: string
+          programa_id?: string | null
+          tipo_soporte?: string
+          valor_literal?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_correspondencia_operativa_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_correspondencia_operativa_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctr_documento: {
         Row: {
           carga_id: string | null
@@ -796,6 +1069,36 @@ export type Database = {
           },
         ]
       }
+      ctr_gobierno_config: {
+        Row: {
+          actor_nombre: string | null
+          id: string
+          parametro: string
+          ts: string
+          valor: Json
+          version: number
+          vigente: boolean
+        }
+        Insert: {
+          actor_nombre?: string | null
+          id?: string
+          parametro: string
+          ts?: string
+          valor: Json
+          version?: number
+          vigente?: boolean
+        }
+        Update: {
+          actor_nombre?: string | null
+          id?: string
+          parametro?: string
+          ts?: string
+          valor?: Json
+          version?: number
+          vigente?: boolean
+        }
+        Relationships: []
+      }
       ctr_instrumento_documento: {
         Row: {
           carga_id: string | null
@@ -844,6 +1147,198 @@ export type Database = {
             columns: ["doc_id"]
             isOneToOne: false
             referencedRelation: "ctr_documento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_mapa_contractual_item: {
+        Row: {
+          carga_id: string | null
+          claim_id: string
+          cliente_id: string
+          correspondencia_id: string
+          creado_en: string
+          dimension: string
+          effective_from: string | null
+          effective_to: string | null
+          id: string
+          nota: string | null
+          programa_id: string
+          valor_literal: string
+          version_id: string
+        }
+        Insert: {
+          carga_id?: string | null
+          claim_id: string
+          cliente_id: string
+          correspondencia_id: string
+          creado_en?: string
+          dimension: string
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string
+          nota?: string | null
+          programa_id: string
+          valor_literal: string
+          version_id: string
+        }
+        Update: {
+          carga_id?: string | null
+          claim_id?: string
+          cliente_id?: string
+          correspondencia_id?: string
+          creado_en?: string
+          dimension?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          id?: string
+          nota?: string | null
+          programa_id?: string
+          valor_literal?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_claim"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_correspondencia_id_fkey"
+            columns: ["correspondencia_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_correspondencia_operativa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapa_contractual_item_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_mapa_contractual_version"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_mapa_contractual_version: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          hash_contenido: string
+          id: string
+          nota: string | null
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          hash_contenido: string
+          id?: string
+          nota?: string | null
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          hash_contenido?: string
+          id?: string
+          nota?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_mapa_contractual_version_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_precedencia: {
+        Row: {
+          actor_id: string | null
+          actor_nombre: string | null
+          alcance_nota: string
+          base: string
+          carga_id: string | null
+          cede_id: string
+          cede_tipo: string
+          claim_id: string
+          creado_en: string
+          effective_from: string | null
+          effective_to: string | null
+          estado_gobernanza: string
+          id: string
+          prevalece_id: string
+          prevalece_tipo: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_nombre?: string | null
+          alcance_nota: string
+          base: string
+          carga_id?: string | null
+          cede_id: string
+          cede_tipo: string
+          claim_id: string
+          creado_en?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_gobernanza?: string
+          id?: string
+          prevalece_id: string
+          prevalece_tipo: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_nombre?: string | null
+          alcance_nota?: string
+          base?: string
+          carga_id?: string | null
+          cede_id?: string
+          cede_tipo?: string
+          claim_id?: string
+          creado_en?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_gobernanza?: string
+          id?: string
+          prevalece_id?: string
+          prevalece_tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_precedencia_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_precedencia_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_claim"
             referencedColumns: ["id"]
           },
         ]
@@ -1053,6 +1548,217 @@ export type Database = {
             columns: ["programa_id"]
             isOneToOne: false
             referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_regla_aplicabilidad_predicado: {
+        Row: {
+          carga_id: string | null
+          creado_en: string
+          dimension: string
+          fuente_evidencia: string | null
+          id: string
+          incluir: boolean
+          operador: string
+          orden: number | null
+          scope_id: string
+          valor: Json
+        }
+        Insert: {
+          carga_id?: string | null
+          creado_en?: string
+          dimension: string
+          fuente_evidencia?: string | null
+          id?: string
+          incluir?: boolean
+          operador: string
+          orden?: number | null
+          scope_id: string
+          valor: Json
+        }
+        Update: {
+          carga_id?: string | null
+          creado_en?: string
+          dimension?: string
+          fuente_evidencia?: string | null
+          id?: string
+          incluir?: boolean
+          operador?: string
+          orden?: number | null
+          scope_id?: string
+          valor?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_aplicabilidad_predicado_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_aplicabilidad_predicado_scope_id_fkey"
+            columns: ["scope_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_aplicabilidad_scope"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_regla_aplicabilidad_scope: {
+        Row: {
+          carga_id: string | null
+          claim_id: string | null
+          creado_en: string
+          effective_from: string | null
+          effective_to: string | null
+          estado_gobernanza: string
+          id: string
+          notas: string | null
+          regla_version_id: string
+          version: number
+        }
+        Insert: {
+          carga_id?: string | null
+          claim_id?: string | null
+          creado_en?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_gobernanza?: string
+          id?: string
+          notas?: string | null
+          regla_version_id: string
+          version: number
+        }
+        Update: {
+          carga_id?: string | null
+          claim_id?: string | null
+          creado_en?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          estado_gobernanza?: string
+          id?: string
+          notas?: string | null
+          regla_version_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_aplicabilidad_scope_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_aplicabilidad_scope_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_claim"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_aplicabilidad_scope_regla_version_id_fkey"
+            columns: ["regla_version_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_version"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_regla_definicion: {
+        Row: {
+          carga_id: string | null
+          categoria: string
+          codigo: string
+          creado_en: string
+          id: string
+          nombre: string
+        }
+        Insert: {
+          carga_id?: string | null
+          categoria: string
+          codigo: string
+          creado_en?: string
+          id?: string
+          nombre: string
+        }
+        Update: {
+          carga_id?: string | null
+          categoria?: string
+          codigo?: string
+          creado_en?: string
+          id?: string
+          nombre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_definicion_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_regla_version: {
+        Row: {
+          calendario_requerido: boolean
+          carga_id: string | null
+          claim_id: string
+          creado_en: string
+          fase: string | null
+          id: string
+          parametros: Json
+          regla_id: string
+          unidad: string
+          version: number
+        }
+        Insert: {
+          calendario_requerido?: boolean
+          carga_id?: string | null
+          claim_id: string
+          creado_en?: string
+          fase?: string | null
+          id?: string
+          parametros: Json
+          regla_id: string
+          unidad: string
+          version: number
+        }
+        Update: {
+          calendario_requerido?: boolean
+          carga_id?: string | null
+          claim_id?: string
+          creado_en?: string
+          fase?: string | null
+          id?: string
+          parametros?: Json
+          regla_id?: string
+          unidad?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_version_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_version_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_claim"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_version_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_definicion"
             referencedColumns: ["id"]
           },
         ]
@@ -3294,6 +4000,13 @@ export type Database = {
         Returns: string
       }
       ctr_actor_actual: { Args: never; Returns: Record<string, unknown> }
+      ctr_aplicabilidad_readiness: {
+        Args: { p_programa: string; p_regla_version: string }
+        Returns: {
+          estado: string
+          reason_code: string
+        }[]
+      }
       ctr_aprobar_promocion: { Args: { p_solicitud: string }; Returns: string }
       ctr_promover_evidencia: {
         Args: {
