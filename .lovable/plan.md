@@ -1,59 +1,122 @@
-# PRE-PUBLISH / BASELINE CHECK — solo lectura
+# Norte de producto — WG Operational Performance Intelligence
 
-HEAD = `adf6cafcc6404fc400c5fb969a3803f96ae1ec62` · árbol de trabajo limpio (`git status --porcelain` vacío).
-Producción sirve `assets/index-DIDjkJYi.js` (commit a9c5497, deployment fde91654…).
+Solo análisis. Ninguna escritura, ningún cambio de código, ningún deploy. Todos los gates NO-GO se mantienen.
 
-## A. PENDING TO PUBLISH
+## 0. Qué he verificado en lectura
 
-`git log --oneline a9c5497..HEAD` → 2 commits: `ae33814` (WIP) y `adf6caf` (Migró ops_delegacion_ficha a INVOKER). Ambos tocan exactamente el mismo conjunto de 5 ficheros (el segundo consolida al primero).
+Rutas vivas de `/operaciones` (App.tsx): Panorama, técnicos, delegaciones, costes, sla, dispersión, sats, hub, logística, repuestos, calidad-datos, importar. Navegación V2 en `OpsLayout.tsx` con 5 grupos: Visión ejecutiva · Organización · Cadena de suministro · Rendimiento & coste · Datos. Técnicos vive fuera de grupo (`NAV_EXTRA`).
 
-| Fichero | Clasificación | Efecto runtime en navegador |
-|---|---|---|
-| `supabase/migrations/20260825165959_46d62405-….sql` | SQL-migración | No (ya aplicada en la BD compartida) |
-| `src/lib/__fixtures__/ops-delegacion-ficha-before.json` | fixture | No (solo lo importa un test) |
-| `src/lib/__tests__/ops-delegacion-ficha-fixtures.test.ts` | test | No |
-| `scripts/runtime-rpc-gate.sql` | script | No |
-| `docs/perf/security-definer-pattern.md` | documentación | No |
+Capa contractual en base de datos (lectura):
 
-`git diff --stat a9c5497..HEAD -- src/` excluyendo `__tests__` y `__fixtures__` → **vacío**. Ningún módulo consumido por el navegador cambia; el bundle resultante sería idéntico al publicado.
-
-Estado SQL en BD:
-- `pg_get_functiondef(ops_delegacion_ficha)` contiene `v_asof` → **sí**; `prosecdef = false` (INVOKER, como se decidió).
-- `supabase_migrations.schema_migrations` contiene `20260825115101` → **sí** y `20260825165959` → **sí**.
-- Las 5 versiones más recientes registradas: 20260825165959, 20260825115101, 20260825100956, 20260825100937, 20260825074701 — coinciden con los ficheros de `supabase/migrations`. **0 migraciones pendientes**. `NOTIFY pgrst, 'reload schema'` se emitió en la propia migración y las RPC responden con la firma vigente.
-
-## B. ALREADY ACTIVE IN PROD
-
-- **Frontend**: a9c5497 (session-loss / ACL hardening) está publicado — el bundle remoto es `index-DIDjkJYi.js`, el mismo referenciado en el smoke test previo del deployment fde91654. HTTP 200 en `/`, `/operaciones`, `/operaciones/delegaciones`, `/portal/login`.
-- **Backend**: la optimización de `ops_delegacion_ficha` (adf6caf) **ya está activa** en la BD compartida, porque las migraciones se aplican en el momento de aprobarse, no al publicar. Producción ya se beneficia de los ~96 ms en caliente aunque el commit no esté publicado.
-- ACL: 0 funciones `ops_*` invocables por `anon`. Las 3 coincidencias de `has_function_privilege('anon', …)` son funciones de trigger (`ops_trg_expedicion_compat`, `ops_trg_expedicion_conteos`, `ops_trg_gama_real`, todas `RETURNS trigger`), no expuestas por PostgREST.
-
-## C. RISKS OF PUBLISHING NOW
-
-- **Migraciones**: 0 pendientes; publicar no re-aplica migraciones ya registradas en `schema_migrations`. Las migraciones son aditivas (`CREATE OR REPLACE` + GRANT/REVOKE) y HEAD contiene todas las de las últimas 48 h, por lo que no se revierte nada.
-- **KPIs / payloads**: sin cambios — el diff de `src/` fuera de tests y fixtures es vacío.
-- **Bundle**: idéntico al actual; el riesgo funcional es esencialmente nulo, pero también el beneficio.
-- Riesgo residual único: una publicación innecesaria consume una ventana de despliegue y purga cachés de CDN sin aportar cambio observable.
-
-## D. SMOKE RESULT
-
-| Check | Resultado |
+| Entidad | Filas |
 |---|---|
-| HTTP `/`, `/operaciones`, `/operaciones/delegaciones`, `/portal/login` | 200 / 200 / 200 / 200 |
-| Bundle producción | `assets/index-DIDjkJYi.js` (= a9c5497) |
-| curl anon `ops_kpis` | 401 · 42501 permission denied for function ops_kpis |
-| curl anon `ops_panorama_resumen` | 401 · 42501 permission denied |
-| curl anon `ops_delegaciones` | 401 · 42501 permission denied |
-| Funciones `ops_*` ejecutables por anon (pg_proc) | 0 RPC (solo 3 funciones de trigger) |
-| Usuario management `f2840a10-…` | existe, email confirmado, rol `management` presente (login visual queda para Dirección) |
-| `Dispersion.tsx` | consume solo `ops_dispersion_resumen` (×2, actual+comparable) y `ops_dispersion_detalle`; **0 referencias a `ops_dispersion` legacy** (las coincidencias restantes son comentarios en `ops-dispersion.ts`) |
-| `ops-session-loss.test.tsx` + `ops-session-ux.test.tsx` | **51 tests PASS** (2 ficheros, 5,07 s) |
-| Tiempos de las 8 RPC (ops_kpis, ops_panorama_resumen, ops_delegacion_ficha, ops_delegaciones, ops_sats_ranking, ops_sla_resumen, ops_dispersion_resumen/_detalle) | **NO EJECUTADO** — en modo plan la herramienta de escritura SQL está bloqueada y la de solo lectura corre con un rol sin `EXECUTE` (`permission denied for function is_management`). Última medición conocida (gate del 25-ago, sesión authenticated + management): `ops_kpis` 265/162 ms caliente, `ops_panorama_resumen` ~128 ms, `ops_delegacion_ficha` ~96 ms, `ops_delegaciones` ~664 ms, `ops_dispersion_resumen` ~279 ms. Para reejecutarlo en caliente hace falta modo build. |
+| Contratos | 19 |
+| Programas | 24 |
+| Versiones de regla | 8 |
+| Aplicabilidad | 8 |
+| Resoluciones OT→programa | 176.013 |
+| Claims | 20 (todos PENDING, 0 validados) |
+| Actos de gobierno | 4 |
+| Documentos | 43 |
+| Registro SLA (`ops_sla_registry`) | 36 |
 
-## E. RECOMMENDATION
+Conclusión de estado: la capa contractual tiene ya cobertura de resolución masiva (176k OTs resueltas a programa), pero **cero evidencia validada**. Es exactamente el escenario que el norte describe como "NO EVALUABLE".
 
-**PUBLISH NOT NECESSARY.** HEAD difiere de lo publicado únicamente en una migración SQL **ya aplicada** en la BD compartida (y por tanto ya activa en producción), un fixture, un test, un script de gate y documentación. El diff de código de aplicación (`src/` sin tests ni fixtures) es literalmente vacío, así que el bundle generado por un publish sería byte-equivalente al `index-DIDjkJYi.js` que ya se sirve: cero cambio observable para el usuario.
+## 1. ¿El norte es coherente con lo construido?
 
-Publicar sería razonable solo por higiene de trazabilidad (dejar que el commit publicado coincida con HEAD antes de abrir el siguiente frente de trabajo); es seguro hacerlo, pero no aporta nada al navegador.
+Sí, en lo esencial. Tres confirmaciones y tres tensiones reales.
 
-Pendiente si se quiere cerrar del todo el smoke: reejecutar en modo build el gate de las 8 RPC con sesión authenticated + claims management y umbral en caliente.
+Coherente:
+- El frontend actual ya es diagnóstico, no transaccional: no hay alta/edición de OTs, solo importación de hechos y lectura. La regla "no ERP paralelo" ya se cumple de hecho.
+- `ops_modelo.ts` ya separa naturalezas: el plazo ≤20/≤30 días está declarado explícitamente como REFERENCIA OPERATIVA, no SLA contractual. Es el mismo eje "obligación / objetivo interno / referencia" del norte.
+- La disciplina de "no inventar dato" ya existe: km por técnico está declarado *pendiente de fuente* en vez de mostrarse como 0, y hay una página de Calidad de datos con readiness contractual.
+
+Tensiones a resolver antes de construir:
+1. **La capa contractual no tiene superficie visible.** Toda la inteligencia `ctr_*` (contratos, programas, reglas, resoluciones, claims) existe en datos y no aparece en la navegación V2. Hoy el usuario ve rendimiento sin referencia contractual.
+2. **Riesgo de doble verdad de SLA.** Conviven `ops_sla_registry` (36 filas), la página "SLA & Flujo" basada en referencia operativa, y las reglas contractuales `ctr_regla_version`. Si la futura superficie contractual muestra cumplimiento sin declarar de qué naturaleza es cada cifra, se generan dos números distintos para "SLA" y el cuadro pierde autoridad. Esto hay que cerrarlo por diseño, no por texto de ayuda.
+3. **Cero claims validados.** Cualquier vista de "performance contractual" hoy solo puede devolver NO EVALUABLE con explicación del faltante. Eso es correcto por principio, pero significa que la primera superficie contractual debe estar diseñada para *lucir bien vacía*: su primer trabajo es explicar qué falta, no mostrar porcentajes.
+
+No detecto contradicción de fondo entre el norte y la arquitectura. Detecto una ausencia (superficie) y un riesgo de ambigüedad semántica (naturaleza de la cifra).
+
+## 2. Arquitectura de información futura mínima
+
+Cuatro dominios. La navegación pasa de 5 grupos a 4, absorbiendo lo existente sin renombrar KPIs.
+
+```text
+1. PERFORMANCE (qué está pasando)
+   Panorama operativo            [existe]
+   Organización: HUB / Delegaciones / Red SAT / Técnicos   [existe]
+   Rendimiento: SLA & Flujo / Cobertura / Coste & Capacidad [existe]
+   Cadena: Logística / Repuestos                            [existe]
+
+2. INTELIGENCIA CONTRACTUAL (contra qué medirlo, y si es evaluable)
+   Performance por cliente y programa   [nuevo]
+   Contratos & Programas (mapa)         [nuevo]
+   Evidencia & Validación               [nuevo, subordinado]
+
+3. DIAGNÓSTICO Y MEJORA (por qué, y qué hacer)
+   Diagnóstico de causas                [futuro, depende de §6]
+   Concentración e impacto              [futuro]
+
+4. DATOS
+   Calidad de datos / Importación       [existe]
+```
+
+Regla de separación que atraviesa todo: cada cifra comparada lleva su **naturaleza** explícita — obligación contractual, objetivo interno WG, o referencia operativa — y su **estado de evaluabilidad**. Sin regla aplicable, sin hecho o sin evidencia suficiente ⇒ NO EVALUABLE con el motivo concreto. Nunca cero, nunca cumplimiento supuesto.
+
+Fuera de esta herramienta, por ser ERP o workflow:
+- Alta, edición, asignación o cierre de OTs; planificación y rutas; agenda de técnicos.
+- Gestión administrativa de contratos: alta de contrato, negociación, renovaciones, avisos de vencimiento como tarea.
+- Repositorio documental: subida, versionado y firma de documentos como fin en sí mismo. El documento solo entra como *evidencia referenciada* de una regla.
+- Task manager: asignación de acciones, responsables, plazos, estados de tarea. Las medidas de mejora se recomiendan y se miden por su efecto en el hecho operativo, no se gestionan aquí.
+- Facturación y cobro.
+
+## 3. Reutilizar D-3 / EER-4A / EER-4B sin nomenclatura técnica
+
+Los tres son mecanismos internos de gobierno; el usuario final nunca debe leer sus nombres, ni "claim", ni "acto de gobierno", ni códigos de gate.
+
+| Interno | Cómo aparece al usuario |
+|---|---|
+| D-3 (nombramiento de validador) | Un rol de "Validación contractual" visible solo como *quién puede confirmar una evidencia*. Sin mención al registro ni al acto. |
+| EER-4A (especificación de validación) | Las condiciones que una evidencia debe cumplir, expresadas como texto de negocio: qué hace falta para que este programa sea evaluable. |
+| EER-4B (función de validación construida) | Un botón "Confirmar evidencia" en la pantalla de Evidencia & Validación, disponible solo para el rol de validación. La trazabilidad se muestra como "confirmado por X el día Y", no como acto de gobierno. |
+
+Vocabulario de superficie sugerido: *evidencia* en lugar de claim; *regla aplicable* en lugar de versión de regla; *confirmación* en lugar de validación gobernada; *historial de confirmaciones* en lugar de actos de gobierno.
+
+## 4. Secuencia de gates propuesta (ninguno se ejecuta ahora)
+
+Cada gate requiere orden explícita. Ninguno se abre con este documento.
+
+- **G-A · Cierre semántico.** Documento único que fija, por cada métrica publicable, su naturaleza (obligación / objetivo interno / referencia) y su fuente. Resuelve la tensión de doble SLA. Solo documentación, cero código.
+- **G-B · Contrato de lectura contractual.** Definición de las lecturas agregadas que necesita la superficie: cobertura de resolución, evaluabilidad por programa, motivo de no evaluabilidad. Diseño en papel, sin implementar.
+- **G-C · Superficie de solo lectura "Contratos & Programas".** Primera pantalla visible: mapa de programas, reglas aplicables, vigencia, y estado de evidencia. Sin cifras de cumplimiento todavía.
+- **G-D · Evidencia & Validación.** Expone lo construido en EER-4B con el vocabulario de §3. Requiere que EER-4 real deje de ser NO-GO.
+- **G-E · Performance contractual.** Cumple/no cumple, tendencia, concentración y drill-down. Solo tras G-A y con evidencia confirmada real; hasta entonces mostraría NO EVALUABLE en todo.
+- **G-F · Diagnóstico causal y medidas.** Depende de §6.
+
+Dependencia dura: G-E no puede preceder a G-A, o se publican dos verdades de SLA.
+
+## 5. Dependencias de datos para diagnóstico y mejora
+
+Para pasar de "qué pasa" a "por qué pasa" sin inventar causalidad hacen falta, por orden de valor:
+
+1. **Motivo/causa por OT** — hoy hay `incidencia` y estado, no una taxonomía de causa raíz estable. Sin ella el diagnóstico solo puede ser correlacional.
+2. **Marcas temporales por etapa** — existen creación, primer contacto, primera visita y cierre; falta el reloj de las esperas intermedias (espera de repuesto ya se acerca a esto). Sin etapas no se puede atribuir el retraso a un tramo concreto.
+3. **Disponibilidad y carga real** — días trabajados y ausencias (`ops_rrhh`) siguen pendientes; el Performance Score está declarado provisional por esto. Sin esto, atribuir bajo rendimiento a la persona es incorrecto.
+4. **Evidencia contractual confirmada** — 0 hoy. Sin ella no hay incumplimiento demostrable, solo desviación frente a referencia interna.
+5. **Efecto de medidas** — para recomendar mejoras hay que poder medir el antes/después sobre el mismo hecho operativo; requiere fechar la medida y comparar cohortes, no un estado de tarea.
+
+Norma metodológica: mientras falte 1 o 2, el módulo de Diagnóstico debe declarar la causa como *no determinable con los datos disponibles* y nombrar el dato ausente. Correlación etiquetada como correlación.
+
+## 6. Riesgos de scope creep
+
+- **Hacia ERP**: cualquier petición de "y ya que estamos, asignar la OT desde aquí" o de editar un hecho importado. La herramienta lee hechos; corregir un hecho se hace en origen y se reimporta.
+- **Hacia gestor contractual**: alta y edición de contratos, alertas de vencimiento accionables, flujo de renovación. La vigencia se muestra como contexto para interpretar performance, no como bandeja de trabajo.
+- **Hacia gestor documental**: la pantalla de Evidencia atrae subidas de PDF. El documento entra por referencia; si aparece un buscador de documentos, se ha cruzado la línea.
+- **Hacia task manager**: "Mejora" con responsables, plazos y estados. Se recomienda y se mide el efecto; no se gestiona la ejecución.
+- **Riesgo semántico**: publicar cumplimiento contractual antes de G-A produce dos cifras de SLA distintas. Es el riesgo más caro porque destruye la confianza en todo el cuadro, no solo en la pantalla nueva.
+- **Riesgo de vacío**: la primera superficie contractual mostrará casi todo NO EVALUABLE. Si no se diseña para explicar el faltante con claridad, se leerá como que la herramienta no funciona.
+
+## Estado
+
+Sin cambios en `src/`, base de datos ni despliegue. EER-4 real, EER-3, I3 y Gate B siguen NO-GO.
