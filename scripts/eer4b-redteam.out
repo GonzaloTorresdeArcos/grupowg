@@ -1,0 +1,61 @@
+EER-4B · SECURITY RED TEAM · GUC SPOOFING CHECK (31-08-2026)
+Metodologia: SET LOCAL ROLE authenticated + request.jwt.claims{sub,role} dentro de tx abortada.
+Rol efectivo acreditado en cada intento: current_user=authenticated, session_user=postgres,
+is_superuser=off  → NO superuser / NO service_role / NO owner.
+
+TARGET claim real PENDING = 06cb9bee-0d66-4914-970b-55c9bf690a8e
+
+--- CATALOGO -----------------------------------------------------------------
+authenticated privilegios ctr_claim: SELECT=t INSERT=f UPDATE=f DELETE=f
+policy mgmt_select cmd=SELECT roles={authenticated} using=is_management(auth.uid()) check=-
+(no existen policies INSERT/UPDATE/DELETE para ctr_claim)
+RLS ctr_claim: enabled=t forced=f
+authenticated privilegios ctr_acto_gobierno: sin INSERT
+
+--- INTENTOS (sesion real authenticated, uid f2840a10 = contractual_validator+management)
+SESION - current_user=authenticated session_user=postgres role=authenticated is_superuser=off
+A1 RECON GUC        - lectura de current_setting('ctr.validar',true) PERMITIDA, valor=<null>
+A2 GUC SET          - set_config('ctr.validar','on',true) PERMITIDO, valor=on
+A2b GUC SET LOCAL   - SET LOCAL ctr.validar='on' PERMITIDO, valor=on
+A3 PRIV sesion real - has_table_privilege(authenticated,'ctr_claim','UPDATE')=f INSERT=f SELECT=t
+A4/T-V8 GUC SPOOF + UPDATE DIRECTO - BLOQUEADO: permission denied for table ctr_claim
+A5 INSERT estado='VALIDATED' con GUC on - BLOQUEADO: permission denied for table ctr_claim
+A6 DELETE           - BLOQUEADO: permission denied for table ctr_claim
+A7 INSERT directo en ctr_acto_gobierno - BLOQUEADO: permission denied for table ctr_acto_gobierno
+ESTADO - VALIDATED visibles = 0
+
+--- CONCLUSION ---------------------------------------------------------------
+RESISTE. La GUC ctr.validar ES falseable por cualquier authenticated (custom GUC de usuario),
+pero NO es la frontera de seguridad: authenticated carece de GRANT INSERT/UPDATE/DELETE sobre
+ctr_claim y ctr_acto_gobierno, por lo que el DML se rechaza en el chequeo de privilegios ANTES
+de que el trigger llegue a evaluarse. La GUC solo actua como senal interna de la funcion
+SECURITY DEFINER ctr_validar_claim (unico camino con privilegio de escritura).
+Invariante a preservar en el futuro: NUNCA conceder INSERT/UPDATE sobre ctr_claim ni
+ctr_acto_gobierno a authenticated/anon, ni exponer vistas updatable o funciones definer
+adicionales que escriban esas tablas sin la guardia de ctr_validar_claim. Si eso cambiara,
+la GUC dejaria de ser suficiente y habria que sustituirla por un marcador no falsificable.
+
+--- BATERIA COMPLETA T-V1…T-V8 (sinteticos, tx abortada) · 13/13 PASS --------
+T-V1 PASS - EXCEPTION: no autorizado: se requiere sesion autenticada
+T-V2 PASS - EXCEPTION: proponente no puede validar
+T-V3 PASS - estado=VALIDATED actos=1 accion=validacion rol=contractual_validator
+T-V4a PASS - high_risk=true estado=PENDING accion=validacion_primer_aprobador
+T-V4b PASS - EXCEPTION: mismo actor no computa como dos ojos
+T-V5c PASS - EXCEPTION: no autorizado: la ratificacion requiere rol management
+T-V5a PASS - estado=VALIDATED actos=2 accion=ratificacion_segundo_aprobador
+       acto: validacion_primer_aprobador | actor=f2840a10 | rol=contractual_validator
+       acto: ratificacion_segundo_aprobador | actor=2b4fd0d1 | rol=management
+T-V5d1 PASS - estado=PENDING accion=ratificacion_denegada
+T-V5d2 PASS - fase=1 accion=validacion_primer_aprobador estado=PENDING
+T-V6 PASS - EXCEPTION: ctr_claim: VALIDATED solo por funcion gobernada (ctr_validar_claim)
+T-V7 PASS - EXCEPTION: motivo obligatorio: no puede estar vacio
+T-V8 PASS - rol efectivo=authenticated · GUC spoof + UPDATE → permission denied for table ctr_claim
+REALES - VALIDATED(no test)=0
+
+--- POSTFLIGHT ---------------------------------------------------------------
+ctr_claim: 20 PENDING / 0 VALIDATED
+ctr_acto_gobierno: 4 actos (2 mapeo_identidad, 1 precedencia, 1 nombramiento) = 0 actos nuevos
+hash canonico ops_* = 4ade3062cb618cbd5e40e313303ad47c (44 funciones) = baseline · INTACTO
+grants ctr_validar_claim: anon EXECUTE=false · authenticated EXECUTE=true
+src/ ZERO DIFF · 0 deploys · 0 migraciones · 0 escrituras reales
+Unico cambio en repo: scripts/eer4b-tests.sql (+T-V8) y este scripts/eer4b-redteam.out
