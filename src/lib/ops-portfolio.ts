@@ -428,10 +428,15 @@ export type EntradaEtapas = {
  */
 export const etapasAlcanzadas = (e: EntradaEtapas): EtapaReadiness[] => {
   const cumple: Record<EtapaReadiness, boolean> = {
+    // Un claim visible procede de un documento descubierto. No se agrega este
+    // hecho a nivel cartera: el inventario documental NO está gobernado en BD.
     DESCUBIERTA: true,
-    REPRESENTADA: e.tieneRegla,
+    // P0.4 · REPRESENTADA no depende de tener regla: el claim existe en
+    // `ctr_claim` precisamente porque ya está representado.
+    REPRESENTADA: true,
     VALIDADA: e.claimEstado === "VALIDATED",
-    APLICABLE: e.readinessEstado === "APPLICABLE",
+    // APLICABLE exige regla derivada Y readiness que lo sostenga.
+    APLICABLE: e.tieneRegla && e.readinessEstado === "APPLICABLE",
     EVALUABLE: false,
     EVALUADA: false,
   };
@@ -442,6 +447,7 @@ export const etapasAlcanzadas = (e: EntradaEtapas): EtapaReadiness[] => {
   }
   return out;
 };
+
 
 /** Estados terminales que NO representan progreso sino exclusión de ámbito. */
 export const esFueraDeAmbito = (estado: string | null | undefined): boolean =>
