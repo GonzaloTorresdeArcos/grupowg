@@ -3,9 +3,12 @@
  *
  * Regla P0 de este módulo: aquí NO se calcula ningún KPI ni se afirma ninguna
  * obligación. Todo lo que se muestra procede literalmente de las RPC
- * `ctr_portfolio_resumen`, `ctr_portfolio_arbol`, `ctr_programa_ficha` y
- * `ctr_obligaciones_programa`. Este fichero solo traduce códigos técnicos a
- * castellano de gestión y nombra los estados de degradación.
+ * `ctr_portfolio_resumen`, `ctr_portfolio_arbol`, `ctr_portfolio_no_resueltas`,
+ * `ctr_programa_ficha` y `ctr_obligaciones_programa`. Este fichero solo traduce
+ * códigos técnicos a castellano de gestión y nombra los estados de degradación.
+ *
+ * PRV-A1: prohibido cualquier pseudo-score. Readiness es una secuencia de
+ * ETAPAS categóricas reales, no una magnitud ponderada.
  */
 
 export type PortfolioResumenFila = {
@@ -13,14 +16,29 @@ export type PortfolioResumenFila = {
   vertical_nombre: string;
   n_programas: number;
   n_clientes: number;
+  /** Población CONTRACTUAL RESUELTA: OTs asignadas determinísticamente a programa. */
   n_ots: number;
+  /** OTs con cliente contractual reconocido pero SIN programa resoluble. */
+  n_ots_cliente_identificado: number;
   n_instrumentos: number;
   n_claims: number;
   claims_validated: number;
   claims_pending: number;
   n_reglas: number;
   n_aplicabilidad: number;
-  n_ots_importe_informado: number;
+  n_ots_importe_no_cero: number;
+  n_ots_importe_cero: number;
+  n_ots_importe_nulo: number;
+};
+
+export type PortfolioNoResueltaFila = {
+  clase: "cliente_identificado_sin_programa" | "identidad_no_establecida" | string;
+  cliente_wg_origen: string | null;
+  cliente_nombre: string | null;
+  vertical_codigo: string | null;
+  vertical_nombre: string | null;
+  n_programas_candidatos: number;
+  n_ots: number;
 };
 
 export type PortfolioArbolFila = {
@@ -64,6 +82,12 @@ export type ProgramaFicha = {
     contraparte: string | null;
     alcance_nota: string | null;
   }[];
+  /** Los DOS universos, explícitos y nunca intercambiables. */
+  poblacion?: {
+    resuelta: number;
+    servicio: number;
+    excluidas_anulado_aviso: number;
+  } | null;
   servicio: {
     ots: number;
     cerradas: number;
@@ -78,7 +102,12 @@ export type ProgramaFicha = {
       b_61_90: number; b_90_mas: number; sin_fecha: number;
     };
   };
-  economia: { n_ots_con_importe: number; n_ots_importe_cero: number };
+  economia: {
+    n_ots_importe_no_cero?: number;
+    n_ots_importe_cero?: number;
+    n_ots_importe_nulo?: number;
+    fuente_cargada?: boolean;
+  };
   as_of_operativo: string | null;
 };
 
@@ -105,17 +134,26 @@ export const CODIGO_SIN_RESOLVER = "SIN_RESOLVER";
 
 export const etiquetaSinResolver = (codigo: string): string =>
   codigo === "ambiguous"
-    ? "Identidad contractual ambigua"
+    ? "Cliente identificado · programa contractual no resoluble"
     : codigo === "sin_cliente"
-      ? "Sin cliente contractual identificado"
+      ? "Identidad contractual no establecida"
       : codigo;
+
+export const etiquetaClaseNoResuelta = (clase: string): string =>
+  clase === "cliente_identificado_sin_programa"
+    ? "Cliente identificado · programa contractual no resoluble"
+    : clase === "identidad_no_establecida"
+      ? "Identidad contractual no establecida"
+      : clase;
 
 /** Estados de degradación soportados por la UI. Literales cerrados. */
 export const DEGRADACION = {
   DATO_NO_DISPONIBLE: "DATO NO DISPONIBLE",
   FUENTE_NO_CARGADA: "FUENTE NO CARGADA",
+  FUENTE_NO_RECONCILIADA: "FUENTE CARGADA · NO RECONCILIADA PARA AGREGACIÓN ECONÓMICA",
   OBLIGACION_NO_REPRESENTADA: "OBLIGACIÓN AÚN NO REPRESENTADA EN EL SISTEMA",
-  SIN_POBLACION: "SIN POBLACIÓN OPERATIVA RESUELTA",
+  /** NUNCA significa «no hay OTs»: significa «ninguna OT asignada a programa». */
+  SIN_POBLACION: "SIN POBLACIÓN OPERATIVA RESUELTA A PROGRAMA",
   NO_ATRIBUIBLE: "NO ATRIBUIBLE A PROGRAMA",
   NO_CALCULABLE: "NO CALCULABLE",
   NO_EVALUABLE: "NO EVALUABLE",
@@ -123,11 +161,23 @@ export const DEGRADACION = {
 
 export type DegradacionKey = keyof typeof DEGRADACION;
 
+/** Nombres canónicos de los dos universos de población. */
+export const UNIVERSO = {
+  RESUELTA: "Población contractual/programática resuelta",
+  SERVICIO: "Población operativa de servicio analizada",
+} as const;
+
+export const NOTA_UNIVERSO_RESUELTA =
+  "OTs cuya resolución vigente las asigna determinísticamente a un programa contractual. No excluye nada más.";
+
+export const NOTA_UNIVERSO_SERVICIO =
+  "Subconjunto de la población resuelta sobre el que se miden hitos y plazos: excluye incidencia 'ANULADO AVISO'.";
+
 /** Literal obligatorio cuando un programa no tiene obligaciones representadas. */
 export const TEXTO_SIN_OBLIGACIONES =
   "Obligaciones contractuales aún no representadas en el sistema.";
 
-/** Literal obligatorio para programas sin obligación temporal (p. ej. Clima). */
+/** Literal obligatorio para programas sin obligación temporal representada. */
 export const TEXTO_SIN_OBLIGACION_TEMPORAL =
   "Sin obligación temporal representada actualmente en el sistema.";
 
@@ -137,8 +187,15 @@ export const MARCA_REFERENCIA_INTERNA = "REFERENCIA INTERNA WG";
 export const TEXTO_ECONOMIA_COSTE = "Coste: NO ATRIBUIBLE A PROGRAMA";
 export const TEXTO_ECONOMIA_CONTRIBUCION = "Contribución: NO CALCULABLE";
 
+/**
+ * Nota económica. Dato ausente ≠ cero: el literal habla de importe NO CERO,
+ * nunca de «importe informado».
+ */
 export const notaImporte = (pct: number | null): string =>
-  `El importe por OT está informado solo en el ${pct == null ? "—" : pct.toFixed(1)}% de los casos; no se agrega hasta validar la fuente.`;
+  `El importe por OT (fact_cli) es distinto de cero solo en el ${pct == null ? "—" : pct.toFixed(1)}% de los casos; el resto está a cero, que no equivale a dato ausente. La fuente está cargada pero no reconciliada, por lo que no se agrega.`;
+
+export const TEXTO_ECONOMIA_ESTADO_FUENTE =
+  "Fuente ERP cargada · no validada ni reconciliada para agregación económica.";
 
 /**
  * Traducción de `reason_code` a castellano de gestión.
@@ -200,7 +257,7 @@ export const traducirReasonToken = (token: string): string => {
 /** Etiqueta corta del estado de readiness (nunca semáforo). */
 export const etiquetaReadiness = (estado: string | null | undefined): string => {
   switch (estado) {
-    case "APPLICABLE": return "Preparación completa";
+    case "APPLICABLE": return "Aplicable";
     case "NOT_APPLICABLE": return "Fuera de ámbito";
     case "OUT_OF_VIGENCY": return "Fuera de vigencia";
     case "CONFLICTING": return "Conflicto de reglas";
@@ -209,19 +266,63 @@ export const etiquetaReadiness = (estado: string | null | undefined): string => 
   }
 };
 
-/**
- * Progreso de PREPARACIÓN (0..1). No es rendimiento ni cumplimiento: mide
- * cuánta evidencia falta para que la obligación sea siquiera evaluable.
- */
-export const progresoReadiness = (estado: string | null | undefined, reason: string | null | undefined): number => {
-  if (estado === "APPLICABLE") return 1;
-  if (!estado) return 0;
-  const bloqueos = (reason ?? "").split("+").filter(Boolean).length;
-  if (estado === "NOT_APPLICABLE" || estado === "OUT_OF_VIGENCY") return 1;
-  if (estado === "CONFLICTING") return 0.25;
-  // INSUFFICIENT_EVIDENCE: cuantos más bloqueos, menos preparación.
-  return Math.max(0.1, 1 - Math.min(bloqueos, 4) * 0.225);
+// ── Etapas categóricas de readiness (PRV-A1) ────────────────────────────────
+// Secuencia real del ciclo de vida de una obligación. NO es un porcentaje ni
+// admite ponderación: cada etapa se alcanza o no se alcanza.
+export const ETAPAS_READINESS = [
+  "DESCUBIERTA",
+  "REPRESENTADA",
+  "VALIDADA",
+  "APLICABLE",
+  "EVALUABLE",
+  "EVALUADA",
+] as const;
+
+export type EtapaReadiness = (typeof ETAPAS_READINESS)[number];
+
+export const ETIQUETA_ETAPA: Record<EtapaReadiness, string> = {
+  DESCUBIERTA: "Descubierta",
+  REPRESENTADA: "Representada",
+  VALIDADA: "Validada",
+  APLICABLE: "Aplicable",
+  EVALUABLE: "Evaluable",
+  EVALUADA: "Evaluada",
 };
+
+export type EntradaEtapas = {
+  /** `ctr_claim.estado` */
+  claimEstado: string | null | undefined;
+  /** Existe una `ctr_regla_version` derivada del claim. */
+  tieneRegla: boolean;
+  /** `readiness_estado` devuelto por el motor. */
+  readinessEstado: string | null | undefined;
+};
+
+/**
+ * Etapas alcanzadas, como prefijo contiguo. Sin pesos, sin descuentos, sin %.
+ * EVALUABLE y EVALUADA no son alcanzables hoy: no existe motor de evaluación
+ * habilitado (ni reloj contractual). Se muestran como etapas pendientes.
+ */
+export const etapasAlcanzadas = (e: EntradaEtapas): EtapaReadiness[] => {
+  const cumple: Record<EtapaReadiness, boolean> = {
+    DESCUBIERTA: true,
+    REPRESENTADA: e.tieneRegla,
+    VALIDADA: e.claimEstado === "VALIDATED",
+    APLICABLE: e.readinessEstado === "APPLICABLE",
+    EVALUABLE: false,
+    EVALUADA: false,
+  };
+  const out: EtapaReadiness[] = [];
+  for (const etapa of ETAPAS_READINESS) {
+    if (!cumple[etapa]) break;
+    out.push(etapa);
+  }
+  return out;
+};
+
+/** Estados terminales que NO representan progreso sino exclusión de ámbito. */
+export const esFueraDeAmbito = (estado: string | null | undefined): boolean =>
+  estado === "NOT_APPLICABLE" || estado === "OUT_OF_VIGENCY";
 
 export const pctSeguro = (num: number, den: number): number | null =>
   den > 0 ? (num / den) * 100 : null;

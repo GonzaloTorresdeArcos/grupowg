@@ -9,19 +9,26 @@ import {
   CODIGO_SIN_RESOLVER,
   DEGRADACION,
   MARCA_REFERENCIA_INTERNA,
+  NOTA_UNIVERSO_RESUELTA,
+  NOTA_UNIVERSO_SERVICIO,
   TEXTO_ECONOMIA_CONTRIBUCION,
   TEXTO_ECONOMIA_COSTE,
+  TEXTO_ECONOMIA_ESTADO_FUENTE,
   TEXTO_SIN_OBLIGACIONES,
   TEXTO_SIN_OBLIGACION_TEMPORAL,
+  UNIVERSO,
+  etiquetaClaseNoResuelta,
   etiquetaSinResolver,
   notaImporte,
   pctSeguro,
   traducirReason,
   type ObligacionFila,
   type PortfolioArbolFila,
+  type PortfolioNoResueltaFila,
   type PortfolioResumenFila,
   type ProgramaFicha,
 } from "@/lib/ops-portfolio";
+
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">{children}</p>
@@ -55,13 +62,18 @@ const pct1 = (v: number | null | undefined) =>
   v == null || Number.isNaN(Number(v)) ? null : `${(Number(v) * 100).toFixed(1)}%`;
 
 // ── Economía (idéntica en todas las tarjetas, campos SIEMPRE visibles) ──────
-const BloqueEconomia = ({ con, total }: { con: number; total: number }) => {
-  const p = pctSeguro(con, total);
+// Dato ausente ≠ cero. Se cuentan por separado importe no cero, importe cero
+// y importe nulo, y nunca se agrega ni se promedia.
+const BloqueEconomia = ({ noCero, cero, nulo, total }: {
+  noCero: number; cero: number; nulo: number; total: number;
+}) => {
+  const p = pctSeguro(noCero, total);
   return (
     <Bloque titulo="Economía">
       <Dato
-        label="OTs con importe informado"
-        valor={total > 0 ? `${fmtNum(con)} de ${fmtNum(total)} (${p == null ? "—" : p.toFixed(1)}%)` : null}
+        label="OTs con importe no cero (fact_cli ≠ 0)"
+        valor={total > 0 ? `${fmtNum(noCero)} de ${fmtNum(total)} (${p == null ? "—" : p.toFixed(1)}%)` : null}
+        nota={total > 0 ? `${fmtNum(cero)} a cero · ${fmtNum(nulo)} sin importe informado` : undefined}
         degradado={DEGRADACION.SIN_POBLACION}
       />
       <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
@@ -70,64 +82,99 @@ const BloqueEconomia = ({ con, total }: { con: number; total: number }) => {
       <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
         {TEXTO_ECONOMIA_CONTRIBUCION}
       </p>
+      <p className="text-[10.5px] text-ink/45 leading-snug">{TEXTO_ECONOMIA_ESTADO_FUENTE}</p>
       <p className="text-[10.5px] text-ink/45 leading-snug">{notaImporte(p)}</p>
     </Bloque>
   );
 };
 
 // ── Vista 1 · verticales ────────────────────────────────────────────────────
-const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () => void }) => (
-  <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
-    <header className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
-        <Eyebrow>Vertical</Eyebrow>
-        <h2 className="heading-display text-xl text-ink truncate">{f.vertical_nombre}</h2>
-        <p className="text-[11px] text-ink/45 font-mono">{f.vertical_codigo}</p>
+const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () => void }) => {
+  const identificadas = Number(f.n_ots_cliente_identificado || 0);
+  const resueltas = Number(f.n_ots || 0);
+  return (
+    <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
+      <header className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <Eyebrow>Vertical</Eyebrow>
+          <h2 className="heading-display text-xl text-ink truncate">{f.vertical_nombre}</h2>
+          <p className="text-[11px] text-ink/45 font-mono">{f.vertical_codigo}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onDrill}
+          className="shrink-0 inline-flex items-center gap-1 rounded-full border border-black/[0.08] px-3 py-1.5 text-[12px] text-ink/70 hover:text-ink hover:border-ink/40"
+        >
+          Ver clientes <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+      </header>
+
+      <p className="mt-2 text-[12.5px] text-ink">
+        {fmtNum(identificadas + resueltas)} OTs identificadas ·{" "}
+        {fmtNum(resueltas)} resueltas a programa
+      </p>
+      {identificadas > 0 && (
+        <p className="mt-1 text-[11.5px] text-ink/65 leading-snug max-w-2xl">
+          {fmtNum(identificadas)} OTs tienen cliente contractual identificado pero su programa
+          aún no es resoluble con los datos disponibles. Existen operativamente; no se reparten
+          entre programas.
+        </p>
+      )}
+
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <Bloque titulo="Servicio">
+          <Dato
+            label={`${UNIVERSO.RESUELTA} (OTs)`}
+            valor={resueltas > 0 ? fmtNum(resueltas) : null}
+            nota={NOTA_UNIVERSO_RESUELTA}
+            degradado={DEGRADACION.SIN_POBLACION}
+          />
+          <Dato
+            label="OTs con cliente identificado y programa no resoluble"
+            valor={fmtNum(identificadas)}
+            nota="Contabilizadas en el bloque de población no resuelta; no se suman a la resuelta."
+          />
+          <Dato label="Programas" valor={fmtNum(f.n_programas)} />
+          <Dato label="Clientes" valor={fmtNum(f.n_clientes)} />
+        </Bloque>
+
+        <Bloque titulo="Contrato">
+          <Dato
+            label="Instrumentos con alcance registrado"
+            valor={f.n_instrumentos > 0 ? fmtNum(f.n_instrumentos) : null}
+            degradado={DEGRADACION.OBLIGACION_NO_REPRESENTADA}
+          />
+          {f.n_claims > 0 ? (
+            <>
+              <Dato
+                label="Obligaciones representadas"
+                valor={`${fmtNum(f.n_claims)}`}
+                nota={`${fmtNum(f.claims_validated)} validadas · ${fmtNum(f.claims_pending)} pendientes de validar`}
+              />
+              <Dato
+                label="Reglas derivadas"
+                valor={fmtNum(f.n_reglas)}
+                nota={f.n_reglas === 0
+                  ? "Obligación registrada sin regla derivada: no evaluable, no inexistente."
+                  : undefined}
+              />
+            </>
+          ) : (
+            <p className="text-[12px] text-ink/60 leading-snug">{TEXTO_SIN_OBLIGACIONES}</p>
+          )}
+        </Bloque>
+
+        <BloqueEconomia
+          noCero={f.n_ots_importe_no_cero}
+          cero={f.n_ots_importe_cero}
+          nulo={f.n_ots_importe_nulo}
+          total={resueltas}
+        />
       </div>
-      <button
-        type="button"
-        onClick={onDrill}
-        className="shrink-0 inline-flex items-center gap-1 rounded-full border border-black/[0.08] px-3 py-1.5 text-[12px] text-ink/70 hover:text-ink hover:border-ink/40"
-      >
-        Ver clientes <ChevronRight className="h-3.5 w-3.5" />
-      </button>
-    </header>
+    </section>
+  );
+};
 
-    <div className="mt-4 grid gap-3 md:grid-cols-3">
-      <Bloque titulo="Servicio">
-        <Dato
-          label="OTs con programa resuelto"
-          valor={f.n_ots > 0 ? fmtNum(f.n_ots) : null}
-          degradado={DEGRADACION.SIN_POBLACION}
-        />
-        <Dato label="Programas" valor={fmtNum(f.n_programas)} />
-        <Dato label="Clientes" valor={fmtNum(f.n_clientes)} />
-      </Bloque>
-
-      <Bloque titulo="Contrato">
-        <Dato
-          label="Instrumentos con alcance registrado"
-          valor={f.n_instrumentos > 0 ? fmtNum(f.n_instrumentos) : null}
-          degradado={DEGRADACION.OBLIGACION_NO_REPRESENTADA}
-        />
-        {f.n_claims > 0 ? (
-          <>
-            <Dato
-              label="Obligaciones representadas"
-              valor={`${fmtNum(f.n_claims)}`}
-              nota={`${fmtNum(f.claims_validated)} validadas · ${fmtNum(f.claims_pending)} pendientes de validar`}
-            />
-            <Dato label="Reglas derivadas" valor={fmtNum(f.n_reglas)} />
-          </>
-        ) : (
-          <p className="text-[12px] text-ink/60 leading-snug">{TEXTO_SIN_OBLIGACIONES}</p>
-        )}
-      </Bloque>
-
-      <BloqueEconomia con={f.n_ots_importe_informado} total={f.n_ots} />
-    </div>
-  </section>
-);
 
 // ── Vista 2/3 · clientes y programas ───────────────────────────────────────
 const FilaProgramaBtn = ({ label, sub, right, onClick }: {
@@ -174,6 +221,9 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
 
   const s = ficha?.servicio;
   const total = s?.ots ?? 0;
+  const poblacionResuelta = ficha?.poblacion?.resuelta ?? total;
+  const anulados = ficha?.poblacion?.excluidas_anulado_aviso ?? 0;
+
 
   return (
     <div className="space-y-6">
@@ -203,14 +253,37 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         <div className="mt-4 grid gap-2 md:grid-cols-3 text-[11px] text-ink/55">
           <p>As-of operativo: <span className="text-ink">{ficha?.as_of_operativo ?? DEGRADACION.DATO_NO_DISPONIBLE}</span></p>
           <p>As-of contractual: <span className="text-ink/45 uppercase tracking-[0.1em]">{DEGRADACION.DATO_NO_DISPONIBLE}</span></p>
-          <p>As-of económico: <span className="text-ink/45 uppercase tracking-[0.1em]">{DEGRADACION.FUENTE_NO_CARGADA}</span></p>
+          <p>
+            As-of económico:{" "}
+            <span className="text-ink/45 uppercase tracking-[0.1em]">
+              {ficha?.economia?.fuente_cargada
+                ? DEGRADACION.FUENTE_NO_RECONCILIADA
+                : DEGRADACION.FUENTE_NO_CARGADA}
+            </span>
+          </p>
+        </div>
+
+        {/* Los DOS universos, siempre juntos y siempre nombrados. */}
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-black/[0.06] p-3">
+            <p className="text-[11px] text-ink/50">{UNIVERSO.RESUELTA}</p>
+            <p className="heading-display text-xl text-ink">{fmtNum(poblacionResuelta)}</p>
+            <p className="text-[10.5px] text-ink/45 leading-snug">{NOTA_UNIVERSO_RESUELTA}</p>
+          </div>
+          <div className="rounded-xl border border-black/[0.06] p-3">
+            <p className="text-[11px] text-ink/50">{UNIVERSO.SERVICIO}</p>
+            <p className="heading-display text-xl text-ink">{fmtNum(total)}</p>
+            <p className="text-[10.5px] text-ink/45 leading-snug">
+              {NOTA_UNIVERSO_SERVICIO} Excluidas: {fmtNum(anulados)}.
+            </p>
+          </div>
         </div>
         <DataAsOf className="mt-3" />
       </header>
 
       {/* SERVICIO */}
       <section className="rounded-2xl border border-black/[0.06] bg-white p-5 space-y-4">
-        <Eyebrow>Servicio</Eyebrow>
+        <Eyebrow>Servicio · {UNIVERSO.SERVICIO}</Eyebrow>
         {total === 0 ? (
           <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-ink/45">
             {DEGRADACION.SIN_POBLACION}
@@ -218,7 +291,12 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         ) : (
           <>
             <div className="grid gap-4 md:grid-cols-4">
-              <Dato label="OTs resueltas al programa" valor={fmtNum(total)} />
+              <Dato
+                label="OTs analizadas (excluye ANULADO AVISO)"
+                valor={fmtNum(total)}
+                nota={`De ${fmtNum(poblacionResuelta)} resueltas al programa`}
+              />
+
               <Dato label="Cerradas" valor={fmtNum(s?.cerradas ?? 0)} />
               <Dato label="Abiertas" valor={fmtNum(s?.abiertas ?? 0)} />
               <Dato
@@ -342,7 +420,13 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                         Regla {o.regla_codigo ?? "—"} · unidad {o.regla_unidad ?? "—"} ·{" "}
                         {o.calendario_requerido ? "requiere calendario laboral" : "sin dependencia de calendario"}
                       </p>
-                      <ReadinessBar estado={o.readiness_estado} reason={o.readiness_reason} />
+                      <ReadinessBar
+                        estado={o.readiness_estado}
+                        reason={o.readiness_reason}
+                        claimEstado={o.estado}
+                        tieneRegla={Boolean(o.regla_version_id)}
+                      />
+
                       {o.readiness_estado !== "APPLICABLE" && (
                         <p
                           className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45"
@@ -371,14 +455,21 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
       {/* ECONOMÍA */}
       <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
         <div className="grid gap-3 md:grid-cols-2">
-          <BloqueEconomia con={ficha?.economia.n_ots_con_importe ?? 0} total={total} />
+          <BloqueEconomia
+            noCero={ficha?.economia?.n_ots_importe_no_cero ?? 0}
+            cero={ficha?.economia?.n_ots_importe_cero ?? 0}
+            nulo={ficha?.economia?.n_ots_importe_nulo ?? 0}
+            total={total}
+          />
           <div className="rounded-xl border border-black/[0.06] p-4 text-[11px] text-ink/50 leading-relaxed">
             <p className="flex items-start gap-1.5">
               <Info className="h-3.5 w-3.5 mt-0.5 shrink-0 text-ink/35" aria-hidden />
-              El importe por OT procede del ERP y no está reconciliado con facturación. No se
-              suman ni se promedian importes hasta validar la fuente.
+              El importe por OT procede del ERP: la fuente está cargada, pero no está validada ni
+              reconciliada con facturación. Un importe a cero es un valor observado, no un dato
+              ausente. No se suman ni se promedian importes.
             </p>
           </div>
+
         </div>
       </section>
 
@@ -405,15 +496,21 @@ export const PerformanceReal = () => {
 
   const resumenQ = useOpsRpc<PortfolioResumenFila[]>("ctr_portfolio_resumen");
   const arbolQ = useOpsRpc<PortfolioArbolFila[]>("ctr_portfolio_arbol");
+  const noResueltasQ = useOpsRpc<PortfolioNoResueltaFila[]>("ctr_portfolio_no_resueltas");
 
   const fallos = [
     ...falloDeQuery("ctr_portfolio_resumen", resumenQ, "portfolio por vertical"),
     ...falloDeQuery("ctr_portfolio_arbol", arbolQ, "árbol de programas"),
+    ...falloDeQuery("ctr_portfolio_no_resueltas", noResueltasQ, "población no resuelta"),
   ];
-  const reintentar = () => { void resumenQ.refetch(); void arbolQ.refetch(); };
+  const reintentar = () => {
+    void resumenQ.refetch(); void arbolQ.refetch(); void noResueltasQ.refetch();
+  };
 
   const filas = Array.isArray(resumenQ.data) ? resumenQ.data : [];
   const arbol = Array.isArray(arbolQ.data) ? arbolQ.data : [];
+  const noResueltas = Array.isArray(noResueltasQ.data) ? noResueltasQ.data : [];
+
 
   const verticales = filas.filter((f) => f.vertical_codigo !== CODIGO_SIN_RESOLVER);
   const sinResolver = filas.filter((f) => f.vertical_codigo === CODIGO_SIN_RESOLVER);
@@ -512,10 +609,11 @@ export const PerformanceReal = () => {
           </div>
 
           <section className="rounded-2xl border border-black/[0.08] bg-black/[0.02] p-5">
-            <Eyebrow>Programa sin resolver</Eyebrow>
+            <Eyebrow>Población sin programa resuelto</Eyebrow>
             <p className="mt-1 text-[12px] text-ink/60 max-w-2xl leading-snug">
-              Estas OTs no se reparten entre verticales: no tienen programa contractual resuelto de
-              forma determinista. Se muestran aparte para preservar el cuadre total.
+              Estas OTs existen operativamente pero no tienen programa contractual resuelto de
+              forma determinista. No se reparten entre programas; se muestran aparte para preservar
+              el cuadre total.
             </p>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {sinResolver.map((f) => (
@@ -531,10 +629,41 @@ export const PerformanceReal = () => {
                 <p className="text-[12px] text-ink/50">Sin OTs pendientes de resolución.</p>
               )}
             </div>
+
+            {noResueltas.length > 0 && (
+              <div className="mt-5 overflow-x-auto">
+                <table className="w-full text-[12px]">
+                  <thead>
+                    <tr className="text-left text-[10.5px] uppercase tracking-[0.1em] text-ink/45">
+                      <th className="py-1.5 pr-3 font-medium">Cliente operativo</th>
+                      <th className="py-1.5 pr-3 font-medium">Clase</th>
+                      <th className="py-1.5 pr-3 font-medium">Vertical probable</th>
+                      <th className="py-1.5 pr-3 font-medium text-right">OTs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {noResueltas.map((r, i) => (
+                      <tr key={`${r.cliente_wg_origen ?? "sin"}-${i}`} className="border-t border-black/[0.05]">
+                        <td className="py-1.5 pr-3 text-ink">
+                          {r.cliente_wg_origen ?? r.cliente_nombre ?? "—"}
+                        </td>
+                        <td className="py-1.5 pr-3 text-ink/65">{etiquetaClaseNoResuelta(r.clase)}</td>
+                        <td className="py-1.5 pr-3 text-ink/65">
+                          {r.vertical_nombre ?? DEGRADACION.NO_ATRIBUIBLE}
+                        </td>
+                        <td className="py-1.5 pr-3 text-right text-ink tabular-nums">{fmtNum(r.n_ots)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
             <p className="mt-4 text-[11px] text-ink/45">
               Total OTs con resolución vigente: <span className="text-ink">{fmtNum(totalCartera)}</span>
             </p>
           </section>
+
         </>
       )}
 

@@ -7,6 +7,11 @@ import { labelComparativa } from "@/lib/ops-performance";
 import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
 
+/** Único scope donde el parámetro `programa` es consumido por la RPC. */
+export const RUTAS_CON_FILTRO_PROGRAMA = ["/operaciones/performance-real"];
+
+
+
 
 
 const Sel = ({ label, value, options, onChange, displayMap }: {
@@ -42,9 +47,13 @@ export const OpsFiltersBar = () => {
   // A3 · Indicador no bloqueante: la UI sigue mostrando la última foto válida
   // mientras se resuelve la nueva tanda de RPC.
   const fetching = useIsFetching({ queryKey: [OPS_QUERY_ROOT] });
+  // Rutas cuyas RPC aceptan y aplican de verdad el parámetro `programa`.
+  const pathname = typeof window === "undefined" ? "" : window.location.pathname;
+  const programaEnScope = RUTAS_CON_FILTRO_PROGRAMA.some((r) => pathname.startsWith(r));
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
   const ytdForzado = preset === "ytd";
+
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
@@ -96,20 +105,26 @@ export const OpsFiltersBar = () => {
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
           onChange={(v) => setFilters({ canal: v })} />
-        <label className="flex flex-col gap-1 min-w-[190px]">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Programa</span>
-          <select
-            aria-label="Programa contractual"
-            value={filters.programa ?? ""}
-            onChange={(e) => setFilters({ programa: e.target.value || null })}
-            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
-          >
-            <option value="">Todos</option>
-            {(Array.isArray(programas) ? programas : []).map((p) => (
-              <option key={p.id} value={p.id}>{p.label}</option>
-            ))}
-          </select>
-        </label>
+        {/* PRV-A1 · el filtro de Programa SOLO se ofrece donde la RPC lo
+            consume realmente. Fuera de ese scope no se muestra, para no
+            simular un filtrado que el backend ignora. */}
+        {programaEnScope && (
+          <label className="flex flex-col gap-1 min-w-[190px]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Programa</span>
+            <select
+              aria-label="Programa contractual"
+              value={filters.programa ?? ""}
+              onChange={(e) => setFilters({ programa: e.target.value || null })}
+              className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+            >
+              <option value="">Todos</option>
+              {(Array.isArray(programas) ? programas : []).map((p) => (
+                <option key={p.id} value={p.id}>{p.label}</option>
+              ))}
+            </select>
+          </label>
+        )}
+
         {fetching > 0 && (
           <span
             role="status"
