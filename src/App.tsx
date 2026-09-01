@@ -163,6 +163,9 @@ const App = () => (
                 <Route path="/operaciones/logistica" element={<OpsLogistica />} />
                 <Route path="/operaciones/repuestos" element={<OpsRepuestos />} />
                 <Route path="/operaciones/calidad-datos" element={<OpsCalidadDatos />} />
+                {/* Performance Real / Inteligencia contractual */}
+                <Route path="/operaciones/performance-real" element={<OpsPerformanceReal />} />
+                <Route path="/operaciones/contratos" element={<OpsContratos />} />
               </Route>
 
 

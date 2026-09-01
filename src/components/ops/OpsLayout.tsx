@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-do
 import { useEffect, useMemo, useState } from "react";
 import {
   LayoutDashboard, Users, Building2, Timer, Upload, ArrowLeft, LogOut, Menu, X, ChevronRight,
-  ChevronDown, Wrench, Euro, MapPin, Truck, Package, Database, Factory,
+  ChevronDown, Wrench, Euro, MapPin, Truck, Package, Database, Factory, Gauge, FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -47,9 +47,17 @@ export const NAV_GROUPS: NavGroup[] = [
     key: "performance",
     label: "Performance",
     items: [
+      { to: "/operaciones/performance-real", label: "Performance Real", icon: Gauge },
       { to: "/operaciones/sla", label: "SLA & Flujo", icon: Timer },
       { to: "/operaciones/dispersion", label: "Cobertura & Dispersión", icon: MapPin },
       { to: "/operaciones/costes", label: "Coste, Productividad & Capacidad", icon: Euro },
+    ],
+  },
+  {
+    key: "contractual",
+    label: "Inteligencia contractual",
+    items: [
+      { to: "/operaciones/contratos", label: "Contratos & Programas", icon: FileText },
     ],
   },
   {
