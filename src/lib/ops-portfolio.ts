@@ -18,12 +18,19 @@ export type PortfolioResumenFila = {
   n_clientes: number;
   /** Población CONTRACTUAL RESUELTA: OTs asignadas determinísticamente a programa. */
   n_ots: number;
-  /** OTs con cliente contractual reconocido pero SIN programa resoluble. */
+  /** OTs cuyo origen ERP es reconocible como cliente candidato, sin programa resoluble. */
   n_ots_cliente_identificado: number;
+  /** Subconjunto del anterior cuyo alias de identidad SÍ está gobernado. */
+  n_ots_alias_gobernado: number;
+  /** Subconjunto del anterior cuyo alias de identidad NO está gobernado. */
+  n_ots_alias_no_gobernado: number;
   n_instrumentos: number;
+  /** Conteo literal de filas de `ctr_claim`. NO es un conteo de obligaciones. */
   n_claims: number;
   claims_validated: number;
   claims_pending: number;
+  /** Desglose literal por `ctr_claim.categoria`. */
+  claims_por_categoria: Record<string, number> | null;
   n_reglas: number;
   n_aplicabilidad: number;
   n_ots_importe_no_cero: number;
@@ -32,14 +39,22 @@ export type PortfolioResumenFila = {
 };
 
 export type PortfolioNoResueltaFila = {
-  clase: "cliente_identificado_sin_programa" | "identidad_no_establecida" | string;
+  clase:
+    | "cliente_operativo_reconocido_sin_programa"
+    | "identidad_gobernada_sin_programa"
+    | "identidad_no_establecida"
+    | string;
   cliente_wg_origen: string | null;
   cliente_nombre: string | null;
+  /** Estado real del alias en `ctr_alias_identidad.gobernado`. */
+  alias_gobernado: boolean | null;
+  alias_metodo: string | null;
   vertical_codigo: string | null;
   vertical_nombre: string | null;
   n_programas_candidatos: number;
   n_ots: number;
 };
+
 
 export type PortfolioArbolFila = {
   vertical_codigo: string | null;
@@ -132,19 +147,51 @@ export type ObligacionFila = {
 /** Códigos de vertical → literal corto para cabeceras. */
 export const CODIGO_SIN_RESOLVER = "SIN_RESOLVER";
 
+/**
+ * P0.1 · TRES NIVELES DISTINTOS, NUNCA INTERCAMBIABLES.
+ * (1) cliente operativo reconocido: el dato ERP nombra literalmente a un
+ *     cliente y existe un candidato contractual asociado, pero el alias que
+ *     lo asocia NO está gobernado.
+ * (2) identidad contractual gobernada: `ctr_alias_identidad.gobernado = true`.
+ * (3) programa contractual resuelto: resolución vigente determinista.
+ * La mera existencia de un alias NO establece identidad contractual.
+ */
+export const NIVEL_IDENTIDAD = {
+  OPERATIVO_RECONOCIDO: "Cliente operativo reconocido",
+  GOBERNADA: "Identidad contractual gobernada",
+  PROGRAMA_RESUELTO: "Programa contractual resuelto",
+  NO_ESTABLECIDA: "Identidad contractual no establecida",
+} as const;
+
+export const NOTA_ALIAS_NO_GOBERNADO =
+  "La correspondencia entre el nombre del ERP y el cliente contractual existe pero no está gobernada: sirve de indicio operativo, no establece identidad contractual.";
+
 export const etiquetaSinResolver = (codigo: string): string =>
   codigo === "ambiguous"
-    ? "Cliente identificado · programa contractual no resoluble"
+    ? `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`
     : codigo === "sin_cliente"
-      ? "Identidad contractual no establecida"
+      ? NIVEL_IDENTIDAD.NO_ESTABLECIDA
       : codigo;
 
-export const etiquetaClaseNoResuelta = (clase: string): string =>
-  clase === "cliente_identificado_sin_programa"
-    ? "Cliente identificado · programa contractual no resoluble"
-    : clase === "identidad_no_establecida"
-      ? "Identidad contractual no establecida"
-      : clase;
+export const etiquetaClaseNoResuelta = (clase: string): string => {
+  switch (clase) {
+    case "cliente_operativo_reconocido_sin_programa":
+    // Clase heredada de PRV-A1: se conserva el mapeo, corrigiendo el literal.
+    case "cliente_identificado_sin_programa":
+      return `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`;
+    case "identidad_gobernada_sin_programa":
+      return `${NIVEL_IDENTIDAD.GOBERNADA} · programa contractual no resuelto`;
+    case "identidad_no_establecida":
+      return NIVEL_IDENTIDAD.NO_ESTABLECIDA;
+    default:
+      return clase;
+  }
+};
+
+/** Estado de gobierno del alias, tal cual está en base de datos. */
+export const etiquetaGobiernoAlias = (gobernado: boolean | null | undefined): string =>
+  gobernado ? "Alias gobernado" : "Alias no gobernado";
+
 
 /** Estados de degradación soportados por la UI. Literales cerrados. */
 export const DEGRADACION = {
@@ -173,13 +220,89 @@ export const NOTA_UNIVERSO_RESUELTA =
 export const NOTA_UNIVERSO_SERVICIO =
   "Subconjunto de la población resuelta sobre el que se miden hitos y plazos: excluye incidencia 'ANULADO AVISO'.";
 
-/** Literal obligatorio cuando un programa no tiene obligaciones representadas. */
+/** Literal obligatorio cuando un programa no tiene claims representados. */
 export const TEXTO_SIN_OBLIGACIONES =
-  "Obligaciones contractuales aún no representadas en el sistema.";
+  "Compromisos contractuales aún no representados en el sistema.";
 
 /** Literal obligatorio para programas sin obligación temporal representada. */
 export const TEXTO_SIN_OBLIGACION_TEMPORAL =
   "Sin obligación temporal representada actualmente en el sistema.";
+
+// ── P0.2 · CLAIM ≠ OBLIGACIÓN ───────────────────────────────────────────────
+/**
+ * Se cuenta literalmente `ctr_claim`. Un claim es una afirmación contractual
+ * extraída de un documento; puede ser de identidad, alcance, tarifa, mapeo,
+ * vigencia, pago, penalización o SLA. Solo los de categoría `sla` con regla
+ * gobernada pueden llamarse obligación temporal.
+ */
+export const ETIQUETA_CLAIMS_REPRESENTADOS = "Claims contractuales representados";
+
+export const NOTA_CLAIMS_REPRESENTADOS =
+  "Conteo literal de afirmaciones contractuales extraídas y representadas. No equivale al total de obligaciones del contrato: los instrumentos pueden contener obligaciones aún no extraídas ni gobernadas.";
+
+export const TEXTO_HUECO_CONTRACTUAL =
+  "El inventario de obligaciones documentales de los instrumentos NO está completo en el sistema: lo representado es un subconjunto extraído, no la cartera contractual íntegra.";
+
+export const ETIQUETA_CATEGORIA_CLAIM: Record<string, string> = {
+  sla: "plazo de servicio",
+  tarifa: "tarifa / económico",
+  pago: "condiciones de pago",
+  alcance: "alcance",
+  identidad: "identidad de contraparte",
+  mapeo: "mapeo operativo",
+  vigencia: "vigencia",
+  penalizacion: "penalización",
+  otro: "otros",
+};
+
+export const etiquetaCategoriaClaim = (categoria: string | null | undefined): string =>
+  (categoria && ETIQUETA_CATEGORIA_CLAIM[categoria]) || categoria || "sin categoría";
+
+/** Resumen legible del desglose por categoría, sin inventar clasificación nueva. */
+export const desgloseCategorias = (
+  porCategoria: Record<string, number> | null | undefined,
+): string =>
+  Object.entries(porCategoria ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${v} ${etiquetaCategoriaClaim(k)}`)
+    .join(" · ");
+
+/** Categorías que, con regla gobernada, sí sostienen una obligación temporal. */
+export const esCategoriaTemporal = (categoria: string | null | undefined): boolean =>
+  categoria === "sla";
+
+/**
+ * P0.3 · Semántica de un claim SIN regla derivada.
+ * Nunca se afirma que la obligación «no existe»: existe el claim; lo que falta
+ * es la regla evaluable. Solo un claim `sla` sin regla es una obligación
+ * temporal representada pendiente de derivación.
+ */
+export const semanticaClaimSinRegla = (
+  categoria: string | null | undefined,
+  estado?: string | null,
+): string => {
+  const pendienteValidacion = estado !== "VALIDATED";
+  switch (categoria) {
+    case "identidad":
+      return `Claim de identidad representado · ${pendienteValidacion ? "pendiente de validación" : "validado"} · sin regla derivada`;
+    case "alcance":
+      return "Claim de alcance representado · sin regla derivada";
+    case "tarifa":
+    case "pago":
+      return "Claim económico/tarifario representado · sin regla derivada";
+    case "mapeo":
+      return "Claim de mapeo operativo representado · sin regla derivada";
+    case "vigencia":
+      return "Claim de vigencia representado · sin regla derivada";
+    case "penalizacion":
+      return "Claim de penalización representado · sin regla derivada";
+    case "sla":
+      return "Obligación temporal representada · regla aún no derivada";
+    default:
+      return "Claim contractual representado · sin regla derivada";
+  }
+};
+
 
 /** Marca visible obligatoria en ≤20d / ≤30d. */
 export const MARCA_REFERENCIA_INTERNA = "REFERENCIA INTERNA WG";
@@ -305,10 +428,15 @@ export type EntradaEtapas = {
  */
 export const etapasAlcanzadas = (e: EntradaEtapas): EtapaReadiness[] => {
   const cumple: Record<EtapaReadiness, boolean> = {
+    // Un claim visible procede de un documento descubierto. No se agrega este
+    // hecho a nivel cartera: el inventario documental NO está gobernado en BD.
     DESCUBIERTA: true,
-    REPRESENTADA: e.tieneRegla,
+    // P0.4 · REPRESENTADA no depende de tener regla: el claim existe en
+    // `ctr_claim` precisamente porque ya está representado.
+    REPRESENTADA: true,
     VALIDADA: e.claimEstado === "VALIDATED",
-    APLICABLE: e.readinessEstado === "APPLICABLE",
+    // APLICABLE exige regla derivada Y readiness que lo sostenga.
+    APLICABLE: e.tieneRegla && e.readinessEstado === "APPLICABLE",
     EVALUABLE: false,
     EVALUADA: false,
   };
@@ -319,6 +447,7 @@ export const etapasAlcanzadas = (e: EntradaEtapas): EtapaReadiness[] => {
   }
   return out;
 };
+
 
 /** Estados terminales que NO representan progreso sino exclusión de ámbito. */
 export const esFueraDeAmbito = (estado: string | null | undefined): boolean =>

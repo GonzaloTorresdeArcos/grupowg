@@ -20,24 +20,28 @@ import {
   traducirReason, pctSeguro, notaImporte, etapasAlcanzadas, esFueraDeAmbito,
   ETAPAS_READINESS, DEGRADACION, UNIVERSO,
   TEXTO_SIN_OBLIGACIONES, TEXTO_SIN_OBLIGACION_TEMPORAL,
+  NIVEL_IDENTIDAD, etiquetaClaseNoResuelta, etiquetaGobiernoAlias,
+  ETIQUETA_CLAIMS_REPRESENTADOS, semanticaClaimSinRegla, esCategoriaTemporal,
+  desgloseCategorias, TEXTO_HUECO_CONTRACTUAL,
 } from "@/lib/ops-portfolio";
 
 // Cifras literales de BD live (01-09-2026).
 const RESUMEN = [
-  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "04_PROFESSIONAL", vertical_nombre: "Professional", n_programas: 2, n_clientes: 1, n_ots: 5674, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 276, n_ots_importe_cero: 5398, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas: 2, n_clientes: 1, n_ots: 0, n_ots_cliente_identificado: 7834, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "ambiguous", n_programas: 0, n_clientes: 0, n_ots: 47418, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "sin_cliente", n_programas: 0, n_clientes: 0, n_ots: 8617, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, claims_por_categoria: { sla: 8, alcance: 2, identidad: 2 }, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { tarifa: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "04_PROFESSIONAL", vertical_nombre: "Professional", n_programas: 2, n_clientes: 1, n_ots: 5674, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { identidad: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 276, n_ots_importe_cero: 5398, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas: 2, n_clientes: 1, n_ots: 0, n_ots_cliente_identificado: 7834, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 7834, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 1, mapeo: 1 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "ambiguous", n_programas: 0, n_clientes: 0, n_ots: 47418, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, claims_por_categoria: null, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "sin_cliente", n_programas: 0, n_clientes: 0, n_ots: 8617, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, claims_por_categoria: null, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
 ];
 
 const NO_RESUELTAS = [
-  { clase: "cliente_identificado_sin_programa", cliente_wg_origen: "ASSURANT EUROPE INSURANCE NV", cliente_nombre: "Assurant", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 4130 },
-  { clase: "cliente_identificado_sin_programa", cliente_wg_origen: "ASSURANT GENERAL INSURANCE LIMITED", cliente_nombre: "Assurant", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 3704 },
-  { clase: "identidad_no_establecida", cliente_wg_origen: null, cliente_nombre: null, vertical_codigo: null, vertical_nombre: null, n_programas_candidatos: 0, n_ots: 8617 },
+  { clase: "cliente_operativo_reconocido_sin_programa", cliente_wg_origen: "ASSURANT EUROPE INSURANCE NV", cliente_nombre: "Assurant", alias_gobernado: false, alias_metodo: "manual", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 4130 },
+  { clase: "cliente_operativo_reconocido_sin_programa", cliente_wg_origen: "ASSURANT GENERAL INSURANCE LIMITED", cliente_nombre: "Assurant", alias_gobernado: false, alias_metodo: "manual", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 3704 },
+  { clase: "identidad_no_establecida", cliente_wg_origen: null, cliente_nombre: null, alias_gobernado: null, alias_metodo: null, vertical_codigo: null, vertical_nombre: null, n_programas_candidatos: 0, n_ots: 8617 },
 ];
+
 
 const FICHA_VACIA = {
   programa: null,
@@ -103,7 +107,10 @@ describe("Performance Real · verticales", () => {
     for (const n of ["Retail after-sales", "Mobility", "Climate", "Professional", "Insurance"]) {
       expect(screen.getAllByText(n).length, n).toBeGreaterThan(0);
     }
-    expect(container.textContent).toContain("Cliente identificado · programa contractual no resoluble");
+    expect(container.textContent).toContain(
+      `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`,
+    );
+
     expect(container.textContent).toContain("Identidad contractual no establecida");
     expect(container.textContent).toContain("47.418");
     // es-ES no agrupa los millares de 4 dígitos: 8617, no 8.617.
@@ -121,8 +128,9 @@ describe("Performance Real · verticales", () => {
     const { container } = render(<Page />);
     const txt = container.textContent ?? "";
     // 7.834 OTs identificadas y 0 resueltas a programa, ambas visibles.
-    expect(txt).toContain("7834 OTs identificadas · 0 resueltas a programa");
-    expect(txt).toContain("programa aún no es resoluble");
+    expect(txt).toContain("7834 OTs operativas identificadas · 0 resueltas a programa");
+    expect(txt).toContain("programa contractual no resuelto");
+
     // El literal degradado nunca puede sugerir ausencia de población operativa.
     expect(DEGRADACION.SIN_POBLACION).toContain("A PROGRAMA");
     expect(txt).not.toMatch(/SIN POBLACIÓN OPERATIVA RESUELTA(?! A PROGRAMA)/);
@@ -245,12 +253,21 @@ describe("Readiness categórico · sin pseudo-score", () => {
       "DESCUBIERTA", "REPRESENTADA", "VALIDADA", "APLICABLE", "EVALUABLE", "EVALUADA",
     ]);
     expect(etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: false, readinessEstado: null }))
-      .toEqual(["DESCUBIERTA"]);
+      .toEqual(["DESCUBIERTA", "REPRESENTADA"]);
     expect(etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: true, readinessEstado: "INSUFFICIENT_EVIDENCE" }))
       .toEqual(["DESCUBIERTA", "REPRESENTADA"]);
     expect(etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: true, readinessEstado: "APPLICABLE" }))
       .toEqual(["DESCUBIERTA", "REPRESENTADA", "VALIDADA", "APLICABLE"]);
   });
+
+  it("P0.4 · REPRESENTADA no depende de tener regla derivada", () => {
+    const sinRegla = etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: false, readinessEstado: null });
+    expect(sinRegla).toContain("REPRESENTADA");
+    // Y APLICABLE sigue exigiendo regla + readiness que lo sostenga.
+    expect(etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: false, readinessEstado: "APPLICABLE" }))
+      .not.toContain("APLICABLE");
+  });
+
 
   it("APLICABLE nunca implica EVALUADA ni cumplimiento", () => {
     const e = etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: true, readinessEstado: "APPLICABLE" });
@@ -267,5 +284,55 @@ describe("Readiness categórico · sin pseudo-score", () => {
   it("porcentajes seguros ante denominador cero", () => {
     expect(pctSeguro(0, 0)).toBeNull();
     expect(notaImporte(null)).toContain("—");
+  });
+});
+
+// ── PRV-A1.1 · guardias semánticas contra sobreafirmación ───────────────────
+describe("PRV-A1.1 · claim ≠ obligación · alias ≠ identidad gobernada", () => {
+  const src = readFileSync(resolve(process.cwd(), "src/pages/ops/PerformanceReal.tsx"), "utf8");
+
+  it("P0.1 · un alias no gobernado nunca se presenta como identidad contractual", () => {
+    expect(etiquetaClaseNoResuelta("cliente_operativo_reconocido_sin_programa"))
+      .toBe(`${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`);
+    expect(etiquetaClaseNoResuelta("identidad_gobernada_sin_programa"))
+      .toBe(`${NIVEL_IDENTIDAD.GOBERNADA} · programa contractual no resuelto`);
+    expect(etiquetaGobiernoAlias(false)).toBe("Alias no gobernado");
+    expect(etiquetaGobiernoAlias(true)).toBe("Alias gobernado");
+    // La clase heredada no puede volver a leerse como identidad establecida.
+    expect(etiquetaClaseNoResuelta("cliente_identificado_sin_programa"))
+      .not.toContain(NIVEL_IDENTIDAD.GOBERNADA);
+    expect(NO_RESUELTAS.filter((r) => r.alias_gobernado === true)).toHaveLength(0);
+  });
+
+  it("P0.2 · el portfolio cuenta claims, no obligaciones", () => {
+    expect(ETIQUETA_CLAIMS_REPRESENTADOS).toBe("Claims contractuales representados");
+    expect(src).not.toMatch(/Obligaciones representadas/);
+    expect(src).not.toMatch(/obligación\(es\) representada/);
+    expect(src).toContain("TEXTO_HUECO_CONTRACTUAL");
+    expect(TEXTO_HUECO_CONTRACTUAL).toContain("subconjunto");
+    // Professional: 2 claims de identidad, jamás obligaciones de servicio.
+    const prof = RESUMEN.find((r) => r.vertical_codigo === "04_PROFESSIONAL")!;
+    expect(desgloseCategorias(prof.claims_por_categoria)).toBe("2 identidad de contraparte");
+    expect(esCategoriaTemporal("identidad")).toBe(false);
+    expect(esCategoriaTemporal("sla")).toBe(true);
+    // Insurance: alcance + mapeo, ninguna obligación temporal.
+    const ins = RESUMEN.find((r) => r.vertical_codigo === "05_INSURANCE")!;
+    expect(Object.keys(ins.claims_por_categoria ?? {})).not.toContain("sla");
+  });
+
+  it("P0.3 · claim sin regla no se declara «sin obligación representada»", () => {
+    expect(semanticaClaimSinRegla("identidad", "PENDING"))
+      .toBe("Claim de identidad representado · pendiente de validación · sin regla derivada");
+    expect(semanticaClaimSinRegla("alcance", "PENDING"))
+      .toBe("Claim de alcance representado · sin regla derivada");
+    expect(semanticaClaimSinRegla("tarifa", "PENDING")).toContain("económico/tarifario");
+    expect(semanticaClaimSinRegla("sla", "VALIDATED"))
+      .toBe("Obligación temporal representada · regla aún no derivada");
+    for (const cat of ["identidad", "alcance", "tarifa", "mapeo", "vigencia", "penalizacion"]) {
+      expect(semanticaClaimSinRegla(cat, "PENDING")).not.toContain("NO EVALUABLE");
+      expect(semanticaClaimSinRegla(cat, "PENDING")).not.toContain(TEXTO_SIN_OBLIGACION_TEMPORAL);
+    }
+    // La página ya no usa el literal temporal como cajón de sastre.
+    expect(src).not.toContain("TEXTO_SIN_OBLIGACION_TEMPORAL");
   });
 });

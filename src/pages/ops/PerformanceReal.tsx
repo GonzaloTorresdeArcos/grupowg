@@ -8,19 +8,27 @@ import { fmtNum, fmtDec, useOpsFilters } from "@/lib/ops-filters";
 import {
   CODIGO_SIN_RESOLVER,
   DEGRADACION,
+  ETIQUETA_CLAIMS_REPRESENTADOS,
   MARCA_REFERENCIA_INTERNA,
+  NIVEL_IDENTIDAD,
+  NOTA_ALIAS_NO_GOBERNADO,
+  NOTA_CLAIMS_REPRESENTADOS,
   NOTA_UNIVERSO_RESUELTA,
   NOTA_UNIVERSO_SERVICIO,
   TEXTO_ECONOMIA_CONTRIBUCION,
   TEXTO_ECONOMIA_COSTE,
   TEXTO_ECONOMIA_ESTADO_FUENTE,
+  TEXTO_HUECO_CONTRACTUAL,
   TEXTO_SIN_OBLIGACIONES,
-  TEXTO_SIN_OBLIGACION_TEMPORAL,
   UNIVERSO,
+  desgloseCategorias,
+  etiquetaCategoriaClaim,
   etiquetaClaseNoResuelta,
+  etiquetaGobiernoAlias,
   etiquetaSinResolver,
   notaImporte,
   pctSeguro,
+  semanticaClaimSinRegla,
   traducirReason,
   type ObligacionFila,
   type PortfolioArbolFila,
@@ -28,6 +36,7 @@ import {
   type PortfolioResumenFila,
   type ProgramaFicha,
 } from "@/lib/ops-portfolio";
+
 
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -91,7 +100,10 @@ const BloqueEconomia = ({ noCero, cero, nulo, total }: {
 // ── Vista 1 · verticales ────────────────────────────────────────────────────
 const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () => void }) => {
   const identificadas = Number(f.n_ots_cliente_identificado || 0);
+  const gobernadas = Number(f.n_ots_alias_gobernado || 0);
+  const noGobernadas = Number(f.n_ots_alias_no_gobernado || 0);
   const resueltas = Number(f.n_ots || 0);
+  const desglose = desgloseCategorias(f.claims_por_categoria);
   return (
     <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
       <header className="flex items-start justify-between gap-4">
@@ -110,14 +122,15 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
       </header>
 
       <p className="mt-2 text-[12.5px] text-ink">
-        {fmtNum(identificadas + resueltas)} OTs identificadas ·{" "}
+        {fmtNum(identificadas + resueltas)} OTs operativas identificadas ·{" "}
         {fmtNum(resueltas)} resueltas a programa
       </p>
       {identificadas > 0 && (
         <p className="mt-1 text-[11.5px] text-ink/65 leading-snug max-w-2xl">
-          {fmtNum(identificadas)} OTs tienen cliente contractual identificado pero su programa
-          aún no es resoluble con los datos disponibles. Existen operativamente; no se reparten
-          entre programas.
+          {fmtNum(identificadas)} OTs corresponden a un {NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO.toLowerCase()}{" "}
+          sin programa contractual resuelto ({fmtNum(gobernadas)} con identidad contractual gobernada ·{" "}
+          {fmtNum(noGobernadas)} con alias no gobernado). Existen operativamente; no se reparten entre
+          programas.
         </p>
       )}
 
@@ -130,7 +143,7 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
             degradado={DEGRADACION.SIN_POBLACION}
           />
           <Dato
-            label="OTs con cliente identificado y programa no resoluble"
+            label={`OTs de ${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO.toLowerCase()} sin programa resuelto`}
             valor={fmtNum(identificadas)}
             nota="Contabilizadas en el bloque de población no resuelta; no se suman a la resuelta."
           />
@@ -147,21 +160,23 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
           {f.n_claims > 0 ? (
             <>
               <Dato
-                label="Obligaciones representadas"
+                label={ETIQUETA_CLAIMS_REPRESENTADOS}
                 valor={`${fmtNum(f.n_claims)}`}
-                nota={`${fmtNum(f.claims_validated)} validadas · ${fmtNum(f.claims_pending)} pendientes de validar`}
+                nota={`${fmtNum(f.claims_validated)} validados · ${fmtNum(f.claims_pending)} pendientes de validar${desglose ? ` · ${desglose}` : ""}`}
               />
+              <p className="text-[10.5px] text-ink/45 leading-snug">{NOTA_CLAIMS_REPRESENTADOS}</p>
               <Dato
                 label="Reglas derivadas"
                 valor={fmtNum(f.n_reglas)}
                 nota={f.n_reglas === 0
-                  ? "Obligación registrada sin regla derivada: no evaluable, no inexistente."
+                  ? "Claim representado sin regla derivada: no evaluable, no inexistente."
                   : undefined}
               />
             </>
           ) : (
             <p className="text-[12px] text-ink/60 leading-snug">{TEXTO_SIN_OBLIGACIONES}</p>
           )}
+          <p className="text-[10.5px] text-ink/45 leading-snug">{TEXTO_HUECO_CONTRACTUAL}</p>
         </Bloque>
 
         <BloqueEconomia
@@ -174,6 +189,7 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
     </section>
   );
 };
+
 
 
 // ── Vista 2/3 · clientes y programas ───────────────────────────────────────
@@ -260,7 +276,12 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                 ? DEGRADACION.FUENTE_NO_RECONCILIADA
                 : DEGRADACION.FUENTE_NO_CARGADA}
             </span>
+            <span className="block text-[10.5px] text-ink/40 leading-snug">
+              Indicador derivado por proxy (existencia de OTs con importe en el ERP), no de un
+              registro de carga del dominio económico.
+            </span>
           </p>
+
         </div>
 
         {/* Los DOS universos, siempre juntos y siempre nombrados. */}
@@ -383,7 +404,10 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         )}
 
         <div className="pt-2 space-y-3">
-          <p className="text-[11px] text-ink/50">Obligaciones representadas</p>
+          <p className="text-[11px] text-ink/50">{ETIQUETA_CLAIMS_REPRESENTADOS}</p>
+          <p className="text-[10.5px] text-ink/45 leading-snug max-w-2xl">
+            {NOTA_CLAIMS_REPRESENTADOS} {TEXTO_HUECO_CONTRACTUAL}
+          </p>
           {obligaciones.length === 0 ? (
             <p className="text-[12.5px] text-ink/65">{TEXTO_SIN_OBLIGACIONES}</p>
           ) : (
@@ -393,8 +417,9 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40">
-                        {o.categoria ?? "sin categoría"}
+                        Claim · {etiquetaCategoriaClaim(o.categoria)}
                       </p>
+
                       <p className="text-[13.5px] text-ink leading-snug">
                         {o.enunciado ?? "Enunciado no registrado"}
                       </p>
@@ -438,13 +463,14 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                       )}
                     </div>
                   ) : (
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-                      {DEGRADACION.NO_EVALUABLE} —{" "}
-                      <span className="normal-case font-normal tracking-normal">
-                        {TEXTO_SIN_OBLIGACION_TEMPORAL}
-                      </span>
+                    <p
+                      className="text-[11px] text-ink/60 leading-snug"
+                      data-sin-regla={o.categoria ?? ""}
+                    >
+                      {semanticaClaimSinRegla(o.categoria, o.estado)}
                     </p>
                   )}
+
                 </li>
               ))}
             </ul>
@@ -632,12 +658,16 @@ export const PerformanceReal = () => {
 
             {noResueltas.length > 0 && (
               <div className="mt-5 overflow-x-auto">
+                <p className="mb-2 text-[10.5px] text-ink/45 leading-snug max-w-3xl">
+                  {NOTA_ALIAS_NO_GOBERNADO}
+                </p>
                 <table className="w-full text-[12px]">
                   <thead>
                     <tr className="text-left text-[10.5px] uppercase tracking-[0.1em] text-ink/45">
-                      <th className="py-1.5 pr-3 font-medium">Cliente operativo</th>
-                      <th className="py-1.5 pr-3 font-medium">Clase</th>
-                      <th className="py-1.5 pr-3 font-medium">Vertical probable</th>
+                      <th className="py-1.5 pr-3 font-medium">Cliente operativo (literal ERP)</th>
+                      <th className="py-1.5 pr-3 font-medium">Nivel de identidad</th>
+                      <th className="py-1.5 pr-3 font-medium">Gobierno del alias</th>
+                      <th className="py-1.5 pr-3 font-medium">Vertical candidata</th>
                       <th className="py-1.5 pr-3 font-medium text-right">OTs</th>
                     </tr>
                   </thead>
@@ -648,6 +678,14 @@ export const PerformanceReal = () => {
                           {r.cliente_wg_origen ?? r.cliente_nombre ?? "—"}
                         </td>
                         <td className="py-1.5 pr-3 text-ink/65">{etiquetaClaseNoResuelta(r.clase)}</td>
+                        <td
+                          className="py-1.5 pr-3 text-ink/65"
+                          data-alias-gobernado={r.alias_gobernado ? "si" : "no"}
+                        >
+                          {r.cliente_nombre
+                            ? `${etiquetaGobiernoAlias(r.alias_gobernado)}${r.alias_metodo ? ` · ${r.alias_metodo}` : ""}`
+                            : "Sin alias registrado"}
+                        </td>
                         <td className="py-1.5 pr-3 text-ink/65">
                           {r.vertical_nombre ?? DEGRADACION.NO_ATRIBUIBLE}
                         </td>
@@ -657,6 +695,7 @@ export const PerformanceReal = () => {
                   </tbody>
                 </table>
               </div>
+
             )}
 
             <p className="mt-4 text-[11px] text-ink/45">
@@ -693,7 +732,7 @@ export const PerformanceReal = () => {
             <FilaProgramaBtn
               key={p.programa_id}
               label={p.programa_nombre ?? "Programa sin nombre"}
-              sub={`${p.n_claims} obligación(es) representada(s) · ${p.n_instrumentos} instrumento(s)`}
+              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)`}
               right={`${fmtNum(p.n_ots)} OTs`}
               onClick={() => setFilters({ programa: p.programa_id })}
             />

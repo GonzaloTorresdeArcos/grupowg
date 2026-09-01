@@ -4202,6 +4202,8 @@ export type Database = {
       ctr_portfolio_no_resueltas: {
         Args: never
         Returns: {
+          alias_gobernado: boolean
+          alias_metodo: string
           clase: string
           cliente_nombre: string
           cliente_wg_origen: string
@@ -4215,12 +4217,15 @@ export type Database = {
         Args: never
         Returns: {
           claims_pending: number
+          claims_por_categoria: Json
           claims_validated: number
           n_aplicabilidad: number
           n_claims: number
           n_clientes: number
           n_instrumentos: number
           n_ots: number
+          n_ots_alias_gobernado: number
+          n_ots_alias_no_gobernado: number
           n_ots_cliente_identificado: number
           n_ots_importe_cero: number
           n_ots_importe_no_cero: number
