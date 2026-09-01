@@ -643,8 +643,10 @@ export const PerformanceReal = () => {
                   </thead>
                   <tbody>
                     {noResueltas.map((r, i) => (
-                      <tr key={`${r.cliente_operativo}-${i}`} className="border-t border-black/[0.05]">
-                        <td className="py-1.5 pr-3 text-ink">{r.cliente_operativo ?? "—"}</td>
+                      <tr key={`${r.cliente_wg_origen ?? "sin"}-${i}`} className="border-t border-black/[0.05]">
+                        <td className="py-1.5 pr-3 text-ink">
+                          {r.cliente_wg_origen ?? r.cliente_nombre ?? "—"}
+                        </td>
                         <td className="py-1.5 pr-3 text-ink/65">{etiquetaClaseNoResuelta(r.clase)}</td>
                         <td className="py-1.5 pr-3 text-ink/65">
                           {r.vertical_nombre ?? DEGRADACION.NO_ATRIBUIBLE}
@@ -662,7 +664,6 @@ export const PerformanceReal = () => {
             </p>
           </section>
 
-          </section>
         </>
       )}
 
