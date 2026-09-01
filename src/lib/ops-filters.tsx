@@ -79,8 +79,12 @@ type Ctx = {
   sinComparable: boolean;
   /** Cobertura real de datos cargados (min/max), cacheada en el provider. */
   cobertura: Cobertura;
-  /** Catálogo de programas contractuales para el filtro global. */
-  programas: { id: string; label: string }[];
+  /** Catálogo de programas contractuales (selector/navegación, no filtro operativo). */
+  programas: {
+    id: string; label: string;
+    vertical: string | null; cliente: string | null; programa: string;
+  }[];
+
 };
 
 const OpsFiltersContext = createContext<Ctx | null>(null);
