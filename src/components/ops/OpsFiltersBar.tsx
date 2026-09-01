@@ -42,9 +42,13 @@ export const OpsFiltersBar = () => {
   // A3 · Indicador no bloqueante: la UI sigue mostrando la última foto válida
   // mientras se resuelve la nueva tanda de RPC.
   const fetching = useIsFetching({ queryKey: [OPS_QUERY_ROOT] });
+  // Rutas cuyas RPC aceptan y aplican de verdad el parámetro `programa`.
+  const { pathname } = useLocation();
+  const programaEnScope = RUTAS_CON_FILTRO_PROGRAMA.some((r) => pathname.startsWith(r));
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
   const ytdForzado = preset === "ytd";
+
   return (
     <div className="border-b border-black/[0.06] bg-white/85 backdrop-blur-xl sticky top-0 lg:top-14 z-10">
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-3 flex flex-wrap items-end gap-3">
