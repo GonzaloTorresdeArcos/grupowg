@@ -93,8 +93,8 @@ describe("Performance Real · verticales", () => {
     expect(container.textContent).toContain("Identidad contractual ambigua");
     expect(container.textContent).toContain("Sin cliente contractual identificado");
     expect(container.textContent).toContain("47.418");
-    console.log(container.textContent?.slice(0,4000));
-    expect(container.textContent).toContain("8.617");
+    // es-ES no agrupa los millares de 4 dígitos: 8617, no 8.617.
+    expect(container.textContent).toContain("8617");
     // Cuadre total.
     expect(container.textContent).toContain("125.752");
     expect(container.textContent).not.toContain("NaN");
