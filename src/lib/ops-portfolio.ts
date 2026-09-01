@@ -246,8 +246,13 @@ export const ETIQUETA_CLAIMS_REPRESENTADOS = "Claims contractuales representados
 export const NOTA_CLAIMS_REPRESENTADOS =
   "Conteo literal de afirmaciones contractuales extraídas y representadas. No equivale al total de obligaciones del contrato: los instrumentos pueden contener obligaciones aún no extraídas ni gobernadas.";
 
+/**
+ * PRV-A1.2 · P1 · El inventario documental completo NO está gobernado en base
+ * de datos, por lo que el aviso no puede afirmar cuánto falta ni cuantificarlo.
+ * Solo declara el alcance de lo mostrado.
+ */
 export const TEXTO_HUECO_CONTRACTUAL =
-  "El inventario de obligaciones documentales de los instrumentos NO está completo en el sistema: lo representado es un subconjunto extraído, no la cartera contractual íntegra.";
+  "Los claims mostrados son únicamente los representados actualmente en el sistema y no deben interpretarse como el inventario contractual completo del instrumento: son un subconjunto.";
 
 export const ETIQUETA_CATEGORIA_CLAIM: Record<string, string> = {
   sla: "plazo de servicio",
