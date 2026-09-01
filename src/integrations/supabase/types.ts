@@ -4180,6 +4180,25 @@ export type Database = {
           valor_estructurado: Json
         }[]
       }
+      ctr_portfolio_arbol: {
+        Args: never
+        Returns: {
+          claims_validated: number
+          cliente_id: string
+          cliente_nombre: string
+          effective_from: string
+          effective_to: string
+          n_claims: number
+          n_instrumentos: number
+          n_ots: number
+          n_ots_importe_informado: number
+          programa_estado: string
+          programa_id: string
+          programa_nombre: string
+          vertical_codigo: string
+          vertical_nombre: string
+        }[]
+      }
       ctr_portfolio_resumen: {
         Args: never
         Returns: {
