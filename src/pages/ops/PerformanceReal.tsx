@@ -276,7 +276,12 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                 ? DEGRADACION.FUENTE_NO_RECONCILIADA
                 : DEGRADACION.FUENTE_NO_CARGADA}
             </span>
+            <span className="block text-[10.5px] text-ink/40 leading-snug">
+              Indicador derivado por proxy (existencia de OTs con importe en el ERP), no de un
+              registro de carga del dominio económico.
+            </span>
           </p>
+
         </div>
 
         {/* Los DOS universos, siempre juntos y siempre nombrados. */}
