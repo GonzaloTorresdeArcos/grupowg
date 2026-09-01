@@ -93,6 +93,7 @@ describe("Performance Real · verticales", () => {
     expect(container.textContent).toContain("Identidad contractual ambigua");
     expect(container.textContent).toContain("Sin cliente contractual identificado");
     expect(container.textContent).toContain("47.418");
+    console.log(container.textContent?.slice(0,4000));
     expect(container.textContent).toContain("8.617");
     // Cuadre total.
     expect(container.textContent).toContain("125.752");
