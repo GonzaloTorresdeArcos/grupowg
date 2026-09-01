@@ -130,9 +130,10 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
           {fmtNum(identificadas)} OTs corresponden a un {NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO.toLowerCase()}{" "}
           sin programa contractual resuelto ({fmtNum(gobernadas)} con identidad contractual gobernada ·{" "}
           {fmtNum(noGobernadas)} con alias no gobernado). Existen operativamente; no se reparten entre
-          programas.
+          programas. El reparto mostrado describe estas OTs, no el censo global de alias.
         </p>
       )}
+
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         <Bloque titulo="Servicio">
