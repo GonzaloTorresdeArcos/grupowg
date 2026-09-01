@@ -336,3 +336,54 @@ describe("PRV-A1.1 · claim ≠ obligación · alias ≠ identidad gobernada", (
     expect(src).not.toContain("TEXTO_SIN_OBLIGACION_TEMPORAL");
   });
 });
+
+// ── PRV-A1.2 · reconciliación de evidencia contra BD live (01-09-2026) ──────
+describe("PRV-A1.2 · evidencia reconciliada", () => {
+  /**
+   * Query de autoridad ejecutada contra BD live:
+   *   SELECT v.codigo, c.categoria, count(*) FROM ctr_claim c
+   *     JOIN ctr_programa p ON p.id = c.programa_id
+   *     JOIN ctr_vertical v ON v.id = p.vertical_id GROUP BY 1,2;
+   */
+  const LIVE_CLAIMS: Record<string, Record<string, number>> = {
+    "01_RETAIL_AFTERSALES": { alcance: 4, pago: 1, penalizacion: 1, sla: 5, vigencia: 1 },
+    "02_MOBILITY": { tarifa: 2 },
+    "03_CLIMATE": { alcance: 1, tarifa: 1 },
+    "04_PROFESSIONAL": { identidad: 2 },
+    "05_INSURANCE": { alcance: 1, mapeo: 1 },
+  };
+
+  it("P0 · los fixtures reproducen exactamente las categorías de BD live", () => {
+    for (const [codigo, esperado] of Object.entries(LIVE_CLAIMS)) {
+      const fila = RESUMEN.find((r) => r.vertical_codigo === codigo)!;
+      expect(fila.claims_por_categoria).toEqual(esperado);
+      const suma = Object.values(esperado).reduce((a, b) => a + b, 0);
+      expect(fila.n_claims).toBe(suma);
+    }
+    // 20 claims en total en ctr_claim.
+    expect(RESUMEN.reduce((a, r) => a + r.n_claims, 0)).toBe(20);
+  });
+
+  it("P0 · el bucket ambiguous es íntegramente alias no gobernado", () => {
+    const amb = RESUMEN.find((r) => r.vertical_nombre === "ambiguous")!;
+    expect(amb.n_ots).toBe(47418);
+    const sinCliente = RESUMEN.find((r) => r.vertical_nombre === "sin_cliente")!;
+    expect(sinCliente.n_ots).toBe(8617);
+    // Ninguna fila no resuelta con alias gobernado: gobernado = 0 / 47.418.
+    expect(NO_RESUELTAS.filter((r) => r.alias_gobernado === true)).toHaveLength(0);
+    expect(
+      NO_RESUELTAS.filter((r) => r.clase === "identidad_gobernada_sin_programa"),
+    ).toHaveLength(0);
+  });
+
+  it("P1 · literales estrictamente soportados por la evidencia", () => {
+    expect(TEXTO_SIN_OBLIGACIONES).toBe(
+      "No hay claims contractuales representados actualmente en el sistema.",
+    );
+    expect(TEXTO_SIN_OBLIGACIONES).not.toMatch(/aún no|pendiente/i);
+    expect(TEXTO_HUECO_CONTRACTUAL).toContain(
+      "no deben interpretarse como el inventario contractual completo",
+    );
+  });
+});
+
