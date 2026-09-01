@@ -1,4 +1,5 @@
 import { useIsFetching } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import { useOpsFilters } from "@/lib/ops-filters";
 import { OPS_QUERY_ROOT } from "@/lib/ops-query";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
@@ -6,6 +7,11 @@ import { estadoCobertura, fechaLarga, TOOLTIP_SIN_COMPARABLE } from "@/lib/ops-p
 import { labelComparativa } from "@/lib/ops-performance";
 import { AlertTriangle, Info, X } from "lucide-react";
 import { OpsPeriodPicker } from "./OpsPeriodPicker";
+
+/** Único scope donde el parámetro `programa` es consumido por la RPC. */
+export const RUTAS_CON_FILTRO_PROGRAMA = ["/operaciones/performance-real"];
+
+
 
 
 
