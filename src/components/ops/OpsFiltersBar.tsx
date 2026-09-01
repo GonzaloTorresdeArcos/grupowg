@@ -96,20 +96,26 @@ export const OpsFiltersBar = () => {
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
           onChange={(v) => setFilters({ canal: v })} />
-        <label className="flex flex-col gap-1 min-w-[190px]">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Programa</span>
-          <select
-            aria-label="Programa contractual"
-            value={filters.programa ?? ""}
-            onChange={(e) => setFilters({ programa: e.target.value || null })}
-            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
-          >
-            <option value="">Todos</option>
-            {(Array.isArray(programas) ? programas : []).map((p) => (
-              <option key={p.id} value={p.id}>{p.label}</option>
-            ))}
-          </select>
-        </label>
+        {/* PRV-A1 · el filtro de Programa SOLO se ofrece donde la RPC lo
+            consume realmente. Fuera de ese scope no se muestra, para no
+            simular un filtrado que el backend ignora. */}
+        {programaEnScope && (
+          <label className="flex flex-col gap-1 min-w-[190px]">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Programa</span>
+            <select
+              aria-label="Programa contractual"
+              value={filters.programa ?? ""}
+              onChange={(e) => setFilters({ programa: e.target.value || null })}
+              className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+            >
+              <option value="">Todos</option>
+              {(Array.isArray(programas) ? programas : []).map((p) => (
+                <option key={p.id} value={p.id}>{p.label}</option>
+              ))}
+            </select>
+          </label>
+        )}
+
         {fetching > 0 && (
           <span
             role="status"
