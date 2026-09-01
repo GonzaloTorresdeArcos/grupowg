@@ -220,13 +220,89 @@ export const NOTA_UNIVERSO_RESUELTA =
 export const NOTA_UNIVERSO_SERVICIO =
   "Subconjunto de la población resuelta sobre el que se miden hitos y plazos: excluye incidencia 'ANULADO AVISO'.";
 
-/** Literal obligatorio cuando un programa no tiene obligaciones representadas. */
+/** Literal obligatorio cuando un programa no tiene claims representados. */
 export const TEXTO_SIN_OBLIGACIONES =
-  "Obligaciones contractuales aún no representadas en el sistema.";
+  "Compromisos contractuales aún no representados en el sistema.";
 
 /** Literal obligatorio para programas sin obligación temporal representada. */
 export const TEXTO_SIN_OBLIGACION_TEMPORAL =
   "Sin obligación temporal representada actualmente en el sistema.";
+
+// ── P0.2 · CLAIM ≠ OBLIGACIÓN ───────────────────────────────────────────────
+/**
+ * Se cuenta literalmente `ctr_claim`. Un claim es una afirmación contractual
+ * extraída de un documento; puede ser de identidad, alcance, tarifa, mapeo,
+ * vigencia, pago, penalización o SLA. Solo los de categoría `sla` con regla
+ * gobernada pueden llamarse obligación temporal.
+ */
+export const ETIQUETA_CLAIMS_REPRESENTADOS = "Claims contractuales representados";
+
+export const NOTA_CLAIMS_REPRESENTADOS =
+  "Conteo literal de afirmaciones contractuales extraídas y representadas. No equivale al total de obligaciones del contrato: los instrumentos pueden contener obligaciones aún no extraídas ni gobernadas.";
+
+export const TEXTO_HUECO_CONTRACTUAL =
+  "El inventario de obligaciones documentales de los instrumentos NO está completo en el sistema: lo representado es un subconjunto extraído, no la cartera contractual íntegra.";
+
+export const ETIQUETA_CATEGORIA_CLAIM: Record<string, string> = {
+  sla: "plazo de servicio",
+  tarifa: "tarifa / económico",
+  pago: "condiciones de pago",
+  alcance: "alcance",
+  identidad: "identidad de contraparte",
+  mapeo: "mapeo operativo",
+  vigencia: "vigencia",
+  penalizacion: "penalización",
+  otro: "otros",
+};
+
+export const etiquetaCategoriaClaim = (categoria: string | null | undefined): string =>
+  (categoria && ETIQUETA_CATEGORIA_CLAIM[categoria]) || categoria || "sin categoría";
+
+/** Resumen legible del desglose por categoría, sin inventar clasificación nueva. */
+export const desgloseCategorias = (
+  porCategoria: Record<string, number> | null | undefined,
+): string =>
+  Object.entries(porCategoria ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${v} ${etiquetaCategoriaClaim(k)}`)
+    .join(" · ");
+
+/** Categorías que, con regla gobernada, sí sostienen una obligación temporal. */
+export const esCategoriaTemporal = (categoria: string | null | undefined): boolean =>
+  categoria === "sla";
+
+/**
+ * P0.3 · Semántica de un claim SIN regla derivada.
+ * Nunca se afirma que la obligación «no existe»: existe el claim; lo que falta
+ * es la regla evaluable. Solo un claim `sla` sin regla es una obligación
+ * temporal representada pendiente de derivación.
+ */
+export const semanticaClaimSinRegla = (
+  categoria: string | null | undefined,
+  estado?: string | null,
+): string => {
+  const pendienteValidacion = estado !== "VALIDATED";
+  switch (categoria) {
+    case "identidad":
+      return `Claim de identidad representado · ${pendienteValidacion ? "pendiente de validación" : "validado"} · sin regla derivada`;
+    case "alcance":
+      return "Claim de alcance representado · sin regla derivada";
+    case "tarifa":
+    case "pago":
+      return "Claim económico/tarifario representado · sin regla derivada";
+    case "mapeo":
+      return "Claim de mapeo operativo representado · sin regla derivada";
+    case "vigencia":
+      return "Claim de vigencia representado · sin regla derivada";
+    case "penalizacion":
+      return "Claim de penalización representado · sin regla derivada";
+    case "sla":
+      return "Obligación temporal representada · regla aún no derivada";
+    default:
+      return "Claim contractual representado · sin regla derivada";
+  }
+};
+
 
 /** Marca visible obligatoria en ≤20d / ≤30d. */
 export const MARCA_REFERENCIA_INTERNA = "REFERENCIA INTERNA WG";
