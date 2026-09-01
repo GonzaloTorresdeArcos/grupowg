@@ -128,8 +128,9 @@ describe("Performance Real · verticales", () => {
     const { container } = render(<Page />);
     const txt = container.textContent ?? "";
     // 7.834 OTs identificadas y 0 resueltas a programa, ambas visibles.
-    expect(txt).toContain("7834 OTs identificadas · 0 resueltas a programa");
-    expect(txt).toContain("programa aún no es resoluble");
+    expect(txt).toContain("7834 OTs operativas identificadas · 0 resueltas a programa");
+    expect(txt).toContain("programa contractual no resuelto");
+
     // El literal degradado nunca puede sugerir ausencia de población operativa.
     expect(DEGRADACION.SIN_POBLACION).toContain("A PROGRAMA");
     expect(txt).not.toMatch(/SIN POBLACIÓN OPERATIVA RESUELTA(?! A PROGRAMA)/);
