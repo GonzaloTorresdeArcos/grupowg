@@ -23,8 +23,7 @@ export type PerfilFiltros =
 export const PERFIL_POR_RUTA: { prefijo: string; perfil: PerfilFiltros }[] = [
   { prefijo: "/operaciones/performance-real", perfil: "programa" },
   { prefijo: "/operaciones/contratos", perfil: "ninguno" },
-  { prefijo: "/operaciones/calidad-datos", perfil: "ninguno" },
-  { prefijo: "/operaciones/importar", perfil: "ninguno" },
+
 ];
 
 export const perfilFiltros = (pathname: string): PerfilFiltros =>
