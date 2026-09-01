@@ -1,5 +1,4 @@
 import { useIsFetching } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
 import { useOpsFilters } from "@/lib/ops-filters";
 import { OPS_QUERY_ROOT } from "@/lib/ops-query";
 import { gamaDisplayMap } from "@/lib/ops-gamas";
@@ -49,7 +48,7 @@ export const OpsFiltersBar = () => {
   // mientras se resuelve la nueva tanda de RPC.
   const fetching = useIsFetching({ queryKey: [OPS_QUERY_ROOT] });
   // Rutas cuyas RPC aceptan y aplican de verdad el parámetro `programa`.
-  const { pathname } = useLocation();
+  const pathname = typeof window === "undefined" ? "" : window.location.pathname;
   const programaEnScope = RUTAS_CON_FILTRO_PROGRAMA.some((r) => pathname.startsWith(r));
   const canalWarning = filters.canal === "Taller" || filters.canal === "Domicilio";
   const cob = estadoCobertura({ from: filters.from, to: filters.to }, cobertura);
