@@ -4199,6 +4199,18 @@ export type Database = {
           vertical_nombre: string
         }[]
       }
+      ctr_portfolio_no_resueltas: {
+        Args: never
+        Returns: {
+          clase: string
+          cliente_nombre: string
+          cliente_wg_origen: string
+          n_ots: number
+          n_programas_candidatos: number
+          vertical_codigo: string
+          vertical_nombre: string
+        }[]
+      }
       ctr_portfolio_resumen: {
         Args: never
         Returns: {
@@ -4209,7 +4221,10 @@ export type Database = {
           n_clientes: number
           n_instrumentos: number
           n_ots: number
-          n_ots_importe_informado: number
+          n_ots_cliente_identificado: number
+          n_ots_importe_cero: number
+          n_ots_importe_no_cero: number
+          n_ots_importe_nulo: number
           n_programas: number
           n_reglas: number
           vertical_codigo: string
