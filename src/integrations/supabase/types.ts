@@ -1007,6 +1007,39 @@ export type Database = {
           },
         ]
       }
+      ctr_dimension_catalogo: {
+        Row: {
+          actor_nombre: string | null
+          correspondence_allowed: boolean
+          dimension: string
+          nota: string | null
+          operational_source: string | null
+          predicate_allowed: boolean
+          resolver_defined: boolean
+          ts: string
+        }
+        Insert: {
+          actor_nombre?: string | null
+          correspondence_allowed: boolean
+          dimension: string
+          nota?: string | null
+          operational_source?: string | null
+          predicate_allowed: boolean
+          resolver_defined: boolean
+          ts?: string
+        }
+        Update: {
+          actor_nombre?: string | null
+          correspondence_allowed?: boolean
+          dimension?: string
+          nota?: string | null
+          operational_source?: string | null
+          predicate_allowed?: boolean
+          resolver_defined?: boolean
+          ts?: string
+        }
+        Relationships: []
+      }
       ctr_documento: {
         Row: {
           carga_id: string | null
@@ -1698,6 +1731,115 @@ export type Database = {
             columns: ["carga_id"]
             isOneToOne: false
             referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctr_regla_dimension_requerida: {
+        Row: {
+          assessment_id: string
+          claim_id: string | null
+          creado_en: string
+          dimension: string
+          id: string
+          justificacion: string
+        }
+        Insert: {
+          assessment_id: string
+          claim_id?: string | null
+          creado_en?: string
+          dimension: string
+          id?: string
+          justificacion: string
+        }
+        Update: {
+          assessment_id?: string
+          claim_id?: string | null
+          creado_en?: string
+          dimension?: string
+          id?: string
+          justificacion?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_dimension_requerida_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_requisitos_assessment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_dimension_requerida_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_claim"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_dimension_requerida_dimension_fkey"
+            columns: ["dimension"]
+            isOneToOne: false
+            referencedRelation: "ctr_dimension_catalogo"
+            referencedColumns: ["dimension"]
+          },
+        ]
+      }
+      ctr_regla_requisitos_assessment: {
+        Row: {
+          actor_id: string
+          actor_nombre: string
+          actor_rol: string
+          carga_id: string | null
+          estado_revision: string
+          evidencia_ref: string | null
+          id: string
+          justificacion: string
+          regla_version_id: string
+          ts: string
+          version: number
+          vigente: boolean
+        }
+        Insert: {
+          actor_id: string
+          actor_nombre: string
+          actor_rol: string
+          carga_id?: string | null
+          estado_revision: string
+          evidencia_ref?: string | null
+          id?: string
+          justificacion: string
+          regla_version_id: string
+          ts?: string
+          version: number
+          vigente?: boolean
+        }
+        Update: {
+          actor_id?: string
+          actor_nombre?: string
+          actor_rol?: string
+          carga_id?: string | null
+          estado_revision?: string
+          evidencia_ref?: string | null
+          id?: string
+          justificacion?: string
+          regla_version_id?: string
+          ts?: string
+          version?: number
+          vigente?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_regla_requisitos_assessment_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_regla_requisitos_assessment_regla_version_id_fkey"
+            columns: ["regla_version_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_regla_version"
             referencedColumns: ["id"]
           },
         ]
@@ -4008,6 +4150,16 @@ export type Database = {
         }[]
       }
       ctr_aprobar_promocion: { Args: { p_solicitud: string }; Returns: string }
+      ctr_declarar_requisitos_regla: {
+        Args: {
+          p_dimensiones?: string[]
+          p_estado: string
+          p_evidencia_ref?: string
+          p_justificacion: string
+          p_regla_version: string
+        }
+        Returns: Json
+      }
       ctr_promover_evidencia: {
         Args: {
           p_estado_esperado: string
