@@ -18,12 +18,19 @@ export type PortfolioResumenFila = {
   n_clientes: number;
   /** Población CONTRACTUAL RESUELTA: OTs asignadas determinísticamente a programa. */
   n_ots: number;
-  /** OTs con cliente contractual reconocido pero SIN programa resoluble. */
+  /** OTs cuyo origen ERP es reconocible como cliente candidato, sin programa resoluble. */
   n_ots_cliente_identificado: number;
+  /** Subconjunto del anterior cuyo alias de identidad SÍ está gobernado. */
+  n_ots_alias_gobernado: number;
+  /** Subconjunto del anterior cuyo alias de identidad NO está gobernado. */
+  n_ots_alias_no_gobernado: number;
   n_instrumentos: number;
+  /** Conteo literal de filas de `ctr_claim`. NO es un conteo de obligaciones. */
   n_claims: number;
   claims_validated: number;
   claims_pending: number;
+  /** Desglose literal por `ctr_claim.categoria`. */
+  claims_por_categoria: Record<string, number> | null;
   n_reglas: number;
   n_aplicabilidad: number;
   n_ots_importe_no_cero: number;
@@ -32,14 +39,22 @@ export type PortfolioResumenFila = {
 };
 
 export type PortfolioNoResueltaFila = {
-  clase: "cliente_identificado_sin_programa" | "identidad_no_establecida" | string;
+  clase:
+    | "cliente_operativo_reconocido_sin_programa"
+    | "identidad_gobernada_sin_programa"
+    | "identidad_no_establecida"
+    | string;
   cliente_wg_origen: string | null;
   cliente_nombre: string | null;
+  /** Estado real del alias en `ctr_alias_identidad.gobernado`. */
+  alias_gobernado: boolean | null;
+  alias_metodo: string | null;
   vertical_codigo: string | null;
   vertical_nombre: string | null;
   n_programas_candidatos: number;
   n_ots: number;
 };
+
 
 export type PortfolioArbolFila = {
   vertical_codigo: string | null;
