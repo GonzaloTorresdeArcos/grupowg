@@ -249,12 +249,21 @@ describe("Readiness categórico · sin pseudo-score", () => {
       "DESCUBIERTA", "REPRESENTADA", "VALIDADA", "APLICABLE", "EVALUABLE", "EVALUADA",
     ]);
     expect(etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: false, readinessEstado: null }))
-      .toEqual(["DESCUBIERTA"]);
+      .toEqual(["DESCUBIERTA", "REPRESENTADA"]);
     expect(etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: true, readinessEstado: "INSUFFICIENT_EVIDENCE" }))
       .toEqual(["DESCUBIERTA", "REPRESENTADA"]);
     expect(etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: true, readinessEstado: "APPLICABLE" }))
       .toEqual(["DESCUBIERTA", "REPRESENTADA", "VALIDADA", "APLICABLE"]);
   });
+
+  it("P0.4 · REPRESENTADA no depende de tener regla derivada", () => {
+    const sinRegla = etapasAlcanzadas({ claimEstado: "PENDING", tieneRegla: false, readinessEstado: null });
+    expect(sinRegla).toContain("REPRESENTADA");
+    // Y APLICABLE sigue exigiendo regla + readiness que lo sostenga.
+    expect(etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: false, readinessEstado: "APPLICABLE" }))
+      .not.toContain("APLICABLE");
+  });
+
 
   it("APLICABLE nunca implica EVALUADA ni cumplimiento", () => {
     const e = etapasAlcanzadas({ claimEstado: "VALIDATED", tieneRegla: true, readinessEstado: "APPLICABLE" });
