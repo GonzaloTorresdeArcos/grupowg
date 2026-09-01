@@ -27,9 +27,9 @@ import {
 
 // Cifras literales de BD live (01-09-2026).
 const RESUMEN = [
-  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, claims_por_categoria: { sla: 8, alcance: 2, identidad: 2 }, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { tarifa: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, claims_por_categoria: { alcance: 4, pago: 1, penalizacion: 1, sla: 5, vigencia: 1 }, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { tarifa: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 1, tarifa: 1 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
   { vertical_codigo: "04_PROFESSIONAL", vertical_nombre: "Professional", n_programas: 2, n_clientes: 1, n_ots: 5674, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { identidad: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 276, n_ots_importe_cero: 5398, n_ots_importe_nulo: 0 },
   { vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas: 2, n_clientes: 1, n_ots: 0, n_ots_cliente_identificado: 7834, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 7834, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 1, mapeo: 1 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
   { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "ambiguous", n_programas: 0, n_clientes: 0, n_ots: 47418, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, claims_por_categoria: null, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
@@ -336,3 +336,54 @@ describe("PRV-A1.1 · claim ≠ obligación · alias ≠ identidad gobernada", (
     expect(src).not.toContain("TEXTO_SIN_OBLIGACION_TEMPORAL");
   });
 });
+
+// ── PRV-A1.2 · reconciliación de evidencia contra BD live (01-09-2026) ──────
+describe("PRV-A1.2 · evidencia reconciliada", () => {
+  /**
+   * Query de autoridad ejecutada contra BD live:
+   *   SELECT v.codigo, c.categoria, count(*) FROM ctr_claim c
+   *     JOIN ctr_programa p ON p.id = c.programa_id
+   *     JOIN ctr_vertical v ON v.id = p.vertical_id GROUP BY 1,2;
+   */
+  const LIVE_CLAIMS: Record<string, Record<string, number>> = {
+    "01_RETAIL_AFTERSALES": { alcance: 4, pago: 1, penalizacion: 1, sla: 5, vigencia: 1 },
+    "02_MOBILITY": { tarifa: 2 },
+    "03_CLIMATE": { alcance: 1, tarifa: 1 },
+    "04_PROFESSIONAL": { identidad: 2 },
+    "05_INSURANCE": { alcance: 1, mapeo: 1 },
+  };
+
+  it("P0 · los fixtures reproducen exactamente las categorías de BD live", () => {
+    for (const [codigo, esperado] of Object.entries(LIVE_CLAIMS)) {
+      const fila = RESUMEN.find((r) => r.vertical_codigo === codigo)!;
+      expect(fila.claims_por_categoria).toEqual(esperado);
+      const suma = Object.values(esperado).reduce((a, b) => a + b, 0);
+      expect(fila.n_claims).toBe(suma);
+    }
+    // 20 claims en total en ctr_claim.
+    expect(RESUMEN.reduce((a, r) => a + r.n_claims, 0)).toBe(20);
+  });
+
+  it("P0 · el bucket ambiguous es íntegramente alias no gobernado", () => {
+    const amb = RESUMEN.find((r) => r.vertical_nombre === "ambiguous")!;
+    expect(amb.n_ots).toBe(47418);
+    const sinCliente = RESUMEN.find((r) => r.vertical_nombre === "sin_cliente")!;
+    expect(sinCliente.n_ots).toBe(8617);
+    // Ninguna fila no resuelta con alias gobernado: gobernado = 0 / 47.418.
+    expect(NO_RESUELTAS.filter((r) => r.alias_gobernado === true)).toHaveLength(0);
+    expect(
+      NO_RESUELTAS.filter((r) => r.clase === "identidad_gobernada_sin_programa"),
+    ).toHaveLength(0);
+  });
+
+  it("P1 · literales estrictamente soportados por la evidencia", () => {
+    expect(TEXTO_SIN_OBLIGACIONES).toBe(
+      "No hay claims contractuales representados actualmente en el sistema.",
+    );
+    expect(TEXTO_SIN_OBLIGACIONES).not.toMatch(/aún no|pendiente/i);
+    expect(TEXTO_HUECO_CONTRACTUAL).toContain(
+      "no deben interpretarse como el inventario contractual completo",
+    );
+  });
+});
+

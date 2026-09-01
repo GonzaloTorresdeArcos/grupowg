@@ -220,9 +220,15 @@ export const NOTA_UNIVERSO_RESUELTA =
 export const NOTA_UNIVERSO_SERVICIO =
   "Subconjunto de la población resuelta sobre el que se miden hitos y plazos: excluye incidencia 'ANULADO AVISO'.";
 
-/** Literal obligatorio cuando un programa no tiene claims representados. */
+/**
+ * PRV-A1.2 · P1 · Literal obligatorio cuando un programa no tiene claims.
+ * `n_claims = 0` significa AUSENCIA DE REPRESENTACIÓN, no conocimiento de que
+ * existan compromisos concretos pendientes. Missing ≠ absence, y absence ≠
+ * obligación pendiente conocida.
+ */
 export const TEXTO_SIN_OBLIGACIONES =
-  "Compromisos contractuales aún no representados en el sistema.";
+  "No hay claims contractuales representados actualmente en el sistema.";
+
 
 /** Literal obligatorio para programas sin obligación temporal representada. */
 export const TEXTO_SIN_OBLIGACION_TEMPORAL =
@@ -240,8 +246,13 @@ export const ETIQUETA_CLAIMS_REPRESENTADOS = "Claims contractuales representados
 export const NOTA_CLAIMS_REPRESENTADOS =
   "Conteo literal de afirmaciones contractuales extraídas y representadas. No equivale al total de obligaciones del contrato: los instrumentos pueden contener obligaciones aún no extraídas ni gobernadas.";
 
+/**
+ * PRV-A1.2 · P1 · El inventario documental completo NO está gobernado en base
+ * de datos, por lo que el aviso no puede afirmar cuánto falta ni cuantificarlo.
+ * Solo declara el alcance de lo mostrado.
+ */
 export const TEXTO_HUECO_CONTRACTUAL =
-  "El inventario de obligaciones documentales de los instrumentos NO está completo en el sistema: lo representado es un subconjunto extraído, no la cartera contractual íntegra.";
+  "Los claims mostrados son únicamente los representados actualmente en el sistema y no deben interpretarse como el inventario contractual completo del instrumento: son un subconjunto.";
 
 export const ETIQUETA_CATEGORIA_CLAIM: Record<string, string> = {
   sla: "plazo de servicio",
