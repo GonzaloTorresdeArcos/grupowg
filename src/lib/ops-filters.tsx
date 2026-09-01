@@ -18,6 +18,8 @@ export type OpsFilters = {
   sat: string | null;
   tecnico: string | null;
   canal: string | null;
+  /** Programa contractual (ctr_programa.id). NO infiere cliente ni vertical. */
+  programa: string | null;
 };
 
 export type OpsFilterOptions = {
@@ -32,7 +34,9 @@ export type OpsFilterOptions = {
   canales: string[];
 };
 
-const STORAGE_KEY = "ops.filters.v3";
+const STORAGE_KEY = "ops.filters.v4";
+/** Clave anterior: se migra en silencio para no perder el estado del usuario. */
+const STORAGE_KEY_PREV = "ops.filters.v3";
 const MODO_KEY = "ops.modoComparacion.v1";
 const CANAL_VALIDOS = new Set(["Taller", "Domicilio", "Unico"]);
 
@@ -44,7 +48,7 @@ const defaultFilters = (): OpsFilters => {
   return {
     from: iso(from), to: iso(to),
     delegacion: null, cliente: null, gama: null, familia: null, marca: null,
-    provincia: null, sat: null, tecnico: null, canal: null,
+    provincia: null, sat: null, tecnico: null, canal: null, programa: null,
   };
 };
 
@@ -88,7 +92,7 @@ const EMPTY_OPTIONS: OpsFilterOptions = {
 export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFiltersState] = useState<OpsFilters>(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(STORAGE_KEY_PREV);
       if (raw) {
         const parsed = { ...defaultFilters(), ...JSON.parse(raw) } as OpsFilters;
         // Sanitiza canal: solo permite los valores reales de la BD.
