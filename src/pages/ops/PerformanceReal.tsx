@@ -458,13 +458,14 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                       )}
                     </div>
                   ) : (
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink/45">
-                      {DEGRADACION.NO_EVALUABLE} —{" "}
-                      <span className="normal-case font-normal tracking-normal">
-                        {TEXTO_SIN_OBLIGACION_TEMPORAL}
-                      </span>
+                    <p
+                      className="text-[11px] text-ink/60 leading-snug"
+                      data-sin-regla={o.categoria ?? ""}
+                    >
+                      {semanticaClaimSinRegla(o.categoria, o.estado)}
                     </p>
                   )}
+
                 </li>
               ))}
             </ul>
