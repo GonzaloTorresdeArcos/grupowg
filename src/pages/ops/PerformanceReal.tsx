@@ -399,7 +399,10 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         )}
 
         <div className="pt-2 space-y-3">
-          <p className="text-[11px] text-ink/50">Obligaciones representadas</p>
+          <p className="text-[11px] text-ink/50">{ETIQUETA_CLAIMS_REPRESENTADOS}</p>
+          <p className="text-[10.5px] text-ink/45 leading-snug max-w-2xl">
+            {NOTA_CLAIMS_REPRESENTADOS} {TEXTO_HUECO_CONTRACTUAL}
+          </p>
           {obligaciones.length === 0 ? (
             <p className="text-[12.5px] text-ink/65">{TEXTO_SIN_OBLIGACIONES}</p>
           ) : (
@@ -409,8 +412,9 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase tracking-[0.12em] text-ink/40">
-                        {o.categoria ?? "sin categoría"}
+                        Claim · {etiquetaCategoriaClaim(o.categoria)}
                       </p>
+
                       <p className="text-[13.5px] text-ink leading-snug">
                         {o.enunciado ?? "Enunciado no registrado"}
                       </p>
