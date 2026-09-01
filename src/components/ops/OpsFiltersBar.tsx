@@ -37,7 +37,7 @@ const Sel = ({ label, value, options, onChange, displayMap }: {
 export const OpsFiltersBar = () => {
   const {
     filters, setFilters, reset, options, optionsError, reloadOptions,
-    modo, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+    modo, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura, programas,
   } = useOpsFilters();
   // A3 · Indicador no bloqueante: la UI sigue mostrando la última foto válida
   // mientras se resuelve la nueva tanda de RPC.
@@ -96,6 +96,20 @@ export const OpsFiltersBar = () => {
           onChange={(v) => setFilters({ tecnico: v })} />
         <Sel label="Canal" value={filters.canal} options={options.canales}
           onChange={(v) => setFilters({ canal: v })} />
+        <label className="flex flex-col gap-1 min-w-[190px]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink/40">Programa</span>
+          <select
+            aria-label="Programa contractual"
+            value={filters.programa ?? ""}
+            onChange={(e) => setFilters({ programa: e.target.value || null })}
+            className="h-8 px-2 rounded-md border border-black/[0.08] bg-white text-[13px] text-ink focus:outline-none focus:border-ink/40"
+          >
+            <option value="">Todos</option>
+            {(Array.isArray(programas) ? programas : []).map((p) => (
+              <option key={p.id} value={p.id}>{p.label}</option>
+            ))}
+          </select>
+        </label>
         {fetching > 0 && (
           <span
             role="status"

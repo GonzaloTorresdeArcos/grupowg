@@ -4160,6 +4160,63 @@ export type Database = {
         }
         Returns: Json
       }
+      ctr_obligaciones_programa: {
+        Args: { p_programa: string }
+        Returns: {
+          calendario_requerido: boolean
+          categoria: string
+          claim_id: string
+          doc_estado_evidencia: string
+          doc_fichero: string
+          doc_hash: string
+          enunciado: string
+          estado: string
+          readiness_estado: string
+          readiness_reason: string
+          regla_codigo: string
+          regla_parametros: Json
+          regla_unidad: string
+          regla_version_id: string
+          valor_estructurado: Json
+        }[]
+      }
+      ctr_portfolio_arbol: {
+        Args: never
+        Returns: {
+          claims_validated: number
+          cliente_id: string
+          cliente_nombre: string
+          effective_from: string
+          effective_to: string
+          n_claims: number
+          n_instrumentos: number
+          n_ots: number
+          n_ots_importe_informado: number
+          programa_estado: string
+          programa_id: string
+          programa_nombre: string
+          vertical_codigo: string
+          vertical_nombre: string
+        }[]
+      }
+      ctr_portfolio_resumen: {
+        Args: never
+        Returns: {
+          claims_pending: number
+          claims_validated: number
+          n_aplicabilidad: number
+          n_claims: number
+          n_clientes: number
+          n_instrumentos: number
+          n_ots: number
+          n_ots_importe_informado: number
+          n_programas: number
+          n_reglas: number
+          vertical_codigo: string
+          vertical_nombre: string
+        }[]
+      }
+      ctr_programa_ficha: { Args: { p_programa: string }; Returns: Json }
       ctr_promover_evidencia: {
         Args: {
           p_estado_esperado: string

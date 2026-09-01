@@ -54,6 +54,8 @@ const OpsHub = lazy(() => import("./pages/ops/Hub.tsx"));
 const OpsLogistica = lazy(() => import("./pages/ops/Logistica.tsx"));
 const OpsRepuestos = lazy(() => import("./pages/ops/Repuestos.tsx"));
 const OpsCalidadDatos = lazy(() => import("./pages/ops/CalidadDatos.tsx"));
+const OpsPerformanceReal = lazy(() => import("./pages/ops/PerformanceReal.tsx"));
+const OpsContratos = lazy(() => import("./pages/ops/ContratosProgramas.tsx"));
 
 
 
@@ -163,6 +165,9 @@ const App = () => (
                 <Route path="/operaciones/logistica" element={<OpsLogistica />} />
                 <Route path="/operaciones/repuestos" element={<OpsRepuestos />} />
                 <Route path="/operaciones/calidad-datos" element={<OpsCalidadDatos />} />
+                {/* Performance Real / Inteligencia contractual */}
+                <Route path="/operaciones/performance-real" element={<OpsPerformanceReal />} />
+                <Route path="/operaciones/contratos" element={<OpsContratos />} />
               </Route>
 
 
