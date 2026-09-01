@@ -220,9 +220,15 @@ export const NOTA_UNIVERSO_RESUELTA =
 export const NOTA_UNIVERSO_SERVICIO =
   "Subconjunto de la población resuelta sobre el que se miden hitos y plazos: excluye incidencia 'ANULADO AVISO'.";
 
-/** Literal obligatorio cuando un programa no tiene claims representados. */
+/**
+ * PRV-A1.2 · P1 · Literal obligatorio cuando un programa no tiene claims.
+ * `n_claims = 0` significa AUSENCIA DE REPRESENTACIÓN, no conocimiento de que
+ * existan compromisos concretos pendientes. Missing ≠ absence, y absence ≠
+ * obligación pendiente conocida.
+ */
 export const TEXTO_SIN_OBLIGACIONES =
-  "Compromisos contractuales aún no representados en el sistema.";
+  "No hay claims contractuales representados actualmente en el sistema.";
+
 
 /** Literal obligatorio para programas sin obligación temporal representada. */
 export const TEXTO_SIN_OBLIGACION_TEMPORAL =
