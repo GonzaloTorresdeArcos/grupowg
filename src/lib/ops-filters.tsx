@@ -79,6 +79,8 @@ type Ctx = {
   sinComparable: boolean;
   /** Cobertura real de datos cargados (min/max), cacheada en el provider. */
   cobertura: Cobertura;
+  /** Catálogo de programas contractuales para el filtro global. */
+  programas: { id: string; label: string }[];
 };
 
 const OpsFiltersContext = createContext<Ctx | null>(null);
@@ -128,6 +130,19 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     };
     return { min: val("min_fecha"), max: val("max_fecha") };
   }, [coberturaQ.data]);
+
+  // Catálogo de programas contractuales (independiente de la cascada operativa:
+  // cliente ≠ programa, así que este filtro NO reescribe ni infiere cliente).
+  const programasQ = useOpsRpc<unknown>("ctr_portfolio_arbol");
+  const programas = useMemo(() => {
+    const rows = Array.isArray(programasQ.data) ? (programasQ.data as Record<string, unknown>[]) : [];
+    return rows
+      .filter((r) => typeof r.programa_id === "string")
+      .map((r) => ({
+        id: String(r.programa_id),
+        label: [r.cliente_nombre, r.programa_nombre].filter(Boolean).join(" · ") || String(r.programa_id),
+      }));
+  }, [programasQ.data]);
 
   // Recarga en cascada: UNA sola consulta cacheada por combinación de filtros.
   const optionsQ = useOpsRpc<unknown>("ops_filter_options", {
@@ -268,6 +283,7 @@ export const OpsFiltersProvider = ({ children }: { children: ReactNode }) => {
     <OpsFiltersContext.Provider value={{
       filters, setFilters, reset, options, loadingOptions, optionsError, reloadOptions, rpcParams,
       modo, modoSeleccionado, setModo, preset, aplicarPreset, prevRange, sinComparable, cobertura,
+      programas,
     }}>
       {children}
     </OpsFiltersContext.Provider>
