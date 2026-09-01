@@ -6,7 +6,7 @@ vi.mock("@/integrations/supabase/client", () => ({ supabase: { rpc: rpcMock } })
 vi.mock("@/hooks/useDataQuality", () => ({
   useDataQuality: () => ({
     loading: false,
-    medidas: { cargas: [{ dominio: "ot", as_of: "2026-07-25" }] },
+    medidas: { cargas: [{ dominio: "ot", fuente: "erp", last_successful_load: "2026-07-25", data_as_of_date: "2026-07-25", filas: 1, origen: "erp", notas: null }] },
   }),
 }));
 
