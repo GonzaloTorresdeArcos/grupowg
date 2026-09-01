@@ -107,7 +107,10 @@ describe("Performance Real · verticales", () => {
     for (const n of ["Retail after-sales", "Mobility", "Climate", "Professional", "Insurance"]) {
       expect(screen.getAllByText(n).length, n).toBeGreaterThan(0);
     }
-    expect(container.textContent).toContain("Cliente identificado · programa contractual no resoluble");
+    expect(container.textContent).toContain(
+      `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`,
+    );
+
     expect(container.textContent).toContain("Identidad contractual no establecida");
     expect(container.textContent).toContain("47.418");
     // es-ES no agrupa los millares de 4 dígitos: 8617, no 8.617.
