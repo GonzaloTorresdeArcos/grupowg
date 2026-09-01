@@ -91,7 +91,10 @@ const BloqueEconomia = ({ noCero, cero, nulo, total }: {
 // ── Vista 1 · verticales ────────────────────────────────────────────────────
 const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () => void }) => {
   const identificadas = Number(f.n_ots_cliente_identificado || 0);
+  const gobernadas = Number(f.n_ots_alias_gobernado || 0);
+  const noGobernadas = Number(f.n_ots_alias_no_gobernado || 0);
   const resueltas = Number(f.n_ots || 0);
+  const desglose = desgloseCategorias(f.claims_por_categoria);
   return (
     <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
       <header className="flex items-start justify-between gap-4">
@@ -110,14 +113,15 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
       </header>
 
       <p className="mt-2 text-[12.5px] text-ink">
-        {fmtNum(identificadas + resueltas)} OTs identificadas ·{" "}
+        {fmtNum(identificadas + resueltas)} OTs operativas identificadas ·{" "}
         {fmtNum(resueltas)} resueltas a programa
       </p>
       {identificadas > 0 && (
         <p className="mt-1 text-[11.5px] text-ink/65 leading-snug max-w-2xl">
-          {fmtNum(identificadas)} OTs tienen cliente contractual identificado pero su programa
-          aún no es resoluble con los datos disponibles. Existen operativamente; no se reparten
-          entre programas.
+          {fmtNum(identificadas)} OTs corresponden a un {NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO.toLowerCase()}{" "}
+          sin programa contractual resuelto ({fmtNum(gobernadas)} con identidad contractual gobernada ·{" "}
+          {fmtNum(noGobernadas)} con alias no gobernado). Existen operativamente; no se reparten entre
+          programas.
         </p>
       )}
 
@@ -130,7 +134,7 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
             degradado={DEGRADACION.SIN_POBLACION}
           />
           <Dato
-            label="OTs con cliente identificado y programa no resoluble"
+            label={`OTs de ${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO.toLowerCase()} sin programa resuelto`}
             valor={fmtNum(identificadas)}
             nota="Contabilizadas en el bloque de población no resuelta; no se suman a la resuelta."
           />
@@ -147,21 +151,23 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
           {f.n_claims > 0 ? (
             <>
               <Dato
-                label="Obligaciones representadas"
+                label={ETIQUETA_CLAIMS_REPRESENTADOS}
                 valor={`${fmtNum(f.n_claims)}`}
-                nota={`${fmtNum(f.claims_validated)} validadas · ${fmtNum(f.claims_pending)} pendientes de validar`}
+                nota={`${fmtNum(f.claims_validated)} validados · ${fmtNum(f.claims_pending)} pendientes de validar${desglose ? ` · ${desglose}` : ""}`}
               />
+              <p className="text-[10.5px] text-ink/45 leading-snug">{NOTA_CLAIMS_REPRESENTADOS}</p>
               <Dato
                 label="Reglas derivadas"
                 valor={fmtNum(f.n_reglas)}
                 nota={f.n_reglas === 0
-                  ? "Obligación registrada sin regla derivada: no evaluable, no inexistente."
+                  ? "Claim representado sin regla derivada: no evaluable, no inexistente."
                   : undefined}
               />
             </>
           ) : (
             <p className="text-[12px] text-ink/60 leading-snug">{TEXTO_SIN_OBLIGACIONES}</p>
           )}
+          <p className="text-[10.5px] text-ink/45 leading-snug">{TEXTO_HUECO_CONTRACTUAL}</p>
         </Bloque>
 
         <BloqueEconomia
@@ -174,6 +180,7 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
     </section>
   );
 };
+
 
 
 // ── Vista 2/3 · clientes y programas ───────────────────────────────────────
