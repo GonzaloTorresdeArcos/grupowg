@@ -11,6 +11,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { OpsFiltersProvider } from "../ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
 
+const abrirMasFiltros = async () => {
+  const btn = await screen.findByRole("button", { name: /Más filtros/ });
+  fireEvent.click(btn);
+};
+
 const renderBar = () =>
   render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })}>
@@ -41,6 +46,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
   it("renderiza las opciones cuando la RPC responde bien", async () => {
     rpcMock.mockResolvedValue({ data: OK_PAYLOAD, error: null });
     renderBar();
+    await abrirMasFiltros();
     await waitFor(() =>
       expect(screen.getByRole("option", { name: "Frigorífico" })).toBeInTheDocument()
     );
@@ -51,6 +57,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
   it("acepta payload envuelto en array (SETOF json)", async () => {
     rpcMock.mockResolvedValue({ data: [OK_PAYLOAD], error: null });
     renderBar();
+    await abrirMasFiltros();
     await waitFor(() =>
       expect(screen.getByRole("option", { name: "Frigorífico" })).toBeInTheDocument()
     );
@@ -62,6 +69,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
       error: null,
     });
     renderBar();
+    await abrirMasFiltros();
     // La opción malformada (string suelto) nunca debe aparecer ni romper el render.
     await waitFor(() =>
       expect(screen.getByRole("option", { name: "Taller" })).toBeInTheDocument()
@@ -80,6 +88,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     rpcMock.mockResolvedValue({ data: null, error: null });
     renderBar();
     await waitFor(() => expect(rpcMock).toHaveBeenCalled());
+    await abrirMasFiltros();
     const selects = screen.getAllByRole("combobox").filter(
       (s) => s.getAttribute("aria-label") !== "Modo de comparación",
     );
@@ -94,6 +103,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     expect(alert).toHaveTextContent("No se han podido cargar las opciones de filtro");
     rpcMock.mockResolvedValue({ data: OK_PAYLOAD, error: null });
     fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+    await abrirMasFiltros();
     await waitFor(() =>
       expect(screen.getByRole("option", { name: "Frigorífico" })).toBeInTheDocument()
     );
@@ -106,6 +116,7 @@ describe("OpsFiltersBar — carga de opciones maestras (blindaje d.familias.map)
     renderBar();
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("No se han podido cargar las opciones de filtro");
+    await abrirMasFiltros();
     const selects = screen.getAllByRole("combobox").filter(
       (s) => s.getAttribute("aria-label") !== "Modo de comparación",
     );
