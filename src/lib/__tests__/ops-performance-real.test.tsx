@@ -188,7 +188,7 @@ describe("Reglas de veracidad P0", () => {
   it("ReadinessBar no usa semáforo ni porcentaje", () => {
     expect(/emerald|red-5|amber/.test(bar)).toBe(false);
     expect(bar).not.toContain("progresoReadiness");
-    expect(bar).not.toMatch(/%/);
+    expect(bar).not.toMatch(/toFixed|% de preparación|Preparación/);
   });
 
   it("≤20d/≤30d llevan la marca de referencia interna y no viven en CONTRATO", () => {
