@@ -20,24 +20,28 @@ import {
   traducirReason, pctSeguro, notaImporte, etapasAlcanzadas, esFueraDeAmbito,
   ETAPAS_READINESS, DEGRADACION, UNIVERSO,
   TEXTO_SIN_OBLIGACIONES, TEXTO_SIN_OBLIGACION_TEMPORAL,
+  NIVEL_IDENTIDAD, etiquetaClaseNoResuelta, etiquetaGobiernoAlias,
+  ETIQUETA_CLAIMS_REPRESENTADOS, semanticaClaimSinRegla, esCategoriaTemporal,
+  desgloseCategorias, TEXTO_HUECO_CONTRACTUAL,
 } from "@/lib/ops-portfolio";
 
 // Cifras literales de BD live (01-09-2026).
 const RESUMEN = [
-  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "04_PROFESSIONAL", vertical_nombre: "Professional", n_programas: 2, n_clientes: 1, n_ots: 5674, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 276, n_ots_importe_cero: 5398, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas: 2, n_clientes: 1, n_ots: 0, n_ots_cliente_identificado: 7834, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "ambiguous", n_programas: 0, n_clientes: 0, n_ots: 47418, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
-  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "sin_cliente", n_programas: 0, n_clientes: 0, n_ots: 8617, n_ots_cliente_identificado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "01_RETAIL_AFTERSALES", vertical_nombre: "Retail after-sales", n_programas: 13, n_clientes: 11, n_ots: 61722, n_ots_cliente_identificado: 38772, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 38772, n_instrumentos: 4, n_claims: 12, claims_validated: 3, claims_pending: 9, claims_por_categoria: { sla: 8, alcance: 2, identidad: 2 }, n_reglas: 8, n_aplicabilidad: 8, n_ots_importe_no_cero: 9838, n_ots_importe_cero: 51884, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "02_MOBILITY", vertical_nombre: "Mobility", n_programas: 3, n_clientes: 3, n_ots: 665, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 252, n_ots_importe_cero: 413, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "03_CLIMATE", vertical_nombre: "Climate", n_programas: 4, n_clientes: 4, n_ots: 1656, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { tarifa: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 60, n_ots_importe_cero: 1596, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "04_PROFESSIONAL", vertical_nombre: "Professional", n_programas: 2, n_clientes: 1, n_ots: 5674, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { identidad: 2 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 276, n_ots_importe_cero: 5398, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas: 2, n_clientes: 1, n_ots: 0, n_ots_cliente_identificado: 7834, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 7834, n_instrumentos: 0, n_claims: 2, claims_validated: 0, claims_pending: 2, claims_por_categoria: { alcance: 1, mapeo: 1 }, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "ambiguous", n_programas: 0, n_clientes: 0, n_ots: 47418, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, claims_por_categoria: null, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
+  { vertical_codigo: "SIN_RESOLVER", vertical_nombre: "sin_cliente", n_programas: 0, n_clientes: 0, n_ots: 8617, n_ots_cliente_identificado: 0, n_ots_alias_gobernado: 0, n_ots_alias_no_gobernado: 0, n_instrumentos: 0, n_claims: 0, claims_validated: 0, claims_pending: 0, claims_por_categoria: null, n_reglas: 0, n_aplicabilidad: 0, n_ots_importe_no_cero: 0, n_ots_importe_cero: 0, n_ots_importe_nulo: 0 },
 ];
 
 const NO_RESUELTAS = [
-  { clase: "cliente_identificado_sin_programa", cliente_wg_origen: "ASSURANT EUROPE INSURANCE NV", cliente_nombre: "Assurant", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 4130 },
-  { clase: "cliente_identificado_sin_programa", cliente_wg_origen: "ASSURANT GENERAL INSURANCE LIMITED", cliente_nombre: "Assurant", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 3704 },
-  { clase: "identidad_no_establecida", cliente_wg_origen: null, cliente_nombre: null, vertical_codigo: null, vertical_nombre: null, n_programas_candidatos: 0, n_ots: 8617 },
+  { clase: "cliente_operativo_reconocido_sin_programa", cliente_wg_origen: "ASSURANT EUROPE INSURANCE NV", cliente_nombre: "Assurant", alias_gobernado: false, alias_metodo: "manual", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 4130 },
+  { clase: "cliente_operativo_reconocido_sin_programa", cliente_wg_origen: "ASSURANT GENERAL INSURANCE LIMITED", cliente_nombre: "Assurant", alias_gobernado: false, alias_metodo: "manual", vertical_codigo: "05_INSURANCE", vertical_nombre: "Insurance", n_programas_candidatos: 2, n_ots: 3704 },
+  { clase: "identidad_no_establecida", cliente_wg_origen: null, cliente_nombre: null, alias_gobernado: null, alias_metodo: null, vertical_codigo: null, vertical_nombre: null, n_programas_candidatos: 0, n_ots: 8617 },
 ];
+
 
 const FICHA_VACIA = {
   programa: null,
