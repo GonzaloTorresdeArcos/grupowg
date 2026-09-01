@@ -147,19 +147,51 @@ export type ObligacionFila = {
 /** Códigos de vertical → literal corto para cabeceras. */
 export const CODIGO_SIN_RESOLVER = "SIN_RESOLVER";
 
+/**
+ * P0.1 · TRES NIVELES DISTINTOS, NUNCA INTERCAMBIABLES.
+ * (1) cliente operativo reconocido: el dato ERP nombra literalmente a un
+ *     cliente y existe un candidato contractual asociado, pero el alias que
+ *     lo asocia NO está gobernado.
+ * (2) identidad contractual gobernada: `ctr_alias_identidad.gobernado = true`.
+ * (3) programa contractual resuelto: resolución vigente determinista.
+ * La mera existencia de un alias NO establece identidad contractual.
+ */
+export const NIVEL_IDENTIDAD = {
+  OPERATIVO_RECONOCIDO: "Cliente operativo reconocido",
+  GOBERNADA: "Identidad contractual gobernada",
+  PROGRAMA_RESUELTO: "Programa contractual resuelto",
+  NO_ESTABLECIDA: "Identidad contractual no establecida",
+} as const;
+
+export const NOTA_ALIAS_NO_GOBERNADO =
+  "La correspondencia entre el nombre del ERP y el cliente contractual existe pero no está gobernada: sirve de indicio operativo, no establece identidad contractual.";
+
 export const etiquetaSinResolver = (codigo: string): string =>
   codigo === "ambiguous"
-    ? "Cliente identificado · programa contractual no resoluble"
+    ? `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`
     : codigo === "sin_cliente"
-      ? "Identidad contractual no establecida"
+      ? NIVEL_IDENTIDAD.NO_ESTABLECIDA
       : codigo;
 
-export const etiquetaClaseNoResuelta = (clase: string): string =>
-  clase === "cliente_identificado_sin_programa"
-    ? "Cliente identificado · programa contractual no resoluble"
-    : clase === "identidad_no_establecida"
-      ? "Identidad contractual no establecida"
-      : clase;
+export const etiquetaClaseNoResuelta = (clase: string): string => {
+  switch (clase) {
+    case "cliente_operativo_reconocido_sin_programa":
+    // Clase heredada de PRV-A1: se conserva el mapeo, corrigiendo el literal.
+    case "cliente_identificado_sin_programa":
+      return `${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`;
+    case "identidad_gobernada_sin_programa":
+      return `${NIVEL_IDENTIDAD.GOBERNADA} · programa contractual no resuelto`;
+    case "identidad_no_establecida":
+      return NIVEL_IDENTIDAD.NO_ESTABLECIDA;
+    default:
+      return clase;
+  }
+};
+
+/** Estado de gobierno del alias, tal cual está en base de datos. */
+export const etiquetaGobiernoAlias = (gobernado: boolean | null | undefined): string =>
+  gobernado ? "Alias gobernado" : "Alias no gobernado";
+
 
 /** Estados de degradación soportados por la UI. Literales cerrados. */
 export const DEGRADACION = {
