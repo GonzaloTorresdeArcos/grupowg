@@ -161,12 +161,14 @@ describe("A3 · cascada de filtros: una sola publicación de rpcParams", () => {
   });
 
   it("muestra «Actualizando…» mientras hay RPC de ops en vuelo, sin bloquear la barra", async () => {
-    let resolver: ((v: unknown) => void) | null = null;
+    // La barra dispara varias RPC en paralelo (opciones en cascada + catálogo de
+    // programas): se retienen TODOS los resolvers, no solo el último.
+    const resolvers: ((v: unknown) => void)[] = [];
     rpcMock.mockImplementation((fn: string) => {
       if (fn === "ops_cobertura_datos") {
         return Promise.resolve({ data: { min_fecha: "2024-01-01", max_fecha: "2026-07-31" }, error: null });
       }
-      return new Promise((res) => { resolver = res as (v: unknown) => void; });
+      return new Promise((res) => { resolvers.push(res as (v: unknown) => void); });
     });
 
     render(
@@ -180,7 +182,7 @@ describe("A3 · cascada de filtros: una sola publicación de rpcParams", () => {
     expect(screen.getAllByRole("combobox").length).toBeGreaterThan(0);
 
     await act(async () => {
-      resolver?.({ data: OPTS_BASE, error: null });
+      for (const r of resolvers) r({ data: OPTS_BASE, error: null });
       await new Promise((r) => setTimeout(r, 10));
     });
     await waitFor(() => expect(screen.queryByTestId("ops-actualizando")).not.toBeInTheDocument());
