@@ -282,3 +282,53 @@ describe("Readiness categórico · sin pseudo-score", () => {
     expect(notaImporte(null)).toContain("—");
   });
 });
+
+// ── PRV-A1.1 · guardias semánticas contra sobreafirmación ───────────────────
+describe("PRV-A1.1 · claim ≠ obligación · alias ≠ identidad gobernada", () => {
+  const src = readFileSync(resolve(process.cwd(), "src/pages/ops/PerformanceReal.tsx"), "utf8");
+
+  it("P0.1 · un alias no gobernado nunca se presenta como identidad contractual", () => {
+    expect(etiquetaClaseNoResuelta("cliente_operativo_reconocido_sin_programa"))
+      .toBe(`${NIVEL_IDENTIDAD.OPERATIVO_RECONOCIDO} · programa contractual no resuelto`);
+    expect(etiquetaClaseNoResuelta("identidad_gobernada_sin_programa"))
+      .toBe(`${NIVEL_IDENTIDAD.GOBERNADA} · programa contractual no resuelto`);
+    expect(etiquetaGobiernoAlias(false)).toBe("Alias no gobernado");
+    expect(etiquetaGobiernoAlias(true)).toBe("Alias gobernado");
+    // La clase heredada no puede volver a leerse como identidad establecida.
+    expect(etiquetaClaseNoResuelta("cliente_identificado_sin_programa"))
+      .not.toContain(NIVEL_IDENTIDAD.GOBERNADA);
+    expect(NO_RESUELTAS.filter((r) => r.alias_gobernado === true)).toHaveLength(0);
+  });
+
+  it("P0.2 · el portfolio cuenta claims, no obligaciones", () => {
+    expect(ETIQUETA_CLAIMS_REPRESENTADOS).toBe("Claims contractuales representados");
+    expect(src).not.toMatch(/Obligaciones representadas/);
+    expect(src).not.toMatch(/obligación\(es\) representada/);
+    expect(src).toContain("TEXTO_HUECO_CONTRACTUAL");
+    expect(TEXTO_HUECO_CONTRACTUAL).toContain("subconjunto");
+    // Professional: 2 claims de identidad, jamás obligaciones de servicio.
+    const prof = RESUMEN.find((r) => r.vertical_codigo === "04_PROFESSIONAL")!;
+    expect(desgloseCategorias(prof.claims_por_categoria)).toBe("2 identidad de contraparte");
+    expect(esCategoriaTemporal("identidad")).toBe(false);
+    expect(esCategoriaTemporal("sla")).toBe(true);
+    // Insurance: alcance + mapeo, ninguna obligación temporal.
+    const ins = RESUMEN.find((r) => r.vertical_codigo === "05_INSURANCE")!;
+    expect(Object.keys(ins.claims_por_categoria ?? {})).not.toContain("sla");
+  });
+
+  it("P0.3 · claim sin regla no se declara «sin obligación representada»", () => {
+    expect(semanticaClaimSinRegla("identidad", "PENDING"))
+      .toBe("Claim de identidad representado · pendiente de validación · sin regla derivada");
+    expect(semanticaClaimSinRegla("alcance", "PENDING"))
+      .toBe("Claim de alcance representado · sin regla derivada");
+    expect(semanticaClaimSinRegla("tarifa", "PENDING")).toContain("económico/tarifario");
+    expect(semanticaClaimSinRegla("sla", "VALIDATED"))
+      .toBe("Obligación temporal representada · regla aún no derivada");
+    for (const cat of ["identidad", "alcance", "tarifa", "mapeo", "vigencia", "penalizacion"]) {
+      expect(semanticaClaimSinRegla(cat, "PENDING")).not.toContain("NO EVALUABLE");
+      expect(semanticaClaimSinRegla(cat, "PENDING")).not.toContain(TEXTO_SIN_OBLIGACION_TEMPORAL);
+    }
+    // La página ya no usa el literal temporal como cajón de sastre.
+    expect(src).not.toContain("TEXTO_SIN_OBLIGACION_TEMPORAL");
+  });
+});
