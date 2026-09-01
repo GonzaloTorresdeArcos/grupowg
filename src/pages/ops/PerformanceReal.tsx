@@ -727,7 +727,7 @@ export const PerformanceReal = () => {
             <FilaProgramaBtn
               key={p.programa_id}
               label={p.programa_nombre ?? "Programa sin nombre"}
-              sub={`${p.n_claims} obligación(es) representada(s) · ${p.n_instrumentos} instrumento(s)`}
+              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)`}
               right={`${fmtNum(p.n_ots)} OTs`}
               onClick={() => setFilters({ programa: p.programa_id })}
             />
