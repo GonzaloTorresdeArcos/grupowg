@@ -360,10 +360,17 @@ export const OpsLayout = () => {
 
         <OpsFiltersProvider>
           {/* Boundary propio: un fallo en la barra de filtros nunca debe
-              dejar en blanco toda la sección de operaciones. */}
+              dejar en blanco toda la sección de operaciones.
+              PRV-UAT-FS1 · el perfil de filtros depende de la ruta: solo se
+              muestran los controles que sus RPC consumen de verdad. */}
           <RouteBoundary>
-            <OpsFiltersBar />
+            {perfil === "operativa" ? (
+              <OpsFiltersBar />
+            ) : (
+              <OpsScopeBar perfil={perfil} titulo={tituloScope} />
+            )}
           </RouteBoundary>
+
           <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-8 py-5 md:py-6">
             <RouteBoundary key={pathname}>
               <Outlet />
