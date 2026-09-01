@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { RouteBoundary } from "@/components/site/RouteBoundary";
 import { OpsFiltersProvider } from "@/lib/ops-filters";
 import { OpsFiltersBar } from "@/components/ops/OpsFiltersBar";
+import { OpsScopeBar } from "@/components/ops/OpsScopeBar";
+import { perfilFiltros } from "@/lib/ops-filter-scope";
 import { useAsOfCacheGuard } from "@/lib/ops-cache";
 import { PerfOverlay } from "@/components/ops/PerfOverlay";
 import { registrarHito } from "@/lib/ops-perf";
@@ -115,6 +117,9 @@ export const OpsLayout = () => {
   // A1 · Si el snapshot de datos cambió desde la última visita, la caché de
   // análisis de esta sesión se invalida al montar la sección.
   useAsOfCacheGuard();
+  // PRV-UAT-FS1 · perfil de filtros por ruta (control visible = control efectivo).
+  const perfil = perfilFiltros(pathname);
+  const tituloScope = findCurrentItem(pathname)?.label ?? "WG Operaciones";
   // Hito UAT: el armazón de la sección ya está en pantalla.
   useEffect(() => { registrarHito("shell"); }, []);
 
