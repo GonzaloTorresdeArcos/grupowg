@@ -653,12 +653,16 @@ export const PerformanceReal = () => {
 
             {noResueltas.length > 0 && (
               <div className="mt-5 overflow-x-auto">
+                <p className="mb-2 text-[10.5px] text-ink/45 leading-snug max-w-3xl">
+                  {NOTA_ALIAS_NO_GOBERNADO}
+                </p>
                 <table className="w-full text-[12px]">
                   <thead>
                     <tr className="text-left text-[10.5px] uppercase tracking-[0.1em] text-ink/45">
-                      <th className="py-1.5 pr-3 font-medium">Cliente operativo</th>
-                      <th className="py-1.5 pr-3 font-medium">Clase</th>
-                      <th className="py-1.5 pr-3 font-medium">Vertical probable</th>
+                      <th className="py-1.5 pr-3 font-medium">Cliente operativo (literal ERP)</th>
+                      <th className="py-1.5 pr-3 font-medium">Nivel de identidad</th>
+                      <th className="py-1.5 pr-3 font-medium">Gobierno del alias</th>
+                      <th className="py-1.5 pr-3 font-medium">Vertical candidata</th>
                       <th className="py-1.5 pr-3 font-medium text-right">OTs</th>
                     </tr>
                   </thead>
@@ -669,6 +673,14 @@ export const PerformanceReal = () => {
                           {r.cliente_wg_origen ?? r.cliente_nombre ?? "—"}
                         </td>
                         <td className="py-1.5 pr-3 text-ink/65">{etiquetaClaseNoResuelta(r.clase)}</td>
+                        <td
+                          className="py-1.5 pr-3 text-ink/65"
+                          data-alias-gobernado={r.alias_gobernado ? "si" : "no"}
+                        >
+                          {r.cliente_nombre
+                            ? `${etiquetaGobiernoAlias(r.alias_gobernado)}${r.alias_metodo ? ` · ${r.alias_metodo}` : ""}`
+                            : "Sin alias registrado"}
+                        </td>
                         <td className="py-1.5 pr-3 text-ink/65">
                           {r.vertical_nombre ?? DEGRADACION.NO_ATRIBUIBLE}
                         </td>
@@ -678,6 +690,7 @@ export const PerformanceReal = () => {
                   </tbody>
                 </table>
               </div>
+
             )}
 
             <p className="mt-4 text-[11px] text-ink/45">
