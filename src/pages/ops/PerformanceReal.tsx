@@ -8,19 +8,27 @@ import { fmtNum, fmtDec, useOpsFilters } from "@/lib/ops-filters";
 import {
   CODIGO_SIN_RESOLVER,
   DEGRADACION,
+  ETIQUETA_CLAIMS_REPRESENTADOS,
   MARCA_REFERENCIA_INTERNA,
+  NIVEL_IDENTIDAD,
+  NOTA_ALIAS_NO_GOBERNADO,
+  NOTA_CLAIMS_REPRESENTADOS,
   NOTA_UNIVERSO_RESUELTA,
   NOTA_UNIVERSO_SERVICIO,
   TEXTO_ECONOMIA_CONTRIBUCION,
   TEXTO_ECONOMIA_COSTE,
   TEXTO_ECONOMIA_ESTADO_FUENTE,
+  TEXTO_HUECO_CONTRACTUAL,
   TEXTO_SIN_OBLIGACIONES,
-  TEXTO_SIN_OBLIGACION_TEMPORAL,
   UNIVERSO,
+  desgloseCategorias,
+  etiquetaCategoriaClaim,
   etiquetaClaseNoResuelta,
+  etiquetaGobiernoAlias,
   etiquetaSinResolver,
   notaImporte,
   pctSeguro,
+  semanticaClaimSinRegla,
   traducirReason,
   type ObligacionFila,
   type PortfolioArbolFila,
@@ -28,6 +36,7 @@ import {
   type PortfolioResumenFila,
   type ProgramaFicha,
 } from "@/lib/ops-portfolio";
+
 
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
