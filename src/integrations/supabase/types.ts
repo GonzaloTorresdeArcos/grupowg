@@ -1307,6 +1307,72 @@ export type Database = {
           },
         ]
       }
+      ctr_mapping_evento_temporal: {
+        Row: {
+          campo_erp: string
+          carga_id: string | null
+          creado_en: string
+          estado: string
+          evento: string
+          evidencia_ref: string
+          grado: string
+          granularidad: string
+          id: string
+          notas: string | null
+          pipeline: string
+          procedencia: string
+          programa_id: string
+          rol_evento: string
+        }
+        Insert: {
+          campo_erp: string
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          evento: string
+          evidencia_ref: string
+          grado: string
+          granularidad?: string
+          id?: string
+          notas?: string | null
+          pipeline: string
+          procedencia: string
+          programa_id: string
+          rol_evento: string
+        }
+        Update: {
+          campo_erp?: string
+          carga_id?: string | null
+          creado_en?: string
+          estado?: string
+          evento?: string
+          evidencia_ref?: string
+          grado?: string
+          granularidad?: string
+          id?: string
+          notas?: string | null
+          pipeline?: string
+          procedencia?: string
+          programa_id?: string
+          rol_evento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctr_mapping_evento_temporal_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctr_mapping_evento_temporal_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_programa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctr_precedencia: {
         Row: {
           actor_id: string | null
@@ -2339,38 +2405,61 @@ export type Database = {
       ops_calendario_laboral: {
         Row: {
           ambito: string
+          carga_id: string | null
           created_at: string
           descripcion: string | null
           fecha: string
           fuente: string | null
           id: string
+          laborable: boolean
+          pais: string | null
           territorio: string
+          tipo_festivo: string | null
+          version_carga: string | null
           vigencia_desde: string | null
           vigencia_hasta: string | null
         }
         Insert: {
           ambito: string
+          carga_id?: string | null
           created_at?: string
           descripcion?: string | null
           fecha: string
           fuente?: string | null
           id?: string
+          laborable?: boolean
+          pais?: string | null
           territorio: string
+          tipo_festivo?: string | null
+          version_carga?: string | null
           vigencia_desde?: string | null
           vigencia_hasta?: string | null
         }
         Update: {
           ambito?: string
+          carga_id?: string | null
           created_at?: string
           descripcion?: string | null
           fecha?: string
           fuente?: string | null
           id?: string
+          laborable?: boolean
+          pais?: string | null
           territorio?: string
+          tipo_festivo?: string | null
+          version_carga?: string | null
           vigencia_desde?: string | null
           vigencia_hasta?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ops_calendario_laboral_carga_id_fkey"
+            columns: ["carga_id"]
+            isOneToOne: false
+            referencedRelation: "ctr_carga"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ops_carga_log: {
         Row: {
@@ -4150,6 +4239,16 @@ export type Database = {
         }[]
       }
       ctr_aprobar_promocion: { Args: { p_solicitud: string }; Returns: string }
+      ctr_calendario_cobertura: {
+        Args: { p_territorio: string }
+        Returns: {
+          desde: string
+          dias_festivos: number
+          hasta: string
+          territorio: string
+          version_carga: string
+        }[]
+      }
       ctr_declarar_requisitos_regla: {
         Args: {
           p_dimensiones?: string[]
@@ -4274,6 +4373,29 @@ export type Database = {
         Args: { p_cliente_wg: string; p_contexto: string; p_num_ot: string }
         Returns: Json
       }
+      ctr_sla_evaluabilidad: {
+        Args: { p_regla_version: string }
+        Returns: Json
+      }
+      ctr_sla_temporal_ot: {
+        Args: { p_regla_version: string }
+        Returns: {
+          claim_id: string
+          deadline_date: string
+          end_date: string
+          num_ot: string
+          poblacion: string
+          programa_id: string
+          reason_not_evaluable: string
+          regla_version_id: string
+          start_date: string
+          temporal_result: string
+        }[]
+      }
+      ctr_sla_temporal_resumen: {
+        Args: { p_regla_version: string }
+        Returns: Json
+      }
       ctr_supersede_resolucion: {
         Args: { p_num_ot: string; p_payload: Json }
         Returns: string
@@ -4317,6 +4439,10 @@ export type Database = {
           numero_tecnicos: number
           razon_social: string
         }[]
+      }
+      ops_add_working_days: {
+        Args: { p_n: number; p_start: string; p_territorio: string }
+        Returns: string
       }
       ops_alertas: {
         Args: {
