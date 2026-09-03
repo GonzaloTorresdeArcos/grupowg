@@ -151,7 +151,11 @@ const TarjetaVertical = ({ f, onDrill }: { f: PortfolioResumenFila; onDrill: () 
             valor={fmtNum(identificadas)}
             nota="Contabilizadas en el bloque de población no resuelta; no se suman a la resuelta."
           />
-          <Dato label="Programas" valor={fmtNum(f.n_programas)} />
+          <Dato
+            label={ETIQUETA_PROGRAMAS_IDENTIFICADOS}
+            valor={fmtNum(f.n_programas)}
+            nota={resueltas === 0 && f.n_programas > 0 ? NOTA_PROGRAMAS_SIN_POBLACION : undefined}
+          />
           <Dato label="Clientes" valor={fmtNum(f.n_clientes)} />
         </Bloque>
 
