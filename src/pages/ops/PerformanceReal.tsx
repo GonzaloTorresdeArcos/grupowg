@@ -555,6 +555,30 @@ export const PerformanceReal = () => {
 
   const programaSeleccionado = filters.programa;
 
+  /** programa_id → disponibilidad; y agregado por cliente. Nunca inventa ceros. */
+  const disponibilidad = useMemo(
+    () => (Array.isArray(dispQ.data) ? dispQ.data : []) as SlaDisponibilidadFila[],
+    [dispQ.data],
+  );
+  const dispPorPrograma = useMemo(
+    () => new Map(disponibilidad.map((d) => [d.programa_id, d])),
+    [disponibilidad],
+  );
+  const dispPorCliente = useMemo(() => {
+    const m = new Map<string, { n: number; pub: number }>();
+    for (const d of disponibilidad) {
+      const k = d.cliente_id ?? "sin_cliente";
+      const prev = m.get(k) ?? { n: 0, pub: 0 };
+      prev.n += Number(d.n_kpis || 0);
+      prev.pub += Number(d.n_publicables || 0);
+      m.set(k, prev);
+    }
+    return m;
+  }, [disponibilidad]);
+  const chipDisponibilidad = (n: number, pub: number) =>
+    n === 0 ? "" : ` · ${n} indicador(es) temporal(es), ${pub} publicable(s)`;
+
+
   const clientesDeVertical = useMemo(() => {
     if (!vertical) return [];
     const m = new Map<string, { nombre: string; ots: number; programas: number }>();
