@@ -4377,8 +4377,26 @@ export type Database = {
         Args: { p_escenario_baja?: string }
         Returns: Json
       }
+      ctr_sla_disponibilidad: { Args: never; Returns: Json }
       ctr_sla_evaluabilidad: {
         Args: { p_regla_version: string }
+        Returns: Json
+      }
+      ctr_sla_evidencia_kpi: {
+        Args: { p_regla_version: string }
+        Returns: Json
+      }
+      ctr_sla_kpis_de_programa: {
+        Args: { p_programa: string }
+        Returns: {
+          codigo: string
+          modo: string
+          nombre: string
+          regla_version_id: string
+        }[]
+      }
+      ctr_sla_programa_kpis: {
+        Args: { p_escenario_baja?: string; p_programa: string }
         Returns: Json
       }
       ctr_sla_temporal_ot: {
