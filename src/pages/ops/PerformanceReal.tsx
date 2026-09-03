@@ -38,6 +38,7 @@ import {
   type PortfolioResumenFila,
   type ProgramaFicha,
 } from "@/lib/ops-portfolio";
+import { type SlaDisponibilidadFila } from "@/lib/ops-sla-contractual";
 
 
 
@@ -751,7 +752,7 @@ export const PerformanceReal = () => {
               <FilaProgramaBtn
                 key={c.id}
                 label={c.nombre}
-                sub={`${c.programas} programa(s)`}
+                sub={`${c.programas} programa(s)${chipDisponibilidad(dispPorCliente.get(c.id)?.n ?? 0, dispPorCliente.get(c.id)?.pub ?? 0)}`}
                 right={`${fmtNum(c.ots)} OTs`}
                 onClick={() => setCliente(c.id)}
               />
@@ -766,7 +767,7 @@ export const PerformanceReal = () => {
             <FilaProgramaBtn
               key={p.programa_id}
               label={p.programa_nombre ?? "Programa sin nombre"}
-              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)`}
+              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)${chipDisponibilidad(dispPorPrograma.get(p.programa_id)?.n_kpis ?? 0, dispPorPrograma.get(p.programa_id)?.n_publicables ?? 0)}`}
               right={`${fmtNum(p.n_ots)} OTs`}
               onClick={() => setFilters({ programa: p.programa_id })}
             />
