@@ -1,6 +1,26 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+
+vi.mock("@/hooks/useAuth", () => ({
+  useAuth: () => ({
+    profile: { display_name: "Dirección" },
+    user: { email: "dir@wg.test" },
+    signOut: async () => {},
+  }),
+}));
+
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: {
+    rpc: async () => ({ data: null, error: null }),
+    from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: null }) }) }) }),
+    auth: {
+      getSession: async () => ({ data: { session: null } }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    },
+  },
+}));
+
 import { OpsLayout, NAV_GROUPS } from "@/components/ops/OpsLayout";
 
 /**
