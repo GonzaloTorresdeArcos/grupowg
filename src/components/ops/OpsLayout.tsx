@@ -265,7 +265,7 @@ export const OpsLayout = () => {
           </nav>
         ) : renderRail()}
 
-        <div className={cn("border-t border-black/[0.06] py-2 flex items-center gap-2", expandido ? "px-3 justify-between" : "px-2 flex-col")}>
+        <div className={cn("border-t border-black/[0.06] py-2 flex items-center", expandido ? "px-3 gap-2 justify-between" : "px-1.5 gap-1 flex-col")}>
           <div className="relative" ref={perfilRef}>
             <button
               type="button"
