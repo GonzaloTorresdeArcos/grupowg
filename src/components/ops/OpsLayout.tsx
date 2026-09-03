@@ -242,13 +242,13 @@ export const OpsLayout = () => {
         data-testid="ops-rail"
         data-expandido={expandido ? "1" : "0"}
         className={cn(
-          "hidden lg:flex flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen transition-[width] duration-200",
-          expandido ? "w-64" : "w-[76px]",
+          "hidden lg:flex flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen transition-[width] duration-200 shrink-0",
+          expandido ? "w-64" : "w-[60px]",
         )}
       >
-        <div className={cn("flex items-center gap-2 pt-4 pb-2", expandido ? "px-4" : "px-2 justify-center")}>
+        <div className={cn("flex items-center gap-2 pb-2", expandido ? "px-4 pt-4" : "px-1.5 pt-3 justify-center")}>
           <Link to="/" aria-label="Grupo Warranty Global" className="min-w-0">
-            <Logo className={expandido ? "h-9" : "h-7"} />
+            <Logo className={expandido ? "h-9" : "h-6"} />
           </Link>
           {expandido && (
             <div className="min-w-0 flex-1">
@@ -257,6 +257,7 @@ export const OpsLayout = () => {
             </div>
           )}
         </div>
+
 
         {expandido ? (
           <nav aria-label="Navegación principal" className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
