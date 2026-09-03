@@ -3,6 +3,8 @@ import { ChevronRight, ArrowLeft, Info } from "lucide-react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { OpsErrorBlock, falloDeQuery, fallosDeQueries } from "@/components/ops/OpsErrorBlock";
 import { ReadinessBar } from "@/components/ops/ReadinessBar";
+import { SlaContractual } from "@/components/ops/SlaContractual";
+
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { fmtNum, fmtDec, useOpsFilters } from "@/lib/ops-filters";
 import {
@@ -479,7 +481,11 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         </div>
       </section>
 
+      {/* CUMPLIMIENTO CONTRACTUAL TEMPORAL (SLA-E1.3) */}
+      <SlaContractual programaId={programaId} />
+
       {/* ECONOMÍA */}
+
       <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
         <div className="grid gap-3 md:grid-cols-2">
           <BloqueEconomia
