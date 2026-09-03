@@ -170,7 +170,7 @@ const PanelEvidencia = ({ k, onCerrar }: { k: SlaKpi; onCerrar: () => void }) =>
   const claim = e?.claim as Record<string, unknown> | null | undefined;
   const nor = e?.normalizacion as Record<string, unknown> | null | undefined;
   const reg = e?.regla as Record<string, unknown> | null | undefined;
-  const fallo = falloDeQuery("ctr_sla_evidencia_kpi", q, "evidencia");
+  const fallos = falloDeQuery("ctr_sla_evidencia_kpi", q, "evidencia");
 
   const TABS = [
     ["contractual", "Literal contractual"],
@@ -207,8 +207,8 @@ const PanelEvidencia = ({ k, onCerrar }: { k: SlaKpi; onCerrar: () => void }) =>
       </div>
 
       <div className="px-5 py-4 space-y-2">
-        {fallo && <OpsErrorBlock fallos={[fallo]} onReintentar={() => void q.refetch()} />}
-        {!e && !fallo && <p className="text-[11.5px] text-ink/45">Cargando evidencia…</p>}
+        {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={() => void q.refetch()} />}
+        {!e && fallos.length === 0 && <p className="text-[11.5px] text-ink/45">Cargando evidencia…</p>}
 
         {e && tab === "contractual" && (
           <>
@@ -295,7 +295,7 @@ const PanelOts = ({ k, onCerrar }: { k: SlaKpi; onCerrar: () => void }) => {
     p_regla_version: k.regla_version_id,
     p_escenario_baja: k.escenario_baja ?? "A",
   });
-  const fallo = falloDeQuery("ctr_sla_temporal_ot", q, "detalle de OTs");
+  const fallos = falloDeQuery("ctr_sla_temporal_ot", q, "detalle de OTs");
   const todas = useMemo(() => (Array.isArray(q.data) ? q.data : []), [q.data]);
   const ambitos = useMemo(
     () => Array.from(new Set(todas.map((f) => f.territorio_ot ?? "UNRESOLVED"))).sort(),
@@ -357,9 +357,9 @@ const PanelOts = ({ k, onCerrar }: { k: SlaKpi; onCerrar: () => void }) => {
       </div>
 
       <div className="flex-1 overflow-auto px-5 py-3">
-        {fallo && <OpsErrorBlock fallos={[fallo]} onReintentar={() => void q.refetch()} />}
-        {!fallo && q.isPending && <p className="text-[11.5px] text-ink/45">Cargando OTs…</p>}
-        {!fallo && !q.isPending && (
+        {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={() => void q.refetch()} />}
+        {fallos.length === 0 && q.isPending && <p className="text-[11.5px] text-ink/45">Cargando OTs…</p>}
+        {fallos.length === 0 && !q.isPending && (
           <>
             <p className="mb-2 text-[10.5px] text-ink/45">
               {fmtNum(filas.length)} OTs mostradas de {fmtNum(todas.length)} candidatas.
@@ -511,7 +511,7 @@ const TarjetaKpi = ({ k, oficial, onOts, onEvidencia }: {
 // ── Sección ─────────────────────────────────────────────────────────────────
 export const SlaContractual = ({ programaId }: { programaId: string }) => {
   const q = useOpsRpc<SlaKpi[]>("ctr_sla_programa_kpis", { p_programa: programaId });
-  const fallo = falloDeQuery("ctr_sla_programa_kpis", q, "cumplimiento contractual temporal");
+  const fallos = falloDeQuery("ctr_sla_programa_kpis", q, "cumplimiento contractual temporal");
   const kpis = useMemo(() => (Array.isArray(q.data) ? q.data : []), [q.data]);
   const [ots, setOts] = useState<SlaKpi | null>(null);
   const [evid, setEvid] = useState<SlaKpi | null>(null);
@@ -520,7 +520,7 @@ export const SlaContractual = ({ programaId }: { programaId: string }) => {
   const otros = kpis.filter((k) => !esOficial(k.clasificacion));
 
   // Sin representación: la sección no se pinta en absoluto (no hay ceros).
-  if (!fallo && !q.isPending && kpis.length === 0) {
+  if (fallos.length === 0 && !q.isPending && kpis.length === 0) {
     return (
       <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
         <Eyebrow>{TITULO_SECCION}</Eyebrow>
@@ -542,8 +542,8 @@ export const SlaContractual = ({ programaId }: { programaId: string }) => {
         </p>
       </div>
 
-      {fallo && <OpsErrorBlock fallos={[fallo]} onReintentar={() => void q.refetch()} />}
-      {q.isPending && !fallo && <p className="text-[11.5px] text-ink/45">Calculando indicadores…</p>}
+      {fallos.length > 0 && <OpsErrorBlock fallos={fallos} onReintentar={() => void q.refetch()} />}
+      {q.isPending && fallos.length === 0 && <p className="text-[11.5px] text-ink/45">Calculando indicadores…</p>}
 
       {oficiales.length > 0 && (
         <div className="space-y-3">
