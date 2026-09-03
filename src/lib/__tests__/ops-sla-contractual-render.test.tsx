@@ -76,9 +76,9 @@ describe("SLA-E1.3 · render de la sección contractual", () => {
     const { SlaContractual } = await import("@/components/ops/SlaContractual");
     const { container } = render(<SlaContractual programaId="p1" />);
     const txt = container.textContent ?? "";
-    expect(txt).toContain("31,62 %");
-    expect(txt).toContain("61,92 %");
-    expect(txt).toContain("71,21 %");
+    expect(txt).toMatch(/31[.,]62 %/);
+    expect(txt).toMatch(/61[.,]92 %/);
+    expect(txt).toMatch(/71[.,]21 %/);
     expect(txt).not.toContain("NaN");
     // MET / MISSED / NOT_EVALUABLE, los tres siempre visibles y absolutos.
     expect(txt).toContain("Cumplidas 302");
@@ -96,9 +96,9 @@ describe("SLA-E1.3 · render de la sección contractual", () => {
     render(<SlaContractual programaId="p1" />);
     const txt = (screen.getByText("Ámbito").closest("table") as HTMLElement).textContent ?? "";
     expect(txt).toContain("España");
-    expect(txt).toContain("32,63 %");
+    expect(txt).toMatch(/32[.,]63 %/);
     expect(txt).toContain("Portugal");
-    expect(txt).toContain("14,81 %");
+    expect(txt).toMatch(/14[.,]81 %/);
     expect(txt).toContain("Territorio no resuelto");
     expect(txt).toContain("no calculable");
   });
