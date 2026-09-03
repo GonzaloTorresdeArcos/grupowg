@@ -299,10 +299,16 @@ export const OpsLayout = () => {
             onClick={() => setExpandido((e) => !e)}
             aria-label={expandido ? "Contraer navegación" : "Expandir navegación"}
             title={expandido ? "Contraer navegación" : "Expandir navegación"}
-            className="h-9 w-9 rounded-lg flex items-center justify-center text-ink/45 hover:text-ink hover:bg-black/[0.04]"
+            className="group relative h-9 w-9 rounded-lg flex items-center justify-center text-ink/45 hover:text-ink hover:bg-black/[0.04]"
           >
             {expandido ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+            {!expandido && (
+              <span className="pointer-events-none absolute left-full ml-2 z-50 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[11px] text-bone opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                Expandir navegación
+              </span>
+            )}
           </button>
+
         </div>
       </aside>
 
