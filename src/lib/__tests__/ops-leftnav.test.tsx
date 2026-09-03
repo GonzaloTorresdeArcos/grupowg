@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => ({
@@ -31,13 +32,15 @@ import { OpsLayout, NAV_GROUPS } from "@/components/ops/OpsLayout";
 
 const renderShell = () =>
   render(
+    <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
     <MemoryRouter initialEntries={["/operaciones/performance-real"]}>
       <Routes>
         <Route path="/operaciones" element={<OpsLayout />}>
           <Route path="performance-real" element={<div>contenido</div>} />
         </Route>
       </Routes>
-    </MemoryRouter>,
+    </MemoryRouter>
+    </QueryClientProvider>,
   );
 
 describe("UX-SHELL-LEFTNAV-1 · rail colapsado", () => {
