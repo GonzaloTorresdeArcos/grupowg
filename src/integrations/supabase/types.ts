@@ -4398,6 +4398,7 @@ export type Database = {
           regla_version_id: string
           start_date: string
           temporal_result: string
+          territorio_ot: string
         }[]
       }
       ctr_sla_temporal_resumen: {
@@ -5053,6 +5054,10 @@ export type Database = {
           score: number
           tecnico: string
         }[]
+      }
+      ops_territorio_ot: {
+        Args: { p_cp: string; p_provincia: string }
+        Returns: string
       }
     }
     Enums: {
