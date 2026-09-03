@@ -243,6 +243,16 @@ export const TEXTO_SIN_OBLIGACION_TEMPORAL =
  */
 export const ETIQUETA_CLAIMS_REPRESENTADOS = "Claims contractuales representados";
 
+/**
+ * `n_programas` cuenta programas contractuales identificados en el sistema.
+ * NO implica población operativa resuelta: un vertical puede tener programas
+ * identificados y 0 OTs resueltas a programa.
+ */
+export const ETIQUETA_PROGRAMAS_IDENTIFICADOS = "Programas contractuales identificados";
+
+export const NOTA_PROGRAMAS_SIN_POBLACION =
+  "Programas contractuales identificados en el sistema. No hay OTs resueltas a ninguno de ellos: el recuento no describe población operativa.";
+
 export const NOTA_CLAIMS_REPRESENTADOS =
   "Conteo literal de afirmaciones contractuales extraídas y representadas. No equivale al total de obligaciones del contrato: los instrumentos pueden contener obligaciones aún no extraídas ni gobernadas.";
 
