@@ -206,7 +206,7 @@ export const OpsLayout = () => {
   );
 
   const renderRail = () => (
-    <nav aria-label="Navegación principal" className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
+    <nav aria-label="Navegación principal" className="flex-1 px-1.5 py-2 space-y-1 overflow-y-auto overflow-x-visible">
       {NAV_GROUPS.map((g) => {
         const activo = currentGroup?.key === g.key;
         return (
@@ -221,7 +221,7 @@ export const OpsLayout = () => {
               setAbierto((c) => ({ ...c, [g.key]: true }));
             }}
             className={cn(
-              "group relative w-full h-11 rounded-xl flex items-center justify-center transition-colors",
+              "group relative w-full h-10 rounded-lg flex items-center justify-center transition-colors",
               activo ? "bg-black/[0.05] text-ink" : "text-ink/45 hover:text-ink hover:bg-black/[0.03]",
             )}
           >
@@ -234,6 +234,7 @@ export const OpsLayout = () => {
       })}
     </nav>
   );
+
 
   return (
     <div className="min-h-screen bg-[hsl(0_0%_99%)] flex font-sans antialiased">
