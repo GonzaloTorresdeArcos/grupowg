@@ -384,7 +384,7 @@ export const OpsLayout = () => {
             )}
           </RouteBoundary>
 
-          <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-8 py-5 md:py-6">
+          <div className={cn("portal-surface flex-1 w-full mx-auto px-4 md:px-8 py-5 md:py-6", expandido ? "max-w-6xl" : "max-w-[1600px]")}>
             <RouteBoundary key={pathname}>
               <Outlet />
             </RouteBoundary>
