@@ -3,6 +3,8 @@ import { ChevronRight, ArrowLeft, Info } from "lucide-react";
 import { DataAsOf } from "@/components/ops/DataAsOf";
 import { OpsErrorBlock, falloDeQuery, fallosDeQueries } from "@/components/ops/OpsErrorBlock";
 import { ReadinessBar } from "@/components/ops/ReadinessBar";
+import { SlaContractual } from "@/components/ops/SlaContractual";
+
 import { useOpsRpc, useOpsRpcs } from "@/lib/ops-query";
 import { fmtNum, fmtDec, useOpsFilters } from "@/lib/ops-filters";
 import {
@@ -36,6 +38,7 @@ import {
   type PortfolioResumenFila,
   type ProgramaFicha,
 } from "@/lib/ops-portfolio";
+import { type SlaDisponibilidadFila } from "@/lib/ops-sla-contractual";
 
 
 
@@ -479,7 +482,11 @@ const FichaPrograma = ({ programaId, onVolver }: { programaId: string; onVolver:
         </div>
       </section>
 
+      {/* CUMPLIMIENTO CONTRACTUAL TEMPORAL (SLA-E1.3) */}
+      <SlaContractual programaId={programaId} />
+
       {/* ECONOMÍA */}
+
       <section className="rounded-2xl border border-black/[0.06] bg-white p-5">
         <div className="grid gap-3 md:grid-cols-2">
           <BloqueEconomia
@@ -524,6 +531,9 @@ export const PerformanceReal = () => {
   const resumenQ = useOpsRpc<PortfolioResumenFila[]>("ctr_portfolio_resumen");
   const arbolQ = useOpsRpc<PortfolioArbolFila[]>("ctr_portfolio_arbol");
   const noResueltasQ = useOpsRpc<PortfolioNoResueltaFila[]>("ctr_portfolio_no_resueltas");
+  // SLA-E1.3 · chip de disponibilidad de indicadores temporales contractuales.
+  const dispQ = useOpsRpc<SlaDisponibilidadFila[]>("ctr_sla_disponibilidad");
+
 
   const fallos = [
     ...falloDeQuery("ctr_portfolio_resumen", resumenQ, "portfolio por vertical"),
@@ -545,6 +555,30 @@ export const PerformanceReal = () => {
     filas.reduce((a, f) => a + Number(f.n_ots || 0), 0);
 
   const programaSeleccionado = filters.programa;
+
+  /** programa_id → disponibilidad; y agregado por cliente. Nunca inventa ceros. */
+  const disponibilidad = useMemo(
+    () => (Array.isArray(dispQ.data) ? dispQ.data : []) as SlaDisponibilidadFila[],
+    [dispQ.data],
+  );
+  const dispPorPrograma = useMemo(
+    () => new Map(disponibilidad.map((d) => [d.programa_id, d])),
+    [disponibilidad],
+  );
+  const dispPorCliente = useMemo(() => {
+    const m = new Map<string, { n: number; pub: number }>();
+    for (const d of disponibilidad) {
+      const k = d.cliente_id ?? "sin_cliente";
+      const prev = m.get(k) ?? { n: 0, pub: 0 };
+      prev.n += Number(d.n_kpis || 0);
+      prev.pub += Number(d.n_publicables || 0);
+      m.set(k, prev);
+    }
+    return m;
+  }, [disponibilidad]);
+  const chipDisponibilidad = (n: number, pub: number) =>
+    n === 0 ? "" : ` · ${n} indicador(es) temporal(es), ${pub} publicable(s)`;
+
 
   const clientesDeVertical = useMemo(() => {
     if (!vertical) return [];
@@ -718,7 +752,7 @@ export const PerformanceReal = () => {
               <FilaProgramaBtn
                 key={c.id}
                 label={c.nombre}
-                sub={`${c.programas} programa(s)`}
+                sub={`${c.programas} programa(s)${chipDisponibilidad(dispPorCliente.get(c.id)?.n ?? 0, dispPorCliente.get(c.id)?.pub ?? 0)}`}
                 right={`${fmtNum(c.ots)} OTs`}
                 onClick={() => setCliente(c.id)}
               />
@@ -733,7 +767,7 @@ export const PerformanceReal = () => {
             <FilaProgramaBtn
               key={p.programa_id}
               label={p.programa_nombre ?? "Programa sin nombre"}
-              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)`}
+              sub={`${p.n_claims} claim(s) contractual(es) representado(s) · ${p.n_instrumentos} instrumento(s)${chipDisponibilidad(dispPorPrograma.get(p.programa_id)?.n_kpis ?? 0, dispPorPrograma.get(p.programa_id)?.n_publicables ?? 0)}`}
               right={`${fmtNum(p.n_ots)} OTs`}
               onClick={() => setFilters({ programa: p.programa_id })}
             />
