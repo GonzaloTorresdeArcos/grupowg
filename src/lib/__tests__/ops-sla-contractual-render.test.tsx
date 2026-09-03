@@ -91,7 +91,9 @@ describe("SLA-E1.3 · render de la sección contractual", () => {
     expect(txt).toContain("Evaluables 955 / 1089 candidatas");
   });
 
-  it("desglose ES / PT / no resuelto con el contraste 32,63 vs 14,81", () => {
+  it("desglose ES / PT / no resuelto con el contraste 32,63 vs 14,81", async () => {
+    const { SlaContractual } = await import("@/components/ops/SlaContractual");
+    render(<SlaContractual programaId="p1" />);
     const txt = (screen.getByText("Ámbito").closest("table") as HTMLElement).textContent ?? "";
     expect(txt).toContain("España");
     expect(txt).toContain("32,63 %");
@@ -102,9 +104,8 @@ describe("SLA-E1.3 · render de la sección contractual", () => {
   });
 
   it("lo oficial y lo no oficial están separados e inequívocamente marcados", async () => {
-    const { container } = render(
-      (await import("@/components/ops/SlaContractual")).SlaContractual({ programaId: "p1" }) as never,
-    );
+    const { SlaContractual } = await import("@/components/ops/SlaContractual");
+    const { container } = render(<SlaContractual programaId="p1" />);
     const txt = container.textContent ?? "";
     expect(txt).toContain("Resultado contractual publicable");
     expect(txt).toContain("No contractual · resultados subordinados");
