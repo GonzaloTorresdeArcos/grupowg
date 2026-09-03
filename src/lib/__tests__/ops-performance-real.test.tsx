@@ -140,6 +140,22 @@ describe("Performance Real · verticales", () => {
     expect(txt).toContain("3704");
   });
 
+  it("R2 · el recuento de programas se lee como identificación contractual, no población", async () => {
+    estado.programa = null;
+    const { default: Page } = await import("@/pages/ops/PerformanceReal");
+    const { container } = render(<Page />);
+    const txt = container.textContent ?? "";
+    expect(txt).toContain("Programas contractuales identificados");
+    // Etiqueta genérica: nunca hardcodea el nombre de una vertical.
+    expect(txt).not.toMatch(/Insurance:? Programas/);
+    // Aviso solo donde no hay población resuelta.
+    expect(txt).toContain(
+      "No hay OTs resueltas a ninguno de ellos: el recuento no describe población operativa.",
+    );
+  });
+
+
+
   it("cuadra la suma de verticales + no resueltas con la población total", () => {
     const total = RESUMEN.reduce((a, r) => a + r.n_ots, 0);
     expect(total).toBe(125752);
