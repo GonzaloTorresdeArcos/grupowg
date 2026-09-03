@@ -4373,16 +4373,24 @@ export type Database = {
         Args: { p_cliente_wg: string; p_contexto: string; p_num_ot: string }
         Returns: Json
       }
+      ctr_sla_batch1_resumen: {
+        Args: { p_escenario_baja?: string }
+        Returns: Json
+      }
       ctr_sla_evaluabilidad: {
         Args: { p_regla_version: string }
         Returns: Json
       }
       ctr_sla_temporal_ot: {
-        Args: { p_regla_version: string }
+        Args: { p_escenario_baja?: string; p_regla_version: string }
         Returns: {
+          calendar_source: string
+          calendar_type: string
           claim_id: string
           deadline_date: string
           end_date: string
+          mapping_status_end: string
+          mapping_status_start: string
           num_ot: string
           poblacion: string
           programa_id: string
@@ -4393,7 +4401,7 @@ export type Database = {
         }[]
       }
       ctr_sla_temporal_resumen: {
-        Args: { p_regla_version: string }
+        Args: { p_escenario_baja?: string; p_regla_version: string }
         Returns: Json
       }
       ctr_supersede_resolucion: {
@@ -4439,6 +4447,10 @@ export type Database = {
           numero_tecnicos: number
           razon_social: string
         }[]
+      }
+      ops_add_calendar_days: {
+        Args: { p_n: number; p_start: string }
+        Returns: string
       }
       ops_add_working_days: {
         Args: { p_n: number; p_start: string; p_territorio: string }
