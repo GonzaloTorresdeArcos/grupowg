@@ -31,7 +31,7 @@ FROM (VALUES
  ('sabado +1 ES-MD',                  DATE '2026-06-06',1,'ES-MD',DATE '2026-06-08'),
  ('vispera festivo +1 ES-MD',         DATE '2026-04-02',1,'ES-MD',DATE '2026-04-06'),
  ('T+4 cruza finde ES-MD',            DATE '2026-06-04',4,'ES-MD',DATE '2026-06-10'),
- ('T+4 cruza festivo ES-MD',          DATE '2026-04-01',4,'ES-MD',DATE '2026-04-08'),
+ ('T+4 cruza Semana Santa ES-MD',     DATE '2026-04-01',4,'ES-MD',DATE '2026-04-09'),
  ('T+5 cruza 1 mayo ES-MD (+2 may)',  DATE '2025-04-28',5,'ES-MD',DATE '2025-05-07'),
  ('T+5 cruza 1 mayo PT',              DATE '2025-04-28',5,'PT',   DATE '2025-05-06'),
  ('festivo autonomico CT (24 jun)',   DATE '2025-06-23',1,'ES-CT',DATE '2025-06-25'),
