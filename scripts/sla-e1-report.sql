@@ -1,5 +1,7 @@
 -- SLA-E1.0A · BATCH 1 · ALCAMPO + PROFESSIONAL · informe reproducible (solo lectura)
 -- Requiere rol management. Ejecuta dentro de una transaccion que siempre revierte.
+-- NOTA: requiere un rol con EXECUTE sobre las funciones ctr_*/ops_* (management via API).
+-- El rol tecnico del sandbox ya NO tiene permisos: fueron retirados al cierre del gate.
 -- Correcciones UAT incorporadas: territorio por OT, festivos autonomicos, filtro de
 -- poblacion NULL-safe, universos separados, ALC-03 como escenario de Management.
 \pset pager off
