@@ -206,7 +206,7 @@ export const OpsLayout = () => {
   );
 
   const renderRail = () => (
-    <nav aria-label="Navegación principal" className="flex-1 px-2 py-3 space-y-1 overflow-y-auto">
+    <nav aria-label="Navegación principal" className="flex-1 px-1.5 py-2 space-y-1 overflow-y-auto overflow-x-visible">
       {NAV_GROUPS.map((g) => {
         const activo = currentGroup?.key === g.key;
         return (
@@ -221,7 +221,7 @@ export const OpsLayout = () => {
               setAbierto((c) => ({ ...c, [g.key]: true }));
             }}
             className={cn(
-              "group relative w-full h-11 rounded-xl flex items-center justify-center transition-colors",
+              "group relative w-full h-10 rounded-lg flex items-center justify-center transition-colors",
               activo ? "bg-black/[0.05] text-ink" : "text-ink/45 hover:text-ink hover:bg-black/[0.03]",
             )}
           >
@@ -235,19 +235,20 @@ export const OpsLayout = () => {
     </nav>
   );
 
+
   return (
     <div className="min-h-screen bg-[hsl(0_0%_99%)] flex font-sans antialiased">
       <aside
         data-testid="ops-rail"
         data-expandido={expandido ? "1" : "0"}
         className={cn(
-          "hidden lg:flex flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen transition-[width] duration-200",
-          expandido ? "w-64" : "w-[76px]",
+          "hidden lg:flex flex-col border-r border-black/[0.06] bg-white sticky top-0 h-screen transition-[width] duration-200 shrink-0",
+          expandido ? "w-64" : "w-[60px]",
         )}
       >
-        <div className={cn("flex items-center gap-2 pt-4 pb-2", expandido ? "px-4" : "px-2 justify-center")}>
+        <div className={cn("flex items-center gap-2 pb-2", expandido ? "px-4 pt-4" : "px-1.5 pt-3 justify-center")}>
           <Link to="/" aria-label="Grupo Warranty Global" className="min-w-0">
-            <Logo className={expandido ? "h-9" : "h-7"} />
+            <Logo className={expandido ? "h-9" : "h-6"} />
           </Link>
           {expandido && (
             <div className="min-w-0 flex-1">
@@ -257,13 +258,14 @@ export const OpsLayout = () => {
           )}
         </div>
 
+
         {expandido ? (
           <nav aria-label="Navegación principal" className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
             {renderGroups()}
           </nav>
         ) : renderRail()}
 
-        <div className={cn("border-t border-black/[0.06] py-2 flex items-center gap-2", expandido ? "px-3 justify-between" : "px-2 flex-col")}>
+        <div className={cn("border-t border-black/[0.06] py-2 flex items-center", expandido ? "px-3 gap-2 justify-between" : "px-1.5 gap-1 flex-col")}>
           <div className="relative" ref={perfilRef}>
             <button
               type="button"
@@ -297,10 +299,16 @@ export const OpsLayout = () => {
             onClick={() => setExpandido((e) => !e)}
             aria-label={expandido ? "Contraer navegación" : "Expandir navegación"}
             title={expandido ? "Contraer navegación" : "Expandir navegación"}
-            className="h-9 w-9 rounded-lg flex items-center justify-center text-ink/45 hover:text-ink hover:bg-black/[0.04]"
+            className="group relative h-9 w-9 rounded-lg flex items-center justify-center text-ink/45 hover:text-ink hover:bg-black/[0.04]"
           >
             {expandido ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+            {!expandido && (
+              <span className="pointer-events-none absolute left-full ml-2 z-50 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[11px] text-bone opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                Expandir navegación
+              </span>
+            )}
           </button>
+
         </div>
       </aside>
 
@@ -376,7 +384,7 @@ export const OpsLayout = () => {
             )}
           </RouteBoundary>
 
-          <div className="portal-surface flex-1 max-w-6xl w-full mx-auto px-4 md:px-8 py-5 md:py-6">
+          <div className={cn("portal-surface flex-1 w-full mx-auto px-4 md:px-8 py-5 md:py-6", expandido ? "max-w-6xl" : "max-w-[1600px]")}>
             <RouteBoundary key={pathname}>
               <Outlet />
             </RouteBoundary>
