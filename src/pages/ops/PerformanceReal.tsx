@@ -530,6 +530,9 @@ export const PerformanceReal = () => {
   const resumenQ = useOpsRpc<PortfolioResumenFila[]>("ctr_portfolio_resumen");
   const arbolQ = useOpsRpc<PortfolioArbolFila[]>("ctr_portfolio_arbol");
   const noResueltasQ = useOpsRpc<PortfolioNoResueltaFila[]>("ctr_portfolio_no_resueltas");
+  // SLA-E1.3 · chip de disponibilidad de indicadores temporales contractuales.
+  const dispQ = useOpsRpc<SlaDisponibilidadFila[]>("ctr_sla_disponibilidad");
+
 
   const fallos = [
     ...falloDeQuery("ctr_portfolio_resumen", resumenQ, "portfolio por vertical"),
