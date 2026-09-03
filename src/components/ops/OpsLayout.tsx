@@ -205,35 +205,44 @@ export const OpsLayout = () => {
     </>
   );
 
+  // UX-SHELL-LEFTNAV-1 · Rail real: solo iconos de destino (12 secciones),
+  // separadores hairline entre grupos, tooltip en hover/focus y estado activo
+  // explícito. Ningún texto permanente.
   const renderRail = () => (
-    <nav aria-label="Navegación principal" className="flex-1 px-1.5 py-2 space-y-1 overflow-y-auto overflow-x-visible">
-      {NAV_GROUPS.map((g) => {
-        const activo = currentGroup?.key === g.key;
-        return (
-          <button
-            key={g.key}
-            type="button"
-            title={g.label}
-            aria-label={g.label}
-            aria-current={activo ? "true" : undefined}
-            onClick={() => {
-              setExpandido(true);
-              setAbierto((c) => ({ ...c, [g.key]: true }));
-            }}
-            className={cn(
-              "group relative w-full h-10 rounded-lg flex items-center justify-center transition-colors",
-              activo ? "bg-black/[0.05] text-ink" : "text-ink/45 hover:text-ink hover:bg-black/[0.03]",
-            )}
-          >
-            <g.icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
-            <span className="pointer-events-none absolute left-full ml-2 z-50 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[11px] text-bone opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
-              {g.label}
-            </span>
-          </button>
-        );
-      })}
+    <nav
+      aria-label="Navegación principal"
+      data-testid="ops-rail-nav"
+      className="flex-1 px-1 py-2 space-y-0.5 overflow-y-auto overflow-x-visible"
+    >
+      {NAV_GROUPS.map((g, gi) => (
+        <div key={g.key} className={cn(gi > 0 && "mt-1 pt-1 border-t border-black/[0.05]")}>
+          {g.items.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              title={item.label}
+              aria-label={item.label}
+              className={({ isActive }) =>
+                cn(
+                  "group relative w-full h-9 rounded-lg flex items-center justify-center transition-colors",
+                  isActive
+                    ? "bg-black/[0.06] text-ink after:absolute after:left-0 after:top-1.5 after:bottom-1.5 after:w-[2px] after:rounded-full after:bg-ink"
+                    : "text-ink/40 hover:text-ink hover:bg-black/[0.035]",
+                )
+              }
+            >
+              <item.icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+              <span className="pointer-events-none absolute left-full ml-2 z-50 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[11px] text-bone opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                {item.label}
+              </span>
+            </NavLink>
+          ))}
+        </div>
+      ))}
     </nav>
   );
+
 
 
   return (
